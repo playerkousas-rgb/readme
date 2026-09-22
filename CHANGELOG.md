@@ -10,3 +10,4 @@ v4.5.1 新增11_CODE_REVIEW_ECPORTAL.md: 實際代碼審查 - P0(X1 proxy無驗�
 v4.6.0 新增12_FRAMEWORK_PRINCIPLES.md: 框架vs支部微調分層、「兩套真理」病根五規矩、UI模組註冊制、標準同步診斷、JSON備份一等公民(離線可匯/剝密碼欄/三時機提醒)、QR公開資料標準輸出(QR永不帶key)
 v4.7.0 新增13_UNITS_AND_SHARING.md: 三層定位旅→支部→團(Mode1:1支部1leaf團=unit_tag/Mode2:團分形獨立leaf,旅長自決,升格走09.1 file-mode)、A團轉B團改一個欄零成本、家長零改動、行事曆團級粒度、財務按團切、物資共享三模式(獨立/共享池/混合上載+借用路由去owner批核)
 v4.8.0 13依用戶定案重寫: 物資共享=清單級開關(全收/全放/分類放)+永遠顯示所屬+借用只係紀錄、成員唔加unit_id(認SCOUT_ID+SHEET)、團獨立=唔交URL/KEY或交俾管理員登記(冇特殊機制); 新增14_ADMIN_APP_AND_MOCK.md: submitRegistration收件匣正式寫入(高敏/限流/去重)、unit內帳號開戶申請accountApps、MOCK示範旅團純前端、三層教材(角色入門/模組說明/MOCK引導任務)
+v4.8.1 13.1重寫: 團=各自一張SHEET(leaf)、海童軍轉空童軍=09.1移交套裝A SHEET移B SHEET、接入三條路(單獨用支部系統→ADMIN登記平台/有旅系統→旅長登記入旅系統/兩條路並行→交兩邊); 14.1 ADMIN定位修正: 成個ADMIN只有管理員一人、目的=保護管理員電郵不外露、只負責獨立前端接入

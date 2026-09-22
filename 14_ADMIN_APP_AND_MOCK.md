@@ -1,21 +1,24 @@
 ---
-version: v4.8.0
+version: v4.8.1
 date: 2026-09-22
 status: FINAL
 ---
 
 # 接入申請/帳號申請、ADMIN APP 與 MOCK 教學
 
-## 14.1 新旅團/新團接入 → ADMIN APP 收件匣 (正式寫入；ecportal submitRegistration 模式照抄)
-- 前端旅團閘「新旅團申請接入」表單: `{troopId, troopName, scriptUrl(/exec), apiKey, 聯絡, 備註}`
+## 14.1 ADMIN APP 收件匣 — 只服務「獨立前端」接入 (v4.8.1 依用戶定案修正)
+- **定位 (死規矩)**: 成個 ADMIN **只有管理員一人**；ADMIN APP 嘅目的 = **保護管理員電郵地址不外露** — 收件匣 (GAS Web App) 代替個人 email 做公開接收入口，僅此而已。佢唔係組織、唔係委員會、冇第二個審批人
+- **ADMIN 只負責「獨立前端」**: 想**單獨用支部系統**（唔經旅）嘅單位先至交 ADMIN 登記入平台 (units.json + Vercel env)。**有旅系統嘅接入唔經 ADMIN** — 交旅長，旅長登記入旅系統 (旅 registry，13.1)
+- **兩條路並行** = 同一單位交兩邊（旅長 + ADMIN），各自登記，01 雙入口
+- 前端獨立版旅團閘「新旅團申請接入」表單: `{troopId, troopName, scriptUrl(/exec), apiKey, 聯絡, 備註}`
 - 路徑: 同源 /api/proxy action=submitRegistration (白名單) → 伺服器端常數 SCOUT_ADMIN_API (ADMIN APP 收件匣 GAS，目的地前端改唔到) → 寫入收件匣 Sheet
 - **收件匣無回執**: POST 過得去就當送到；前端只話「已提交，等管理員跟進」
-- 管理員 (=平台擁有人) 流程: 收件匣見申請 → 核對 (試 ping/status) → units.json 加公開 entry + Vercel 加 `TROOP_<id>_BACKEND/_APIKEY` → Redeploy → 通知申請人
+- 管理員 (一人) 流程: 收件匣見申請 → 核對 (試 ping/status) → units.json 加公開 entry + Vercel 加 `TROOP_<id>_BACKEND/_APIKEY` → Redeploy → 通知申請人
 - 安全 (X9 + 09.4):
   - proxy per-IP 限流; 收件匣 GAS 按 unit+contact 去重，防灌爆
-  - **收件匣內有 API KEY = 高敏**: 收件匣帳戶 2FA、Sheet 權限只限管理員；ADMIN APP GAS 唔好同任何 unit leaf 共用
+  - **收件匣內有 API KEY = 高敏**: 管理員帳戶 2FA、Sheet 權限只限本人；ADMIN APP GAS 唔好同任何 unit leaf 共用
   - 登記完成後管理員可叫該 unit rotate key 一次再更新 env (key 曾經過申請人手+收件匣)
-- 唔想入平台: 唔申請就得 (13.1 團獨立同一條路)；想走: 管理員刪 registry entry + env — 數據一直在自己 Sheet，冇鎖
+- 唔想入平台: 唔申請就得 (13.1)；想走: 管理員刪 registry entry + env — 數據一直在自己 Sheet，冇鎖
 
 ## 14.2 unit 內帳號開戶申請 (accountApps 模式，正式寫入)
 - 團員/家長自助: 成員入口「申請帳號」(YMIS+姓名+聯絡) → 寫入該 unit db `accountApps` (待批)
