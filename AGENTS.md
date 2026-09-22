@@ -1,0 +1,79 @@
+# AGENTS — Agent 級別與施工邊界 (防「咩都做曬」)
+
+> 頂住！**Agent 必須先知自己係邊個級，才可施工**。越級施工 = 破壞 registry 單一真理 = 零容忍。
+
+本檔與 `BUILD.md` 共同構成唯一真理之「執行面」。`BUILD.md` 定義「做咩」，本檔定義「邊個做」。
+
+---
+
+## 1. 五級階梯 (對應 BUILD.md §1)
+
+```
+ADMIN (平台) ── 管 units.json + Vercel env + 收件匣
+  └─ TROOP_OPS (旅) ── 管 TROOP_MODULES + TROP_OPS Sheet + 旅層 registry
+       └─ BRANCH (支部/團) ── 管自己 SHEET 內數據 + 模組開關 (支部粒度)
+            └─ SHEET (leaf 後端 = 一張 SHEET + /exec) ── 數據原子寫入
+                 └─ EXTERNAL (外部系統) ── 零特權，經 Share/訂閱接入
+```
+
+**進度追蹤** 屬特殊 leaf：
+- 預設與支部系統 **共用同一張 SHEET** (ecportal 模式，BUILD.md §4)，此時兩前端同級同庫
+- 分開兩張 SHEET 時，兩 leaf 密碼需 `setPw/verifyPw` 同步 (BUILD.md §2)
+- **UI 豁免**：進度追蹤保留自己詳細 UI，唔使跟支部/旅的統一骨架
+
+## 2. 每級的「可改」與「不可改」
+
+| 級別 | 可改 | 不可改 (越級) | 典型錯誤 (已攔截) |
+|------|------|---------------|-------------------|
+| **ADMIN** | `units.json`、Vercel env `TROOP_*`、收件匣 Sheet、平台公開頁 | 不可直接寫支部 SHEET 數據 | 支部 Agent 去改 `units.json` |
+| **TROOP** | `TROOP_MODULES`、TROOP_OPS 表、旅日曆、旅物資/財務整合、訂閱 allowlist | 不可冒充 ADMIN 改平台 env | 旅 Agent 幫支部改密碼繞過 pv 鏈 |
+| **BRANCH** | 成員/通告/行事曆/相簿 (本支部)、`branch_access`、模組訂閱 | 不可跨支部寫對方 SHEET、不可改 TROOP_MODULES 全旅開關 | 支部 Agent 越權開全旅模組 |
+| **SHEET / API** | `doGet/doPost` 原子寫入、ScriptLock、雜湊 | 不可回傳 apikey/不入 URL/QR | leaf 把 apikey 噴去前端 |
+| **EXTERNAL** | 只能被連結 / 被訂閱 / 被工具目錄登記 (stateless) | 不可拿 apikey/session/DB 存取 | 進度追蹤想加圖書館推送 — **禁止** |
+
+> **黑名單案例**：**進度追蹤 ≠ 通告**，圖書館推送只屬通告模組 (BUILD.md §4 ★)。進度追蹤若要「圖書館」概念，必須先經 `TROOP_MODULES` 登記並由旅長批准，否則視為越級。
+
+## 3. 模組註冊制 — 新功能唯一入口
+
+任何功能 = 一個模組 (名、入口位置、所需權限、開關、說明頁)。流程：
+
+1. 在 `TROOP_MODULES` 登記 (或 `docs/MODULE_REGISTRY.md` 草案)
+2. 旅長/管理員按單位粒度開關 (可全旅或指定支部)
+3. 導航由註冊表自動生成，最多兩層
+4. 分享前設 = 接收方有該模組才可分享 (BUILD.md §4)
+
+**未登記不得直接加導航/改 UI** — 防「順手加個圖書館」。
+
+## 4. 施工次序 (BUILD.md §10)
+
+1. `/api/proxy` + GAS `requireAuth` + key 未設拒絕敏感 action
+2. 密碼雜湊 server 化 + 自動升級
+3. ScriptLock + 前端排隊
+4. mustChangePw gate + 鎖定
+5. 限流 (§3 匿名可寫面)
+6. AUDIT/ACCESS LOG
+7. 其他 (silent refresh、sig jti、shard 等)
+
+**功能次序**：UI 骨架 → 帳號/登入 (§2) → 通告+個人化訂閱 (★最優先) → 行事曆 → 物資 → 財務 → 移交 → MOCK/教學
+
+> 進度追蹤不在此序列前端 — 它是獨立前端，排期由旅長決定，不可插隊搶做通告訂閱。
+
+## 5. 體積治理 — 各級共同責任
+
+- `api` 零依賴 (原生 fetch+crypto)
+- Preview deployment 關閉 (儀表板)，retention 7 天
+- 圖轉 AVIF，`dist <5MB`、`bundle <2MB` (CI 硬攔)
+- `.vercelignore` / `.gitignore` 已配；新增資源必須通過 `npm run slim:dead`
+
+## 6. 自檢清單 — 每次施工前問自己
+
+- [ ] 我係邊個級？ (ADMIN/TROOP/BRANCH/SHEET/EXTERNAL)
+- [ ] 我要改嘅 registry / Sheet / env 係咪我轄下？
+- [ ] 有無經 `TROOP_MODULES` 登記？旅長批咗未？
+- [ ] 有無越級改其他旅/支部嘅嘢？
+- [ ] 進度追蹤嘅改動有無誤加通告圖書館邏輯？ (若有，立即撤回)
+- [ ] `npm run check && npm run build` 通過未？
+
+---
+
+*違反本檔 = 視為 regressions，CI 與 code review 會擋。*

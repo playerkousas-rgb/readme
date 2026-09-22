@@ -1,0 +1,69 @@
+# — ecportal .vercelignore — 最重要：阻止 Vercel 儲存空間爆滿
+# 規則：只上傳「最終使用者要睇到嘅嘢」，其餘一律唔上 Vercel
+
+# Git 本身 (Vercel 唔需要 .git 歷史)
+.git
+.gitignore
+.github
+
+# 依賴與快取 (Vercel 會按 package.json 重新安裝；快取由 Vercel 自行管理)
+node_modules
+.pnp
+.pnp.js
+.vercel
+.cache
+.parcel-cache
+.turbo
+.vite
+.next
+.nuxt
+.output
+
+# 建置產物重複快取 (只保留最終 outputDirectory，唔上傳中間快取)
+dist
+out
+build
+coverage
+.nyc_output
+
+# 開發備份與暫存 (瘦身核心)
+*.bak
+*.tmp
+*.old
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+
+# 上傳測試與本地資料 (防爆：單檔 5MB 限制，歷史檔案唔應上 Vercel)
+uploads/
+tmp/
+temp/
+test-uploads/
+__tests__/
+tests/
+*.test.*
+*.spec.*
+
+# 未使用的靜態資源隔離區 (若未來有 images/assets/public，死重檔案會被 scripts/dead-assets 攔截)
+# 注意：以下註釋僅提示，實際隔離由 .gitignore + dead-assets 檢查負責
+# public/raw/
+# assets/originals/
+
+# 環境機密範例外的所有 env (Vercel env 已設，唔使上傳)
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# 文件類 (Vercel 靜態部署唔需要)
+# 保留 BUILD.md / EXTERNAL.md / README.md 三份真理，其餘歷史已在 git 歷史 (tag/commit)
+# 若日後有 docs/ 教學，三份真理外嘅大圖原稿唔上 Vercel
+*.bak.md
+*.draft.md
+
+# CI 巨型腳本本身唔上 Vercel (本專案 scripts 極輕 <20KB，為咗 build 必須上傳，故不忽略)
+# 若日後 scripts 膨脹，請改為內聯 buildCommand 並在此加回 scripts/
+.husky/
