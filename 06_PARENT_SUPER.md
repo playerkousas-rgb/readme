@@ -5,7 +5,8 @@ version: v4.2.0
 
 定位: 家長是旅層帳號，超然於各團，權限=子女聯集
 
-DISTRICT存PARENT: children_ids=["SCOUT_幼_123","SCOUT_童_456"]
+DISTRICT存PARENT: children_ids=["S123456","S123789"]
+(v4.3.0 修正: children_ids 存「全域SCOUT_ID」，唔好用支部前綴ID — SCOUT_ID移到邊家長sig就解析到邊，升團遷移家長mapping零改動，見 09.1)
 
 登入旅簽發:
 sig_cub=HMAC(TROOP_CUB_apikey, `TROOP_CUB|parentEmail|{children_ids,targetYmis}|exp`)

@@ -77,3 +77,19 @@ status: REVIEW
 上線前必須（P0）: B1 時鐘、B2 tombstone、B3 rate limit、B4 密碼雜湊、C1 runbook、C2 備份
 第二波（P1）: B5-B13、A1-A2、C3-C5
 修好後開 **v4.3.0**（新增 09_OPS_RUNBOOK.md 承接 C 類），07 內「重設即踢線」一句到時要跟 B5 改寫。
+
+---
+
+## E. v4.3.0 跟進狀態 (2026-09-22)
+
+| 項 | 狀態 |
+|----|------|
+| A1 跨支部領袖 | ✅ 定案 09.2 — 旅層帳號 + branch_access 由旅長開通 |
+| A2 升團遷移 | ✅ 定案 09.1 — 歷史不帶走、membership tombstone+新建、children_ids 用全域SCOUT_ID 家長零改動、先修章摘要選用 |
+| A5 首次密碼 | ✅ 定案 09.3 — 預設1234+首登強制改4+位、批量CSV；B3/B10 升級做死規矩 |
+| B1-B19 | 修法已全部列於本文件；要 pseudo-code 另行出 |
+| C1 key rotation | ✅ 詳解+runbook 09.4；01 #15 已反轉 (停SIG收本地密碼) |
+| C2 備份 | ✅ 定案 09.5 — 一鍵全庫JSON匯出 + 每週自動Drive備份 + importAll還原，唔使一張張Sheet下載 |
+| C3 ownership | ✅ 接受現實，留低一頁交接SOP 09.8 |
+| C4 審計 | ✅ 定案 09.6 — 加 ACCESS_LOG + AUDIT_LOG (append-only, prev_hash鏈) |
+| C5 PDPO | ✅ 定案 09.7 — App內建家長同意文案模板+數據清單，旅團自決執行 |
