@@ -20,6 +20,7 @@ status: FINAL
 - 發佈權: 支部領袖 `canPublish` (permissions_override 新預設欄位，07 問4 封頂照用)；刪除=tombstone (03)
 - **接收(訂閱)**: 每支部喺自己後端存 `subs:[{source: TROOP|支部id, types:[...]}]`，**領袖開關是否接收**邊個來源嘅通告/行事曆；新支部預設只接收旅方，其他支部預設關
 - 讀取路徑: 支部成員App照舊只打自己支部後端，支部後端 server-to-server 拉已訂閱來源嘅 scope=TROOP 項目合併 → 成員可見 = 本支部全部 + 已訂閱來源公開項目；**旅內任何登入者(領袖/家長/成員)都睇到公開項目**
+- 每個公開項目自動生成公開短連結 + **QR code**（列印用）；QR 只帶公開 URL 永不帶 key — 見 12.6
 - 合併行事曆可輸出 ICS 訂閱連結 (P2)
 - PDPO (09.7): **相簿**通常只係一條連結指向旅團自己放相嘅地方 (Google Photos 等)，系統核實唔到連結內容 → **只能提示、唔做硬閘**: scope=TROOP 發佈時彈提示，領袖剔「我確認已取得所需家長同意」先出到(剔咗記 AUDIT_LOG 事後有得查)；預設相簿 scope=BRANCH
 - AUDIT_LOG 記 PUBLISH/UNPUBLISH (09.6)

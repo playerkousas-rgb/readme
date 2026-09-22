@@ -1,5 +1,5 @@
 ---
-version: v4.5.1
+version: v4.6.0
 date: 2026-09-22
 status: REVIEW
 ---

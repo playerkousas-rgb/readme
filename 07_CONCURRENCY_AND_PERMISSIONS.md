@@ -1,5 +1,5 @@
 ---
-version: v4.5.1
+version: v4.6.0
 date: 2026-09-22
 status: FINAL
 ---
@@ -11,7 +11,7 @@ status: FINAL
 - 流程: 每人瀏覽器自己 staging -> save 先落本地(黃點) -> sync 上後端(綠點)
 - 後端 ScriptLock 內 merge3(base, local, remote) 做欄位級合併:
   - 唔同成員 / 唔同欄位: 兩邊修改都保留，完全唔衝突
-  - 同一成員同一欄位兩邊都改: 真衝突 -> 以後端 serverTime 較新者勝(last-write-wins)，輸嗰邊 staging 標紅留底，可再改再覆蓋
+  - 同一成員同一欄位兩邊都改: 真衝突 -> **預設彈出畀用戶逐格確認先至寫(ask模式, v4.5.1 跟 ecportal merge3 實際做法改)**; 批量/無人看場(sync queue)先行 LWW 後端 serverTime 新者勝+輸邊標紅留底
 - 同步撞 ScriptLock 等 20s 都輪唔到: 該次 sync 失敗留黃點自動重試，數據唔會壞（讀寫都在 Lock 內 + 寫入原子 tmp+pointer swap，見 03）
 - 預設可寫矩陣: 領袖可改自己團成員進度；成員可改自己進度；家長唯讀(子女聯集, 06)，最多加「家長確認」欄位
 - 實務分工(唔同領袖跟唔同成員)衝突率極低；寧可紅點事後覆蓋，唔做格鎖
