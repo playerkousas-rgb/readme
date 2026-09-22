@@ -8,3 +8,4 @@ v4.4.0 新增10_ANNOUNCE_CALENDAR.md: 通告/行事曆/相簿公開資料模型(
 v4.5.0 10.2相簿改提示制(外連結核實唔到內容,發佈提示+領袖確認剔記審計)、新增10.5全模組開關TROOP_MODULES(旅自主權,server-side執行)、10.6行事曆細化(6日曆6色可SORT、支部自訂標籤FILTER、跨支部分享鏈:分享方揀對象→接收領袖揀成員可見、隨時收返)、10.7財務TROOP_FIN(支部key簽寫入、旅長/管理員睇晒+整合現況、成員預設無入口)
 v4.5.1 新增11_CODE_REVIEW_ECPORTAL.md: 實際代碼審查 - P0(X1 proxy無驗證注入key=全DB匿名讀寫/X2密碼hash落前端+單次SHA256/X3 fail-open+進度免key公開/X4 withLock失敗照做) P1(X5-X9) P2(X10-X17); 證實01-10 cover晒P0解法; 07衝突處理改merge3 ask模式
 v4.6.0 新增12_FRAMEWORK_PRINCIPLES.md: 框架vs支部微調分層、「兩套真理」病根五規矩、UI模組註冊制、標準同步診斷、JSON備份一等公民(離線可匯/剝密碼欄/三時機提醒)、QR公開資料標準輸出(QR永不帶key)
+v4.7.0 新增13_UNITS_AND_SHARING.md: 三層定位旅→支部→團(Mode1:1支部1leaf團=unit_tag/Mode2:團分形獨立leaf,旅長自決,升格走09.1 file-mode)、A團轉B團改一個欄零成本、家長零改動、行事曆團級粒度、財務按團切、物資共享三模式(獨立/共享池/混合上載+借用路由去owner批核)

@@ -1,5 +1,5 @@
 ---
-version: v4.6.0
+version: v4.7.0
 ---
 # Registry與解析 - 修 #2, #12, #18
 
