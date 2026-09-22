@@ -1,8 +1,9 @@
 ---
-version: v4.2.0
+version: v4.2.1
 ---
 # 版本控制
-- 當前: v4.2.0 FINAL 2026-09-22
+- 當前: v4.2.1 REVIEW 2026-09-22
+- SemVer: patch - 新增08三角度審查(用戶/工程/管理), P0-P2行動清單
 - SemVer: minor - 新增07多人協作/雙入口/權限/密碼定案(問2-7)
 - 每份MD頭部必須有 version/date/status
 - Git: git tag -a v4.2.0 -m "多人寫入merge3+雙入口並存+上級設權限封頂+三級密碼管理"
