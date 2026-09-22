@@ -1,5 +1,5 @@
 ---
-version: v4.2.1
+version: v4.4.0
 date: 2026-09-22
 status: REVIEW
 ---
@@ -93,3 +93,6 @@ status: REVIEW
 | C3 ownership | ✅ 接受現實，留低一頁交接SOP 09.8 |
 | C4 審計 | ✅ 定案 09.6 — 加 ACCESS_LOG + AUDIT_LOG (append-only, prev_hash鏈) |
 | C5 PDPO | ✅ 定案 09.7 — App內建家長同意文案模板+數據清單，旅團自決執行 |
+| 通告/行事曆/公開資料 | ✅ 新增 10.2 — TROOP_OPS、支部自定義公開類別、領袖訂閱接收、相簿家長同意閘 |
+| 密碼統一(雙入口同一組密碼) | ✅ 新增 10.3 — 支部改密碼一次改兩個(setPw同步)、parity偵測提示改齊 |
+| 轉旅/調區家長 | ✅ 09.1 修正 — 家長帳號帶唔走，接收旅邀請重開(套裝帶家長email) |

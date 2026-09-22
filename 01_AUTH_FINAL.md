@@ -1,5 +1,5 @@
 ---
-version: v4.2.0
+version: v4.4.0
 ---
 # 帳號與信任鏈 - 最終安全版
 
@@ -35,7 +35,7 @@ PROG_0082V, TROOP_0082V, DISTRICT_0082 永遠不變，舊書籤redirect
 ymis, scout_id, email, name, type, role, district_id, troop_id, patrol_id, parent_ids, children_ids, permissions_override, passwordHash, salt, mustChangePw, inviteToken, inviteExp
 
 ## 帳號單一來源 (修 #15, v4.3.0 邏輯反轉)
-懷疑被吃: **停SIG、只收本地密碼**(攻擊者有key冇密碼)，換apikey完成後先恢復sig。
+懷疑 key外洩: **停SIG、只收本地密碼**(攻擊者有key冇密碼)，換apikey完成後先恢復sig。
 本地密碼入口(ScoutBadge偏離聲明)就係災難恢復通道，唔可以鎖走。Runbook見 09.4
 
 > **ScoutBadge 偏離聲明**：ScoutBadge 作為 leaf 端**不**照辦此條，本地密碼入口保留，

@@ -1,5 +1,5 @@
 ---
-version: v4.3.0
+version: v4.4.0
 date: 2026-09-22
 status: FINAL
 ---
@@ -15,9 +15,10 @@ status: FINAL
   3. 目標(童軍)領袖「升團接收」: 匯入套裝 → 驗 scout_id/ymis 無現役撞號 → 建新 ACTIVE membership (同一 scout_id/ymis)，密碼行 09.3 開戶流程 (領袖畀臨時密碼, mustChangePw)
   4. transferId 冪等: 同一套裝匯兩次第二次拒絕；撞號 → 阻住 + 人手處理
 - 進度追蹤同一步: 成員喺 PROG 嘅記錄行同一套 tombstone+新建，舊支部進度留來源存檔 (若 PROG 用單庫+支部 tag，就改歸屬 tag + 舊進度封存唯讀)
-- **家長零改動**: children_ids 一律存「全域 SCOUT_ID」(修正 06 嘅支部前綴示例)。SCOUT_ID 移到邊，家長 sig 就解析到邊 = 「SCOUT ID 能移佢就能移」
+- **家長零改動 — 只限同旅升團**: children_ids 一律存「全域 SCOUT_ID」(修正 06 嘅支部前綴示例)。SCOUT_ID 移到邊，家長 sig 就解析到邊 = 「SCOUT ID 能移佢就能移」
   - Mode B 獨立團: 家長喺童軍系統用同一 SCOUT_ID 加返子女 (兩套帳號，06 已知限制)
-- 無旅 Mode B: 步驟一樣，套裝用檔案人手交接。**轉旅/調區都用呢套 file-mode**
+- **轉旅/調區 — 家長帳號帶唔走 (v4.4.0 修正)**: 家長係旅層帳號、密碼存來源旅自己庫；子女移出來源旅 Sheet 後，來源旅解析唔返呢個 SCOUT_ID，家長聯集斷裂 → 來源家長帳號降級「歷史存檔/停用」。**接收旅按套裝內家長聯絡 email 行 01 邀請連結** → 家長喺新旅開新帳號(新密碼)，children_ids=[同一SCOUT_ID]；跨區=成套重行。通知文案要寫明: 轉旅=家長要喺新旅重新啟動帳號
+- 無旅 Mode B: 步驟一樣，套裝用檔案人手交接。**轉旅/調區都係呢套 file-mode**
 - 升團季批量: 領袖多選成員 → 一次過生成一個 bundle 檔
 
 ## 09.2 領袖跨支部 (定案 A1)
