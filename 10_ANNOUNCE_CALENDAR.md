@@ -1,5 +1,5 @@
 ---
-version: v4.5.0
+version: v4.5.1
 date: 2026-09-22
 status: FINAL
 ---
