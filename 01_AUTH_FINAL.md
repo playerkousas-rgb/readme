@@ -8,6 +8,11 @@ version: v4.1.0
 - 成員: SCOUT_ID/YMIS+PW
 - SUPER: sheep + EC_SUPER_KEY HttpOnly
 
+> **ScoutBadge 實作備註（v4.1.0+）**：
+> - SUPER 登入採用**直接驗證**機制：Proxy（Vercel）驗證密碼後，透過 `isSuperAdmin` flag 直接授權，
+>   **不再需要** trusted-ticket 回調（因此不需要 `script.external_request` 授權）。
+> - 本地密碼登入**保留**（三點進入並存），上層 sig 只係多一條免檢入口，不會停用本端密碼。
+
 ## Session (修 #1)
 頂層登入後 set-cookie sessionToken=JWT{HMAC(SESSION_SECRET,userId|role|exp)} HttpOnly
 /api/proxy 必須帶session，server先verifySession()才注入apikey，否則401
@@ -31,5 +36,8 @@ ymis, scout_id, email, name, type, role, district_id, troop_id, patrol_id, paren
 
 ## 帳號單一來源 (修 #15)
 被吃後下級停用password模式，只接受sig
+
+> **ScoutBadge 偏離聲明**：ScoutBadge 作為 leaf 端**不**照辦此條，本地密碼入口保留，
+> 上層 sig 只係多一條免檢入口。理由：上層接入唔應該鎖走本團自己嘅登入。
 
 ## 家長超然見 06_PARENT_SUPER.md
