@@ -1,5 +1,5 @@
 ---
-version: v4.8.1
+version: v4.9.0
 date: 2026-09-22
 status: REVIEW
 ---
@@ -103,3 +103,4 @@ status: REVIEW
 | 接入申請→ADMIN APP | ✅ 新增 14.1 — submitRegistration收件匣正式寫入 + 高敏/限流/去重 |
 | unit內帳號開戶申請 | ✅ 新增 14.2 — accountApps待批模式 |
 | MOCK/教學 | ✅ 新增 14.3/14.4 — 示範旅團純前端+三層教材 |
+| 第二輪複審 (v4.8.1全套) | ✅ 15_REVIEW_V2 — 3文檔BUG即場修(13.2 Mode殘留/10.3 parity適用範圍/02 registry分層)、用戶旅程全通、工程管理零新增結構問題；建議v5.0功能凍結 |

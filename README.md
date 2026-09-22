@@ -1,11 +1,11 @@
 ---
-version: v4.8.1
+version: v4.9.0
 date: 2026-09-22
-status: FINAL
+status: REVIEW
 ---
 
-# ecportal v4.8.1 - 最終唯一版本 (參考原型)
+# ecportal v4.9.0 - 最終唯一版本 (參考原型)
 
 核心: 容器不存下級數據、registry 共用下級key(兩條路並行)、LEAF做地基、信任鏈用下級key簽、家長超然=子女聯集、有旅才有超然、多人寫入merge3欄位級合併、支部/直入雙入口並存同一組密碼、通告行事曆公開資料/全模組開關/多日曆/財務整合
 
-包含 17 份文件 (15 FINAL + 2 REVIEW)，舊 v3 已廢棄
+包含 16 份文件 (13 FINAL + 3 REVIEW)，舊 v3 已廢棄
