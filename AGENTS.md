@@ -26,7 +26,7 @@ ADMIN (平台) ── 管 units.json + Vercel env + 收件匣
 | 級別 | 可改 | 不可改 (越級) | 典型錯誤 (已攔截) |
 |------|------|---------------|-------------------|
 | **ADMIN** | `units.json`、Vercel env `TROOP_*`、收件匣 Sheet、平台公開頁 | 不可直接寫支部 SHEET 數據 | 支部 Agent 去改 `units.json` |
-| **TROOP** | `TROOP_MODULES`、TROOP_OPS 表、旅日曆、旅物資/財務整合、訂閱 allowlist | 不可冒充 ADMIN 改平台 env | 旅 Agent 幫支部改密碼繞過 pv 鏈 |
+| **TROOP** | `TROOP_MODULES`、TROOP_OPS 表、旅日曆、旅物資/財務整合、訂閱 allowlist；跨團幫手 `branch_access` 最終寫 TROOP_OPS | 不可冒充 ADMIN 改平台 env；不可未經目標團批就加 `branch_access` | 旅長繞過目標團直接加跨團權限 |
 | **BRANCH** | 成員/通告/行事曆/相簿 (本團)、`branch_access`、模組訂閱；1團1張 SHEET | 不可跨團寫對方 SHEET、不可改 TROOP_MODULES 全旅開關；**不可自閂/自開下游入口**（開關掣只在上游，經 sig 寫下游 `ALLOW_LOCAL_LOGIN`） | 支部 Agent 越權開全旅模組；團前端自己閂進度入口 |
 | **SHEET / API** | `doGet/doPost` 原子寫入、ScriptLock、雜湊；下游 `ALLOW_LOCAL_LOGIN` 旗只接受上游 `sig` 寫入 | 不可回傳 apikey/不入 URL/QR；子 leaf 不可自行開成員戶口/自改旗 | leaf 把 apikey 噴去前端；進度/團自己改 `ALLOW_LOCAL_LOGIN` |
 | **EXTERNAL** | 只能被連結 / 被訂閱 / 被工具目錄登記 (stateless) | 不可拿 apikey/session/DB 存取 | 進度追蹤想加圖書館推送 — **禁止** |
@@ -72,8 +72,9 @@ ADMIN (平台) ── 管 units.json + Vercel env + 收件匣
 - [ ] 有無經 `TROOP_MODULES` 登記？旅長批咗未？
 - [ ] 有無越級改其他旅/支部嘅嘢？
 - [ ] 進度追蹤嘅改動有無誤加通告圖書館邏輯？ (若有，立即撤回)
-- [ ] 開戶係咪喺錨點做 (成員=該團支部、領袖=所屬層、家長=有旅就旅)？有無喺進度追蹤開戶或由下游反寫上游？ (BUILD.md §2 開戶錨點)
+- [ ] 開戶係咪喺錨點做 (成員=該團支部、領袖=所屬層、家長=有旅就旅)？有無喺進度追蹤開戶或由下游反寫上游？含 hash JSON 吐出有冇濫用（只限後掛上游批量開戶）？ (BUILD.md §2 §3)
 - [ ] 下游入口開關係咪上游控、下游寫（`ALLOW_LOCAL_LOGIN` 經 `sig` 寫下游 GS，唔係下游自改/唔郁 ENV）？ (BUILD.md §1 入口開關)
+- [ ] 跨團幫手係咪教練員=旅長直開、本職領袖兼幫=目標團批後追加 `branch_access`？有無繞過目標團？
 - [ ] `npm run check && npm run build` 通過未？
 
 ---

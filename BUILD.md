@@ -25,19 +25,21 @@
   1. **上層 sig**: `sig = HMAC(下級apikey, childId|sub|role|children|target|exp)`，sub=EMAIL/YMIS，exp 15-30 分鐘，綁 session jti；下級用自己 key 重算驗證，scope 簽死喺 sig 內
   2. **leaf 本地密碼**: 預設開，受下游 `ALLOW_LOCAL_LOGIN` 旗控；旗閂後本地入口回 403（但每 leaf 至少留一本地領袖戶 + SUPER 作災難恢復，見入口開關）
   3. **SUPER**: sheep + EC_SUPER_KEY (Vercel env, server-only)；SUPER 幫人改密碼一樣只可以觸發重設
-- 領袖/家長: EMAIL+PW，開戶用一次性邀請連結 (隨機12字, 24h)；領袖橫跨支部 = 旅層帳號 + `branch_access` 清單，旅長開通；**首個旅長帳號由生 GS 時種入**（TROOP_OPS Sheet 擁有人 setup 頁寫入首個 EMAIL + 臨時碼，不經邀請連結；之後由旅長發邀請連結開其他人；SUPER 只觸發重設，不直接開旅長戶）
+- 領袖/家長: EMAIL+PW，開戶用一次性邀請連結 (隨機12字, 24h)；領袖橫跨支部 = 旅層帳號 + `branch_access` 清單，旅長開通；**首個旅長帳號由生 GS 時種入**（TROOP_OPS Sheet 擁有人 setup 頁寫入首個 EMAIL + 臨時碼，不經邀請連結；之後由旅長發邀請連結開其他人；SUPER 只觸發重設，不直接開旅長戶）；**下游閂口後新戶點開**：團/進度本地入口 403 時，一律由**上游前端揀團開戶**（旅揀團→經 `sig` 落該團支部寫、團揀進度→經 `sig` 落進度寫），寫入仍在下游 sheet（AUDIT `via=sig`），前端只作選單
 - 成員: SCOUT_ID/YMIS+PW；開戶預設 1234 + mustChangePw，首登強制改 (4 位以上)；開戶兩途: 人手 / 批量 CSV
 - 密碼雜湊 server-side (Code.gs 內): PBKDF2-SHA256 ≥100k 迭代 + per-user salt + timing-safe compare；hash 只存 server，隨 DB 同步前剝走
 - 登入保護 (server-side): 每帳號 5 次失敗鎖 15 分鐘，解鎖要領袖；mustChangePw 期間只放行改密碼 API
 - 改密碼: 自己驗舊改新；上級「重設」= 隨機臨時碼或重設返 1234+mustChangePw (領袖交收)，EMAIL 帳號改行一次性連結；任何重設/改密碼 → pv+1，session 驗 pv 不對即 401
 - 忘記密碼: EMAIL 帳號有 (leaf 寄一次性連結，用一次即廢；回應統一防帳號枚舉)；SUPER 靠 Vercel 改 env redeploy
 - 權限: `permissions_override` 只有直接上級設定 (領袖→團員、DISTRICT→領袖、SUPER→任何)；下級 override ⊆ 上級自己權限 (封頂，上級失權即失效)；存成員所在 leaf；server-side 按簽名 scope+override 授權；記 updatedBy
+- 跨團幫手：教練員 = 旅層 `branch_access`（旅長一鍵開多團）；本職領袖（例 XX支部領袖）想兼幫他團 → 上游發「幫手申請」→ **目標團領袖批** → TROOP_OPS 追加該領袖 `branch_access` 含目標團（AUDIT 記 `grantedBy=目標團領袖`），失效由目標團撤
 - 兩條路同一組密碼: 支部同進度係同一後端 (兩個前端) → 密碼天生一份；真係分開兩個 leaf 嘅單位，支部改密碼時 server-to-server `setPw` 同步另一邊，並用 `verifyPw` 背景核對，唔一致就常駐提示改齊 (verifyPw 每 sub 每小時上限 5 次)
 - **開戶錨點（每團一對 SHEET 都適用）**: 身份只喺一個 SHEET 誕生，其餘靠 sig 或同步落去 — 永不三邊各開一次、永不由下游反寫上游:
   - 成員 (SCOUT_ID/YMIS) 錨點 = **該團支部 SHEET（名冊所在）**: 人手/CSV/批開戶申請 (§7)/接收移交 (§6) 全部係該團支部動作；旅長想喺旅系統開 = 經 sig 入該團支部落筆（AUDIT 記 actor=旅長 via=sig），成員 row 永不入旅 SHEET（成員 App 只打所屬團支部後端，旅唔需要識佢）
   - 領袖 (EMAIL) 錨點 = 所屬層: 只帶一團 → 該團支部 SHEET（邀請連結，旅長可經 sig 代發）；旅長/跨團 → 旅 SHEET + `branch_access`；每個 leaf 至少留一個本地領袖帳號（災難恢復通道先有人用得到）
   - 家長 (EMAIL): 有旅系統 → 旅 SHEET（§6「同旅移動零改動」先做得到）；冇旅系統 → 該團支部 SHEET
   - 進度 SHEET（1團1張，子 leaf）= **純下游 + 前端 B模式指向**: 支部前端「進度」頁經 TROOP_OPS 同行 `PROGRESS_BACKEND/APIKEY` 打進度 /exec，支部 SHEET 本身唔存進度數據；開戶/改密碼/停用/移出同上一條 server-to-server 鏈（`upsertUser`/`setPw`/`setStatus`），`verifyPw` 背景核對照舊；領袖/旅長經 sig 入，下游唔使有 row；子 leaf **拒絕本地開成員戶口**，搵唔到 sub = 該團支部未開，唔會自己補；本地入口受 `ALLOW_LOCAL_LOGIN` 旗控（上游控、下游寫）
+  - **JSON 吐出批量開戶（保留密碼）**: 下游已存舊資料、後掛上游時無資料 → 上游無法讀下游，故由**下游 `exportAll` 吐 JSON（含 `hash+salt+迭代數`，見 §3）** → 上游/領袖在下游新 sheet 按「匯入」逐個 `upsertUser` 直插 hash（不經 `1234+mustChangePw`），`transferId` 冪等 + 撞號阻擋 + `sha256` 驗；匯完下游即轉純下游並可閂口（見 5情景）
   - **掉轉禁止**（進度開戶再寫上游）: 佢係身份消費者、可選部件、仲有匿名進度申報面（§3）— 做身份源頭 = 安全倒轉 + 支部依賴可選件
 - key 外洩應變: 停 SIG、收本地密碼 → 換 apikey → registry 更新 + flush cache → 換 SESSION_SECRET/EC_SUPER_KEY redeploy → 查審計 → 恢復 SIG；每季例行 rotate；有管理權者離任即刻 rotate
 - Session: JWT HttpOnly `Secure; SameSite=Lax`，exp ≤30 分鐘 + silent refresh；Vercel /api/proxy verifySession 之後先至 inject apikey
@@ -49,7 +51,7 @@
 - 後端: ScriptLock `waitLock(20s)`，攞唔到回 busy 由前端排隊重試；寫入原子 (暫存行 + 一次過 commit/swap，行號計算由底往上刪)；大庫分件儲存 (saveDbPart/Commit) + 分段讀取 (loadDbPart 每段核 version，變咗由頭再讀)；刪除 = tombstone flag，purge 由後端定期
 - 匿名可寫面 (每個都係: 白名單 action + 限流 + 寫入待批表): 通告報名 (同通告同名去重) / 物資借用 / 收支申報 / 進度申報 / 開戶申請 / 相片上載 (單檔 ≤5MB、每筆 3 張、每 unit 每日總量上限)
 - 診斷: dbInfo 標準回 `{version, bytes, sizes, stagingRows}`；status 回 backendVersion (前端偵測舊後端提示更新)；三色燈 + 診斷報告一鍵複製
-- 備份: `exportAll` 一鍵全庫單一 JSON (`{meta:{unit,exportedAt,version,sha256}, data}`，可選剝密碼欄) + 每週自動存 Drive 留 13 份 + `importAll` 驗 hash 行原子寫還原；離線都匯得；三時機提醒 (升級前/批量操作前/7日冇備份)
+- 備份: `exportAll` 一鍵全庫單一 JSON (`{meta:{unit,exportedAt,version,sha256}, data}`，**預設剝密碼欄；後掛上游批量開戶時可選「含 hash」吐出**，見 §2 JSON 吐出） + 每週自動存 Drive 留 13 份 + `importAll` 驗 hash 行原子寫還原（保留 hash 直插，`transferId` 冪等）；離線都匯得；三時機提醒 (升級前/批量操作前/7日冇備份)
 
 ## 4. 支部功能模組
 - **一套 UI 模版行晒支部系統＋旅系統＋公開頁**: 同一個排版骨架 (ecportal 嘅整體感覺: 頂欄+導航+卡片)、同一套元件 (掣/表單/對話框/表格)、同一套導航邏輯 — 用戶由支部去旅**零重新適應**
