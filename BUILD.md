@@ -57,8 +57,9 @@
   - **個人化訂閱 ★ 重中之重** (通告圖書館 scout-circulars ↔ 系統，同一套機制內建):
     - 定位: 未來構想嘅重中之重 — push 內建咗就唔使「拉落嚟」、領袖唔使多理一樣嘢，通告自動去到啱嘅人手上
     - 每個用戶 (領袖/成員/家長) 喺自己系統管理自己訂閱: 揀支部 (小童軍/幼童軍/童軍/深資/樂行/領袖/家長/會務委員) × 分類 (訓練/服務/活動/比賽/未分類)；設定存本機 LocalStorage，命中即推，同一通告只推一次
-    - **推送基建 = 圖書館嘅 Supabase** (而家已經係咁): 圖書館每日將所有通告分類送 Supabase，推送由 Supabase 做 — 系統做訂閱設定前端，推送照行圖書館現有嗰條路，唔使自己另起爐灶
-    - **訂閱寫入 Supabase 才作實**: 用戶喺系統儲存訂閱時，系統經圖書館訂閱 API 將 `{匿名設備ID(隨機,可重設), 支部, 分類}` 寫入 Supabase → 館方 (ADMIN) 知**幾多人訂、訂咩**，一樣**唔知邊個** (冇 YMIS/email/身份)；推送直達用戶手機
+    - **推送基建 = 圖書館現有嗰條鏈，系統零另起爐灶**: 圖書館每日 scrape → Supabase (`push_subscriptions` 表: endpoint_hash/client_token_hash/branch_ids/topic_ids) → GitHub Actions 每日 06:00 `notify.py` 命中「支部 AND 項目」→ pywebpush (VAPID) 推送，7 日 rolling 補漏
+    - **系統做嘅嘢 = 訂閱設定前端**: 用戶喺系統內揀支部×項目 → 旅系統 service worker (用圖書館 VAPID public key 訂閱) → 寫入同一張 Supabase 表。實現時圖書館唯一要改: `require_same_origin` 加 origin allowlist (認住各單位系統網址)；建議 `push_subscriptions` 加 `source` 欄 (library/system) 統計分開
+    - **館方數據完整保留**: 全部訂閱入同一張表 → `subscription_stats.py` 照出: 訂閱數增長、每支部/每項目分佈、30日活躍 — 知**幾多人訂、訂咩**，一樣**唔知邊個** (冇 YMIS/email/身份)
     - 通告頁 = 本單位通告 + 用戶已訂閱嘅圖書館通告，同頁同列表 (來源標示)，附件指返圖書館
     - 領袖見到啱成員嘅活動/訓練班 → 推薦俾成員，成員自己個人報名 (報名喺外部主辦方，唔係團活動)
     - 圖書館 ScoutSystem 網址 = 單位自己系統網址；deep link「加入 ScoutSystem」直接開用戶訂閱設定
