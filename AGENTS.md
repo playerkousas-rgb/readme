@@ -16,9 +16,9 @@ ADMIN (平台) ── 管 units.json + Vercel env + 收件匣
                  └─ EXTERNAL (外部系統) ── 零特權，經 Share/訂閱接入
 ```
 
-**進度追蹤** 屬特殊 leaf：
-- 預設與支部系統 **共用同一張 SHEET** (ecportal 模式，BUILD.md §4)，此時兩前端同級同庫
-- 分開兩張 SHEET 時，兩 leaf 密碼需 `setPw/verifyPw` 同步 (BUILD.md §2)
+**進度追蹤** 屬特殊 leaf（1團1張，子 leaf）：
+- 支部系統前端「進度」頁經 TROOP_OPS 同行 `PROGRESS_BACKEND/_APIKEY` 打進度 /exec（B模式），支部 SHEET 本身唔存進度數據；舊 ecportal 共用一張 SHEET 只作兼容
+- 開戶/改密碼/停用一律由該團支部落筆再同步落去 (`upsertUser/setPw/setStatus` + `verifyPw` 核對)，進度唔會自己開成員戶口、唔會反寫上游 (BUILD.md §2 開戶錨點)
 - **UI 豁免**：進度追蹤保留自己詳細 UI，唔使跟支部/旅的統一骨架
 
 ## 2. 每級的「可改」與「不可改」
@@ -27,8 +27,8 @@ ADMIN (平台) ── 管 units.json + Vercel env + 收件匣
 |------|------|---------------|-------------------|
 | **ADMIN** | `units.json`、Vercel env `TROOP_*`、收件匣 Sheet、平台公開頁 | 不可直接寫支部 SHEET 數據 | 支部 Agent 去改 `units.json` |
 | **TROOP** | `TROOP_MODULES`、TROOP_OPS 表、旅日曆、旅物資/財務整合、訂閱 allowlist | 不可冒充 ADMIN 改平台 env | 旅 Agent 幫支部改密碼繞過 pv 鏈 |
-| **BRANCH** | 成員/通告/行事曆/相簿 (本支部)、`branch_access`、模組訂閱 | 不可跨支部寫對方 SHEET、不可改 TROOP_MODULES 全旅開關 | 支部 Agent 越權開全旅模組 |
-| **SHEET / API** | `doGet/doPost` 原子寫入、ScriptLock、雜湊 | 不可回傳 apikey/不入 URL/QR | leaf 把 apikey 噴去前端 |
+| **BRANCH** | 成員/通告/行事曆/相簿 (本團)、`branch_access`、模組訂閱；1團1張 SHEET | 不可跨團寫對方 SHEET、不可改 TROOP_MODULES 全旅開關；**不可自閂/自開下游入口**（開關掣只在上游，經 sig 寫下游 `ALLOW_LOCAL_LOGIN`） | 支部 Agent 越權開全旅模組；團前端自己閂進度入口 |
+| **SHEET / API** | `doGet/doPost` 原子寫入、ScriptLock、雜湊；下游 `ALLOW_LOCAL_LOGIN` 旗只接受上游 `sig` 寫入 | 不可回傳 apikey/不入 URL/QR；子 leaf 不可自行開成員戶口/自改旗 | leaf 把 apikey 噴去前端；進度/團自己改 `ALLOW_LOCAL_LOGIN` |
 | **EXTERNAL** | 只能被連結 / 被訂閱 / 被工具目錄登記 (stateless) | 不可拿 apikey/session/DB 存取 | 進度追蹤想加圖書館推送 — **禁止** |
 
 > **黑名單案例**：**進度追蹤 ≠ 通告**，圖書館推送只屬通告模組 (BUILD.md §4 ★)。進度追蹤若要「圖書館」概念，必須先經 `TROOP_MODULES` 登記並由旅長批准，否則視為越級。
@@ -72,6 +72,8 @@ ADMIN (平台) ── 管 units.json + Vercel env + 收件匣
 - [ ] 有無經 `TROOP_MODULES` 登記？旅長批咗未？
 - [ ] 有無越級改其他旅/支部嘅嘢？
 - [ ] 進度追蹤嘅改動有無誤加通告圖書館邏輯？ (若有，立即撤回)
+- [ ] 開戶係咪喺錨點做 (成員=該團支部、領袖=所屬層、家長=有旅就旅)？有無喺進度追蹤開戶或由下游反寫上游？ (BUILD.md §2 開戶錨點)
+- [ ] 下游入口開關係咪上游控、下游寫（`ALLOW_LOCAL_LOGIN` 經 `sig` 寫下游 GS，唔係下游自改/唔郁 ENV）？ (BUILD.md §1 入口開關)
 - [ ] `npm run check && npm run build` 通過未？
 
 ---
