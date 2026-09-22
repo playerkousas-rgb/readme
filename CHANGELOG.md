@@ -5,3 +5,4 @@ v4.2.0 新增07_CONCURRENCY_AND_PERMISSIONS.md: 問2-7定案 (多人寫入merge3
 v4.2.1 新增08_RISK_REVIEW.md: 三角度審查 - P0(LWW時鐘/tombstone/rate limit/密碼雜湊/key rotation runbook/備份) P1(踢線失效/sig重放/鎖塞/跨支部領袖/升團遷移/ownership/審計/PDPO) P2 19+8項
 v4.3.0 新增09_TRANSFER_AND_OPS.md: 升團遷移(歷史不帶/membership移動/家長零改動)、領袖branch_access旅長開通、成員預設1234首登強制改、被吃runbook(01#15反轉:停SIG收本地密碼)、一鍵全庫JSON備份+自動Drive、ACCESS_LOG/AUDIT_LOG、PDPO模板
 v4.4.0 新增10_ANNOUNCE_CALENDAR.md: 通告/行事曆/相簿公開資料模型(支部自定義公開類別、寫入旅系統TROOP_OPS、領袖訂閱接收、相簿家長同意閘)、密碼統一(支部改密碼一次改兩個setPw同步、verifyPw parity偵測+常駐提示改齊、oracle rate limit)、09.1修正轉旅/調區家長帳號帶唔走要新旅重開、用語規範取代「吃」
+v4.5.0 10.2相簿改提示制(外連結核實唔到內容,發佈提示+領袖確認剔記審計)、新增10.5全模組開關TROOP_MODULES(旅自主權,server-side執行)、10.6行事曆細化(6日曆6色可SORT、支部自訂標籤FILTER、跨支部分享鏈:分享方揀對象→接收領袖揀成員可見、隨時收返)、10.7財務TROOP_FIN(支部key簽寫入、旅長/管理員睇晒+整合現況、成員預設無入口)
