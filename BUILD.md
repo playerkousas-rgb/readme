@@ -112,4 +112,11 @@
 6. server AUDIT_LOG/ACCESS_LOG
 7. 其餘工程項目: session 靜默刷新、sig jti、讀取優樂觀化 (pointer 覆查代替全 read lock)、leaf 自製 session token、db shard、同步 backoff+jitter、錯誤碼統一、log 只記 metadata
 - 功能施工次序: UI 模版骨架 → 帳號/登入 (§2) → 通告+個人化訂閱 (★重中之重) → 行事曆 → 物資 → 財務 → 移交 → MOCK/教學
-- 體積治理: api 零依賴原生 fetch+crypto、關 preview deployment、retention 7 天、圖轉 AVIF、dist<5MB、bundle<2MB
+- 體積治理 (Vercel 防爆 — 真正 ecportal 代碼倉必守，唔係呢個 MD 真理倉):
+  - `api` 零依賴: 只用原生 `fetch`+`crypto`，唔裝 `axios`/`lodash`/`moment` 等重型庫；真要裝只可入 `devDependencies`
+  - `.vercelignore` (最重要): 必須擋 `node_modules` / `.git` / `.vercel` / `.cache` / `*.bak` `*.tmp` `*.old` `*.log` / `uploads/` / `__tests__/` / `coverage/`，只上傳最終 `dist`；否則 Vercel 儲存配額即爆
+  - `package.json` 極簡: `dependencies` 保持空或白名單，建置工具 (`vite`/`tailwind` 等) 一律 `devDependencies` + `vercel.json` 設 `installCommand: "npm install --omit=dev"`
+  - `vercel.json`: `framework: null` + `outputDirectory: dist` (或 `out`) + `cleanUrls: true` + `regions: ["hkg1"]`，只部署最終靜態產物，唔上傳成個開發環境
+  - 死重檔案: 全文 grep `public/images/assets`，未被 `HTML/CSS/JS` 引用嘅高清原圖/孤立測試檔直接刪；`*.bak`/`*.tmp` 零容忍
+  - 圖轉 AVIF: 所有相片轉 `AVIF`/`WebP`，單檔 `<500KB`，`dist<5MB`、`bundle<2MB`，CI 硬攔 (`du -sb dist` >5MB 即 fail)
+  - 部署衛生: Vercel Dashboard 關非 `main` 分支嘅 Preview Deployment，Retention 設 `7` 天；上載面單檔 ≤5MB、每筆 3 張、每 unit 每日總量上限 (§3)
