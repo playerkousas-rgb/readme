@@ -1,5 +1,5 @@
 ---
-version: v4.7.0
+version: v4.8.0
 date: 2026-09-22
 status: REVIEW
 ---
@@ -100,3 +100,6 @@ status: REVIEW
 | 全模組開關(旅自主權) | ✅ 新增 10.5 — TROOP_MODULES 所有功能可開關，旅長/管理員設定，server-side執行 |
 | 行事曆細化 | ✅ 新增 10.6 — 6日曆6色可SORT、支部自訂標籤FILTER、跨支部分享鏈(分享方揀對象→接收領袖揀成員可見) |
 | 財務 | ✅ 新增 10.7 — TROOP_FIN旅層store、支部自己key簽寫、旅長/管理員睇晒各支部+整合現況、成員預設無入口 |
+| 接入申請→ADMIN APP | ✅ 新增 14.1 — submitRegistration收件匣正式寫入 + 高敏/限流/去重 |
+| unit內帳號開戶申請 | ✅ 新增 14.2 — accountApps待批模式 |
+| MOCK/教學 | ✅ 新增 14.3/14.4 — 示範旅團純前端+三層教材 |
