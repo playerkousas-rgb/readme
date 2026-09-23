@@ -10,10 +10,12 @@
 
 ```
 ADMIN (平台) ── 管 units.json + Vercel env + 收件匣
-  └─ TROOP_OPS (旅) ── 管 TROOP_MODULES + TROP_OPS Sheet + 旅層 registry
+  └─ TROOP_OPS (旅) ── 管 TROOP_MODULES + TROOP_OPS Sheet + 旅層 registry
        └─ BRANCH (支部/團) ── 管自己 SHEET 內數據 + 模組開關 (支部粒度)
             └─ SHEET (leaf 後端 = 一張 SHEET + /exec) ── 數據原子寫入
                  └─ EXTERNAL (外部系統) ── 零特權，經 Share/訂閱接入
+
+**GAS 接駁 registry（2026-09-23 實作定案）**：旅 → 團 → 進度 嘅連結登記寫喺**上游 GAS `ScriptProperties`**（`DOWNSTREAM_<id>_URL/_KEY/_NAME/_AT`），唔係 Vercel env、唔入任何 SHEET（ABCD 四項都唔落 SHEET）；`sig` 係 GAS→GAS，唔經 Vercel proxy。詳見 `進度追蹤旅系統升級版.md`。
 ```
 
 **進度追蹤** 屬特殊 leaf（1團1張，子 leaf）：
@@ -27,7 +29,7 @@ ADMIN (平台) ── 管 units.json + Vercel env + 收件匣
 |------|------|---------------|-------------------|
 | **ADMIN** | `units.json`、Vercel env `TROOP_*`、收件匣 Sheet、平台公開頁 | 不可直接寫支部 SHEET 數據 | 支部 Agent 去改 `units.json` |
 | **TROOP** | `TROOP_MODULES`、TROOP_OPS 表、旅日曆、旅物資/財務整合、訂閱 allowlist；跨團幫手 `branch_access` 最終寫 TROOP_OPS | 不可冒充 ADMIN 改平台 env；不可未經目標團批就加 `branch_access` | 旅長繞過目標團直接加跨團權限 |
-| **BRANCH** | 成員/通告/行事曆/相簿 (本團)、`branch_access`、模組訂閱；1團1張 SHEET | 不可跨團寫對方 SHEET、不可改 TROOP_MODULES 全旅開關；**不可自閂/自開下游入口**（開關掣只在上游，經 sig 寫下游 `ALLOW_LOCAL_LOGIN`） | 支部 Agent 越權開全旅模組；團前端自己閂進度入口 |
+| **BRANCH** | 成員/通告/行事曆/相簿 (本團)、`branch_access`、模組訂閱；1團1張 SHEET | 不可跨團寫對方 SHEET、不可改 TROOP_MODULES 全旅開關；**不可自閂/自開下游入口**（開關掣只在上游，經 sig 寫下游 `ALLOW_LOCAL_LOGIN`；下游 Sheet 選單嗰個「本機直接入口」掣只算**獨立運作／災難恢復**用，一掛接上游即以上游為準，下游前端一律唔准加掣） | 支部 Agent 越權開全旅模組；團前端自己閂進度入口 |
 | **SHEET / API** | `doGet/doPost` 原子寫入、ScriptLock、雜湊；下游 `ALLOW_LOCAL_LOGIN` 旗只接受上游 `sig` 寫入 | 不可回傳 apikey/不入 URL/QR；子 leaf 不可自行開成員戶口/自改旗 | leaf 把 apikey 噴去前端；進度/團自己改 `ALLOW_LOCAL_LOGIN` |
 | **EXTERNAL** | 只能被連結 / 被訂閱 / 被工具目錄登記 (stateless) | 不可拿 apikey/session/DB 存取 | 進度追蹤想加圖書館推送 — **禁止** |
 
@@ -75,6 +77,9 @@ ADMIN (平台) ── 管 units.json + Vercel env + 收件匣
 - [ ] 開戶係咪喺錨點做 (成員=該團支部、領袖=所屬層、家長=有旅就旅)？有無喺進度追蹤開戶或由下游反寫上游？含 hash JSON 吐出有冇濫用（只限後掛上游批量開戶）？ (BUILD.md §2 §3)
 - [ ] 下游入口開關係咪上游控、下游寫（`ALLOW_LOCAL_LOGIN` 經 `sig` 寫下游 GS，唔係下游自改/唔郁 ENV）？ (BUILD.md §1 入口開關)
 - [ ] 跨團幫手係咪教練員=旅長直開、本職領袖兼幫=目標團批後追加 `branch_access`？有無繞過目標團？
+- [ ] 接駁係咪守齊三條：① 上游打下游、下游**同步回傳**結果 ② **冇 callback endpoint**、下游永唔主動回打上游 ③ 中央登入嘅回打（若有）只限**固定受信端點**？ (`進度追蹤旅系統升級版.md` §4)
+- [ ] `sig` 用途字串（`<purpose>`）同 action 名有無跨 repo 一致？（唔一致＝其他支部接唔到；見 §12 ①②）
+- [ ] 閂下游直接入口之前，係咪已經有「經上游用 `sig` 轉發」嘅前端路徑？（冇就唔好閂，一閂 apikey 路徑即死）
 - [ ] `npm run check && npm run build` 通過未？
 
 ---

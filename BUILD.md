@@ -13,12 +13,15 @@
 - ID 正規化 normId 單一實現 (82/082/0082/00082 = 同一單位): `trim→大寫→數字補零至4位+字母尾`
 - registry 兩層:
   - 平台: `units.json` 公開 metadata + Vercel env `TROOP_<id>_BACKEND/_APIKEY`；ADMIN 經收件匣管理 (§7)
-  - 旅: TROOP_OPS Sheet **每團一行**存該團兩把 key（支部 + 進度）；旅長寫；Vercel server-to-server 讀 + cache 5 分鐘 + 手動 flush endpoint
-  - 進度 SHEET = 該團支部 SHEET 嘅**子 leaf**: key 登記喺同一團行 (`PROGRESS_BACKEND/_APIKEY`；旅模式入 TROOP_OPS 同一行、獨立模式入 Vercel env)，支部前端「進度」頁經此 key 打進度 /exec；開戶/身份行 §2 開戶錨點
-- 入口開關（**上游控、下游寫**）: 下游是否接受本地登入/開戶由旗 `ALLOW_LOCAL_LOGIN`（寫喺**下游 GS ScriptProperties**）決定；開關掣**只喺上游前端**（旅控團、團控進度），經 `sig` 調下游 `setDownstreamAccess` 寫旗，下游前端無此掣故單用下游時唔會誤觸；未掛接前旗=開；旅掛團/團掛進度後，上游可一鍵閂，下游即只接受 `sig`/server-to-server（本地入口回 403，災難恢復走 SUPER/本地留一戶機制）
-- 接入 registry 追加唔搬：旅掛團時只在 TROOP_OPS 追加行，不改/不刪 `units.json/Vercel env`（免 ADMIN 動 ENV），掛接前後 ENV 唔郁
+  - 旅（**GAS 接駁，2026-09-23 實作定案**）: 上游 GAS `ScriptProperties` 每條下游一組 `DOWNSTREAM_<id>_URL/_KEY/_NAME/_AT`（`<id>` 英數/底線/連字號、最長 32），上游憑此經 `sig` 讀寫下游（旅→團→進度；`sig` 係 GAS→GAS，唔經 Vercel proxy）。換 D = 三處同步: 下游重生 → 上游重新登記 → ADMIN 改 Vercel env + Redeploy
+  - 旅（**未實作**）: `TROOP_OPS` Sheet 每團一行存該團兩把 key（支部 + 進度）、Vercel server-to-server 讀 + cache 5 分鐘 + flush endpoint —— 只喺「Vercel 側真係要讀旅層」先建；未建之前**以 Script Properties 為唯一真理**，唔好兩份並存
+  - 進度 SHEET = 該團支部 SHEET 嘅**子 leaf**: key 登記喺上游 Script Properties（旅模式同團一行、獨立模式入 Vercel env）；開戶/身份行 §2 開戶錨點
+  - **未實作（閂口前設）**: 支部前端「進度」頁經 `PROGRESS_BACKEND/APIKEY` 打進度 /exec（原設計）全生態圈未有實作；而且**閂下游直接入口後 apikey 路徑一齊失效**，前端唯一出路係支部經自己上游 GAS 用 `sig` 轉發。**未起好呢條路之前唔好閂口**（見 `進度追蹤旅系統升級版.md` §12 ④）
+- 入口開關（**上游控、下游寫**）: 下游是否接受本地登入/開戶由旗 `ALLOW_LOCAL_LOGIN`（寫喺**下游 GS ScriptProperties**）決定；開關掣**只喺上游前端**（旅控團、團控進度），經 `sig` 調下游 `setDownstreamAccess`／`setLocalLogin` 寫旗，下游前端無此掣故單用下游時唔會誤觸；未掛接前旗=開；旅掛團/團掛進度後，上游可一鍵閂，下游即只接受 `sig`/server-to-server（本地入口回 403，災難恢復走 SUPER/本地留一戶機制）。掣值 **fail closed**：只有 `1/true/yes/on/open` 算開啟，其他值（含串錯字）＝閂口
+- **回傳／回調三條（2026-09-23 定案，見 `進度追蹤旅系統升級版.md` §4）**: ① 上游打下游，下游**同步回傳**結果＝必要（唔算回調）② **旅系統冇 callback endpoint**：下游永不主動回打上游，sig 流向只有上游 → 下游 ③ 唯一回打喺**中央登入鏈**（GAS 回打固定受信端點 `/api/super` 驗票，60 秒票據、一次性防重放；vsbadge/roverbadge 行此路）；cubsbadge/scoutbadge 行**零回打**版（Vercel 驗 `SUPER_KEY` → `action=superLogin`，GAS 冇任何回打）。兩套並存係現況，新裝建議行零回打（待批）
+- 接入 registry 追加唔搬：旅掛團時只喺上游 ScriptProperties 追加 `DOWNSTREAM_<id>_*`，不改/不刪 `units.json/Vercel env`（免 ADMIN 動 ENV），掛接前後 ENV 唔郁
 - apikey 只存 server (env / registry 表)，永不回前端、永不入 URL、永不入 QR
-- 新團開通次序（每團一對 SHEET）: ① 該團兩張 SHEET（支部 + 進度）各部署 /exec、各自一條 apikey → ② 旅長喺 TROOP_OPS 登記該團一行 (`BRANCH_BACKEND/APIKEY` + `PROGRESS_BACKEND/APIKEY`)；首團連同生 GS 時種入首個旅長帳號（見 §2）→ ③ 旅層帳號: 旅長 + 跨團領袖 (+家長) 邀請連結 + `branch_access` → ④ 該團領袖邀請連結（旅長可經 sig 入該團支部代發）→ ⑤ 成員喺該團支部開（人手/CSV），進度自動同步（§2）；此時下游旗仍開，上游可按需一鍵閂下游本地入口（見入口開關）。新旅 = 1張旅 SHEET + N團×2張；後加支部/進度只係加行，已用緊進度後加支部 = 補支部 SHEET 並同行登記，支部「進度」頁即時指向現有進度 SHEET，閂口後由支部統一入口
+- 新團開通次序（每團一對 SHEET）: ① 該團兩張 SHEET（支部 + 進度）各部署 /exec、各自一條 apikey → ② 旅長喺**上游 GAS ScriptProperties** 登記該團下游 (`DOWNSTREAM_<id>_URL/_KEY`；`TROOP_OPS` 表未實作，見 registry)；首團連同生 GS 時種入首個旅長帳號（見 §2）→ ③ 旅層帳號: 旅長 + 跨團領袖 (+家長) 邀請連結 + `branch_access` → ④ 該團領袖邀請連結（旅長可經 sig 入該團支部代發）→ ⑤ 成員喺該團支部開（人手/CSV），進度自動同步（§2）；此時下游旗仍開，上游可按需一鍵閂下游本地入口（見入口開關）。新旅 = 1張旅 SHEET + N團×2張；後加支部/進度只係加登記行，已用緊進度後加支部 = 補支部 SHEET 並登記（「支部『進度』頁即時指向現有進度 SHEET」**未有實作**，見 registry 未實作項）
 
 ## 2. 帳號與登入
 - 三點進入並存:
@@ -38,8 +41,8 @@
   - 成員 (SCOUT_ID/YMIS) 錨點 = **該團支部 SHEET（名冊所在）**: 人手/CSV/批開戶申請 (§7)/接收移交 (§6) 全部係該團支部動作；旅長想喺旅系統開 = 經 sig 入該團支部落筆（AUDIT 記 actor=旅長 via=sig），成員 row 永不入旅 SHEET（成員 App 只打所屬團支部後端，旅唔需要識佢）
   - 領袖 (EMAIL) 錨點 = 所屬層: 只帶一團 → 該團支部 SHEET（邀請連結，旅長可經 sig 代發）；旅長/跨團 → 旅 SHEET + `branch_access`；每個 leaf 至少留一個本地領袖帳號（災難恢復通道先有人用得到）
   - 家長 (EMAIL): 有旅系統 → 旅 SHEET（§6「同旅移動零改動」先做得到）；冇旅系統 → 該團支部 SHEET
-  - 進度 SHEET（1團1張，子 leaf）= **純下游 + 前端 B模式指向**: 支部前端「進度」頁經 TROOP_OPS 同行 `PROGRESS_BACKEND/APIKEY` 打進度 /exec，支部 SHEET 本身唔存進度數據；開戶/改密碼/停用/移出同上一條 server-to-server 鏈（`upsertUser`/`setPw`/`setStatus`），`verifyPw` 背景核對照舊；領袖/旅長經 sig 入，下游唔使有 row；子 leaf **拒絕本地開成員戶口**，搵唔到 sub = 該團支部未開，唔會自己補；本地入口受 `ALLOW_LOCAL_LOGIN` 旗控（上游控、下游寫）
-  - **JSON 吐出批量開戶（保留密碼）**: 下游已存舊資料、後掛上游時無資料 → 上游無法讀下游，故由**下游 `exportAll` 吐 JSON（含 `hash+salt+迭代數`，見 §3）** → 上游/領袖在下游新 sheet 按「匯入」逐個 `upsertUser` 直插 hash（不經 `1234+mustChangePw`），`transferId` 冪等 + 撞號阻擋 + `sha256` 驗；匯完下游即轉純下游並可閂口（見 5情景）
+  - 進度 SHEET（1團1張，子 leaf）= **純下游 + 前端 B模式指向**: 支部前端「進度」頁經上游登記嘅 `PROGRESS_*` key 打進度 /exec（**未實作**，見 §1 registry 未實作項），支部 SHEET 本身唔存進度數據；開戶/改密碼/停用/移出同上一條 server-to-server 鏈（`upsertUser`／`resetPassword`／`setUserStatus`），`verifyPw` 背景核對照舊（**`verifyPw`／`setPw` 喺 vsbadge／roverbadge 未實作，cubsbadge／scoutbadge 已有可抄；`setUserStatus` 同 roverbadge 嘅 `deactivateUser`／`reactivateUser` 係同一件事兩個名 —— action 契約待統一，見 `進度追蹤旅系統升級版.md` §12**）；領袖/旅長經 sig 入，下游唔使有 row；子 leaf **拒絕本地開成員戶口**，搵唔到 sub = 該團支部未開，唔會自己補；本地入口受 `ALLOW_LOCAL_LOGIN` 旗控（上游控、下游寫）
+  - **JSON 吐出批量開戶（保留密碼）**: 下游已存舊資料、後掛上游時無資料 → 上游雖然可經 `sig` **讀**下游（讀 action 白名單，回應永不含 hash），但**密碼 hash 讀唔到**，故仍由**下游 `exportAll`／`exportUsersJson` 吐 JSON（含 `hash+salt+迭代數`，見 §3）** → 上游/領袖在下游新 sheet 按「匯入」逐個 `upsertUser` 直插 hash（不經 `1234+mustChangePw`），`transferId` 冪等 + 撞號阻擋 + `sha256` 驗；匯完下游即轉純下游並可閂口（見 5情景）
   - **掉轉禁止**（進度開戶再寫上游）: 佢係身份消費者、可選部件、仲有匿名進度申報面（§3）— 做身份源頭 = 安全倒轉 + 支部依賴可選件
 - key 外洩應變: 停 SIG、收本地密碼 → 換 apikey → registry 更新 + flush cache → 換 SESSION_SECRET/EC_SUPER_KEY redeploy → 查審計 → 恢復 SIG；每季例行 rotate；有管理權者離任即刻 rotate
 - Session: JWT HttpOnly `Secure; SameSite=Lax`，exp ≤30 分鐘 + silent refresh；Vercel /api/proxy verifySession 之後先至 inject apikey
@@ -59,7 +62,7 @@
 - 掣位統一規則 (統一範圍內適用): 同類掣永遠同一位置 (儲存/主操作固定嗰角、危險動作固定樣式、設定固定入口)；功能入口由模組註冊表決定 (下一條)，唔散裝
 - 模組註冊制: 每個功能 = 模組 (名、入口位置、所需權限、開關、說明頁)；導航由註冊表自動生成，最多兩層
 - `TROOP_MODULES` 全模組開關 (notice/calendar/album/finance/progress/新功能)：旅長/管理員設定，可全旅或指定支部；server-side 拒絕停用模組讀寫；cache 5 分鐘
-- 進度: 1團1張 進度 SHEET（子 leaf）；支部系統前端「進度」頁經 TROOP_OPS 同行 key 打進度 /exec（B模式，支部 SHEET 唔存進度數據）；舊 ecportal「兩前端共用一張 SHEET」只作兼容；分開時行 §2 開戶/密碼同步條款；catalog per-團揀選
+- 進度: 1團1張 進度 SHEET（子 leaf）；支部系統前端「進度」頁經上游登記嘅 key 打進度 /exec（B模式，支部 SHEET 唔存進度數據；**此頁未有實作**，見 §1 registry 未實作項）；舊 ecportal「兩前端共用一張 SHEET」只作兼容；分開時行 §2 開戶/密碼同步條款；catalog per-團揀選
 - 通告/行事曆/相簿:
   - 可見度: **本支部 (預設) / 分享俾指定支部** — 發佈時逐個支部揀 (揀晒全部 = 全旅可見)；深資可以只分享童軍、唔分享幼童；各支部自定「公開資料」類別
   - **分享前設 = 接收方都有該模組**: 分享目標清單由模組註冊表過濾 — 童軍有小隊計分、深資冇呢個模組 → 嗰頁根本唔存在，自然分享唔到入去；通告/物資/行事曆呢啲大家都有嘅先分享得到
