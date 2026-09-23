@@ -3,20 +3,31 @@
 本檔係唯一真理。所有 Agent 以此為準施工。
 兩條公理: **一切身份 = SCOUT_ID + 所在 SHEET**；**一切接入 = 交俾邊個 + 登記邊個 registry**。
 
+**兩層定位（2026-09-23 加註，施工前先分清）**
+
+| | **管理層** = 團／旅系統（含平台 ADMIN、公開頁） | **記錄冊** = 進度追蹤（各支部 leaf） |
+|---|---|---|
+| 做乜 | 開戶、模組註冊、通告／訂閱、行事曆、物資、財務、移交、權限、ADMIN APP | 記進度、記履歷、記獎章（每項要顯示得詳細） |
+| 位階 | 上游 | **最下游 leaf**（1團1張 SHEET + 一支 /exec） |
+| 狀態 | 以 **ecportal** 作基礎參考，**未完成**（本檔大部分章節講呢邊） | **已完成嘅系統，本輪只升級「接駁」** |
+| 規格 | 本檔 §1–§10 | `進度追蹤旅系統升級版.md`（＋本檔 §1 registry、§2 帳號/開戶錨點、§5 分享） |
+
+→ **進度追蹤冇管理層功能係正常，唔係缺失**；同樣，管理層唔會幫進度做進度 UI。
+
 ---
 
 ## 1. 單位與接入
 - 層級: 平台(ADMIN) → 旅 → 支部/團 → **1團1張 支部 SHEET** (同一支部有5團 = 5張支部 SHEET)。**每張 SHEET + 一支 Apps Script (/exec) = 一個 leaf 後端**；旅系統 (TROOP_OPS) 自己都係一個 leaf
-- 進度追蹤: **1團1張 進度 SHEET**；支部系統前端有「進度」一頁，背後打嗰團進度 SHEET 嘅 /exec (B模式)，支部 SHEET 本身唔存進度數據；舊 ecportal「兩前端共用一張 SHEET」只作兼容保留
+- 進度追蹤: **1團1張 進度 SHEET**；支部系統前端有「進度」一頁，背後打嗰團進度 SHEET 嘅 /exec (B模式)，支部 SHEET 本身唔存進度數據；舊 ecportal「兩前端共用一張 SHEET」只作兼容保留。**定位：進度追蹤 = 記錄冊 leaf（最下游、已完成系統，本輪只升級接駁）；管理層功能（模組註冊、通告、財務、權限、ADMIN APP…）一律屬團／旅系統，進度 leaf 冇呢啲功能係正常，唔係缺失**（見 `進度追蹤旅系統升級版.md` §0.1）
 - 接入三條路: 獨立前端 → ADMIN 登記入平台；有旅系統 → 旅長登記入旅系統；兩條路並行 → 交兩邊
 - 退出 = 刪 registry entry；數據永遠在單位自己 Sheet
 - ID 正規化 normId 單一實現 (82/082/0082/00082 = 同一單位): `trim→大寫→數字補零至4位+字母尾`
 - registry 兩層:
   - 平台: `units.json` 公開 metadata + Vercel env `TROOP_<id>_BACKEND/_APIKEY`；ADMIN 經收件匣管理 (§7)
   - 旅（**GAS 接駁，2026-09-23 實作定案**）: 上游 GAS `ScriptProperties` 每條下游一組 `DOWNSTREAM_<id>_URL/_KEY/_NAME/_AT`（`<id>` 英數/底線/連字號、最長 32），上游憑此經 `sig` 讀寫下游（旅→團→進度；`sig` 係 GAS→GAS，唔經 Vercel proxy）。換 D = 三處同步: 下游重生 → 上游重新登記 → ADMIN 改 Vercel env + Redeploy
-  - 旅（**未實作**）: `TROOP_OPS` Sheet 每團一行存該團兩把 key（支部 + 進度）、Vercel server-to-server 讀 + cache 5 分鐘 + flush endpoint —— 只喺「Vercel 側真係要讀旅層」先建；未建之前**以 Script Properties 為唯一真理**，唔好兩份並存
+  - 旅（**屬旅系統（管理層）範圍，進度 leaf 唔涉及**）: `TROOP_OPS` Sheet 每團一行存該團兩把 key（支部 + 進度）、Vercel server-to-server 讀 + cache 5 分鐘 + flush endpoint —— 只喺「Vercel 側真係要讀旅層」先建；未建之前**以 Script Properties 為唯一真理**，唔好兩份並存
   - 進度 SHEET = 該團支部 SHEET 嘅**子 leaf**: key 登記喺上游 Script Properties（旅模式同團一行、獨立模式入 Vercel env）；開戶/身份行 §2 開戶錨點
-  - **未實作（閂口前設）**: 支部前端「進度」頁經 `PROGRESS_BACKEND/APIKEY` 打進度 /exec（原設計）全生態圈未有實作；而且**閂下游直接入口後 apikey 路徑一齊失效**，前端唯一出路係支部經自己上游 GAS 用 `sig` 轉發。**未起好呢條路之前唔好閂口**（見 `進度追蹤旅系統升級版.md` §12 ④）
+  - **屬團／旅系統（支部前端）範圍**: 支部前端「進度」頁經 `PROGRESS_BACKEND/APIKEY` 打進度 /exec（原設計）——進度 leaf 唔做管理層 UI，所以呢一頁屬支部系統嗰邊；而且**閂下游直接入口後 apikey 路徑一齊失效**，前端唯一出路係支部經自己上游 GAS 用 `sig` 轉發。**未起好呢條路之前唔好閂口**（見 `進度追蹤旅系統升級版.md` §12 ④）
 - 入口開關（**上游控、下游寫**）: 下游是否接受本地登入/開戶由旗 `ALLOW_LOCAL_LOGIN`（寫喺**下游 GS ScriptProperties**）決定；開關掣**只喺上游前端**（旅控團、團控進度），經 `sig` 調下游 `setDownstreamAccess`／`setLocalLogin` 寫旗，下游前端無此掣故單用下游時唔會誤觸；未掛接前旗=開；旅掛團/團掛進度後，上游可一鍵閂，下游即只接受 `sig`/server-to-server（本地入口回 403，災難恢復走 SUPER/本地留一戶機制）。掣值 **fail closed**：只有 `1/true/yes/on/open` 算開啟，其他值（含串錯字）＝閂口
 - **回傳／回調三條（2026-09-23 定案，見 `進度追蹤旅系統升級版.md` §4）**: ① **中央登入回傳**：GAS 回打固定受信端點 `/api/super` 驗票（60 秒票據、一次性防重放）——vsbadge/roverbadge 實測成功，其他系統照抄 ② 旅系統 sig 鏈單向（上游 → 下游），下游**同步回一個結果**（唔算回調）③ **旅系統冇 callback endpoint**：下游永不主動回打上游。cubsbadge/scoutbadge 現時行**零回打**版（Vercel 驗 `SUPER_KEY` → `action=superLogin`），係現況差異，日後對齊時改跟 ①
 - 接入 registry 追加唔搬：旅掛團時只喺上游 ScriptProperties 追加 `DOWNSTREAM_<id>_*`，不改/不刪 `units.json/Vercel env`（免 ADMIN 動 ENV），掛接前後 ENV 唔郁
@@ -56,7 +67,10 @@
 - 診斷: dbInfo 標準回 `{version, bytes, sizes, stagingRows}`；status 回 backendVersion (前端偵測舊後端提示更新)；三色燈 + 診斷報告一鍵複製
 - 備份: `exportAll` 一鍵全庫單一 JSON (`{meta:{unit,exportedAt,version,sha256}, data}`，**預設剝密碼欄；後掛上游批量開戶時可選「含 hash」吐出**，見 §2 JSON 吐出） + 每週自動存 Drive 留 13 份 + `importAll` 驗 hash 行原子寫還原（保留 hash 直插，`transferId` 冪等）；離線都匯得；三時機提醒 (升級前/批量操作前/7日冇備份)
 
-## 4. 支部功能模組
+## 4. 支部功能模組（**管理層**：團／旅系統；以 ecportal 為基礎作參考，未完成）
+
+> **本章唔適用於進度追蹤**：進度追蹤係**已完成嘅記錄冊 leaf**（最下游），只記進度／履歷／獎章，冇模組、冇通告、冇財務、冇權限樹 — 呢啲「冇」係正常設計，唔係缺失。本輪進度追蹤只做**接駁升級**（見 `進度追蹤旅系統升級版.md`）。
+
 - **一套 UI 模版行晒支部系統＋旅系統＋公開頁**: 同一個排版骨架 (ecportal 嘅整體感覺: 頂欄+導航+卡片)、同一套元件 (掣/表單/對話框/表格)、同一套導航邏輯 — 用戶由支部去旅**零重新適應**
 - **進度追蹤保留自己嗰套 UI**: 要顯示得詳細啲，設計自由度豁免統一；佢只係「另一個獨立前端」，唔影響支部/旅嘅一致性
 - 掣位統一規則 (統一範圍內適用): 同類掣永遠同一位置 (儲存/主操作固定嗰角、危險動作固定樣式、設定固定入口)；功能入口由模組註冊表決定 (下一條)，唔散裝
