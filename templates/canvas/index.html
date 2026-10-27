@@ -1,0 +1,121 @@
+<!-- GENERATED from shell_v1.0.html (v1.0) — 唔好直接改；改源檔再跑 sync_canvas_v1.0.mjs · © SCOUT SYSTEM -->
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="app-version" content="v1.0">
+<meta name="copyright" content="© SCOUT SYSTEM">
+<title>My App v1.0 — © SCOUT SYSTEM</title>
+<!-- 版本：v1.0 · © SCOUT SYSTEM · 由 sync_canvas_v1.0.mjs 產生部署拷貝 index.html -->
+<style>
+/* 🎨 殼：只管排版。呢個檔會落瀏覽器 — 當佢公開，唔好放 prompt / key / 規則。 */
+:root { color-scheme: light dark; font-family: system-ui, -apple-system, "Noto Sans TC", sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0 auto; padding: 1rem; max-width: 48rem; }
+header { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #8884; }
+#ver { font-size: .75rem; opacity: .6; }
+form, .panel { display: grid; gap: .5rem; margin: 1rem 0; padding: .8rem; border: 1px solid #8884; border-radius: .6rem; }
+input, textarea, button { font: inherit; padding: .5rem; border-radius: .4rem; border: 1px solid #8886; }
+button { cursor: pointer; }
+article { border: 1px solid #8884; border-radius: .5rem; padding: .6rem .8rem; margin: .5rem 0; }
+article h3 { margin: 0 0 .3rem; font-size: 1rem; }
+article p { margin: 0; white-space: pre-wrap; }
+#msg { min-height: 1.4rem; opacity: .8; font-size: .85rem; }
+pre { white-space: pre-wrap; font-size: .78rem; opacity: .75; }
+</style>
+</head>
+<body>
+<header><h1>My App</h1><span id="ver">載入中…</span></header>
+
+<form id="new">
+  <input id="title" maxlength="120" placeholder="標題" required>
+  <textarea id="body" maxlength="2000" placeholder="內容"></textarea>
+  <button type="submit">新增（需要 leader）</button>
+</form>
+
+<form id="ask">
+  <input id="q" maxlength="2000" placeholder="問 Gemini（prompt 同 key 都喺 server）">
+  <button type="submit">送出</button>
+</form>
+
+<section id="app"></section>
+
+<div class="panel">
+  <button data-action="state.export">匯出狀態 JSON</button>
+  <button data-action="record.list">睇操作紀錄（metadata）</button>
+  <pre id="out"></pre>
+</div>
+<div id="msg" role="status"></div>
+<footer style="margin-top:1.2rem;padding-top:.7rem;border-top:1px solid #eee;font-size:.75rem;opacity:.7;display:flex;justify-content:space-between">
+  <span>© SCOUT SYSTEM · COPYRIGHT SCOUT SYSTEM</span><span>My App <strong>v1.0</strong></span>
+</footer>
+
+<script>
+const APP_VERSION = 'v1.0';
+const COPYRIGHT = '© SCOUT SYSTEM';
+// 🎨 殼：唯一對外通道 = google.script.run.api(action, payload)
+// 零 prompt、零 key、零規則、零紀錄儲存（全部喺 Code.gs）。
+function call(action, payload, done) {
+  google.script.run
+    .withFailureHandler(function () { say('系統錯誤，請稍後再試'); })
+    .withSuccessHandler(function (r) {
+      if (!r || !r.ok) { say((r && r.code) || '系統錯誤'); return; }
+      done(r.data);
+    })
+    .api(action, payload || {});
+}
+function say(t) { document.getElementById('msg').textContent = t; }
+function esc(v) { return String(v == null ? '' : v); }
+
+function render() {
+  call('item.list', {}, function (items) {
+    var root = document.getElementById('app');
+    root.replaceChildren();
+    items.forEach(function (item) {
+      var el = document.createElement('article');
+      var h = document.createElement('h3'); h.textContent = esc(item.title);   // A11 天然 escape
+      var p = document.createElement('p');  p.textContent = esc(item.body);
+      var del = document.createElement('button');
+      del.textContent = '刪除';
+      del.addEventListener('click', function () {
+        if (!confirm('確認刪除？（呢個 action 標咗 danger）')) return;   // F9
+        call('item.remove', { id: item.id }, function () { say('已刪除'); render(); });
+      });
+      el.append(h, p, del);
+      root.append(el);
+    });
+  });
+}
+
+document.getElementById('new').addEventListener('submit', function (ev) {
+  ev.preventDefault();
+  var title = document.getElementById('title').value;
+  var body = document.getElementById('body').value;
+  call('item.create', { title: title, body: body }, function () { ev.target.reset(); say('已新增'); render(); });
+});
+
+document.getElementById('ask').addEventListener('submit', function (ev) {
+  ev.preventDefault();
+  var q = document.getElementById('q').value;
+  call('gemini.ask', { text: q }, function (d) {
+    document.getElementById('out').textContent = d.answer;   // 只顯示模型輸出
+  });
+});
+
+document.querySelectorAll('[data-action]').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var a = btn.getAttribute('data-action');
+    call(a, {}, function (d) {
+      document.getElementById('out').textContent = JSON.stringify(d, null, 2);
+    });
+  });
+});
+
+call('config.get', {}, function (c) {
+  document.getElementById('ver').textContent = c.appName + ' v1.0 · prompt ' + c.promptVersion;
+});
+render();
+</script>
+</body>
+</html>

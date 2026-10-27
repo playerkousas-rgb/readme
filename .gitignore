@@ -1,4 +1,45 @@
-# 純文件倉 — 極簡
+# 純文件倉 — 極簡（唔好變肥：S10）
+# 本機編輯器 / OS
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+
+# 垃圾檔
 *.log
+*.bak
+*.tmp
+*.old
+*.orig
+*.swp
+
+# 萬一有人喺度試 build（呢個倉只應該有 MD + 模板 + guard）
+node_modules/
+dist/
+build/
+out/
+.vercel/
+.cache/
+coverage/
+
+# Secret：只可以有 .env.example
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+service-account*.json
+credentials*.json
+
+# 大檔 / binary（要用就 LFS）
+*.zip
+*.tar.gz
+*.psd
+*.mp4
+*.mov
+
+# W6：API KEY 注入版（含真 key，永遠唔入 Git）
+*_local_*
+*_injected*
+*.keyed.html

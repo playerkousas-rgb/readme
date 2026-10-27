@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "app": "my-app",
+  "entry": "api",
+  "note": "action 白名單規格（文件版）。runtime 真理係 Code.gs 嘅 BRAIN._test.ACTIONS；brain.test.mjs 會對照兩者 key 一致（F14/F16）。",
+  "actions": {
+    "config.get": {
+      "roles": [
+        "guest",
+        "member",
+        "leader"
+      ],
+      "in": [],
+      "read": true
+    },
+    "item.list": {
+      "roles": [
+        "member",
+        "leader"
+      ],
+      "in": [
+        "filter:string?"
+      ],
+      "read": true
+    },
+    "item.create": {
+      "roles": [
+        "leader"
+      ],
+      "in": [
+        "title:string(1..120)",
+        "body:string(0..2000)?"
+      ]
+    },
+    "item.remove": {
+      "roles": [
+        "leader"
+      ],
+      "in": [
+        "id:string"
+      ],
+      "danger": true
+    },
+    "record.list": {
+      "roles": [
+        "leader"
+      ],
+      "in": [
+        "limit:number?"
+      ],
+      "read": true
+    },
+    "state.export": {
+      "roles": [
+        "leader"
+      ],
+      "in": [],
+      "read": true
+    },
+    "gemini.ask": {
+      "roles": [
+        "member",
+        "leader"
+      ],
+      "in": [
+        "text:string(1..2000)"
+      ]
+    }
+  },
+  "errors": [
+    "UNKNOWN_ACTION",
+    "AUTH_FAILED",
+    "BAD_INPUT",
+    "CONFIG_MISSING",
+    "UPSTREAM_ERROR",
+    "INTERNAL"
+  ],
+  "fileVersion": "v1.0",
+  "copyright": "© SCOUT SYSTEM"
+}

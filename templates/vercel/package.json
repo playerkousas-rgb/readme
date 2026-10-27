@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "vite build",
+    "check": "node scripts/guard.mjs",
+    "test": "node --test",
+    "slim:dead": "node scripts/guard.mjs --assets",
+    "audit": "npm audit --audit-level=high"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vite": "6.3.5"
+  }
+}

@@ -1,0 +1,41 @@
+name: guard
+
+# 呢個 repo 自己都跑同一條 guard（dogfooding / F14 / S12）
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '17 3 * * 1'   # 每週一 HKT 11:17 定時掃，防止「靜靜變肥」
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Guard
+        run: node scripts/guard.mjs --ci
+      - name: Canvas brain 守護測試（F14 / W / V）
+        run: node --test templates/canvas/brain.test.mjs
+      - name: 水印 + 版權 + 雙版號守護測試（W / V）
+        run: node --test templates/watermark/watermark.test.mjs
+      - name: 單一 HTML 審計器守護測試（C13 / C13-g）
+        run: node --test scripts/audit.test.mjs
+      - name: 六角度 orchestrator 守護測試
+        run: node --test scripts/final_check.test.mjs
+      - name: 單一 HTML 交付審計（C13-f / dogfooding）
+        run: |
+          node scripts/audit_single_html_v1.0.mjs templates/watermark/drawscout_decoder_v1.0.html
+          node scripts/audit_single_html_v1.0.mjs templates/watermark/scout_generator_v1.0.html
+          node scripts/audit_single_html_v1.0.mjs templates/canvas/index.html
+          node scripts/audit_single_html_v1.0.mjs templates/canvas/shell_v1.0.html
+      - name: Type C 部署拷貝同步（V4）
+        run: node templates/canvas/sync_canvas_v1.0.mjs
+      - name: 六角度最終實測（docs/17）
+        run: node scripts/final_check_v1.0.mjs

@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="app-version" content="v1.0">
+<meta name="copyright" content="© SCOUT SYSTEM">
+<title>Scout Generator v1.0 — © SCOUT SYSTEM</title>
+<!--
+  版本：v1.0 · © SCOUT SYSTEM · COPYRIGHT SCOUT SYSTEM
+  Type B 示範：單一 HTML + 隱形水印（v2 payload）。核心功能零 key、可離線用（香港適用）。
+  「測試呼叫 Gemini API」只係可選示範；真正嘅單一 HTML 自動注入係 C13 三軌（唯一 API_KEY slot + 平台代理 + BYOK 後備），見 docs/14 §1.1。
+  key 一律用 x-goog-api-key header 傳，唔好放 ?key= query（A1/W6）。
+  演算法唯一真理：scout_watermark_codec_v1.0.mjs（本檔內嵌同一組常數）。
+  對應：docs/09-gemini-canvas.md（Type B）、docs/12-copyright-scout-system.md、docs/13-versioning.md、
+        docs/14-api-key-injection.md、docs/16-canvas-case-scout-comic.md（真實 app 互通實測）
+-->
+<style>
+  :root { color-scheme: light dark; font-family: system-ui, -apple-system, "Noto Sans TC", sans-serif; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 1.2rem; background: #f6f1e7; color: #173e2e; }
+  main { max-width: 46rem; margin: 0 auto; background: #fff; border: 1px solid #dce3d9; border-radius: 1rem; padding: 1.5rem; }
+  h1 { font-size: 1.35rem; margin: 0 0 .3rem; }
+  .sub, .note { font-size: .82rem; color: #637267; }
+  label { display: block; margin-top: .8rem; font-size: .85rem; }
+  input, textarea { width: 100%; padding: .5rem; font: inherit; border: 1px solid #91b3a0; border-radius: .5rem; }
+  button { margin-top: .8rem; padding: .65rem 1rem; font: inherit; font-weight: 700; color: #fff; background: #1f6b4a; border: 0; border-radius: .6rem; cursor: pointer; }
+  button.sec { background: #637267; }
+  canvas { max-width: 100%; margin-top: 1rem; border: 1px solid #ddd; border-radius: .5rem; }
+  #out { margin-top: 1rem; padding: .8rem; border-radius: .6rem; background: #f1f5f1; white-space: pre-wrap; font-size: .85rem; }
+  .warn { margin-top: .8rem; padding: .7rem; border-radius: .5rem; background: #fbf1ee; border: 1px solid #f0d4cc; color: #8a3d2e; font-size: .8rem; }
+  footer { margin-top: 1.2rem; padding-top: .8rem; border-top: 1px solid #eee; font-size: .75rem; color: #637267; display: flex; justify-content: space-between; flex-wrap: wrap; gap: .4rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Scout Generator <small>v1.0</small></h1>
+  <p class="sub">Type B：單一 HTML · 隱形水印（DCT QIM，兼容 drawscout 解碼器）· 核心功能零 key、可離線（香港適用）。下面個 AI 按鈕只係可選示範。</p>
+
+  <label>上載原圖（JPG／PNG／WebP）<input id="file" type="file" accept="image/*"></label>
+  <label>單位代號（4 位）<input id="unit" maxlength="4" value="0082"></label>
+  <label>Gemini prompt（可選；要 API KEY）<textarea id="prompt" rows="2" placeholder="例如：幫我形容呢張圖"></textarea></label>
+  <button id="go">嵌入水印並下載成品圖</button>
+  <button id="ask" class="sec">測試呼叫 Gemini API</button>
+  <canvas id="canvas" width="512" height="512"></canvas>
+  <div id="out">準備好。</div>
+  <div class="warn">⚠️ <strong>API KEY 警告：</strong>「嵌入水印並下載成品圖」<strong>完全唔需要 key</strong>，斷網都用得 —— 呢個就係香港可用嘅做法。
+  單一 HTML 單檔上限 5MB、唔使瘦身（C13-g）。下面「測試呼叫 Gemini API」只係可選示範：單一 HTML 入面嘅 key 任何人「檢視原始碼」都見到。
+  呢個 template 用 placeholder <code>__INJECT_GEMINI_API_KEY__</code>，由本機注入器填入；<strong>注入版永遠唔好 commit／分享</strong>。
+  真正嘅單一 HTML 自動注入係 C13 三軌（唯一 API_KEY 注入 slot + credentials 平台代理 + BYOK 後備，見 docs/14 §1.1）；呢個 template 嘅 AI 按鈕只係可選示範。長期要保護 PROMPT 就用 Type C（Code.gs server-side 代 call）。</div>
+  <footer>
+    <span>© SCOUT SYSTEM · COPYRIGHT SCOUT SYSTEM</span>
+    <span>Scout Generator <strong>v1.0</strong></span>
+  </footer>
+</main>
+
+<script>
+(() => {
+  'use strict';
+  const APP_VERSION = 'v1.0';
+  const COPYRIGHT = '© SCOUT SYSTEM';
+  const PREFIX_V2 = 'SCOUTSYSTEM|v2|';
+  const STEP = 32, N = 8;
+
+  // 🔑 自動注入位（W6）：本機跑 inject_key_v1.0.mjs 會替換；否則用 BYOK（sessionStorage）
+  const API_KEY = '__INJECT_GEMINI_API_KEY__';
+  function getApiKey() {
+    if (API_KEY && API_KEY.startsWith('AIza')) return API_KEY;                 // 已注入（本機限定）
+    return sessionStorage.getItem('scout_gemini_key') || '';                   // BYOK：用戶自己入
+  }
+  function askKey() {
+    let k = getApiKey();
+    if (!k) {
+      k = prompt('輸入你嘅 Gemini API KEY（只存喺本機 sessionStorage，唔會上載）：') || '';
+      if (k) sessionStorage.setItem('scout_gemini_key', k.trim());
+    }
+    return k;
+  }
+
+  // ---- DCT QIM（同 scout_watermark_codec_v1.0.mjs 一致）----
+  const COS = Array.from({ length: 8 }, (_, u) => Array.from({ length: 8 }, (_, x) => Math.cos((2 * x + 1) * u * Math.PI / 16)));
+  const A = Array.from({ length: 8 }, (_, u) => u === 0 ? Math.sqrt(1 / 8) : Math.sqrt(2 / 8));
+  const B = Array.from({ length: 8 }, (_, y) => Array.from({ length: 8 }, (_, x) => A[2] * A[3] * COS[2][y] * COS[3][x]));
+  const clamp = v => Math.max(0, Math.min(255, Math.round(v)));
+  const bitsOf = s => Array.from(s, ch => ch.charCodeAt(0).toString(2).padStart(8, '0')).join('');
+  function coef(d, w, x0, y0) {
+    let s = 0;
+    for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) {
+      const i = ((y0 + y) * w + x0 + x) * 4;
+      s += (.299 * d[i] + .587 * d[i + 1] + .114 * d[i + 2]) * B[y][x];
+    }
+    return s;
+  }
+  function embed(img, payload) {
+    if (!/^[\x20-\x7E]+$/.test(payload)) throw new Error('PAYLOAD_MUST_BE_ASCII');
+    const { data, width: w, height: h } = img, bits = bitsOf(payload);
+    let bi = 0;
+    for (let y = 0; y + 7 < h; y += 8) for (let x = 0; x + 7 < w; x += 8, bi++) {
+      const want = bits[bi % bits.length] === '1' ? 1 : 0;
+      const c = coef(data, w, x, y);
+      let q = Math.round(c / STEP);
+      if ((q & 1) !== want) q += 1;
+      const delta = q * STEP - c;
+      for (let yy = 0; yy < 8; yy++) for (let xx = 0; xx < 8; xx++) {
+        const i = ((y + yy) * w + (x + xx)) * 4, dv = delta * B[yy][xx];
+        data[i] = clamp(data[i] + dv); data[i + 1] = clamp(data[i + 1] + dv); data[i + 2] = clamp(data[i + 2] + dv);
+      }
+    }
+    return { blocks: bi, bits: bits.length };
+  }
+  function makePayloadV2(unit, date, hash) {
+    const clean = (s, n) => String(s).replace(/[^0-9A-Za-z]/g, '').slice(0, n).padEnd(n, '0');
+    return `${PREFIX_V2}${clean(unit, 4)}|${clean(date, 8)}|${clean(hash, 4)}`;
+  }
+  async function shortHash(s) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    return [...new Uint8Array(buf)].slice(0, 2).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+  }
+
+  const $ = id => document.getElementById(id);
+  const canvas = $('canvas'), ctx = canvas.getContext('2d', { willReadFrequently: true });
+  let originalName = 'scout-image';
+
+  $('file').onchange = async e => {
+    const f = e.target.files?.[0]; if (!f) return;
+    originalName = f.name.replace(/\.[^.]+$/, '');
+    const img = new Image(); img.src = URL.createObjectURL(f); await img.decode();
+    canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+    ctx.drawImage(img, 0, 0);
+    $('out').textContent = `已載入 ${f.name}（${canvas.width}×${canvas.height}）。`;
+  };
+
+  $('go').onclick = async () => {
+    const unit = $('unit').value || '0000';
+    const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const payload = makePayloadV2(unit, date, await shortHash(originalName + date + unit));
+    const img = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const r = embed(img, payload);
+    ctx.putImageData(img, 0, 0);
+
+    // W1：可見版權標示（同隱形水印雙軌）
+    ctx.font = `${Math.max(12, Math.round(canvas.width / 60))}px sans-serif`;
+    ctx.fillStyle = 'rgba(23,62,46,.65)';
+    ctx.fillText(`${COPYRIGHT} · ${APP_VERSION}`, 12, canvas.height - 12);
+
+    canvas.toBlob(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${originalName}_scout_${APP_VERSION}_wm.png`;
+      a.click(); URL.revokeObjectURL(a.href);
+    }, 'image/png');
+    $('out').textContent = `✅ 已嵌入 ${COPYRIGHT} 水印並下載。\npayload：${payload}\n區塊：${r.blocks}，bits：${r.bits}\n請用 drawscout_decoder_v1.0.html 驗證。`;
+  };
+
+  $('ask').onclick = async () => {
+    const key = askKey();
+    if (!key) { $('out').textContent = '冇 API KEY，取消。（F12：缺 key 即拒絕敏感 action）'; return; }
+    const body = { contents: [{ role: 'user', parts: [{ text: $('prompt').value || '用一句話介紹你自己' }] }] };
+    try {
+      const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+        { method: 'POST',
+          headers: { 'content-type': 'application/json', 'x-goog-api-key': key },
+          body: JSON.stringify(body) });
+      const j = await res.json();
+      $('out').textContent = j.candidates?.[0]?.content?.parts?.[0]?.text || `API 回應：${res.status}`;
+    } catch (err) { $('out').textContent = '呼叫失敗：' + err.message; }
+  };
+
+  console.info(`Scout Generator ${APP_VERSION} · ${COPYRIGHT}`);
+})();
+</script>
+</body>
+</html>

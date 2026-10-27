@@ -1,0 +1,38 @@
+name: guard
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  schedule:
+    - cron: '17 3 * * 1'   # 每週一 HKT 11:17 掃一次，防止「靜靜變肥」
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # A16：Actions 應該 pin SHA（<sha> 換成你用緊版本嘅 commit SHA）
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Guard (docs / secrets / size / links)
+        run: node scripts/guard.mjs
+      - name: Brain guard tests (F14)
+        if: hashFiles('**/*.test.mjs') != ''
+        run: node --test
+      - name: Size gate (S7)
+        if: hashFiles('package.json') != ''
+        run: |
+          if [ -d dist ]; then
+            BYTES=$(du -sb dist | cut -f1)
+            echo "dist = $BYTES bytes"
+            [ "$BYTES" -lt 5242880 ] || { echo "::error::dist >= 5MB (S7)"; exit 1; }
+          fi
+      - name: Dependency audit (A16)
+        if: hashFiles('package-lock.json') != ''
+        run: npm audit --audit-level=high
