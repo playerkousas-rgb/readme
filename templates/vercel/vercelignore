@@ -1,0 +1,33 @@
+# 抄去新 repo 之後改名做 .vercelignore
+# S2：最重要嗰個檔 — 少咗就會 upload 整個開發環境，儲存配額即爆
+node_modules/
+.git/
+.github/
+.vercel/
+.cache/
+coverage/
+.nyc_output/
+__tests__/
+tests/
+docs/
+operations/
+scripts/
+templates/
+uploads/
+temp/
+*.md
+*.log
+*.bak
+*.tmp
+*.old
+*.orig
+*.zip
+*.tar.gz
+*.psd
+*.mp4
+.env
+.env.*
+!.env.example
+*_local_*
+*_injected*
+*.keyed.html

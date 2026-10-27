@@ -1,5 +1,21 @@
 # AGENTS — Agent 級別與施工邊界 (防「咩都做曬」)
 
+> 🤖 **AGENT BOOT（任何 Agent 第一行讀呢度）**
+> ① 呢個 repo 係**真理倉**，唔係 app；唔好喺度直接改模板當交付。
+> ② 開工順序：`AGENTS.md` 本段 → [README 導覽](README.md#1-我要做嘢應該睇邊份導覽) → [PLAYBOOK 規則 ID](PLAYBOOK.md)（通用規則；**旅團專案案例喺 [19](docs/19-ecportal-troop-case.md)，唔好當通用**）→ [17 STEP BY STEP](docs/17-final-check-and-tutorial.md#2--step-by-step由零到一個-app)。
+> ②b 本檔 §1–2 嘅五級階梯同可改/不可改矩陣**屬專案案例**，已集中去 [19](docs/19-ecportal-troop-case.md)（可選模式 R1–R8 喺 §14，**唔係通用底線**）；[18](docs/18-as-built-gap-audit.md) 係對照審計記錄；[20](docs/20-repo-health-audit.md) 係 11 個 repo 健康檢查。
+> ③ 交付前跑 `node scripts/final_check_v1.0.mjs --json`；六角度全綠先至交付。
+> ④ `BUILD.md` / `EXTERNAL.md` / 本檔其餘部分是 **ecportal as-built 案例**，唔好當通用規則；衝突以 PLAYBOOK 為準。
+
+> **跨專案底線（2026-10-26 加註）**：任何 Agent 喺呢個生態系開工，先讀 **[README.md](README.md)** 同 **[PLAYBOOK.md](PLAYBOOK.md)**。
+> 嗰度嘅瘦身 S／防呆 F／安全 A／COPYRIGHT SCOUT SYSTEM W／雙版號 V 係**所有 app 嘅最低要求**；本檔同 `BUILD.md` 係 ecportal 專案嘅執行面，兩者衝突時以安全／防呆底線為先，並喺 PR 寫明例外。
+> Gemini app 分三種結構（[docs/09-gemini-canvas.md](docs/09-gemini-canvas.md)）：A 全開放／B 隱藏水印／C 腦殼分離。
+> 每次更新交付檔要**檔名＋內文同時改版號**（[docs/13-versioning.md](docs/13-versioning.md)）；每個交付檔要有 © SCOUT SYSTEM（[docs/12-copyright-scout-system.md](docs/12-copyright-scout-system.md)）。
+> **C13（2026-10-27 定案）**：單一 HTML 嘅**正確自動注入 = 三軌同一套** —— ① 全檔唯一 `const API_KEY = ""` 注入 slot ② `credentials:'include'` + 冇 key 唔加 `?key=` 平台代理 ③ `safeStore` BYOK 後備。**用戶已實作、實測可用**；BYOK key 用 `x-goog-api-key` header（[docs/14 §1.1](docs/14-api-key-injection.md#11-canvas-單一-html-artifact你已實作嘅三軌自動注入c13)）。
+> **C13-g**：單一 HTML / Gemini Canvas app **唔經 Vercel、唔強制瘦身，硬上限 5MB** —— S7（2MB）／S10（1MB）唔適用（[docs/01-slim](docs/01-slim.md#s7--ci-硬攔體積)）。
+> 單一 HTML 交付前跑 `node scripts/audit_single_html_v1.0.mjs <檔名>`；真實案例見 [docs/16-canvas-case-scout-comic.md](docs/16-canvas-case-scout-comic.md)，搵 API／Prompt 見 [docs/15-resource-index.md](docs/15-resource-index.md)。
+> 每次施工前後跑 `node scripts/guard.mjs`；上線前對 [docs/10-checklists.md](docs/10-checklists.md)。
+
 > 頂住！**Agent 必須先知自己係邊個級，才可施工**。越級施工 = 破壞 registry 單一真理 = 零容忍。
 
 本檔與 `BUILD.md` 共同構成唯一真理之「執行面」。`BUILD.md` 定義「做咩」，本檔定義「邊個做」。
