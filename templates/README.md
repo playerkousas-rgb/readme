@@ -7,9 +7,10 @@
 | 想要 | 抄 | 去邊 |
 |------|-----|------|
 | Git ignore | `git/gitignore` | 新 repo `.gitignore`（**記得改返個點**） |
-| Vercel 設定 | `vercel/vercel.json` | repo 根 `vercel.json` |
+| Vercel 設定 | `vercel/vercel.json` | repo 根 `vercel.json`（已含 `/icons/*` immutable 標頭，**G11**） |
 | Vercel 上傳黑名單 | `vercel/vercelignore` | repo 根 `.vercelignore` |
 | 極簡 package | `vercel/package.json` | repo 根 `package.json` |
+| **🖼️ 站台圖標規範** | [README §9 G11](../README.md#9-g11-全站圖標標準iconfavicon) | 9 個 PNG／ICO + `<head>` 5 link ＋ 4 meta（唔係抄檔，係照規格出圖） |
 | env 清單 | `vercel/env.example` | repo 根 `.env.example` + 本機 `.env.local` |
 | `/api/proxy` 骨架 | `vercel/api/proxy.mjs` | `api/proxy.mjs` |
 | `/api/super` 骨架 | `vercel/api/super.mjs` | `api/super.mjs` |

@@ -37,6 +37,7 @@
 ```
 [ ] dist < 5MB / bundle < 2MB / 圖 < 500KB          (S6,S7 — Vercel/dist 類)
 [ ] 單一 HTML ≤ 5MB、唔強制瘦身                        (C13-g)
+[ ] 9 個圖標齊、≤260 KB、maskable 66%、og 絕對網址       (G11)
 [ ] .vercelignore 擋 node_modules/.git/docs          (S2)
 [ ] Preview 非 main 關閉 + retention 7 日            (S8)
 [ ] 全部 secret 喺 env，前端零 service key           (A1)

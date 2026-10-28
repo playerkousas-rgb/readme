@@ -1,4 +1,4 @@
-# 05 — Git（G1–G10）
+# 05 — Git（G1–G10；G11 圖標見 [README §9](../README.md#9-g11-全站圖標標準iconfavicon)）
 
 > Git 喺呢度嘅角色：**唯一真理 + 歷史 + 審查 + 自動閘**。唔係得個「擺 code 嘅地方」。
 
@@ -158,6 +158,16 @@ jobs:
 - 教材／runbook 放 `docs/`，跟 repo 版本；唔好放喺個人 Drive。
 - 改 code 唔改 docs = 未完成（Definition of Done）。
 - 專案文件同通用規則衝突 → 喺 PR 寫明，並更新其中一份；唔好兩份並存互相矛盾（實戰教訓：[進度追蹤 §11](../進度追蹤旅系統升級版.md)）。
+
+---
+
+## G11 — 站台圖標標準（喺 README）
+
+G 系列第 11 條係**圖標**：9 個 PNG／ICO、否決 SVG／AVIF／WebP／JPEG、maskable 66%、
+16px 手繪、9 檔 ≤260 KB、`og:image` 絕對網址、`/icons/*` immutable（改圖要改檔名）。
+
+> 唯一來源（唔另開 docs、唔重新設計）：**[README §9 G11 全站圖標標準](../README.md#9-g11-全站圖標標準iconfavicon)**。
+> 實測數字來自 `hkcamping` v1.12.1。
 
 ---
 

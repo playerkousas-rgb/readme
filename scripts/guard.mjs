@@ -400,13 +400,20 @@ function checkRuleSync() {
   if (!isTruthRepo) { ok('F16：app repo，跳過規則同步檢查'); return; }
   const pb = read('PLAYBOOK.md');
   const need = ['S1', 'S7', 'S12', 'F4', 'F14', 'F15', 'F16', 'A1', 'A7', 'A14',
-                'W1', 'W6', 'V1', 'V6', 'G1', 'VL1', 'X1', 'U1', 'C1', 'C12', 'C13'];
+                'W1', 'W6', 'V1', 'V6', 'G1', 'G11', 'VL1', 'X1', 'U1', 'C1', 'C12', 'C13'];
   const miss = need.filter((id) => !pb.includes(id));
   if (miss.length) err(`F16：PLAYBOOK.md 缺規則 ID ${miss.join(', ')}`);
   else ok(`F16：PLAYBOOK.md 規則 ID 齊（${need.length} 個抽樣）`);
   if (!/5MB/.test(pb)) err('F16/C13-g：PLAYBOOK.md 要寫明單一 HTML 嘅 5MB 上限（唔適用 S7/S10）');
 
   const readme = read('README.md');
+  // G11：圖標標準一定要喺 README 有齊 9 個檔（唔可以退化成「再討論」）
+  const icons = ['favicon.ico', 'favicon-16.png', 'favicon-32.png', 'apple-touch-icon.png',
+                 'icon-192.png', 'icon-512.png', 'icon-maskable-192.png',
+                 'icon-maskable-512.png', 'og-image.png'];
+  const missIcon = icons.filter((n) => !readme.includes(n));
+  if (missIcon.length) err(`F16/G11：README.md 圖標標準缺 ${missIcon.join(', ')}`);
+  else ok(`F16/G11：README §9 圖標 9 個檔齊（PNG／ICO）`);
   for (const d of ['docs/01-slim.md', 'docs/04-settings-super.md', 'docs/09-gemini-canvas.md',
                    'docs/10-checklists.md', 'docs/12-copyright-scout-system.md', 'docs/13-versioning.md',
                    'docs/14-api-key-injection.md', 'docs/15-resource-index.md',
