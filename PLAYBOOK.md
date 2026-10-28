@@ -61,7 +61,7 @@
 | **S3** | `dependencies` 空白或白名單 | 建置工具一律 `devDependencies`；`installCommand: npm install --include=dev` |
 | **S4** | `vercel.json` 只部署最終產物 | `framework: null` + `outputDirectory: dist` + `cleanUrls: true` + `regions: ["hkg1"]` |
 | **S5** | 死重檔案零容忍 | grep `public/images/assets`，無引用即刪；`*.bak/tmp/old/log` 唔入 repo |
-| **S6** | 圖轉 AVIF / WebP | 單檔 `< 500KB`；上載單檔 ≤5MB、每筆 3 張、每單位每日總量上限 |
+| **S6** | 圖轉 AVIF / WebP（**站台圖標例外**：跟 [G11](README.md#9-g11-全站圖標標準iconfavicon) 一律 PNG／ICO） | 單檔 `< 500KB`；上載單檔 ≤5MB、每筆 3 張、每單位每日總量上限 |
 | **S7** | CI 硬攔體積（**只適用 Vercel / dist**） | `dist < 5MB`、單一 bundle `< 2MB`（`du -sb dist` 超即 fail）。**單一 HTML / Gemini Canvas app 唔適用**，見 C13-g |
 | **S8** | 部署衛生 | 非 `main` branch 關 Preview Deployment；retention = 7 日 |
 | **S9** | 上載面配額 | 檔種白名單 + 檔大小 + 每筆數量 + 每單位每日總量（server 計） |
@@ -188,6 +188,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | 棧 | 必做 ID | 詳細 |
 |----|---------|------|
 | **Git** | G1–G10：main 保護、feature branch → PR、Conventional Commits、tag、lockfile、Actions pin SHA、CODEOWNERS、secret scanning、唔 commit binary、docs 跟版本 | [docs/05-git.md](docs/05-git.md) |
+| **站台圖標** | **G11 全站圖標標準**：開工即出齊 **9 個 PNG／ICO**（`.ico`／16／32／180／192／512／maskable 192／maskable 512／og 1200×630）；**否決 SVG／AVIF／WebP／JPEG**；滿版無框、≥4 色、主體居中 60–70%；maskable 安全區 **66%**；16px **手繪**；9 檔 **≤260 KB**、dist **≤1 MB**；HTML 5 link＋4 meta（`og:image` **絕對網址**）；`/icons/*` immutable → 改圖要改檔名 | [README §9](README.md#9-g11-全站圖標標準iconfavicon) |
 | **Vercel** | VL1–VL12：`/api/proxy` 先驗 session 再 inject key、env 分環境、`NEXT_PUBLIC_*`/`VITE_*` = 公開、regions hkg1、security headers、rate limit、preview 關、retention 7、rollback、cron、log 唔記 PII | [docs/06-vercel.md](docs/06-vercel.md) |
 | **Apps Script** | X1–X13：一份 `Code.gs` 部署各層、`ScriptProperties` 存 secret、`/exec` 新版本唔改 URL、`requireAuth` 第一行、action 白名單、ScriptLock、CacheService、Drive 匯出 private、雙版號源檔 + 部署拷貝 sync | [docs/07-apps-script.md](docs/07-apps-script.md) |
 | **Supabase** | U1–U12：migrations 入 Git、每表 RLS、anon vs service_role、Edge Functions 唔 log secret、Storage policy、index + 分頁、push 訂閱只存 hash、每日 cron、備份、free-tier 休眠 | [docs/08-supabase.md](docs/08-supabase.md) |
@@ -219,6 +220,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 ```
 0. 定職責邊界 + 寫「唔做清單」+ 功能 registry 骨架      ← 多單位系統先需要（案例見 19）
 1. repo 骨架 + .gitignore/.vercelignore + guard（CI 綠）
+1b. 出齊 9 個站台圖標 + 掛 link／meta／manifest      ← G11（唔好留到最後）
 2. 設定層 getConfig + fail closed + env 自檢         ← F12
 3. /api/proxy：verifySession → inject secret；GAS requireAuth   ← A1/A6
 4. 密碼雜湊 + 自動升級 + mustChangePw gate + 鎖定  ← A3/A5
@@ -245,6 +247,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 - [ ] `node scripts/final_check_v1.0.mjs` 六角度全綠 + 7 條人手實測做咗（[docs/17](docs/17-final-check-and-tutorial.md)）
 - [ ] 單一 HTML artifact：`node scripts/audit_single_html_v1.0.mjs <檔名>` 無 FAIL（C13-f）
 - [ ] `npm run check && npm run build` 綠
+- [ ] G11：9 個圖標齊（尺寸用程式驗）、manifest 4 icon 200、9 檔 ≤260 KB、`og:image` 絕對網址
 - [ ] S7 體積冇超標（Vercel/dist 類）；**單一 HTML 改用 C13-g 5MB 上限，唔強制瘦身**；新增資源經 `npm run slim:dead` 檢查
 - [ ] 每個新 action 有白名單 + 測試；每個新 secret 有 `.env.example` 條目 + rotation 步驟
 - [ ] 每個新設定有 `getConfig` 條目 + 預設值 + fail closed 值 + audit
@@ -258,5 +261,5 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 
 ## 11. 違規處理
 
-違反 S/F/A/W/V 任何一條 = **regression**，CI 同 code review 直接擋。
+違反 S/F/A/W/V（同 G11 圖標標準）任何一條 = **regression**，CI 同 code review 直接擋。
 真係有例外：喺 PR 用 `EXCEPTION: <ID> — 原因 — 補償措施 — 復原日期` 格式寫明，並喺 `docs/10-checklists.md` 登記，唔准靜靜過。

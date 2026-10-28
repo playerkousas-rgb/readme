@@ -28,6 +28,8 @@
 [ ] scripts/guard.mjs（本機 + CI 同一條）
 [ ] README.md（呢個 app 嘅入口）＋ BUILD.md（專案定案）＋ docs/（教材/checklist）
 [ ] .env.local 只喺本機；Vercel Dashboard 設 Production env
+[ ] icons/ 9 個圖標齊（PNG／ICO，尺寸用程式驗；maskable 66%）＋ manifest 4 icon（G11 → [README §9](../README.md#9-g11-全站圖標標準iconfavicon)）
+[ ] <head> 5 link ＋ 4 meta（og:image 絕對網址）；/icons/* immutable → 改圖要改檔名（G11）
 [ ] node scripts/guard.mjs 綠
 [ ] 交付前：node scripts/final_check_v1.0.mjs 六角度全綠 + 人手實測（docs/17）
 ```
