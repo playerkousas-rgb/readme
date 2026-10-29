@@ -194,6 +194,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | **Supabase** | U1–U12：migrations 入 Git、每表 RLS、anon vs service_role、Edge Functions 唔 log secret、Storage policy、index + 分頁、push 訂閱只存 hash、每日 cron、備份、free-tier 休眠 | [docs/08-supabase.md](docs/08-supabase.md) |
 | **Gemini / Canvas** | C1–C12 三種結構 ＋ C13：A 全開放／B 隱藏水印＋API KEY 注入／C 腦殼分離（GS 腦＋HTML 殼，記錄原圖／成品圖／使用紀錄＋保護 PROMPT）；Canvas 只准生殼；**C13 三軌自動注入（已實作、實測可用）**；**C13-g 單一 HTML 5MB 上限、唔強制瘦身** | [docs/09-gemini-canvas.md](docs/09-gemini-canvas.md) |
 | **資源查找** | 上游 `f/prompts.chat` → 自己 `prompt` Prompt Studio → `api` 香港 API 天書 → 呢個 repo 嘅 W/V 規則；索引只放連結，唔複製內容（F1） | [docs/15-resource-index.md](docs/15-resource-index.md) |
+| **設計資源** | 開新 repo 揀設計：素材（`bradtraversy`）→ 靈感＋UX（`awesome-design`）→ design language `DESIGN.md`（`awesome-design-md`）→ 系統設計（`system-design-primer`）→ UI 組件（`ant-design`）；落 repo 要留 `CREDITS.md`（W8）＋ 圖標跟 G11 | [docs/23-design-resources.md](docs/23-design-resources.md) |
 | **實戰案例** | `童軍漫畫生成器 v4.2.1`（2.04MB 單一 HTML）：V1 雙版號腐爛、`?key=`、水印 v1、C13 請求代理實證；升級路線 + 審計器 | [docs/16-canvas-case-scout-comic.md](docs/16-canvas-case-scout-comic.md) |
 | **對照審計** | 原有 4 份 as-built 檔 vs 新系統：漏咗乜、佢哋有乜好系統我冇 | [docs/18-as-built-gap-audit.md](docs/18-as-built-gap-audit.md) |
 | **專案案例（唔係通用）** | ecportal 旅團／進度追蹤：五級階梯、`UNIT_*`／`DOWNSTREAM_*`、舊 sig、五個 repo | [docs/19-ecportal-troop-case.md](docs/19-ecportal-troop-case.md) |

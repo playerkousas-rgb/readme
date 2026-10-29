@@ -45,6 +45,7 @@
 | Gemini Canvas 自動注入 API KEY 點運作 | [14 §1 官方機制](14-api-key-injection.md#1-官方自動注入機制ai-studio-build--canvas)（server-side secret） |
 | 隱形水印／版權／原圖成品圖紀錄 | [12 W 系列](12-copyright-scout-system.md) ＋ [`templates/watermark/`](../templates/watermark/README.md) |
 | 檔名＋內文雙版號點做 | [13 V 系列](13-versioning.md) |
+| **開新 Git 要字體／配色／Icon／UI library／模板** | [23 設計資源總索引](23-design-resources.md) — `bradtraversy`／`awesome-design`／`awesome-design-md`／`system-design-primer`／`ant-design` |
 
 ---
 
@@ -115,6 +116,7 @@
 ## 6. 維護約定
 
 - 呢份**只放連結同摘要**，唔複製內容（F1）。內容真理喺各自 repo。
+- 視覺／UI 類素材唔喺呢份：去 [23-design-resources.md](23-design-resources.md)（API／Prompt／開源庫先係呢份）。
 - 每月（或 `api` repo 有 push 時）跑 `node scripts/refresh_resources_v1.0.mjs` 更新分類表。
 - 連結改咗 → 更新呢份 + [README §7](../README.md#7-相關-repo你-github-帳戶-playerkousas-rgb-入面)；`node scripts/guard.mjs` 會驗內部連結。
 - 任何新增資源要對應返一條規則 ID（S/F/A/W/V/C），否則只係 bookmark，唔係規範。

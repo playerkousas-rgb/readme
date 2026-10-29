@@ -55,6 +55,7 @@
 | 喺 Gemini 自動注入 API KEY | [docs/14-api-key-injection.md](docs/14-api-key-injection.md) — **C13 三軌自動注入（已實作可用）**：唯一 slot＋平台代理＋BYOK 後備；全端 app 先至用 server-side secret；[docs/09 C5](docs/09-gemini-canvas.md#c5--type-b喺-gemini-自動注入-api-keyc13已實作可用) |
 | 改版（檔名＋內文雙版號） | [docs/13-versioning.md](docs/13-versioning.md) |
 | 一次過搵晒 API／Prompt／開源 prompt 庫 | [docs/15-resource-index.md](docs/15-resource-index.md) — `f/prompts.chat` → `prompt` → `api` → 呢個 repo |
+| **開新 Git 前揀設計資源**（字體／配色／Icon／插畫／UI library／模板／DESIGN.md／系統設計） | **[docs/23-design-resources.md](docs/23-design-resources.md)** — 5 個主庫實測星星數 ＋ 10 步開工 checklist ＋ 視覺 vs 系統設計分流 |
 | 睇真實 Gemini Canvas app 踩過咩坑 | [docs/16-canvas-case-scout-comic.md](docs/16-canvas-case-scout-comic.md) — 童軍漫畫生成器 v4.2.1 實戰 |
 | 驗一個單一 HTML 交唔交到貨 | `node scripts/audit_single_html_v1.0.mjs <檔名>` — S/F/A/W/V/C 靜態審計 |
 | 保護 PROMPT 設定／記錄原圖成品圖 | [docs/09-gemini-canvas.md](docs/09-gemini-canvas.md#c6--type-c腦殼分離html-殼--gs-腦) ＋ [templates/canvas/](templates/canvas/README.md) |
@@ -160,6 +161,7 @@ docs/
   20-repo-health-audit.md       11 個 repo 健康審計：api/prompt 去留 + critical 漏洞 + 158MB 問題
   21-fix-plans.md              三個問題嘅實作修復方案（已實測：升級／Git 暴脹／舊 sig 重放）
   22-scout-circulars-agent-handoff.md  貼去 scout-circulars AGENT 嘅對話式問題清單
+  23-design-resources.md      設計資源總索引（字體／配色／Icon／UI library／DESIGN.md／系統設計）＋開工 checklist
   （圖標規範唔另開 docs：唯一來源係 README §9 G11 — 9 個 PNG／ICO、maskable 66%、16px 手繪）
 templates/
   README.md               可抄嘢對照表 + 一鍵抄指令
@@ -237,6 +239,7 @@ scripts/final_check_v1.0.mjs      交付前一條命令跑六角度實測（docs
   ```
   全綠先 commit。交付任何單一 HTML 之前再加 `node scripts/audit_single_html_v1.0.mjs <檔名>`（[C13-f](docs/09-gemini-canvas.md#c13--單一-html-體積同自動注入2026-10-27-定案)）。
 - 每月（或 `api` repo 有 push）更新資源索引：`node scripts/refresh_resources_v1.0.mjs`（需要 `gh` 登入）。
+- 設計資源（§23）每季用 GitHub API 實測星星數再更新；真係用咗人哋素材 → 該 repo 即寫 `CREDITS.md`（[W8](docs/12-copyright-scout-system.md#w8--第三方素材要標來源)）。
 
 ---
 

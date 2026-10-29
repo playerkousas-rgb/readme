@@ -12,7 +12,7 @@
  *     A1/W6 build bundle key leak / vite loadEnv 空前綴 / client URL ?key= /
  *     W1 版權標示 / W2 水印常數 / W6 注入版唔入 repo /
  *     V1 檔名+內文雙版號 / V4 部署拷貝同步 / V6 contract fileVersion /
- *     F16 PLAYBOOK 規則 ID 同步 / as-built 案例留存 + docs/19 案例隔離。
+ *     F16 PLAYBOOK 規則 ID 同步 / as-built 案例留存 + docs/19 案例隔離 / docs/23 設計資源索引。
  */
 
 import { readdirSync, statSync, readFileSync, existsSync } from 'node:fs';
@@ -82,6 +82,7 @@ if (!ASSETS_ONLY) {
       'docs/17-final-check-and-tutorial.md', 'docs/18-as-built-gap-audit.md',
       'docs/19-ecportal-troop-case.md', 'docs/20-repo-health-audit.md',
       'docs/21-fix-plans.md', 'docs/22-scout-circulars-agent-handoff.md',
+      'docs/23-design-resources.md',
       'scripts/audit_single_html_v1.0.mjs', 'scripts/refresh_resources_v1.0.mjs',
       'scripts/final_check_v1.0.mjs',
       'templates/README.md', 'templates/watermark/README.md',
@@ -420,7 +421,8 @@ function checkRuleSync() {
                    'docs/16-canvas-case-scout-comic.md', 'docs/18-as-built-gap-audit.md',
                    'docs/19-ecportal-troop-case.md', 'docs/20-repo-health-audit.md',
                    'docs/21-fix-plans.md',
-                   'docs/22-scout-circulars-agent-handoff.md']) {
+                   'docs/22-scout-circulars-agent-handoff.md',
+                   'docs/23-design-resources.md']) {
     if (!readme.includes(d)) err(`F16：README.md 未指向 ${d}`);
   }
 }
