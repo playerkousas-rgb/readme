@@ -4,6 +4,7 @@
 > ① 呢個 repo 係**真理倉**，唔係 app；唔好喺度直接改模板當交付。
 > ② 開工順序：`AGENTS.md` 本段 → [README 導覽](README.md#1-我要做嘢應該睇邊份導覽) → [PLAYBOOK 規則 ID](PLAYBOOK.md)（通用規則；**旅團專案案例喺 [19](docs/19-ecportal-troop-case.md)，唔好當通用**）→ [17 STEP BY STEP](docs/17-final-check-and-tutorial.md#2--step-by-step由零到一個-app)。
 > ②b 本檔 §1–2 嘅五級階梯同可改/不可改矩陣**屬專案案例**，已集中去 [19](docs/19-ecportal-troop-case.md)（可選模式 R1–R8 喺 §14，**唔係通用底線**）；[18](docs/18-as-built-gap-audit.md) 係對照審計記錄；[20](docs/20-repo-health-audit.md) 係 11 個 repo 健康檢查。
+> ②c 新產品研發前必須按 [PLAYBOOK P1](PLAYBOOK.md#0-開工前三分類決定做幾多) 上網查相近產品，記錄比較與決策；參考 [docs/24](docs/24-similar-products.md)，無法查證要說明。
 > ③ 交付前跑 `node scripts/final_check_v1.0.mjs --json`；六角度全綠先至交付。
 > ④ `BUILD.md` / `EXTERNAL.md` / 本檔其餘部分是 **ecportal as-built 案例**，唔好當通用規則；衝突以 PLAYBOOK 為準。
 
