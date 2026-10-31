@@ -2,7 +2,7 @@
 
 > **一句話**：開新 app 前睇呢頁；每次施工前對 checklist；出事先睇 runbook。
 > 呢個 repo **唔係一個 app**，而係我所有 app 共用嘅**說明書 ＋ 可複製模板 ＋ 自動防呆檢查**。
-> **案例隔離（2026-10-27）**：通用規則只有 S/F/A/W/V ＋ 技術棧契約；ecportal 旅團／進度追蹤嘅專案設定全部喺 [docs/19](docs/19-ecportal-troop-case.md)，**唔係通用底線**；邊個 repo 有問題喺 [docs/20](docs/20-repo-health-audit.md)。
+> **案例隔離（2026-10-27）**：通用規則包括 S/F/A/W/V、研發前調查 P1 ＋ 技術棧契約；ecportal 旅團／進度追蹤嘅專案設定全部喺 [docs/19](docs/19-ecportal-troop-case.md)，**唔係通用底線**；邊個 repo 有問題喺 [docs/20](docs/20-repo-health-audit.md)。
 
 更新日期：2026-10-28 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase ＋ Gemini／Canvas**
 
@@ -39,12 +39,15 @@
 
 ---
 
+**研發前額外必做 P1**：先上網找相近產品及自己的現有方案，記錄來源、差異與決策；無法查證須說明限制。[PLAYBOOK P1](PLAYBOOK.md#0-開工前三分類決定做幾多) · [相近產品參考](docs/24-similar-products.md)
+
 ## 1. 我要做嘢，應該睇邊份？（導覽）
 
 | 我想… | 睇 |
 |-------|-----|
 | 5 分鐘內知全部規矩 | **[PLAYBOOK.md](PLAYBOOK.md)** — 核心規範總綱（規則 ID：S/F/A/W/V/G/VL/X/U/C；專案案例已分開去 19） |
 | 印出嚟貼喺枱面 | [docs/00-quickcard.md](docs/00-quickcard.md) — 一頁紙速查 |
+| 研發前查相近產品 | [docs/24-similar-products.md](docs/24-similar-products.md) — 既有比較及來源；新項目仍須自行搜尋核實（P1） |
 | 開一個新 app | [docs/10-checklists.md](docs/10-checklists.md#1-開新-app30-分鐘) ＋ [templates/](templates/README.md) |
 | **出圖標（Icon／Favicon）** | **[README §9 G11 全站圖標標準](README.md#9-g11-全站圖標標準iconfavicon)** — 9 個 PNG／ICO、四種格式否決、maskable 66%、16px 手繪、體積 ≤260 KB、驗收 5 項（照抄，唔再重新設計） |
 | 檢查每次 commit / deploy | [docs/10-checklists.md](docs/10-checklists.md#2-每次施工commit-前) |
