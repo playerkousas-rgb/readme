@@ -22,7 +22,8 @@
 | 推送訂閱表 | `supabase/push_subscriptions.sql` | `supabase/migrations/<ts>_push.sql` |
 | **🆕 新 repo 起手包（12 樣 + 第 13 項 + 第 14 項）** | [`repo-starter/START.md`](repo-starter/START.md) | 成個 `repo-starter/` 抄去新 repo，改 `{{...}}`；見 [docs/27](../docs/27-repo-starter.md) |
 | **🎨 設計檢查（可選 13a）** | [`repo-starter/docs/design-review.md`](repo-starter/docs/design-review.md) | 有 UI 先加：反 slop、頁面 vs app 屏幕、390/768/1440 望圖自檢（借 taste-skill，零依賴） |
-| **🧠 skills 收納 + 觸發軸（可選 13b）** | [`repo-starter/docs/skills/README.md`](repo-starter/docs/skills/README.md) | bucket + user-／model-invoked；**所有新 repo**：AGENT 開局讀 `skills/promoted/repo-setup/SKILL.md` |
+| **📇 SKILL 唯一目錄（CATALOG）** | [`repo-starter/skills/CATALOG.md`](repo-starter/skills/CATALOG.md) | **以後加 SKILL 必入**：3 份 listed + 加新四步；`external/grilling` 係 MIT 原文；漏入目錄 `check_skills` 會 FAIL |
+| **🧠 skills 收納 + 觸發軸（可選 13b）** | [`repo-starter/docs/skills/README.md`](repo-starter/docs/skills/README.md) | 4 個 bucket（promoted／in-progress／deprecated／**external**）+ user-／model-invoked；**所有新 repo**：AGENT 開局讀 `skills/promoted/repo-setup/SKILL.md` |
 | **📄 SKILL.md 範本（可選 13c）** | [`repo-starter/docs/skills/0000-template.md`](repo-starter/docs/skills/0000-template.md) | frontmatter 規格 + What／When／Common questions／It's working if |
 | **❓ INTAKE 問卷（第 0 步）** | [`repo-starter/INTAKE.md`](repo-starter/INTAKE.md) | **抄檔之前** AGENT 主動問用戶 7 條；借 mattpocock `grilling/SKILL.md`；答案寫入 `SCOPE.md` |
 | **🛑 PREFLIGHT 開局 gate（13d，必跑）** | [`repo-starter/PREFLIGHT.md`](repo-starter/PREFLIGHT.md) | **AGENT 設定／commit repo 之前**一條命令擋住；唔係每次 push 嘅 YML |

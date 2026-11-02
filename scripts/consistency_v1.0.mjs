@@ -201,12 +201,31 @@ if (!/0\. \*\*先主動問用戶\*\*/.test(rsTxt)) add('FAIL', 'Spec', 'intake-w
 // 起手包要真係有 SKILL.md，而且要寫入 AGENTS.md（否則「AGENT 開局有用」係假）
 const starterSkills = all.filter((f) => /templates\/repo-starter\/skills\/.*\/SKILL\.md$/.test(rel(f)));
 if (starterSkills.length < 2)
-  add('FAIL', 'Spec', 'skills-wired', 'templates/repo-starter/skills/', 0, `起手包得 ${starterSkills.length} 份真正嘅 SKILL.md，預期 2 份（repo-setup / design-review）`);
+  add('FAIL', 'Spec', 'skills-wired', 'templates/repo-starter/skills/', 0, `起手包得 ${starterSkills.length} 份 SKILL.md，預期至少 2 份核心（repo-setup / design-review）`);
 const agentsTxt = textOf(path.join(root, 'templates', 'repo-starter', 'AGENTS.md'));
 for (const f of starterSkills) {
   const name = path.basename(path.dirname(f));
   if (!agentsTxt.includes(name))
     add('FAIL', 'Spec', 'skills-wired', 'templates/repo-starter/AGENTS.md', 0, `AGENTS.md 無明確指名 skill「${name}」`);
+}
+
+// 2026-11-02：所有 SKILL.md 一定要入 skills/CATALOG.md，目錄本身要喺總索引搵到
+const catPath = path.join(root, 'templates', 'repo-starter', 'skills', 'CATALOG.md');
+const starterRoot = path.join(root, 'templates', 'repo-starter');
+if (!existsSync(catPath)) {
+  add('FAIL', 'Spec', 'skills-catalog', 'templates/repo-starter/skills/CATALOG.md', 0, '缺 SKILL 唯一目錄，之後加 skill 無處可查');
+} else {
+  const catTxt = textOf(catPath);
+  for (const f of starterSkills) {
+    const relp = path.relative(starterRoot, f).replace(/\\/g, '/');
+    const name = path.basename(path.dirname(f));
+    if (!catTxt.includes(name) || !catTxt.includes(relp))
+      add('FAIL', 'Spec', 'skills-catalog', 'skills/CATALOG.md', 0, `SKILL「${name}」未入目錄（缺 ${relp}）`);
+  }
+  for (const idx of ['docs/README.md', 'templates/README.md', 'templates/repo-starter/docs/skills/README.md', 'templates/repo-starter/AGENTS.md']) {
+    if (!textOf(path.join(root, idx)).includes('CATALOG.md'))
+      add('FAIL', 'Spec', 'skills-catalog', idx, 0, '無指去 skills/CATALOG.md（新加 skill 嘅人搵唔到目錄）');
+  }
 }
 
 // docs/28 §5 逐個表要 85 行

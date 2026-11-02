@@ -1,4 +1,4 @@
-# 05 — Git（G1–G10；G11 圖標見 [README §9](../README.md#9-g11-全站圖標標準iconfavicon)）
+# 05 — Git（G1–G10；G11 圖標見 [docs/33](33-icon-standard.md)）
 
 > Git 喺呢度嘅角色：**唯一真理 + 歷史 + 審查 + 自動閘**。唔係得個「擺 code 嘅地方」。
 
@@ -166,7 +166,7 @@ jobs:
 G 系列第 11 條係**圖標**：9 個 PNG／ICO、否決 SVG／AVIF／WebP／JPEG、maskable 66%、
 16px 手繪、9 檔 ≤260 KB、`og:image` 絕對網址、`/icons/*` immutable（改圖要改檔名）。
 
-> 唯一來源（唔另開 docs、唔重新設計）：**[README §9 G11 全站圖標標準](../README.md#9-g11-全站圖標標準iconfavicon)**。
+> 唯一來源（唔重新設計）：**[docs/33 G11 全站圖標標準](33-icon-standard.md)**（2026-11-02 由 README §9 抽出）。
 > 實測數字來自 `hkcamping` v1.12.1。
 
 ---

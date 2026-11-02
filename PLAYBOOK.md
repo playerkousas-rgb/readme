@@ -63,7 +63,7 @@
 | **S3** | `dependencies` 空白或白名單 | 建置工具一律 `devDependencies`；`installCommand: npm install --include=dev` |
 | **S4** | `vercel.json` 只部署最終產物 | `framework: null` + `outputDirectory: dist` + `cleanUrls: true` + `regions: ["hkg1"]` |
 | **S5** | 死重檔案零容忍 | grep `public/images/assets`，無引用即刪；`*.bak/tmp/old/log` 唔入 repo |
-| **S6** | 圖轉 AVIF / WebP（**站台圖標例外**：跟 [G11](README.md#9-g11-全站圖標標準iconfavicon) 一律 PNG／ICO） | 單檔 `< 500KB`；上載單檔 ≤5MB、每筆 3 張、每單位每日總量上限 |
+| **S6** | 圖轉 AVIF / WebP（**站台圖標例外**：跟 [G11](docs/33-icon-standard.md) 一律 PNG／ICO） | 單檔 `< 500KB`；上載單檔 ≤5MB、每筆 3 張、每單位每日總量上限 |
 | **S7** | CI 硬攔體積（**只適用 Vercel / dist**） | `dist < 5MB`、單一 bundle `< 2MB`（`du -sb dist` 超即 fail）。**單一 HTML / Gemini Canvas app 唔適用**，見 C13-g |
 | **S8** | 部署衛生 | 非 `main` branch 關 Preview Deployment；retention = 7 日 |
 | **S9** | 上載面配額 | 檔種白名單 + 檔大小 + 每筆數量 + 每單位每日總量（server 計） |
@@ -190,7 +190,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | 棧 | 必做 ID | 詳細 |
 |----|---------|------|
 | **Git** | G1–G10：main 保護、feature branch → PR、Conventional Commits、tag、lockfile、Actions pin SHA、CODEOWNERS、secret scanning、唔 commit binary、docs 跟版本 | [docs/05-git.md](docs/05-git.md) |
-| **站台圖標** | **G11 全站圖標標準**：開工即出齊 **9 個 PNG／ICO**（`.ico`／16／32／180／192／512／maskable 192／maskable 512／og 1200×630）；**否決 SVG／AVIF／WebP／JPEG**；滿版無框、≥4 色、主體居中 60–70%；maskable 安全區 **66%**；16px **手繪**；9 檔 **≤260 KB**、dist **≤1 MB**；HTML 5 link＋4 meta（`og:image` **絕對網址**）；`/icons/*` immutable → 改圖要改檔名 | [README §9](README.md#9-g11-全站圖標標準iconfavicon) |
+| **站台圖標** | **G11 全站圖標標準**：開工即出齊 **9 個 PNG／ICO**（`.ico`／16／32／180／192／512／maskable 192／maskable 512／og 1200×630）；**否決 SVG／AVIF／WebP／JPEG**；滿版無框、≥4 色、主體居中 60–70%；maskable 安全區 **66%**；16px **手繪**；9 檔 **≤260 KB**、dist **≤1 MB**；HTML 5 link＋4 meta（`og:image` **絕對網址**）；`/icons/*` immutable → 改圖要改檔名 | [docs/33](docs/33-icon-standard.md) |
 | **Vercel** | VL1–VL12：`/api/proxy` 先驗 session 再 inject key、env 分環境、`NEXT_PUBLIC_*`/`VITE_*` = 公開、regions hkg1、security headers、rate limit、preview 關、retention 7、rollback、cron、log 唔記 PII | [docs/06-vercel.md](docs/06-vercel.md) |
 | **Apps Script** | X1–X13：一份 `Code.gs` 部署各層、`ScriptProperties` 存 secret、`/exec` 新版本唔改 URL、`requireAuth` 第一行、action 白名單、ScriptLock、CacheService、Drive 匯出 private、雙版號源檔 + 部署拷貝 sync | [docs/07-apps-script.md](docs/07-apps-script.md) |
 | **Supabase** | U1–U12：migrations 入 Git、每表 RLS、anon vs service_role、Edge Functions 唔 log secret、Storage policy、index + 分頁、push 訂閱只存 hash、每日 cron、備份、free-tier 休眠 | [docs/08-supabase.md](docs/08-supabase.md) |

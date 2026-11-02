@@ -14,14 +14,14 @@
 
 | 步 | 做乜 | 檔 |
 |:--:|---|---|
-| **0** | **主動問用戶**：一輪問晒「而家問得」嘅問題（形式／有冇 UI／身份／後台／Gemini／授權／一句定位），每條俾建議答案；**fact 自己查、決定留畀用戶；用戶確認先好郁手** | [`INTAKE.md`](templates/repo-starter/INTAKE.md)（借 mattpocock `grilling/SKILL.md`） |
+| **0** | **主動問用戶**：一輪問晒「而家問得」嘅問題（形式／有冇 UI／身份／後台／Gemini／授權／一句定位），每條俾建議答案；**fact 自己查、決定留畀用戶；用戶確認先好郁手** | [`INTAKE.md`](templates/repo-starter/INTAKE.md) ＋ 實體原文 [`external/grilling/SKILL.md`](templates/repo-starter/skills/external/grilling/SKILL.md)（MIT）；全部喺 [`skills/CATALOG.md`](templates/repo-starter/skills/CATALOG.md) 入咗目錄 |
 | 1 | 抄起手包 → 填 `{{...}}` → **揀授權** → 抄 5 支真理 script → `git init` | [`templates/repo-starter/START.md`](templates/repo-starter/START.md) ⓪–④ |
 | 2 | **主動讀 `repo-setup` 並跟住做**：12 樣核心 → 按**形式**揀第 13／14 項 → 兩軸 review（Standards／Spec 分開） | [`skills/promoted/repo-setup/SKILL.md`](templates/repo-starter/skills/promoted/repo-setup/SKILL.md) |
 | 3 | **有 UI／要出畫面**：`repo-setup` 第 4 步會明確叫你讀 `design-review`（house rules、inventory、390/768/1440 望圖、6 條 critique、`ROUND n`、40/30/20/10） | [`skills/promoted/design-review/SKILL.md`](templates/repo-starter/skills/promoted/design-review/SKILL.md) |
 | 4 | **未 commit 之前**跑閘門：`ok: true` 先好郁，`exit 1` 即刻停手（8 個 check） | [`PREFLIGHT.md`](templates/repo-starter/PREFLIGHT.md) ＋ `node scripts/preflight_v1.0.mjs . --json` |
 | 5 | 交付前 `guard` ＋ `final_check`；舊 repo 唔使一次過補，按 L2 排隊 | [docs/30](docs/30-repo-health-check.md) · [docs/27](docs/27-repo-starter.md) |
 
-> ⚠️ **唔係自動觸發**：呢個環境無 Skill tool／plugin harness，要你（AGENT）**主動讀**上面兩份 `SKILL.md`；PREFLIGHT 只驗佢哋存在同 frontmatter 合格，**唔會代你執行**。
+> ⚠️ **唔係自動觸發**：呢個環境無 Skill tool／plugin harness，要你（AGENT）**主動讀** `repo-setup`／`design-review` 兩份 `SKILL.md`（`external/grilling` 只作溯源）；PREFLIGHT 只驗佢哋存在、frontmatter 合格同**入咗 [`CATALOG.md`](templates/repo-starter/skills/CATALOG.md)**，**唔會代你執行**。
 > ⚠️ **唔會自動整靚版面**：無瀏覽器／screenshots／Chrome inspector；望圖、設計分、`ROUND n` critique、兩軸報告要你自己寫低，做唔到就照實寫「做唔到」（[docs/32 §8.9](docs/32-consistency-audit.md)）。想睇「開新 repo 之後實際會／唔會發生乜」：[`START.md` 個對照表](templates/repo-starter/START.md)。
 > 用戶只想**改現有 repo／查規則／審計** → 落下面 §1 導覽，唔好行呢 6 步（改現有 repo 只需要問「想改乜」，見 `INTAKE.md` 第 2 輪）。
 
@@ -79,7 +79,7 @@
 | **每個 repo 要點檢查** | **[docs/30-repo-health-check.md](docs/30-repo-health-check.md)** ＋ `node scripts/repo_health_v1.0.mjs <path> --json` |
 | **成個 repo 有冇混亂／矛盾** | **[docs/32-consistency-audit.md](docs/32-consistency-audit.md)** ＋ `node scripts/consistency_v1.0.mjs . --json` — 3 軸 11 種檢查；**§8 用兩個 GIT 嘅 SKILL 原文再審一次**（邊啲做咗／做唔到寫明） |
 | 開一個新 app | [docs/10-checklists.md](docs/10-checklists.md#1-開新-app30-分鐘) ＋ [templates/](templates/README.md) |
-| **出圖標（Icon／Favicon）** | **[README §9 G11 全站圖標標準](README.md#9-g11-全站圖標標準iconfavicon)** — 9 個 PNG／ICO、四種格式否決、maskable 66%、16px 手繪、體積 ≤260 KB、驗收 5 項（照抄，唔再重新設計） |
+| **出圖標（Icon／Favicon）** | **[docs/33-icon-standard.md](docs/33-icon-standard.md)** — 9 個 PNG／ICO、四種格式否決、maskable 66%、16px 手繪、體積 ≤260 KB、驗收 5 項（[README §9](README.md#9-g11-全站圖標標準iconfavicon) 只留一句原則；照抄，唔再重新設計） |
 | 檢查每次 commit / deploy | [docs/10-checklists.md](docs/10-checklists.md#2-每次施工commit-前) |
 | 上線前 Go / No-Go | [docs/10-checklists.md](docs/10-checklists.md#3-上線前-go--no-go) |
 | 出事（key 外洩／爆 quota／資料唔見） | [docs/11-incidents.md](docs/11-incidents.md) |
@@ -157,7 +157,7 @@ Gemini / Canvas  = 生 UI 殼；三種結構：
 6. 人手實測（file:// / 手機 / 斷網 / 解碼器 / F12 / 清 cache）→ PR → CI 綠 → deploy
 ```
 
-> **G11 圖標**：第 1 步起 repo 骨架就順手出齊 9 個圖標（**唔好留到最後**）—— 照 [README §9](README.md#9-g11-全站圖標標準iconfavicon) 抄，唔重新設計。
+> **G11 圖標**：第 1 步起 repo 骨架就順手出齊 9 個圖標（**唔好留到最後**）—— 照 [docs/33](docs/33-icon-standard.md) 抄，唔重新設計。
 
 Type B/C 專用起機指令：[templates/README.md](templates/README.md) · [watermark](templates/watermark/README.md) · [canvas](templates/canvas/README.md)。
 
@@ -195,7 +195,7 @@ docs/
   21-fix-plans.md              三個問題嘅實作修復方案（已實測：升級／Git 暴脹／舊 sig 重放）
   22-scout-circulars-agent-handoff.md  貼去 scout-circulars AGENT 嘅對話式問題清單
   23-design-resources.md      設計資源總索引（字體／配色／Icon／UI library／DESIGN.md／系統設計）＋開工 checklist
-  （圖標規範唔另開 docs：唯一來源係 README §9 G11 — 9 個 PNG／ICO、maskable 66%、16px 手繪）
+  （圖標規範**唯一來源係 [docs/33](docs/33-icon-standard.md)** — 2026-11-02 由 README §9 抽出；9 個 PNG／ICO、maskable 66%、16px 手繪）
 templates/
   README.md               可抄嘢對照表 + 一鍵抄指令
   vercel/ git/ github/ gas/ supabase/   各平台 config / SQL / workflow
@@ -278,139 +278,7 @@ scripts/final_check_v1.0.mjs      交付前一條命令跑六角度實測（docs
 
 ## 9. G11 全站圖標標準（Icon／Favicon）
 
-> **狀態**：定案（2026-10-28），G 系列第 11 條（G1–G10 見 [docs/05](docs/05-git.md)）。
-> **實測來源**：`hkcamping` v1.12.1（icons/ 244 KB、dist 467.5 KB、guard 18/18、test 21/21、ui 112/112）。
-> **用法**：每個新 app 開工第一件事就照抄呢一節，**唔再逐次重新設計、唔再逐次討論格式**。
-> 完整對照（色票＋每個檔實際體積）見 `playerkousas-rgb/hkcamping` README「App Icon／favicon（v1.12.1）」一節。
+> **一句原則**：每個 app 開工第一件事就**出齊 9 個 PNG／ICO 圖標檔**，唔准 SVG／AVIF／WebP、唔准逐次重新設計格式。**完整標準（尺寸表、四種格式否決、maskable 66%、16px 手繪、HTML／manifest 掛法、≤260 KB 預算、驗收 5 項）→ [docs/33-icon-standard.md](docs/33-icon-standard.md)**，嗰份係唯一來源。
+> 2026-11-02 抽出：本節 138 行搬咗去 docs/33，圖標唔係每次開新 repo 都要睇，README 只留原則 + 指針。G 系列第 11 條（G1–G10 見 [docs/05](docs/05-git.md)）；定案 2026-10-28，實測來源 `hkcamping` v1.12.1。
 
-### 9.1 一句話原則
-
-每個 app 開工第一件事，就係**出齊 9 個圖標檔，全部 PNG／ICO**。
-唔准 SVG、唔准 AVIF／WebP、唔准擺 1024×1024 入 repo。
-
-### 9.2 必要檔案（9 個，一個都不能少）
-
-| 檔案 | 尺寸 | 邊個讀佢 | 冇咗會點 |
-|---|---|---|---|
-| `icons/favicon.ico` | 16／32／48 三合一 | 書籤、舊瀏覽器 | 書籤冇圖 |
-| `icons/favicon-16.png` | 16×16 | 瀏覽器分頁 | 分頁白板 |
-| `icons/favicon-32.png` | 32×32 | 分頁 Retina | Retina 分頁模糊 |
-| `icons/apple-touch-icon.png` | 180×180 | iOS「加入主畫面」 | iOS 主畫面變白板 |
-| `icons/icon-192.png` | 192×192 | Android／PWA／網站 header | 安裝提示冇圖 |
-| `icons/icon-512.png` | 512×512 | Android／PWA 安裝 | PWA 安裝失敗 |
-| `icons/icon-maskable-192.png` | 192×192 | Android 裁圓 | 主體被裁走 |
-| `icons/icon-maskable-512.png` | 512×512 | Android 裁圓 | 同上 |
-| `icons/og-image.png` | 1200×630 | WhatsApp／Signal／FB 預覽 | 貼連結只剩一行字 |
-
-> ⚠️ **冇 1024×1024**：冇任何程式會讀佢，只有「上 App Store／Play Store 交審」先要。
-> 要交先由母圖另存一張，交完就刪，唔好長期擺喺 repo。
-
-### 9.3 四種格式一律否決（附實測原因）
-
-| 格式 | 否決原因 |
-|---|---|
-| **SVG** | App icon／favicon 冇標準 SVG 支援；iOS 同 Android 安裝流程都唔食 |
-| **AVIF** | `apple-touch-icon`（iOS 只認 PNG）、manifest icons（Android）、`favicon.ico`（必須 ICO）、`og:image`（WhatsApp／FB 唔支援）四個位置一轉即壞。實測 `icon-512` 由 46.6 KB 跌到 12.2 KB 都**唔准用** |
-| **WebP** | 同上，iOS 主畫面唔認 |
-| **JPEG** | 冇透明、og 文字邊緣起格 |
-
-**要省位就減色，唔係換格式。**
-（同 [S6](docs/01-slim.md) 嘅「圖轉 AVIF／WebP」唔衝突：S6 講**上載內容圖**，本節講**站台圖標**，圖標一律 PNG／ICO。）
-
-### 9.4 設計要求（每個 app 都要有「場景」，唔係一個 logo）
-
-1. 一定要係**有主角嘅風景**，唔係單色幾何圖形。
-2. **顏色至少 4 隻**，唔准只用 2 隻色（hkcamping 第一版用綠＋奶白被退回）。
-3. 圖示**全部滿版（full bleed）**，唔准加白邊、唔准加圓角外框 —— iOS／Android 自己會裁圓，你再加框就會出現四個白角。
-4. 主體（帳篷／建築／標誌物）永遠放**正中央，佔畫面 60–70%**。
-5. **純色平塗為主**，最多天空一層漸變；唔用陰影、唔用發光。
-6. 一定要有一粒「**縮到 16px 都認得出**」嘅高對比形狀（例如大圓太陽）。
-7. **主色要同 manifest 嘅 `theme_color`／`background_color` 一致。**
-
-### 9.5 maskable 規格
-
-- 直接用**同一張滿版圖**出 maskable，唔需要另做一個設計。
-- 但主體必須收喺**中央 66% 安全區**內，邊緣只可以放樹梢／天空／草地。
-- **實測放 80% 會被裁走，一定要用 66%。**
-
-### 9.6 16×16 一定要手繪，唔准縮
-
-1024 縮到 16px 實測係**一團糊**。16px 版另外用 ImageMagick 手繪三層色：
-
-```bash
-convert -size 16x16 xc:'#F0B285' \
-  -fill '#2C5A3C' -draw 'rectangle 0,11 15,15' \
-  -fill '#E8822B' -draw 'circle 8,6.5 8,2.8' \
-  -fill '#F5F1E2' -draw 'polygon 8,4 13.2,14 2.8,14' \
-  -fill '#2C3B33' -draw 'polygon 8,8.4 10.2,14 5.8,14' \
-  -strip PNG8:favicon-16.png
-```
-
-> 顏色換成該 app 主題色，**形狀保持三層：天、主體、地。**
-
-### 9.7 HTML／manifest 掛法
-
-`index.html` 嘅 `<head>` 必須有 **5 條 link ＋ 4 條 meta**：
-
-```html
-<link rel="icon" href="/icons/favicon.ico" sizes="any" />
-<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
-<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
-<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
-<link rel="manifest" href="/manifest.webmanifest" />
-<meta name="theme-color" content="#XXXXXX" />
-<meta property="og:image" content="https://<絕對網域>/icons/og-image.png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-```
-
-> ⚠️ **`og:image` 必須絕對網址**。用相對路徑＝分享平台攞唔到＝貼落 WhatsApp 淨係得一行字。
-
-`manifest.webmanifest` 要 **4 個 icon**（`any` 192／`any` 512／`maskable` 192／`maskable` 512），
-`display` 用 `standalone`，`theme_color` 同 `background_color` 要同圖標主色一致。
-
-### 9.8 體積預算同減色指令
-
-- **9 個檔加埋 ≤ 260 KB。**
-- **成個 `dist/`／`build/` ≤ 1 MB。**
-- 一律減色，肉眼睇唔出分別：
-
-```bash
-convert in.png -dither None -colors 48 -strip PNG8:out.png            # 512 級
-convert in.png -dither None -colors 32 -strip PNG8:out.png            # 192 及以下
-convert in.png -dither FloydSteinberg -colors 64 -strip PNG8:og-image.png
-```
-
-- ⚠️ **唔准「先縮再放大」**：實測 `-resize 50% -colors 32 -resize 200%` 反而由 15.8 KB 變 **18.2 KB**。
-- `favicon.ico` 由三個 PNG 合成：
-
-```bash
-convert favicon-16.png favicon-32.png favicon-48.png favicon.ico
-```
-
-### 9.9 驗收（唔可以靠肉眼）
-
-1. **9 個檔存在，尺寸正確**（用程式讀 PNG IHDR，CI 未必有 ImageMagick `identify`）。
-2. **三個 HTML 實測**：
-   - 分頁有圖
-   - iOS Safari「加入主畫面」有圖且四角**無白邊**
-   - 貼連結落 WhatsApp 有 **1200×630 預覽**
-3. manifest **4 個 icon 全部 200 OK**。
-4. 體積符合 §9.8 預算。
-5. `/icons/*` 設 `Cache-Control: public, max-age=31536000, immutable`。
-   ⚠️ 因此**圖標一改就要改檔名**（例如 `icon-512-v2.png`），**唔可以原地覆蓋**。
-
-### 9.10 已知陷阱（踩過嘅坑）
-
-1. AI 生成圖標好易**加白邊＋圓角外框** → prompt 要明講 `full bleed`、`no border`、`no rounded corners`。
-2. AI 生成圖標可能**只得 2 隻色** → prompt 要列明 **4–6 隻指定顏色**。
-3. **唔可以靠縮做 16px**，必須手繪。
-4. **maskable 安全區用 66%**，唔好用 80%。
-5. 換圖標後用戶主畫面**仍然見舊圖**（系統 cache）→ 要通知用戶「刪咗再加一次」。
-6. **`og:image` 用相對路徑 = 分享冇圖。**
-
-### 9.11 來源
-
-以上數字全部來自 `hkcamping` **v1.12.1** 實測（icons/ 244 KB、dist 467.5 KB、guard 18/18、test 21/21、ui 112/112）。
-如要對照實際檔案，去 [`playerkousas-rgb/hkcamping`](https://github.com/playerkousas-rgb/hkcamping) 嘅 README
-「App Icon／favicon（v1.12.1）」一節，有完整表格同設計色票。
+> 配合 [§4 新 app 五步](README.md#4-新-app-五步照做就得) 第 1 步：起 repo 骨架就順手出齊 9 個圖標，**唔好留到最後**。

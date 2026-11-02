@@ -90,9 +90,9 @@
 | [31-system-basics.md](31-system-basics.md) | **有身份系統**基本功能：帳號生命週期 8 樣（含忘記密碼）＋ ADMIN 回報系統 8 樣（通用） |
 | [32-consistency-audit.md](32-consistency-audit.md) | **全倉一致性審計**：3 軸 11 種檢查（9 FAIL → 0 FAIL）＋ **§8 按兩個 GIT 嘅 SKILL 原文逐步對照 + 原生檢查實跑** |
 | [templates/repo-starter/docs/system-basics.md](../templates/repo-starter/docs/system-basics.md) | 可抄驗收 tick list（起手包第 14 項，有身份系統先加） |
-| [repo-setup/SKILL.md](../templates/repo-starter/skills/promoted/repo-setup/SKILL.md) | **真正嘅 SKILL.md**：AGENT 開新 repo 時讀並跟住做（12 樣／13 項／第 14 項／兩軸 review） |
-| [design-review/SKILL.md](../templates/repo-starter/skills/promoted/design-review/SKILL.md) | **真正嘅 SKILL.md**：有 UI 先由 `repo-setup` 明確叫（望圖 390/768/1440） |
+| [skills/CATALOG.md](../templates/repo-starter/skills/CATALOG.md) | **所有 SKILL.md 嘅唯一目錄**（`repo-setup`／`design-review`／`grilling`）＋ **加新 SKILL 四步**；以後加 skill 一定要入目錄，`check_skills`／`consistency` 會自動驗 |
 | [templates/repo-starter/](../templates/repo-starter/START.md) | 起手包（可直接 `cp -r`） |
+| [33-icon-standard.md](33-icon-standard.md) | **G11 全站圖標標準**（2026-11-02 由 README §9 抽出）：9 個 PNG／ICO、四種格式否決、maskable 66%、16px 手繪、體積預算、驗收 5 項 |
 | [templates/repo-starter/PREFLIGHT.md](../templates/repo-starter/PREFLIGHT.md) | **AGENT 開局 gate**：設定／commit 前一條命令擋住（取代每次 push 嘅 YML） |
 | [templates/repo-starter/INTAKE.md](../templates/repo-starter/INTAKE.md) | **第 0 步問卷**：開新 repo 前 AGENT 主動問清楚用戶需求（借 mattpocock `grilling`），唔好靠估 |
 | [templates/reverse-api-demo/](../templates/reverse-api-demo/README.md) | 5 分鐘「自製 API」可跑示範 |

@@ -277,3 +277,33 @@ ok - 10 支 .mjs parse 到
 - 根 `README.md` 🆕 區由 **5 步改 6 步（0–5）**，**第 0 步最緊要**；根 `AGENTS.md` ②a、`repo-setup/SKILL.md` 開局步驟 0、`START.md` ⓪、starter `AGENTS.md`、`templates/README.md`、`docs/README.md`、[27 §2](27-repo-starter.md) 全部同步。
 - `consistency_v1.0.mjs` 加 `intake-wired` check：缺 `INTAKE.md`／根 README 🆕 區無指去佢／`repo-setup` 無第 0 步 → **FAIL**。
 - **仍然係方法借用，唔係 skill 執行**：無 Skill tool、無 sub-agent；`grilling` 原文叫 dispatch sub-agent 搵 fact，呢個環境做唔到，改做 AGENT 自己 `ls`／讀檔。呢點寫咗落 `INTAKE.md` 未核實。
+
+### 8.11 再補（2026-11-02 第二輪）：抽出 G11 + 實體 external SKILL + 「加 skill 必入目錄」
+
+> 用戶確認整體寫法啱，只提兩點：① G11 圖標標準喺根 README §9 佔太長，應抽去 docs，README 只留原則 + link；② `INTAKE.md` 只係文字引用 `mattpocock grilling/SKILL.md`，無實體檔，AGENT 搵唔到會當「呃佢」。再加一句：**「同時更新讓以後你 SKILL 入加入目錄」** —— 即係唔只要補今次，仲要令**之後每一次加 SKILL 都自動被逼入目錄**。
+
+**① G11 抽出**
+
+| 項 | 實測／做法 |
+|---|---|
+| 原況 | 根 README **12 個 H2**、416 行；§9 由 279 行到 EOF 共 **138 行**（9.1–9.11 小節） |
+| 改名 | **唔用 `docs/09-icon-standard.md`**：`docs/09-gemini-canvas.md` 已存在，`docs/README.md` §命名寫明「兩位數前綴，章節只可往後加，唔好插中間改號」。已用最大 = 32 → **`docs/33-icon-standard.md`**（142 行，小節改 1–11，`§9.8` → `§8`、相對連結改 `05-git.md`／`01-slim.md`） |
+| README §9 | **保留 `## 9. G11 全站圖標標準（Icon／Favicon）` H2**（唔壞 `README.md#9-g11-...` 既有錨點），只留 5 行：一句原則 + 指針 + 日期 + §4 配合。README 416 → **284 行** |
+| 暗雷 | `guard.mjs:410` 原本 `read('README.md')` 硬驗 9 個圖標檔名喺 README → 抽走即 FAIL。改成 `readme + docs/33`（`existsSync` 先判），**新 repo 無 docs/33 仍向後兼容** |
+| 反面既有決定 | `README.md:198`「圖標規範唔另開 docs：唯一來源係 README §9」改做「唯一來源係 docs/33」；`PLAYBOOK S6`／`PLAYBOOK §G11`／`docs/05` 頭同 `:169`／`docs/10:32`／README `:82,160` 全部改指 docs/33 |
+| 索引 | `docs/README.md` 章 6 加 `33-icon-standard.md` 行；根 README §1 既有用 `docs/33-` 嘅導覽行（`nav-coverage` 由 `docByNum` 推導，加 33 自動跟） |
+
+**② `external/grilling` 實體檔**
+
+- [`skills/external/grilling/SKILL.md`](../templates/repo-starter/skills/external/grilling/SKILL.md)：`gh api` 重新 pull **2,077 bytes verbatim**，frontmatter 之後加 MIT 出處／日期／「唔好直接執行」blockquote，正文一字不改，最底另標「本地註記（非原文）」。**唔複製 `grill-me`**（佢只係 `Call the Skill tool with "grilling"`，呢個環境無對應工具，放咗反而誤導）。
+- 13b README §1 由「三分 bucket」變 **4 個**（加 `external/`：只作引用＋溯源、唔改、唔 promote、唔入根 README）。
+- `INTAKE.md`／`repo-setup` 第 0 步／`START.md` ⓪／根 README 🆕 第 0 步／根 AGENTS ②a／[27 §2b](27-repo-starter.md)／[29 §5](29-reading-map.md)／`templates/README.md`／`PREFLIGHT.md` 全部改 **本地連結優先 + 外連做來源**。
+
+**③ 「以後加 SKILL 必入目錄」（用戶呢句嘅重點）**
+
+- 新檔 [`skills/CATALOG.md`](../templates/repo-starter/skills/CATALOG.md)：**唯一目錄**（3 行：`repo-setup`／`design-review`／`grilling`，各要有 `name` + 完整相對路徑）＋ **加新 SKILL 四步**（生檔 → 驗 frontmatter → **加目錄行 + `AGENTS.md` 指名** → PREFLIGHT／consistency 綠先 commit）。13b README §0 個兩行表**刪咗**，改做指針，避免一個事實寫兩次。
+- `scripts/check_skills_v1.0.mjs`：見到 `skills/CATALOG.md` 就逐份對 `name` + `f.where`；缺一 `FAIL`。**冇 catalog 嘅舊 repo 唔扮有**（例如單數 `skill/` 嘅 `answer` repo 照 PASS）。`--json` 多咗 `catalog: true/false`。
+- `scripts/consistency_v1.0.mjs` 新增 **`skills-catalog`**：缺 CATALOG.md ／任一 SKILL 未入目錄 ／ `docs/README.md`・`templates/README.md`・13b README・starter `AGENTS.md` 無指去 CATALOG.md → **FAIL**；`skills-wired` 訊息由「預期 2 份」改「至少 2 份核心」。改完未同步索引嘅中間狀態實測 **5 FAIL**（負面對照），補完 0 FAIL。
+- 即係：**唔靠 AGENT 記得**。PREFLIGHT 第 8 格（新 repo）同 `consistency`（真理倉）兩層都會擋。
+
+**仍然係 limitation**：無 Skill tool／plugin harness，CATALOG.md 係**目錄 + 文件約定**唔係 manifest，唔會令 skill 自動載入；`external/grilling` 原文嘅 sub-agent 搵 fact 喺呢個環境做唔到，本地化版喺 `INTAKE.md`。
