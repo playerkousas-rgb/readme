@@ -2,6 +2,8 @@
 
 以下整理用戶提供的比較及來源，供研發前調查參考，**不是功能實測或完整競品清單**。外部產品和項目會更新，功能、價格、授權及可用性須於決策前重新核實；部分項目為原型、範本或仍待實測，不能假設已投入使用。
 
+> **自有項目「有乜可以直接 reuse」嘅盤點另見 [docs/25](25-reverse-api-reuse.md)**（2026-11-02：85 個 public repo，Reverse API／私有 API 接入）。
+
 ## 童軍行政與獎章
 
 - `troop-portal`、`scoutsystem-2.0`、`troop-attendance`、`ecportal`、`82venture`、`vs_portal`：最相近的是 **Online Scout Manager**，都有成員資料、點名、活動及獎章管理等功能。你的項目較集中處理香港旅團、支部及表格流程；不過 `troop-portal` 的公開 README 亦將它描述為重構中的 UI prototype，不能假設所有功能已正式投入使用。[Online Scout Manager](https://www.onlinescoutmanager.co.uk/) · [troop-portal](https://github.com/playerkousas-rgb/troop-portal)
