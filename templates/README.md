@@ -20,6 +20,17 @@
 | GAS manifest | `gas/appsscript.json` | Apps Script `appsscript.json`（顯示隱藏檔案） |
 | RLS 範本 | `supabase/rls.sql` | `supabase/migrations/<ts>_rls.sql` |
 | 推送訂閱表 | `supabase/push_subscriptions.sql` | `supabase/migrations/<ts>_push.sql` |
+| **🆕 新 repo 起手包（12 樣 + 第 13 項 + 第 14 項）** | [`repo-starter/START.md`](repo-starter/START.md) | 成個 `repo-starter/` 抄去新 repo，改 `{{...}}`；見 [docs/27](../docs/27-repo-starter.md) |
+| **🎨 設計檢查（可選 13a）** | [`repo-starter/docs/design-review.md`](repo-starter/docs/design-review.md) | 有 UI 先加：反 slop、頁面 vs app 屏幕、390/768/1440 望圖自檢（借 taste-skill，零依賴） |
+| **🧠 skills 收納 + 觸發軸（可選 13b）** | [`repo-starter/docs/skills/README.md`](repo-starter/docs/skills/README.md) | bucket + user-／model-invoked；**所有新 repo**：AGENT 開局讀 `skills/promoted/repo-setup/SKILL.md` |
+| **📄 SKILL.md 範本（可選 13c）** | [`repo-starter/docs/skills/0000-template.md`](repo-starter/docs/skills/0000-template.md) | frontmatter 規格 + What／When／Common questions／It's working if |
+| **❓ INTAKE 問卷（第 0 步）** | [`repo-starter/INTAKE.md`](repo-starter/INTAKE.md) | **抄檔之前** AGENT 主動問用戶 7 條；借 mattpocock `grilling/SKILL.md`；答案寫入 `SCOPE.md` |
+| **🛑 PREFLIGHT 開局 gate（13d，必跑）** | [`repo-starter/PREFLIGHT.md`](repo-starter/PREFLIGHT.md) | **AGENT 設定／commit repo 之前**一條命令擋住；唔係每次 push 嘅 YML |
+| **🛑 PREFLIGHT 腳本** | [`../scripts/preflight_v1.0.mjs`](../scripts/preflight_v1.0.mjs) | 零依賴 orchestrator：8 個 check 一次過，`--json`／exit 1；抄入新 repo `scripts/` |
+| **🔐 系統基本功能驗收（第 14 項）** | [`repo-starter/docs/system-basics.md`](repo-starter/docs/system-basics.md) | 有身份／有登入系統先加：帳號生命週期 8 樣（含忘記密碼）＋ ADMIN 回報系統 8 樣；見 [docs/31](../docs/31-system-basics.md) |
+| **⚙️ `repo-setup` SKILL.md（13b）** | [`repo-starter/skills/promoted/repo-setup/SKILL.md`](repo-starter/skills/promoted/repo-setup/SKILL.md) | **AGENT 開新 repo 時真正會用**：寫入 `AGENTS.md` 開工順序第 1 步；frontmatter 過 strict parser |
+| **🎨 `design-review` SKILL.md（13b）** | [`repo-starter/skills/promoted/design-review/SKILL.md`](repo-starter/skills/promoted/design-review/SKILL.md) | 有 UI 先由 `repo-setup` 明確指名呼叫；望圖／rubric／ROUND 格式 |
+| **🆕 自製 API 5 分鐘 demo** | [`reverse-api-demo/README.md`](reverse-api-demo/README.md) | `python3 example_usage.py`；見 [docs/26](../docs/26-reverse-api-walkthrough.md) |
 | **🧠 Canvas 腦源檔** | `canvas/brain_v1.0.gs` | Git 唯一真理；sync → `Code.gs` 貼入 Apps Script |
 | **🎨 Canvas 殼源檔** | `canvas/shell_v1.0.html` | Git 唯一真理；sync → `index.html`（GAS HTML file） |
 | Canvas 部署拷貝 | `canvas/Code.gs` + `canvas/index.html` | GENERATED，唔好直接改 |

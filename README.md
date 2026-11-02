@@ -4,7 +4,26 @@
 > 呢個 repo **唔係一個 app**，而係我所有 app 共用嘅**說明書 ＋ 可複製模板 ＋ 自動防呆檢查**。
 > **案例隔離（2026-10-27）**：通用規則包括 S/F/A/W/V、研發前調查 P1 ＋ 技術棧契約；ecportal 旅團／進度追蹤嘅專案設定全部喺 [docs/19](docs/19-ecportal-troop-case.md)，**唔係通用底線**；邊個 repo 有問題喺 [docs/20](docs/20-repo-health-audit.md)。
 
-更新日期：2026-10-28 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase ＋ Gemini／Canvas**
+更新日期：2026-11-02 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase ＋ Gemini／Canvas**
+
+---
+
+## 🆕 開新 REPO：AGENT 第一步（2026-11-02）
+
+> **如果你係 AGENT，而用戶話「開個新 repo／開新 app」：唔使讀晒呢頁，直接跟下面 6 步（0–5）。** 用戶會叫你「先睇一次呢個 repo 嘅 README」—— 呢個就係嗰個入口。**第 0 步最緊要：先主動問清楚用戶需求，唔好靠估。**
+
+| 步 | 做乜 | 檔 |
+|:--:|---|---|
+| **0** | **主動問用戶**：一輪問晒「而家問得」嘅問題（形式／有冇 UI／身份／後台／Gemini／授權／一句定位），每條俾建議答案；**fact 自己查、決定留畀用戶；用戶確認先好郁手** | [`INTAKE.md`](templates/repo-starter/INTAKE.md)（借 mattpocock `grilling/SKILL.md`） |
+| 1 | 抄起手包 → 填 `{{...}}` → **揀授權** → 抄 5 支真理 script → `git init` | [`templates/repo-starter/START.md`](templates/repo-starter/START.md) ⓪–④ |
+| 2 | **主動讀 `repo-setup` 並跟住做**：12 樣核心 → 按**形式**揀第 13／14 項 → 兩軸 review（Standards／Spec 分開） | [`skills/promoted/repo-setup/SKILL.md`](templates/repo-starter/skills/promoted/repo-setup/SKILL.md) |
+| 3 | **有 UI／要出畫面**：`repo-setup` 第 4 步會明確叫你讀 `design-review`（house rules、inventory、390/768/1440 望圖、6 條 critique、`ROUND n`、40/30/20/10） | [`skills/promoted/design-review/SKILL.md`](templates/repo-starter/skills/promoted/design-review/SKILL.md) |
+| 4 | **未 commit 之前**跑閘門：`ok: true` 先好郁，`exit 1` 即刻停手（8 個 check） | [`PREFLIGHT.md`](templates/repo-starter/PREFLIGHT.md) ＋ `node scripts/preflight_v1.0.mjs . --json` |
+| 5 | 交付前 `guard` ＋ `final_check`；舊 repo 唔使一次過補，按 L2 排隊 | [docs/30](docs/30-repo-health-check.md) · [docs/27](docs/27-repo-starter.md) |
+
+> ⚠️ **唔係自動觸發**：呢個環境無 Skill tool／plugin harness，要你（AGENT）**主動讀**上面兩份 `SKILL.md`；PREFLIGHT 只驗佢哋存在同 frontmatter 合格，**唔會代你執行**。
+> ⚠️ **唔會自動整靚版面**：無瀏覽器／screenshots／Chrome inspector；望圖、設計分、`ROUND n` critique、兩軸報告要你自己寫低，做唔到就照實寫「做唔到」（[docs/32 §8.9](docs/32-consistency-audit.md)）。想睇「開新 repo 之後實際會／唔會發生乜」：[`START.md` 個對照表](templates/repo-starter/START.md)。
+> 用戶只想**改現有 repo／查規則／審計** → 落下面 §1 導覽，唔好行呢 6 步（改現有 repo 只需要問「想改乜」，見 `INTAKE.md` 第 2 輪）。
 
 ---
 
@@ -16,6 +35,7 @@
 | **20 分鐘** | 本 README ＋ [PLAYBOOK.md](PLAYBOOK.md)（規則 ID 總表） |
 | 撞到問題 | 下面 §1 導覽 → 對應 `docs/` |
 | 交付前 | `node scripts/final_check_v1.0.mjs`（六角度實測，見 [docs/17](docs/17-final-check-and-tutorial.md)） |
+| **開新 REPO（AGENT）** | **上面 🆕 6 步（0–5）**：先 [`INTAKE.md`](templates/repo-starter/INTAKE.md) 問清楚 → [`START.md`](templates/repo-starter/START.md) → `repo-setup` SKILL.md → PREFLIGHT |
 | AI Agent | [AGENTS.md](AGENTS.md) 頭 12 行 → README → PLAYBOOK → `final_check --json` |
 
 ---
@@ -48,6 +68,16 @@
 | 5 分鐘內知全部規矩 | **[PLAYBOOK.md](PLAYBOOK.md)** — 核心規範總綱（規則 ID：S/F/A/W/V/G/VL/X/U/C；專案案例已分開去 19） |
 | 印出嚟貼喺枱面 | [docs/00-quickcard.md](docs/00-quickcard.md) — 一頁紙速查 |
 | 研發前查相近產品 | [docs/24-similar-products.md](docs/24-similar-products.md) — 既有比較及來源；新項目仍須自行搜尋核實（P1） |
+| 盤點自己 Git 有乜可以重用（Reverse API／私有 API） | [docs/25-reverse-api-reuse.md](docs/25-reverse-api-reuse.md) — 85 個 repo 盤點：已有後台 API client／proxy／fail-closed／drift audit，獨缺 HAR→codegen |
+| **想將 `docs/` 分章分類放好** | **[docs/README.md](docs/README.md)** — 章 0–6 索引、命名約定、加新檔四步 |
+| 仍唔明「自製 API」點用 | [docs/26-reverse-api-walkthrough.md](docs/26-reverse-api-walkthrough.md) — 用九龍城區／營地天氣／IKEA 三個例子 + [`templates/reverse-api-demo/`](templates/reverse-api-demo/README.md) 可跑示範 |
+| 開新 Git repo 要加乜 | [docs/27-repo-starter.md](docs/27-repo-starter.md) ＋ [`templates/repo-starter/START.md`](templates/repo-starter/START.md) — 12 樣 ＋ 第 13／14 項；**AGENT 開局讀 [`repo-setup/SKILL.md`](templates/repo-starter/skills/promoted/repo-setup/SKILL.md)**（有 UI 再讀 `design-review`） |
+| **想 AGENT 設定 repo 前先檢查好**（唔想每次 push 跑 YML） | [`templates/repo-starter/PREFLIGHT.md`](templates/repo-starter/PREFLIGHT.md) ＋ `node scripts/preflight_v1.0.mjs . --json` — 8 個 check 一次過，exit 1 就停手 |
+| 有身份系統要有乜基本功能（忘記密碼／ADMIN 回報） | **[docs/31-system-basics.md](docs/31-system-basics.md)** — 帳號生命週期 8 樣 ＋ **ADMIN 回報系統 8 樣**（通用）＋ [`templates/repo-starter/docs/system-basics.md`](templates/repo-starter/docs/system-basics.md) 可抄驗收表 |
+| 我啲 repo 係咪「輕／有後台／Gemini」 | [docs/28-repo-taxonomy.md](docs/28-repo-taxonomy.md) — **形式分類**：30 輕／30 有後台／17 同 AI 有關，85 個逐個標籤 |
+| API 設計／SKILL／分類嘅閱讀地圖 | [docs/29-reading-map.md](docs/29-reading-map.md) — 含 mattpocock/skills 同 taste-skill 評審 |
+| **每個 repo 要點檢查** | **[docs/30-repo-health-check.md](docs/30-repo-health-check.md)** ＋ `node scripts/repo_health_v1.0.mjs <path> --json` |
+| **成個 repo 有冇混亂／矛盾** | **[docs/32-consistency-audit.md](docs/32-consistency-audit.md)** ＋ `node scripts/consistency_v1.0.mjs . --json` — 3 軸 11 種檢查；**§8 用兩個 GIT 嘅 SKILL 原文再審一次**（邊啲做咗／做唔到寫明） |
 | 開一個新 app | [docs/10-checklists.md](docs/10-checklists.md#1-開新-app30-分鐘) ＋ [templates/](templates/README.md) |
 | **出圖標（Icon／Favicon）** | **[README §9 G11 全站圖標標準](README.md#9-g11-全站圖標標準iconfavicon)** — 9 個 PNG／ICO、四種格式否決、maskable 66%、16px 手繪、體積 ≤260 KB、驗收 5 項（照抄，唔再重新設計） |
 | 檢查每次 commit / deploy | [docs/10-checklists.md](docs/10-checklists.md#2-每次施工commit-前) |
