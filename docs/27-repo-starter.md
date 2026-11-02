@@ -59,12 +59,12 @@
 | 知識／索引倉、資料管道、空殼／預留 | ❌ 唔加 13a–13c，留返 12 樣 |
 
 > **13d PREFLIGHT 唔跟形式**：所有新 repo 開局都要跑一次（寫入 `AGENTS.md` 第 0 步），上表只決定 13a–13c。
-> **13b 嘅兩份 `SKILL.md` 亦唔跟形式**：佢哋係「開新 repo 嗰個 AGENT」要用嘅指示（寫入 `AGENTS.md` 第 1 步），唔係等目標 repo 有 RAG 先至加。目標 repo 要唔要**留低** `skills/` 就按上表形式決定（[32 §8.9](32-consistency-audit.md)）。
+> **13b 嘅 3 份 `SKILL.md`（promoted 兩份 + external 一份）亦唔跟形式**：佢哋係「開新 repo 嗰個 AGENT」要用嘅指示／溯源（寫入 `AGENTS.md` 第 1 步），唔係等目標 repo 有 RAG 先至加。目標 repo 要唔要**留低** `skills/` 就按上表形式決定（[32 §8.9](32-consistency-audit.md)）。
 
 | # | 檔 | 借自 | 實際加到乜 |
 |:--:|---|---|---|
 | 13a | [`docs/design-review.md`](../templates/repo-starter/docs/design-review.md) | taste-skill | 反 slop house style、頁面 vs app 屏幕、inventory 8–12 件、每段 claim＋proof、`390/768/1440` 三寬度 look-and-fix、6 條 critique、評分 40/30/20/10；**零依賴、無 Chrome inspector** |
-| 13b | [`docs/skills/README.md`](../templates/repo-starter/docs/skills/README.md) ＋ [`skills/promoted/repo-setup/SKILL.md`](../templates/repo-starter/skills/promoted/repo-setup/SKILL.md) ＋ [`design-review/SKILL.md`](../templates/repo-starter/skills/promoted/design-review/SKILL.md) | mattpocock × taste-skill | 三分 bucket ＋ invocation 軸 ＋ progressive disclosure，再加**兩份真正可執行嘅 `SKILL.md`**：`repo-setup`（開局 12 樣／13 項／第 14 項／兩軸 review）同 `design-review`（望圖）；`AGENTS.md` 開工順序明確指名 |
+| 13b | [`skills/CATALOG.md`](../templates/repo-starter/skills/CATALOG.md)（唯一目錄）＋ [`docs/skills/README.md`](../templates/repo-starter/docs/skills/README.md) ＋ `promoted/` 兩份 ＋ [`external/grilling/SKILL.md`](../templates/repo-starter/skills/external/grilling/SKILL.md) | mattpocock × taste-skill | **4 個 bucket**（含 `external/`）＋ invocation 軸 ＋ progressive disclosure，再加 `repo-setup`（開局 12 樣／13 項／第 14 項／兩軸 review）、`design-review`（望圖）同 `external/grilling`（MIT 原文）；全部入 [`CATALOG.md`](../templates/repo-starter/skills/CATALOG.md)，**以後加 skill 必入**；`AGENTS.md` 開工順序明確指名 |
 | 13c | [`docs/skills/0000-template.md`](../templates/repo-starter/docs/skills/0000-template.md) | 兩者 | `SKILL.md` frontmatter 規格（kebab-case ≤64／description ≤1024／唯一名／boolean flag）＋ What／When／Common questions／It's working if 四段 |
 | 13d | [`PREFLIGHT.md`](../templates/repo-starter/PREFLIGHT.md) ＋ [`scripts/preflight_v1.0.mjs`](../scripts/preflight_v1.0.mjs) | taste-skill 嘅**檢查內容**，改咗**觸發時機** | AGENT 喺**設定／commit repo 之前**一條命令擋住：8 個 check（scripts 齊／placeholder／UTF-8／`node --check`／guard／final_check／repo_health／check_skills） |
 

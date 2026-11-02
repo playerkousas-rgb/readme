@@ -408,13 +408,16 @@ function checkRuleSync() {
   if (!/5MB/.test(pb)) err('F16/C13-g：PLAYBOOK.md 要寫明單一 HTML 嘅 5MB 上限（唔適用 S7/S10）');
 
   const readme = read('README.md');
-  // G11：圖標標準一定要喺 README 有齊 9 個檔（唔可以退化成「再討論」）
+  // G11：9 個圖標檔名要喺唯一來源出現。2026-11-02 起完整標準搬到 docs/33，
+  //       README §9 只留原則 + 指針；冇 docs/33 嘅舊／新 repo 仍然可以靠 README 過（向後兼容）。
+  const iconDoc = 'docs/33-icon-standard.md';
+  const iconSrc = readme + (existsSync(path.join(ROOT, iconDoc)) ? read(iconDoc) : '');
   const icons = ['favicon.ico', 'favicon-16.png', 'favicon-32.png', 'apple-touch-icon.png',
                  'icon-192.png', 'icon-512.png', 'icon-maskable-192.png',
                  'icon-maskable-512.png', 'og-image.png'];
-  const missIcon = icons.filter((n) => !readme.includes(n));
-  if (missIcon.length) err(`F16/G11：README.md 圖標標準缺 ${missIcon.join(', ')}`);
-  else ok(`F16/G11：README §9 圖標 9 個檔齊（PNG／ICO）`);
+  const missIcon = icons.filter((n) => !iconSrc.includes(n));
+  if (missIcon.length) err(`F16/G11：圖標標準缺 ${missIcon.join(', ')}`);
+  else ok(`F16/G11：圖標 9 個檔齊（PNG／ICO；README §9 或 docs/33）`);
   for (const d of ['docs/01-slim.md', 'docs/04-settings-super.md', 'docs/09-gemini-canvas.md',
                    'docs/10-checklists.md', 'docs/12-copyright-scout-system.md', 'docs/13-versioning.md',
                    'docs/14-api-key-injection.md', 'docs/15-resource-index.md',

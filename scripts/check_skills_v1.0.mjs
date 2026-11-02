@@ -98,7 +98,18 @@ for (const rel of ['.claude-plugin/plugin.json', '.claude-plugin/marketplace.jso
   }
 }
 
-const result = { tool: 'check_skills', version: VERSION, repo: root, skills: found.length, errors, ok: errors.length === 0 };
+// 2026-11-02：如果 repo 有 skills/CATALOG.md，每份 SKILL.md 都要入咗目錄（name + 完整相對路徑）。
+// 冇 catalog 嘅舊 repo 唔扮有，照舊 PASS（向後兼容，例如單數 skill/ 嘅 repo）。
+const catalogPath = path.join(root, 'skills', 'CATALOG.md');
+if (existsSync(catalogPath)) {
+  const cat = readFileSync(catalogPath, 'utf8');
+  for (const f of found) {
+    if (!cat.includes(f.name)) errors.push(`skills/CATALOG.md: 缺 skill「${f.name}」嘅目錄行`);
+    else if (!cat.includes(f.where)) errors.push(`skills/CATALOG.md: 「${f.name}」缺完整路徑 ${f.where}`);
+  }
+}
+
+const result = { tool: 'check_skills', version: VERSION, repo: root, skills: found.length, catalog: existsSync(catalogPath), errors, ok: errors.length === 0 };
 if (asJson) console.log(JSON.stringify(result, null, 2));
 else if (errors.length) {
   console.error(`FAIL — ${errors.length} 個問題：`);

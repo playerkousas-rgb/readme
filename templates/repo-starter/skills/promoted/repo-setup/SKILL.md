@@ -22,7 +22,7 @@ description: >-
 
 ### 開局步驟（照次序；同真理倉 README 🆕 6 步對齊）
 
-0. **先主動問用戶**（[`INTAKE.md`](../../../INTAKE.md)）：借 mattpocock [`grilling/SKILL.md`](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md) 嘅方法 —— 一輪問晒「而家問得」嘅 frontier（形式／UI／身份／後台／Gemini／授權／定位），每條俾**建議答案**；**fact 自己查**（`ls`／讀模板／P1），**決定留畀用戶**；**用戶確認先好抄檔**。**喺任何 `cp`／`git init` 之前**。若用戶喺真理倉 README 已經答咗並確認，跳過呢步，唔好重複問。
+0. **先主動問用戶**（[`INTAKE.md`](../../../INTAKE.md)）：借 [`external/grilling/SKILL.md`](../../external/grilling/SKILL.md)（實體檔，[原檔](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md)）嘅方法 —— 一輪問晒「而家問得」嘅 frontier（形式／UI／身份／後台／Gemini／授權／定位），每條俾**建議答案**；**fact 自己查**（`ls`／讀模板／P1），**決定留畀用戶**；**用戶確認先好抄檔**。**喺任何 `cp`／`git init` 之前**。若用戶喺真理倉 README 已經答咗並確認，跳過呢步，唔好重複問。
 1. 由 [`START.md`](../../../START.md) ⓪–④ 抄起手包：填 `{{...}}`、**先揀授權**先至將 `LICENSE-MIT.txt` 改名做 `LICENSE`、抄 5 支真理 script、`git init`、跑 [`PREFLIGHT`](../../../PREFLIGHT.md) gate（`exit 1` 即刻停手，8 個 check）。
 2. 讀 [`AGENTS.md`](../../../AGENTS.md) → [`SCOPE.md`](../../../SCOPE.md) → [`GLOSSARY.md`](../../../GLOSSARY.md)。**將第 0 步嘅答案寫入 `SCOPE.md`**（做乜／唔做乜兩條 bar）+ README 第一句；一個事實只寫一次，用字跟 GLOSSARY。
 3. **用第 0 步用戶確認嘅答案按形式揀**，唔好按內容／主題、唔好自己估（[docs/28](https://github.com/playerkousas-rgb/readme/blob/main/docs/28-repo-taxonomy.md)）：
@@ -30,7 +30,7 @@ description: >-
    - 有 `SKILL.md`／RAG／agent 工作流 → 留低 `skills/` 同 [`docs/skills/README.md`](../../../docs/skills/README.md)；新 skill 用 [`0000-template.md`](../../../docs/skills/0000-template.md)。
    - 有身份／有登入 → 加第 14 項 [`docs/system-basics.md`](../../../docs/system-basics.md)（帳號生命週期 + ADMIN 回報系統）。
    - 純工具／知識倉／資料管道／空殼 → 唔加 13a–13c、唔加第 14 項。
-   - **13d PREFLIGHT、12 樣核心、兩份 promoted SKILL.md 唔跟形式**，所有新 repo 都要。
+   - **13d PREFLIGHT、12 樣核心、3 份 SKILL.md 同 [`CATALOG.md`](../../CATALOG.md) 唔跟形式**，所有新 repo 都要。
 4. 難逆轉嘅決定寫一段 ADR（[`docs/adr/0000-template.md`](../../../docs/adr/0000-template.md)）；已拒絕嘅一個決定一檔去 [`docs/out-of-scope/`](../../../docs/out-of-scope/README.md)。
 5. 交付前做 **兩軸 review**，兩份報告分開寫、唔合併唔 rerank：
    - **Standards**：對返 `AGENTS.md`／`PLAYBOOK`／`docs/10`／`docs/README` 有冇硬違規；再對 Fowler 12 smells 做 labelled judgement call（有明文 repo 標準就 override）。

@@ -1,6 +1,6 @@
 # INTAKE — 開新 REPO 之前，AGENT 要先問清楚
 
-> **第 0 步，喺抄任何檔之前。** 借自 [mattpocock/skills `grilling/SKILL.md`](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md)（**2026-11-02 讀原文**，2,077 bytes）：問到共同理解為止、每條問題俾**建議答案**、一輪問晒「而家問得」嘅嘢、fact 自己去查唔好問用戶、**用戶確認先好郁手**。
+> **第 0 步，喺抄任何檔之前。** 方法原文 [`skills/external/grilling/SKILL.md`](skills/external/grilling/SKILL.md) **實體放咗喺本 repo**（[mattpocock/skills 原檔](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md)，MIT，**2026-11-02 讀取**，2,077 bytes；見 [`skills/CATALOG.md`](skills/CATALOG.md)）：問到共同理解為止、每條問題俾**建議答案**、一輪問晒「而家問得」嘅嘢、fact 自己去查唔好問用戶、**用戶確認先好郁手**。下面係本地化版，**唔使上網都睇到**。
 > 配套：[START.md](START.md) · [`repo-setup/SKILL.md`](skills/promoted/repo-setup/SKILL.md) · [PREFLIGHT.md](PREFLIGHT.md) · 真理倉 [docs/28](https://github.com/playerkousas-rgb/readme/blob/main/docs/28-repo-taxonomy.md) · [docs/32 §8](https://github.com/playerkousas-rgb/readme/blob/main/docs/32-consistency-audit.md)
 
 ---
@@ -78,11 +78,11 @@
 | Q6 授權 | 先揀先改 `LICENSE` |
 | Q7 定位 | `README.md` 第一句 + `SCOPE.md`；已拒絕去 `docs/out-of-scope/` |
 
-> **13d PREFLIGHT 同兩份 promoted SKILL.md 唔跟形式**：所有新 repo 都有，唔使問。
+> **13d PREFLIGHT、3 份 SKILL.md 同 [`skills/CATALOG.md`](skills/CATALOG.md) 唔跟形式**：所有新 repo 都有，唔使問。
 > **PREFLIGHT 係第 4 步，唔係第 0 步**：佢驗檔，唔驗「你估中用戶需求未」。問清楚先抄檔，唔好倒轉。
 
 ## 未核實／限制
 
-- `grilling` 原文係 Claude／Codex skill（有 `grill-me` user-invoked 版）；呢度只借**方法**，無 Skill tool、無 sub-agent，唔扮自動觸發。
+- `external/grilling` 原文係 Claude／Codex skill（有 `grill-me` user-invoked 版，我哋**唔複製**，因為佢只係叫 Skill tool）；呢度只借**方法**，無 Skill tool、無 sub-agent，唔扮自動觸發。`external/` 檔案唔改、唔 promote（[`CATALOG.md`](skills/CATALOG.md) §1）。
 - 問題入面嘅「建議答案」係**出發點**，唔係 default —— 用戶未確認就唔好當答咗。
 - fact（85 repo 統計、形式名、模板檔）要 AGENT 自己 `ls`／讀檔查，唔好問用戶。

@@ -8,7 +8,7 @@
 ```bash
 # ⓪ AGENT 第 0 步（**最緊要，喺任何 cp 之前**）：主動問用戶，問到共同理解
 #    一輪問晒 frontier、每條俾建議答案、fact 自己查、用戶確認先好郁手
-#    見 INTAKE.md（借 mattpocock grilling/SKILL.md）
+#    方法原文實體檔：skills/external/grilling/SKILL.md（MIT，見 skills/CATALOG.md）
 cat INTAKE.md
 
 # ⓪b 未抄檔之前，先驗真理倉個起手包冇壞（PREFLIGHT gate）
@@ -74,7 +74,7 @@ node scripts/preflight_v1.0.mjs . --json
 | # | 檔 | 幾時加 |
 |:--:|---|---|
 | 13a | [`docs/design-review.md`](docs/design-review.md) | **有 UI／要出畫面**：反 slop、頁面 vs app 屏幕、三寬度望圖自檢 |
-| 13b | [`docs/skills/README.md`](docs/skills/README.md) ＋ **`skills/promoted/` 兩份真正嘅 `SKILL.md`**（`repo-setup`／`design-review`） | **所有新 repo 開局**：AGENT 讀 `repo-setup` 跟住做；有 UI 再讀 `design-review`。有 `SKILL.md`／RAG 知識包就留低 `skills/` |
+| 13b | [`docs/skills/README.md`](docs/skills/README.md) ＋ **`skills/CATALOG.md`**（唯一目錄）＋ `skills/promoted/` 兩份、`skills/external/grilling` 一份 | **所有新 repo 開局**：AGENT 讀 `repo-setup` 跟住做；有 UI 再讀 `design-review`。有 `SKILL.md`／RAG 知識包就留低 `skills/` |
 | 13c | [`docs/skills/0000-template.md`](docs/skills/0000-template.md) | 寫新 skill：frontmatter 規格 + 四段式正文 |
 | 13d | [`PREFLIGHT.md`](PREFLIGHT.md) ＋ `scripts/preflight_v1.0.mjs`（抄現成） | **必跑（所有新 repo）**：AGENT 設定／commit **之前**一條命令擋住（8 個 check），唔係每次 push 跑 YML |
 
@@ -102,6 +102,8 @@ node scripts/preflight_v1.0.mjs . --json
 | `skills/promoted/design-review/SKILL.md` | **留低**；有 UI 先由 `repo-setup` 明確叫（13b） |
 | `PREFLIGHT.md` | 留低，並寫入 `AGENTS.md` 開工順序第 0 步（13d） |
 | `INTAKE.md` | **留低**：第 0 步問卷；答案寫入 `SCOPE.md`，唔好只留喺對話 |
+| `skills/CATALOG.md` | **留低**：所有 SKILL.md 嘅唯一目錄；**以後加 skill 必入**，`check_skills` 會自動對 |
+| `skills/external/grilling/SKILL.md` | **留低**：第 0 步方法嘅 MIT 原文（只作溯源，唔改唔執行） |
 | `docs/system-basics.md` | 留低做驗收表（第 14 項，有身份系統先加）；填入自己嘅數值 |
 | `github/guard.yml`（如有） | `.github/workflows/guard.yml`（12 樣第 11 項，抄現成） |
 
