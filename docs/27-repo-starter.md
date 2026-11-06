@@ -59,7 +59,7 @@
 | 知識／索引倉、資料管道、空殼／預留 | ❌ 唔加 13a–13c，留返 12 樣 |
 
 > **13d PREFLIGHT 唔跟形式**：所有新 repo 開局都要跑一次（寫入 `AGENTS.md` 第 0 步），上表只決定 13a–13c。
-> **13b 嘅 3 份 `SKILL.md`（promoted 兩份 + external 一份）亦唔跟形式**：佢哋係「開新 repo 嗰個 AGENT」要用嘅指示／溯源（寫入 `AGENTS.md` 第 1 步），唔係等目標 repo 有 RAG 先至加。目標 repo 要唔要**留低** `skills/` 就按上表形式決定（[32 §8.9](32-consistency-audit.md)）。
+> **13b 嘅 5 份 `SKILL.md`（promoted 三份 + external 兩份）亦唔跟形式**：佢哋係「開新 repo 嗰個 AGENT」要用嘅指示／溯源（寫入 `AGENTS.md` 第 1 步），唔係等目標 repo 有 RAG 先至加。目標 repo 要唔要**留低** `skills/` 就按上表形式決定（[32 §8.9](32-consistency-audit.md)）。
 
 | # | 檔 | 借自 | 實際加到乜 |
 |:--:|---|---|---|

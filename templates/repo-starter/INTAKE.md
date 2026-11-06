@@ -78,7 +78,7 @@
 | Q6 授權 | 先揀先改 `LICENSE` |
 | Q7 定位 | `README.md` 第一句 + `SCOPE.md`；已拒絕去 `docs/out-of-scope/` |
 
-> **13d PREFLIGHT、3 份 SKILL.md 同 [`skills/CATALOG.md`](skills/CATALOG.md) 唔跟形式**：所有新 repo 都有，唔使問。
+> **13d PREFLIGHT、5 份 SKILL.md 同 [`skills/CATALOG.md`](skills/CATALOG.md) 唔跟形式**：所有新 repo 都有，唔使問。
 > **PREFLIGHT 係第 4 步，唔係第 0 步**：佢驗檔，唔驗「你估中用戶需求未」。問清楚先抄檔，唔好倒轉。
 
 ## 未核實／限制

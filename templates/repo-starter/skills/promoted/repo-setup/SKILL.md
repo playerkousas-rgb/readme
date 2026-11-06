@@ -30,7 +30,7 @@ description: >-
    - 有 `SKILL.md`／RAG／agent 工作流 → 留低 `skills/` 同 [`docs/skills/README.md`](../../../docs/skills/README.md)；新 skill 用 [`0000-template.md`](../../../docs/skills/0000-template.md)。
    - 有身份／有登入 → 加第 14 項 [`docs/system-basics.md`](../../../docs/system-basics.md)（帳號生命週期 + ADMIN 回報系統）。
    - 純工具／知識倉／資料管道／空殼 → 唔加 13a–13c、唔加第 14 項。
-   - **13d PREFLIGHT、12 樣核心、3 份 SKILL.md 同 [`CATALOG.md`](../../CATALOG.md) 唔跟形式**，所有新 repo 都要。
+   - **13d PREFLIGHT、12 樣核心、5 份 SKILL.md 同 [`CATALOG.md`](../../CATALOG.md) 唔跟形式**，所有新 repo 都要。
 4. 難逆轉嘅決定寫一段 ADR（[`docs/adr/0000-template.md`](../../../docs/adr/0000-template.md)）；已拒絕嘅一個決定一檔去 [`docs/out-of-scope/`](../../../docs/out-of-scope/README.md)。
 5. 交付前做 **兩軸 review**，兩份報告分開寫、唔合併唔 rerank：
    - **Standards**：對返 `AGENTS.md`／`PLAYBOOK`／`docs/10`／`docs/README` 有冇硬違規；再對 Fowler 12 smells 做 labelled judgement call（有明文 repo 標準就 override）。

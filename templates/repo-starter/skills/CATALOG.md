@@ -1,6 +1,7 @@
 # skills/CATALOG.md — 所有 SKILL.md 嘅唯一目錄
 
 > 2026-11-02 起：**任何新加嘅 `SKILL.md` 一定要入呢張表**，唔係「記得就加」。一個事實只寫一次 —— skill 嘅名／路徑／bucket／邊個呼叫／幾時用，全部以呢份為準；[`docs/skills/README.md`](../docs/skills/README.md) 同兩份總索引只放指針。
+> **2026-11-06 加兩份**：`motion-prompt`（external 原文，showheyohtaki/motion-prompt，MIT，commit `7819d3879eb7d5a1475c11c001bedffb5cab64af`，含 `scripts/motion-prompt.mjs` CLI，要網絡）同 `web-motion`（promoted，本地合成）。而家共 5 份。
 
 ## 1. 目錄（每份 SKILL.md 一行）
 
@@ -8,9 +9,11 @@
 |---|---|---|---|---|---|
 | `repo-setup` | `skills/promoted/repo-setup/SKILL.md` | promoted | **Model-invoked** | 本地（借 mattpocock 分類治理／code-review 兩軸） | 開新 repo、12 樣＋第 13／14 項、兩軸 review、PREFLIGHT |
 | `design-review` | `skills/promoted/design-review/SKILL.md` | promoted | **Model-invoked** | 本地（借 taste-skill rubric／望圖） | 有 UI／要出畫面、390/768/1440 望圖、反 slop |
+| `web-motion` | `skills/promoted/web-motion/SKILL.md` | promoted | **Model-invoked** | 本地（借 showheyohtaki/motion-prompt 編號／greensock/gsap-skills／scroll 術語；MIT） | 有 UI／要動態：GSAP＋scroll 術語＋編號講清需求；配合 `design-review` |
 | `grilling` | `skills/external/grilling/SKILL.md` | external | Model-invoked（**只作引用**） | **外部原文 verbatim** · mattpocock/skills **MIT** · 2026-11-02 讀取 | 問需求方法嘅溯源；**實際執行跟 [`INTAKE.md`](../INTAKE.md)** |
+| `motion-prompt` | `skills/external/motion-prompt/SKILL.md` | external | Model-invoked（**只作引用**） | **外部原文 verbatim** · showheyohtaki/motion-prompt **MIT** · 2026-11-06 讀取（commit `7819d38`）；隨附 `scripts/motion-prompt.mjs` CLI（Node 18+、零依賴、讀遠端 catalog＋磁碟 cache） | 要指名／挑選動態效果編號（#001–#192）時嘅權威來源；**施工跟 [`web-motion`](promoted/web-motion/SKILL.md)** |
 
-> `external/` 嘅嘢**唔改、唔 promote、唔喺根 README 列出**；要改方法就改本地 [`INTAKE.md`](../INTAKE.md) 同 `repo-setup` 第 0 步。
+> `external/` 嘅嘢**唔改、唔 promote、唔喺根 README 列出**；要改方法就改本地 [`INTAKE.md`](../INTAKE.md) 同 `repo-setup` 第 0 步。`motion-prompt` 嘅 upstream 檔案（`SKILL.md`／`references/porting.md`／`scripts/motion-prompt.mjs`）一如 `grilling/SKILL.md` 屬 verbatim 快照，更新要成組換並喺呢張表改 commit。
 
 ## 2. 加新 SKILL 四步（AGENT 必跟，唔好靠估）
 
