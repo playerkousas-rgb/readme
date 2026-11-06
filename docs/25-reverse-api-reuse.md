@@ -2,6 +2,8 @@
 
 > **研發前調查 P1 記錄**（[PLAYBOOK P1](../PLAYBOOK.md#0-開工前三分類決定做幾多) · [docs/24](24-similar-products.md) 後續）
 > 調查日期：**2026-11-02（HKT）** ｜ 範圍：`playerkousas-rgb` **85 個 public repo** ｜ 性質：**檔案／文件盤點，唔係功能實測**
+>
+> **2026-11-06 補註**：本頁保留當日版本／ repo 盤點；上游而家支援嘅 SDK／輸出語言、HAR 私隱同「改版唔會壞」修正，以 [34 §3](34-ai-workflow-tools.md) 嘅新查證入口為準。呢輪仍冇執行逆向或驗證影片嘅 IKEA 案例。
 
 ---
 

@@ -5,6 +5,7 @@
 > 上游＝GitHub 上最常 bookmark 嘅 5 個設計資源庫；下游＝你自己嘅 G／W／S 規則（圖標 [README §9](../README.md#9-g11-全站圖標標準iconfavicon)、版權 [12](12-copyright-scout-system.md)、瘦身 [01](01-slim.md)）。
 
 **星星數為 2026-10-29 用 GitHub API 實測**（`GET /repos/{owner}/{repo}` 嘅 `stargazers_count`），唔係估。
+**2026-11-06 增補**：三個配色站嘅分工同對比驗收見 §5.1–5.2；唔改上面五個主庫嘅歷史星數快照。
 
 ---
 
@@ -31,7 +32,7 @@
 
 - **用法**：當「供應商名單」，唔係「下載站」。揀 1–2 個 per 類別就夠，唔好每類儲 10 個（S1 瘦身＋注意力）。
 - **字體**：留意 licence（Google Fonts = OFL 可 self-host；Adobe Fonts 要訂閱）。**只 load 用得到嘅字重**，`font-display: swap`，中文字體 subset 先（一個中文字體 full set 可以 10MB+，直接爆 S7／C13-g）。
-- **配色**：抄 hex 之前先定**語意 token**（`--bg`／`--fg`／`--accent`／`--danger`），唔好散落 50 個 raw hex（同 [04 設定層](04-settings-super.md) 一個入口嘅思路一樣）。
+- **配色**（工具比較見 §5.1）：抄 hex 之前先定**語意 token**（`--bg`／`--fg`／`--accent`／`--danger`），唔好散落 50 個 raw hex（同 [04 設定層](04-settings-super.md) 一個入口嘅思路一樣）。
 - **Icons**：SVG inline 或 sprite；**唔好**整套 icon font 拖入 dist。
 - **Templates**：可以抄骨架，唔好抄到連授權檔都唔睇；落地時改到「唔認得原本」，再喺 `CREDITS.md` 標來源（[W8](12-copyright-scout-system.md#w8--第三方素材要標來源)）。
 
@@ -92,7 +93,7 @@
 | 1 | 講清楚係**視覺設計**定**系統設計**（§4） | 一句話喺 README 頂 | — |
 | 2 | 揀 3 個 reference（`awesome-design` 掃） | `docs/DESIGN.md` §Reference | W8 |
 | 3 | 揀 1 份 `DESIGN.md` 做底，改成自己品牌 | `DESIGN.md` ＋ `CREDITS.md`（來源＋commit） | F1／W8 |
-| 4 | Design Token 落 CSS variables（色／字／距／圓角／陰影 5 組） | `tokens.css` | S1（一套 token，唔好散 hex） |
+| 4 | Design Token 落 CSS variables（色／字／距／圓角／陰影 5 組）；配色先跟 §5.2 測對比、分語意 | `tokens.css`＋配色來源／對比紀錄 | S1（一套 token，唔好散 hex） |
 | 5 | 揀字體：≤2 家族、≤4 字重、中文 subset | `<link>` 或 self-host | S1／S7 |
 | 6 | 揀 icon 方案：**一個**（inline SVG sprite 或 icon library 按需） | `icons/` | S1／W8 |
 | 7 | 出齊 9 個圖標（favicon.ico／16／32／180／192／512／maskable×2／og） | `public/icons/*` | **G11**（[README §9](../README.md#9-g11-全站圖標標準iconfavicon)） |
@@ -127,6 +128,30 @@
 | UI 零件 | [shadcn/ui](https://ui.shadcn.com) | copy-paste 組件，唔綁版本（合 S1） |
 | 無障礙／UX 檢查 | [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/) | 文字對比 ≥4.5:1（AA） |
 | 系統設計（中文） | [system-design-primer 繁中版](https://github.com/donnemartin/system-design-primer/blob/master/README-zh-TW.md) | 同上 §2.4，中文對照 |
+
+---
+
+### 5.1 三個配色入口：傳統色／圖片抽色／主題色盤（2026-11-06 增補）
+
+> 來源：[Nippon Colors 官方頁](https://nipponcolors.com/)、[Adobe Color 官方頁](https://color.adobe.com/)＋[抽色說明](https://helpx.adobe.com/x-productkb/multi/eos-color-themes.html)、[Color Hunt 官方頁](https://colorhunt.co/)。本輪只核對公開搜尋索引嘅官方頁摘要，**冇直接開站試上傳／搜尋／匯出**；登入、地區、收費及私隱選項以 live 版為準。
+
+| 工具 | 最適合嘅任務 | 點樣用先有實際產出 | 限制／補強 |
+|---|---|---|---|
+| [Nippon Colors](https://nipponcolors.com/) | 搵日本傳統色名／色票，定一個有文化氣質嘅主色或 accent | 揀色後記錄色名／色值，再配中性背景、文字及狀態色，寫入 `DESIGN.md` | **單一傳統色唔等於完整 UI palette**；「高級感」係主觀，唔保證對比合格；螢幕色同印刷色要另外校樣 |
+| [Adobe Color](https://color.adobe.com/) | 自己有授權嘅 poster／相片，想抽色做一致視覺 | 用 **Create → Extract Theme** 抽色，調整色點／色調，再喺實際 UI 背景測對比；可配合 [Accessibility Tools](https://helpx.adobe.com/ca/creative-cloud/adobe-color-accessibility-tools.html) 檢查色盲辨識衝突 | 抽出嚟係圖片色彩，唔係自動知道邊隻做背景／危險色；**抽色唔賦予原圖使用權**。客戶機密圖先確認上傳／雲端處理條款 |
+| [Color Hunt](https://colorhunt.co/) | 冇靈感時快速比較現成四色組合 | 用主題標籤／搜尋（例如 `vintage`、`pastel`），記低 palette 網址＋色值，映射成語意 token | 四色唔等於四個 UI 角色；關鍵字可以冇結果，**唔保證每次過百款**。流行配色亦唔保證無障礙 |
+
+同現有 [Coolors／Realtime Colors](#5-補充同類常青資源唔喺上面-5-個入面但常用) 分工：前者幫手生成／預覽，呢三個分別補「傳統色靈感」「從自己圖片抽色」「瀏覽現成四色組合」。揀一個起點就夠，唔使每個 project 開齊六個網站。
+
+### 5.2 由色票到可交付 UI：五步驗收
+
+1. **只揀一個方向**：記錄工具／palette URL 同選用原因；參考 poster 嘅色可以，照抄排版、logo、插畫唔可以（W8）。
+2. **先分配語意，再寫 hex**：將靈感色映射成 `--bg`／`--fg`／`--accent`／`--danger` 等角色；按需要補 surface、muted、success、focus。唔好將四色硬當「背景／文字／成功／錯誤」四格填空。
+3. **喺真實介面測對比**：用 [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/) 測一般文字（AA 一般文字至少 4.5:1）；大型文字、控制項邊界及圖表圖形要按相應 [WCAG 文字對比](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)／[非文字對比](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html) 條文檢查，唔係全部硬套同一比例。錯誤唔可以只靠紅綠分；focus 亦要睇得見。
+4. **一個入口落地**：設計決策寫 `DESIGN.md`，色值落 `tokens.css`；暗色模式要重新配對及測對比，唔可以只反轉顏色。手機／桌面實際畫面跟 [`design-review`](../templates/repo-starter/skills/promoted/design-review/SKILL.md) 檢查。
+5. **留來源、唔留機密**：用咗第三方素材喺 `CREDITS.md` 記來源／授權；只借用色值亦保留 reference URL 方便回溯。唔確定圖片權利／資料敏感性，就先用自己圖或公開授權圖試抽色。
+
+> 呢五步係將現有 F1／W8／S1 同設計 review 落實到配色，唔新增一套色票規範。AI 工具點配合整體開發流程 → [34](34-ai-workflow-tools.md)。
 
 ---
 

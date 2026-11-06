@@ -1,7 +1,7 @@
 # `docs/` 分章索引 — 邊份管邊樣
 
-> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–30 唔使再靠估。
-> 整理日期：2026-11-02 · 規則衝突時以 [PLAYBOOK](../PLAYBOOK.md) 為準 · 案例已隔離去 [19](19-ecportal-troop-case.md)，**唔係通用底線**。
+> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–34 唔使再靠估。
+> 整理日期：2026-11-06 · 規則衝突時以 [PLAYBOOK](../PLAYBOOK.md) 為準 · 案例已隔離去 [19](19-ecportal-troop-case.md)，**唔係通用底線**。
 
 ## 點用
 
@@ -58,6 +58,7 @@
 | [25-reverse-api-reuse.md](25-reverse-api-reuse.md) | 85 個 repo 對 Reverse API 嘅可重用盤點 |
 | [26-reverse-api-walkthrough.md](26-reverse-api-walkthrough.md) | 「自製 API」用自己 repo 講清楚 + 可跑 demo |
 | [29-reading-map.md](29-reading-map.md) | API 設計／Agent Skills／文件分類嘅閱讀地圖 |
+| [34-ai-workflow-tools.md](34-ai-workflow-tools.md) | **第三方 GitHub 開源 AI 工具**：PPT Master／Reverse API Engineer／`grill-me` 嘅來源、授權、限制、驗收；本機使用條件／未實測狀態明寫，唔重抄 25／26／INTAKE |
 
 ## 章 4 — 交付、驗收、出事
 
