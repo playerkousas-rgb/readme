@@ -62,6 +62,8 @@
 4. 出完 UI 對一次：**顏色全部出自 token？字階只用 5 級？圓角只用 2 種？** 唔係就返去改 `DESIGN.md` 或者改 code，唔好兩邊都改。
 5. 交付加 `© SCOUT SYSTEM`（W1）＋圖標走 [README §9 G11](../README.md#9-g11-全站圖標標準iconfavicon)。
 
+> 唔想用別人品牌做底，可以直接用自家嗰三套：[`templates/repo-starter/docs/design-styles_v1.0.md`](../templates/repo-starter/docs/design-styles_v1.0.md)（Scout Field／Paper／Clean，未喺真 app 實測，用前驗對比）。
+
 **三個風險（實測要知）**：
 - 品牌 design system 係**別人嘅商標資產**：抄「感覺／比例／token 命名」可以，**抄 logo、品牌 icon、獨有插畫**唔可以（W8）。
 - 上游係社群整理，個別 `DESIGN.md` 可能過時或同真實官網有出入 → **以官網 live 版為最終對照**。

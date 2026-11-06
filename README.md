@@ -84,6 +84,7 @@
 | 上線前 Go / No-Go | [docs/10-checklists.md](docs/10-checklists.md#3-上線前-go--no-go) |
 | 出事（key 外洩／爆 quota／資料唔見） | [docs/11-incidents.md](docs/11-incidents.md) |
 | 決定 Gemini app 用邊種結構 | [docs/09-gemini-canvas.md](docs/09-gemini-canvas.md) — **A 全開放／B 隱藏水印／C 腦殼分離** |
+| **Gemini 生圖要用風格 PROMPT（幾個系統共用）** | **[templates/canvas/STYLE_PRESETS_v1.0.md](templates/canvas/STYLE_PRESETS_v1.0.md)** — 9 個現成風格句（瑞士編輯／黏土／厚塗／明信片／青花瓷／普普／像素／手繪日記／3D 立體字）＋「產品／標誌唔變形」鎖定句，貼落任何 Type B/C 產生器就用；詞彙出處同收貨檢查見 [docs/37 §4](docs/37-ai-tools-design-prompts.md) |
 | 加隱形水印、用解碼器驗圖 | [docs/12-copyright-scout-system.md](docs/12-copyright-scout-system.md) ＋ [templates/watermark/](templates/watermark/README.md) |
 | 喺 Gemini 自動注入 API KEY | [docs/14-api-key-injection.md](docs/14-api-key-injection.md) — **C13 三軌自動注入（已實作可用）**：唯一 slot＋平台代理＋BYOK 後備；全端 app 先至用 server-side secret；[docs/09 C5](docs/09-gemini-canvas.md#c5--type-b喺-gemini-自動注入-api-keyc13已實作可用) |
 | 改版（檔名＋內文雙版號） | [docs/13-versioning.md](docs/13-versioning.md) |
@@ -215,7 +216,7 @@ templates/
   README.md               可抄嘢對照表 + 一鍵抄指令
   vercel/ git/ github/ gas/ supabase/   各平台 config / SQL / workflow
   watermark/              W 系列：codec / 解碼器 / 生成器 / key 注入器 / 測試（全部 _v1.0）
-  canvas/                 C 系列：brain_v1.0.gs / shell_v1.0.html / 部署拷貝 / 合約 / PROMPT / RECORDS
+  canvas/                 C 系列：brain_v1.0.gs / shell_v1.0.html / 部署拷貝 / 合約 / PROMPT / RECORDS / STYLE_PRESETS（風格句共用）
 scripts/guard.mjs         自動防呆檢查（本機 + CI 同一條）
 scripts/audit_single_html_v1.0.mjs  單一 HTML / Canvas artifact 交付前審計（S/F/A/W/V/C）
 scripts/seo_check_v1.0.mjs  公開頁 SEO/GEO 靜態檢查（title/og/JSON-LD 等；docs/39 §3.1）

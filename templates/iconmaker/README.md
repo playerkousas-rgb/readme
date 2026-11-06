@@ -1,6 +1,7 @@
 # Icon Maker — G11 圖標產生器（Type A 工具）
 
 > `icon_maker_v1.0.html`：上載一張母圖，喺瀏覽器本地出齊 [docs/33 G11](../../docs/33-icon-standard.md) 要嘅 9 個圖標檔，順手出埋 `<head>` 掛法同 `manifest.webmanifest`。一個 HTML，冇 API key、冇後端、張圖唔離開部機（Type A，[docs/09 C2](../../docs/09-gemini-canvas.md)）。
+> 同夾仲有 `photo_prep_v1.0.html`：上載前將相壓到目標 KB（預設 500KB，跟 S6 上載面規矩）、轉 JPEG／WebP／PNG、去 EXIF，一樣本地處理。
 
 ## 點用
 

@@ -18,6 +18,7 @@
 | [PROMPT_v1.0.md](PROMPT_v1.0.md) | 🔒 prompt 內容 + Prompt 版本 p1 + 檔名版號 | Git（**唔好貼入 Canvas 對話**） |
 | [RECORDS_v1.0.md](RECORDS_v1.0.md) | 🗂️ 紀錄 schema（原圖／成品圖／使用紀錄 + hash 鏈） | Git + Sheet `RECORDS` |
 | [PROMPTS_v1.0.md](PROMPTS_v1.0.md) | 💬 7 條可貼去 Gemini Canvas 嘅 prompt | 對話用 |
+| [STYLE_PRESETS_v1.0.md](STYLE_PRESETS_v1.0.md) | 🎨 9 個生圖風格句＋鎖定主體句（幾個 Gemini 系統共用） | 貼落各產生器 app 自己 repo；根 README §1 有專行入口 |
 | [brain.test.mjs](brain.test.mjs) | ✅ 16 條守護測試（含 W1/W6/V1/V4/V5） | Git + CI |
 
 ## 三步起機

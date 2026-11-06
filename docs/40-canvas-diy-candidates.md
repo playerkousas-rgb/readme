@@ -9,8 +9,8 @@
 |---|---|---|---|---|
 | 1 | **G11 圖標產生器**：上載母圖 → 出齊 9 個圖標檔（[33](33-icon-standard.md)） | ✅ **已做模板**（§2.1） | Type A | **第一** |
 | 2 | **風格海報／明信片產生器**：相＋風格名 → 成品圖（[37 §4](37-ai-tools-design-prompts.md)） | ✅ presets 已備好，**未貼入 app**（§2.2） | Type B（要紀錄／保密 prompt 升 C） | 第二 |
-| 3 | **Pre-mortem 意念鬧場**：入 idea → 人格化批評清單（[38 §4](38-animation-3d-prediction-tools.md) MiroFish 啟發） | 🔶 可整，但排最後 | Type C（prompt 係資產、意念可能敏感） | 第三 |
-| 4 | 相片預備工具：壓縮到 <500KB／轉 PNG·JPG·WebP（Convertio 啟發） | 🔶 可整，細工具 | Type A | 有餘力先 |
+| 3 | **Pre-mortem 意念鬧場**：入 idea → 人格化批評清單（[38 §4](38-animation-3d-prediction-tools.md) MiroFish 啟發） | 🔶 **模板已備好**，未起 Type C app（§2.3） | 模板行先；要起 app 先 Type C | 第三 |
+| 4 | 相片預備工具：壓縮到 <500KB／轉 PNG·JPG·WebP（Convertio 啟發） | ✅ **已做**（§2.4） | Type A | 有餘力先 |
 | — | API 搜尋頁（ApiVault 啟發） | ❌ 唔用 Canvas | 靜態頁入 `api` repo | [39 §2](39-verified-sites-and-diy.md) 已判 |
 | — | 其餘（SEO 檢查／LLM 路由／電台地圖／3D 世界／Logo 引擎等） | ❌ 唔用 Canvas | 見 §3 | — |
 
@@ -32,15 +32,17 @@
 - **值得加嘅係 presets**：將 [37 §4.1](37-ai-tools-design-prompts.md) 風格詞彙（瑞士／編輯／黏土／青花瓷／厚塗／明信片等）做成現有產生器嘅風格掣，加埋「產品唔變形」鎖定句（[37 §4.2](37-ai-tools-design-prompts.md)）同上／下對比預覽（原相 vs 成品）。成品照落 W1 頁尾＋W2 隱形水印，解碼器驗到先用。
 - **幾時升 Type C**：想留原圖／成品圖／使用紀錄，或者啲 prompt 調校想保密嗰陣，先跟 [09 C6](09-gemini-canvas.md) 拆腦殼分離；未有呢個需要就唔好為升而升（GAS 部署同 quota 係真成本）。
 
-### 2.3 Pre-mortem 意念鬧場（Type C）— 排最後，要有心理準備
+### 2.3 Pre-mortem 意念鬧場（Type C）— 排最後，要有心理準備（🔶 模板已備好）
 
+- **已備好（2026-11-07）**：[`templates/repo-starter/docs/pre-mortem.md`](../templates/repo-starter/docs/pre-mortem.md)——一段 copy 就用嘅 prompt（分飾目標用戶／畀錢嗰個／前線人員／對手用戶四人）＋收貨方法（假設表→寫入 INTAKE 問題→真人答完加欄對照）。**未起 Type C app**：模板已經覆蓋到八成價值，真係要起 app（留紀錄、保密 prompt）先至行下面嗰套，唔好為起而起。
 - **整到嘅版本**：入一段 idea 描述 → Gemini 分飾幾個人格（家長／領袖／新手用戶／財務嗰個）逐個鬧 → 出「邊度唔清晰、邊度冇人會用、邊度貴」清單。呢個係 MiroFish 嘅平價版：唔起模擬世界、唔燒成千 agent 嘅 token，一次 Gemini call 攪掂。
 - **點解 Type C**：批評 prompt 係你會慢慢調校嘅資產（唔想畀人抄就放腦）；用戶入嘅 idea 可能係未公開計劃，紀錄點存要諗過（跟 [templates/canvas/PROMPT_v1.0.md](../templates/canvas/PROMPT_v1.0.md) 規矩：RECORDS 只存 hash＋版本，唔存原文）。
 - **紅線（整之前要接受）**：產出永遠係**假設清單**，唔係用戶證據（[38 §4](38-animation-3d-prediction-tools.md)）；個 app 介面同報告都要寫明呢句，唔好做到似「AI 幫你驗證咗」咁。用佢代替問真人，就係整咗嚿嘢嚟呃自己。
 
-### 2.4 相片預備工具（Type A，可有可無）
+### 2.4 相片預備工具（Type A）— ✅ 2026-11-07 已做
 
-上載前將相壓到 <500KB（S6 上載面規矩）、轉 PNG／JPG／WebP、去 EXIF，全部瀏覽器本地做到，唔使 Convertio 嗰種「上載去人哋 server」（[38 §5](38-animation-3d-prediction-tools.md) 私隱嗰課）。同 2.1 同屬「媒體預備」類，**如果起 2.1，可以考慮合併做同一工具嘅第二個 tab**，唔好起兩個 app。
+- **已做**：[`templates/iconmaker/photo_prep_v1.0.html`](../templates/iconmaker/photo_prep_v1.0.html)——上載相→揀目標 KB（預設 500）／格式（JPEG／WebP／PNG）／最長邊，自動降質素兼逐步縮細去入目標；前後對照同 KB 數即時睇；EXIF 隨重新編碼移除；全部本地處理。`audit_single_html` PASS（0 FAIL）。同 Icon Maker 同夾放（同屬媒體預備），唔另開 repo。
+- 上載前將相壓到 <500KB（S6 上載面規矩）、轉 PNG／JPG／WebP、去 EXIF，全部瀏覽器本地做到，唔使 Convertio 嗰種「上載去人哋 server」（[38 §5](38-animation-3d-prediction-tools.md) 私隱嗰課）。
 
 ## 3. 唔好用 Canvas 整嗰啲（講明原因，唔好下次又諗返）
 

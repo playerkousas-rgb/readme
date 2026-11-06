@@ -12,6 +12,9 @@
 | 極簡 package | `vercel/package.json` | repo 根 `package.json` |
 | **🖼️ 站台圖標規範** | [README §9 G11](../README.md#9-g11-全站圖標標準iconfavicon) | 9 個 PNG／ICO + `<head>` 5 link ＋ 4 meta |
 | **🖼️ G11 圖標產生器（Type A）** | [`iconmaker/icon_maker_v1.0.html`](iconmaker/icon_maker_v1.0.html)＋[`iconmaker/README.md`](iconmaker/README.md) | 上載母圖→本地出齊 9 檔＋16px 手繪格＋maskable 66% 預覽＋head/manifest；照 [docs/33](../docs/33-icon-standard.md) 規格 |
+| **🖼️ 相片預備工具（Type A）** | [`iconmaker/photo_prep_v1.0.html`](iconmaker/photo_prep_v1.0.html) | 上載前壓到目標 KB（預設 500KB）／轉 JPEG·WebP·PNG／去 EXIF；本地處理唔上載 |
+| **💀 Pre-mortem 模板** | [`repo-starter/docs/pre-mortem.md`](repo-starter/docs/pre-mortem.md) | 開工前 AI 分飾四人鬧 idea；產出只入「待驗證假設」，唔代替問真人 |
+| **🎨 House DESIGN 風格庫** | [`repo-starter/docs/design-styles_v1.0.md`](repo-starter/docs/design-styles_v1.0.md) | 自家 3 套 DESIGN.md 起點（Field／Paper／Clean）；揀一套抄入新 repo，唔抄人哋品牌 |
 | env 清單 | `vercel/env.example` | repo 根 `.env.example` + 本機 `.env.local` |
 | `/api/proxy` 骨架 | `vercel/api/proxy.mjs` | `api/proxy.mjs` |
 | `/api/super` 骨架 | `vercel/api/super.mjs` | `api/super.mjs` |

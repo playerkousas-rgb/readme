@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="app-version" content="v1.0">
+<meta name="copyright" content="© SCOUT SYSTEM">
+<title>Photo Prep v1.0 — © SCOUT SYSTEM</title>
+<style>
+  :root { color-scheme: light; --ink:#22302a; --muted:#5c6b63; --line:#d8e0da; --accent:#2c5a3c; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, "Noto Sans TC", sans-serif; color:var(--ink); background:#f7f8f6; }
+  main { max-width: 960px; margin:0 auto; padding:24px 16px 48px; }
+  h1 { font-size:1.5rem; margin:0 0 4px; }
+  .sub { color:var(--muted); }
+  section { background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:16px; }
+  label { display:block; font-weight:600; margin:10px 0 4px; }
+  input, select { padding:8px; border:1px solid var(--line); border-radius:8px; }
+  input[type="number"] { width:110px; }
+  button { background:var(--accent); color:#fff; border:0; border-radius:8px; padding:9px 14px; cursor:pointer; }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  .row { display:flex; gap:14px; flex-wrap:wrap; align-items:end; }
+  #drop { border:2px dashed var(--line); border-radius:12px; padding:22px; text-align:center; color:var(--muted); }
+  #drop.over { border-color:var(--accent); color:var(--accent); }
+  .pair { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .pair figure { margin:0; text-align:center; }
+  .pair img { max-width:100%; border:1px solid var(--line); border-radius:8px; }
+  .kb { font-family:ui-monospace, monospace; }
+  .ok { color:var(--accent); font-weight:700; } .bad { color:#b3261e; font-weight:700; }
+  footer { text-align:center; color:var(--muted); margin-top:24px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>🖼️ Photo Prep <span>v1.0</span></h1>
+  <p class="sub">上載前預備相片：壓到目標 KB、轉格式、順手去掉 EXIF（重新編碼自然唔保留）。全部喺你部機本地做，張相唔會上載去任何 server——唔使再用嗰啲要上載去人哋網站嘅轉格式服務。</p>
+
+  <section>
+    <h2 style="margin-top:0">1. 原相</h2>
+    <div id="drop">將相拖嚟呢度，或者 <label for="file" style="display:inline;color:var(--accent);cursor:pointer;text-decoration:underline">揀檔</label>
+      <input id="file" type="file" accept="image/*" hidden>
+    </div>
+    <p id="srcInfo" class="kb"></p>
+  </section>
+
+  <section>
+    <h2 style="margin-top:0">2. 設定</h2>
+    <div class="row">
+      <div><label for="targetKB">目標上限（KB）</label><input id="targetKB" type="number" value="500" min="20" max="5000" step="10"></div>
+      <div><label for="format">輸出格式</label>
+        <select id="format">
+          <option value="image/jpeg" selected>JPEG（相片首選）</option>
+          <option value="image/webp">WebP（再細啲）</option>
+          <option value="image/png">PNG（唔壓質素，控唔到 KB）</option>
+        </select></div>
+      <div><label for="maxDim">最長邊上限（px，0 = 唔縮）</label><input id="maxDim" type="number" value="0" min="0" step="100"></div>
+      <div><button id="run" type="button" disabled>開始處理</button></div>
+    </div>
+    <p class="sub" style="font-size:.9rem">預設 500 KB 係跟我哋上載面規矩（docs/01 S6：上載單檔 ≤500KB）。JPEG／WebP 會自動降質素、再唔得就逐步縮細，直到入到目標或者冇得再縮。</p>
+  </section>
+
+  <section>
+    <h2 style="margin-top:0">3. 結果</h2>
+    <div class="pair">
+      <figure><img id="prevSrc" alt="原相預覽"><figcaption class="kb" id="capSrc">原相</figcaption></figure>
+      <figure><img id="prevOut" alt="處理後預覽"><figcaption class="kb" id="capOut">未處理</figcaption></figure>
+    </div>
+    <p id="result"></p>
+    <button id="dl" type="button" disabled>下載處理後相片</button>
+  </section>
+
+  <footer>© SCOUT SYSTEM · Photo Prep <strong>v1.0</strong> · 本地工具，唔上載圖片</footer>
+</main>
+<script>
+const APP_VERSION = 'v1.0';
+const $ = (id) => document.getElementById(id);
+let srcImg = null, srcFile = null, outBlob = null, outName = 'photo.jpg';
+
+function load(file) {
+  if (!file) return;
+  srcFile = file;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    srcImg = img;
+    $('prevSrc').src = url;
+    $('srcInfo').textContent = `${file.name} · ${(file.size/1024).toFixed(1)} KB · ${img.naturalWidth}×${img.naturalHeight}`;
+    $('run').disabled = false;
+  };
+  img.src = url;
+}
+$('file').addEventListener('change', (e) => load(e.target.files[0]));
+const drop = $('drop');
+drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('over'); load(e.dataTransfer.files[0]); });
+
+function drawTo(w, h) {
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  c.getContext('2d').drawImage(srcImg, 0, 0, w, h); return c;
+}
+const blobP = (canvas, type, q) => new Promise((r) => canvas.toBlob(r, type, q));
+
+async function process() {
+  if (!srcImg) return;
+  const target = Math.max(20, Number($('targetKB').value) || 500) * 1024;
+  const type = $('format').value;
+  const ext = type === 'image/png' ? 'png' : type === 'image/webp' ? 'webp' : 'jpg';
+  let w = srcImg.naturalWidth, h = srcImg.naturalHeight;
+  const maxDim = Number($('maxDim').value) || 0;
+  if (maxDim && Math.max(w, h) > maxDim) { const s = maxDim / Math.max(w, h); w = Math.round(w * s); h = Math.round(h * s); }
+
+  let blob = null, note = '';
+  if (type === 'image/png') {
+    blob = await blobP(drawTo(w, h), type);
+    note = 'PNG 唔降質素，控唔到 KB；要細就轉 JPEG／WebP。';
+  } else {
+    // 先降質素，再逐步縮細，直到入到目標
+    for (let round = 0; round < 8 && !blob; round++) {
+      const canvas = drawTo(w, h);
+      for (let q = 0.92; q >= 0.3; q -= 0.08) {
+        const b = await blobP(canvas, type, q);
+        if (b && b.size <= target) { blob = b; note = `質素 ${q.toFixed(2)}`; break; }
+        blob = b;
+      }
+      if (blob && blob.size <= target) break;
+      w = Math.round(w * 0.82); h = Math.round(h * 0.82);
+      note = `已縮到 ${w}×${h}`;
+      if (w < 320 || h < 320) break;
+    }
+  }
+  outBlob = blob;
+  outName = (srcFile?.name.replace(/\.[^.]+$/, '') || 'photo') + '_prep.' + ext;
+  $('prevOut').src = URL.createObjectURL(blob);
+  const inKB = (srcFile.size / 1024), outKB = (blob.size / 1024);
+  $('capSrc').textContent = `原相 ${inKB.toFixed(1)} KB`;
+  $('capOut').textContent = `結果 ${outKB.toFixed(1)} KB · ${w}×${h} · ${ext.toUpperCase()}`;
+  const r = $('result');
+  const okSize = blob.size <= target;
+  r.innerHTML = '';
+  const span = document.createElement('span');
+  span.className = okSize ? 'ok' : 'bad';
+  span.textContent = okSize
+    ? `✅ ${inKB.toFixed(1)} KB → ${outKB.toFixed(1)} KB（${note}），入到 ${target/1024} KB 目標。EXIF 已隨重新編碼移除。`
+    : `⚠️ 出嚟 ${outKB.toFixed(1)} KB，仲未入到 ${target/1024} KB 目標（${note}）；再降低目標邊長或者轉 JPEG 再試。`;
+  r.appendChild(span);
+  $('dl').disabled = false;
+}
+$('run').addEventListener('click', process);
+$('dl').addEventListener('click', () => {
+  if (!outBlob) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(outBlob); a.download = outName; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+});
+</script>
+</body>
+</html>
