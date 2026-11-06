@@ -92,6 +92,7 @@
 | **爆紅 AI 清單揀邊個啱我哋**（動態／方法論／懶人包／Edge／粵語填詞） | **[docs/35-viral-ai-tools.md](docs/35-viral-ai-tools.md)** — 已用：起手包 `web-motion`＋`external/motion-prompt`；有場景先試 HyperFrames／story-to-handdrawn／Pixel2Motion；Paperclip／MoneyPrinterTurbo／Agent-Reach／VoiceStudio／Univer／Hindsight／Edge0 暫不採用；17 個 repo 已用 GitHub API 核實（2026-11-06） |
 | **教 AI 偷懶／免費平替啱唔啱我哋**（Ponytail／FreeBuff／Blender 城市／9 個開源平替） | **[docs/36-lazy-coding-and-open-alternatives.md](docs/36-lazy-coding-and-open-alternatives.md)** — 即刻吸收：Ponytail「寫 code 前七級梯」checklist（讀，唔裝 plugin）；FreeBuff 唔好用喺真 repo（數據條款）；其餘平替逐個判端用家試／有場景先試／唔採用；11 個 repo 已用 GitHub API 核實（2026-11-06） |
 | **免費 API／SEO 插件／設計畫廊／生圖風格啱唔啱我哋**（FreeLLMAPI／Claude SEO／20 種風格） | **[docs/37-ai-tools-design-prompts.md](docs/37-ai-tools-design-prompts.md)** — 即刻吸收：睇 API 三樣讀法＋8 個畫廊站入 [docs/23 §5.3](docs/23-design-resources.md)；Claude SEO 自家公開站上線前先試；FreeLLMAPI 只限個人實驗；生圖吸收詞彙＋句式（未實測）；GitHub API 已核實 2 個 repo（2026-11-06） |
+| **動畫 CLI／API 目錄／AI 預測啱唔啱我哋**（Animate UI／ApiVault／MiroFish） | **[docs/38-animation-3d-prediction-tools.md](docs/38-animation-3d-prediction-tools.md)** — ApiVault 入 [docs/15](docs/15-resource-index.md) 做搵 API 第二層；Animate UI 只啱 React／shadcn 項目；MiroFish 只當假設產生器、唔當市場證據；4 個 repo 已用 GitHub API 核實（2026-11-06） |
 | **開新 Git 前揀設計資源**（字體／配色／Icon／插畫／UI library／模板／DESIGN.md／系統設計） | **[docs/23-design-resources.md](docs/23-design-resources.md)** — 5 個主庫 ＋ Nippon Colors／Adobe Color／Color Hunt ＋ 配色對比驗收 ＋ 10 步開工 checklist |
 | 睇真實 Gemini Canvas app 踩過咩坑 | [docs/16-canvas-case-scout-comic.md](docs/16-canvas-case-scout-comic.md) — 童軍漫畫生成器 v4.2.1 實戰 |
 | 驗一個單一 HTML 交唔交到貨 | `node scripts/audit_single_html_v1.0.mjs <檔名>` — S/F/A/W/V/C 靜態審計 |
@@ -204,6 +205,7 @@ docs/
   35-viral-ai-tools.md        2026-11 爆紅清單核實＋採用：17 個 repo GitHub API 快照；web-motion／external motion-prompt 已入起手包
   36-lazy-coding-and-open-alternatives.md  爆紅清單第三輪：Ponytail 七級梯（已吸收做 checklist）／FreeBuff／Blender 城市／9 個開源平替核實
   37-ai-tools-design-prompts.md  爆紅清單第四輪：FreeLLMAPI（只限實驗）／Claude SEO（有場景先試）／設計畫廊入 23 §5.3／生圖詞彙句式
+  38-animation-3d-prediction-tools.md  爆紅清單第五輪：Animate UI（React 先試）／ApiVault（入 15 做第二層）／MiroFish（只出假設）／3D 生成觀察名單
   （圖標規範**唯一來源係 [docs/33](docs/33-icon-standard.md)** — 2026-11-02 由 README §9 抽出；9 個 PNG／ICO、maskable 66%、16px 手繪）
 templates/
   README.md               可抄嘢對照表 + 一鍵抄指令
