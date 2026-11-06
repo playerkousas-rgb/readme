@@ -30,7 +30,7 @@ node scripts/preflight_v1.0.mjs . --json
 | `guard` | G10 連結／錨點、A1 secret、S 體積 | 壞連結、真 key、爆 5MB |
 | `final_check` | 六角度交付檢查 | 交付前實測未過 |
 | `repo_health` | 12 樣起手檔、LICENSE、`.env`、大檔、cron+commit | 有 `FAIL`（`WARN` 唔阻塞，入 backlog） |
-| `check_skills` | 全倉 `SKILL.md` 驗 strict frontmatter **＋ 對 `skills/CATALOG.md` 目錄**（起手包 3 份：`repo-setup`／`design-review`／`external/grilling`） | agent harness 會靜靜 drop 成個 skill；**加咗 skill 無入目錄 = AGENT 搵唔到 = FAIL** |
+| `check_skills` | 全倉 `SKILL.md` 驗 strict frontmatter **＋ 對 `skills/CATALOG.md` 目錄**（起手包 5 份：`repo-setup`／`design-review`／`web-motion`／`external/grilling`／`external/motion-prompt`） | agent harness 會靜靜 drop 成個 skill；**加咗 skill 無入目錄 = AGENT 搵唔到 = FAIL** |
 
 **Gate 定義**：任何一項 FAIL → `exit 1`、`ok: false`。`WARN` 照舊入 backlog，唔阻塞交付（同 [docs/30](https://github.com/playerkousas-rgb/readme/blob/main/docs/30-repo-health-check.md) 一致）。
 
@@ -54,7 +54,7 @@ node scripts/preflight_v1.0.mjs . --json
 ## 未核實
 
 - `preflight` 係**靜態檢查**：唔跑 app、唔實測 API／ToS／runtime（同 `repo_health` 一樣）。
-- **唔會自動觸發** `skills/promoted/` 兩份 SKILL.md；要靠 AGENT 主動讀 [`AGENTS.md`](AGENTS.md) 開工順序第 1 步。呢個 gate 只係驗 frontmatter／連結／UTF-8 **同埋每份有冇入 [`skills/CATALOG.md`](skills/CATALOG.md)**，唔係幫你執行 skill。
+- **唔會自動觸發** `skills/promoted/` 三份 SKILL.md；要靠 AGENT 主動讀 [`AGENTS.md`](AGENTS.md) 開工順序第 1 步。呢個 gate 只係驗 frontmatter／連結／UTF-8 **同埋每份有冇入 [`skills/CATALOG.md`](skills/CATALOG.md)**，唔係幫你執行 skill。
 - **唔會出圖、唔會計設計分**：無瀏覽器／screenshots／Chrome inspector，`design-review` 嘅 390/768/1440 望圖同 40/30/20/10 係 AGENT 要自己寫低嘅人手紀錄（或老實寫「做唔到」），唔係 script 自動生。
 - **唔會實測功能**：[`docs/system-basics.md`](docs/system-basics.md) 嘅忘記密碼／ADMIN 回報系統、`docs/31` 嘅收貨測試係 runtime 人手閘；`ROUND n` critique、兩軸 review 報告都要 AGENT 自己寫。
 - **唔會做全倉矛盾審計**：嗰支係真理倉先用嘅 `scripts/consistency_v1.0.mjs`（[docs/32](https://github.com/playerkousas-rgb/readme/blob/main/docs/32-consistency-audit.md)），唔係新 repo 開局 gate。

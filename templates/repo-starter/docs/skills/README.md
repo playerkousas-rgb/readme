@@ -6,7 +6,7 @@
 
 ## 0. 唯一目錄：[`skills/CATALOG.md`](../../skills/CATALOG.md)
 
-> **所有 `SKILL.md` 嘅名／路徑／bucket／邊個呼叫／幾時用，一律以 [`CATALOG.md`](../../skills/CATALOG.md) 為準**，呢度唔再抄第二份表（一個事實只寫一次）。而家 3 份：`repo-setup`、`design-review`（promoted）＋ `grilling`（external 原文）。
+> **所有 `SKILL.md` 嘅名／路徑／bucket／邊個呼叫／幾時用，一律以 [`CATALOG.md`](../../skills/CATALOG.md) 為準**，呢度唔再抄第二份表（一個事實只寫一次）。而家 5 份：`repo-setup`、`design-review`、`web-motion`（promoted）＋ `grilling`、`motion-prompt`（external 原文）。
 > **加新 SKILL 四步**喺 [`CATALOG.md §2`](../../skills/CATALOG.md)：生檔 → 驗 frontmatter → **加一行落目錄 + `AGENTS.md` 指名** → PREFLIGHT／consistency 綠先 commit。`check_skills` 同 `consistency` 會自動對，漏一行即 FAIL，**唔靠 AGENT 記得**。
 > **點樣「用」**：[`AGENTS.md`](../../AGENTS.md) 開工順序第 1 步寫明要讀 `repo-setup` 並跟住做；`repo-setup` 會**明確指名**叫 `design-review`，唔靠 `../` 深連結（[mattpocock `.agents/invocation.md`](https://github.com/mattpocock/skills/blob/main/.agents/invocation.md)）。**呢個環境無 Skill tool／plugin harness**，所以係「AGENT 讀 SKILL.md 當 prompt 執行」，唔係 harness 自動注入 —— 唔好扮自動觸發。
 
@@ -32,7 +32,7 @@
 
 - 一個 skill 只可以喺兩邊其中一邊；**user-invoked 唔可以被另一個 skill 呼叫**，要寫「叫用戶自己去跑」。
 - `README`／bucket README 分 **User-invoked**／**Model-invoked** 兩組列。
-- 我哋無 Claude／Codex harness，呢條軸當**文件約定**用：寫低邊個係俾人撳、邊個係 agent 自己攞，唔好靠估。兩份 promoted skill 都係 model-invoked（rich trigger `description`、無 `disable-model-invocation`）。
+- 我哋無 Claude／Codex harness，呢條軸當**文件約定**用：寫低邊個係俾人撳、邊個係 agent 自己攞，唔好靠估。三份 promoted skill 都係 model-invoked（rich trigger `description`、無 `disable-model-invocation`）。
 
 ## 3. 一份 SKILL.md = 一個入口（progressive disclosure）
 
@@ -59,5 +59,5 @@
 
 - 「user/model-invoked」嘅 `disable-model-invocation`／`agents/openai.yaml` 係 **Claude Code／Codex 專屬行為**，我哋無嗰個 harness，未實測；當文件約定用。**未加** `agents/openai.yaml`（無 Codex 實測）；要喺 Codex picker 出現就要補。
 - [`skills/CATALOG.md`](../../skills/CATALOG.md) 係**目錄＋文件約定**，唔係 manifest；無 Skill tool 自動載入，未喺 Claude Code／Codex 實測。`external/grilling` 原文叫 dispatch sub-agent 搵 fact，呢個環境做唔到。
-- **3 份** `SKILL.md` 嘅 frontmatter 已用 taste-skill 原檔 `tests/frontmatter.mjs` + `yaml@2.6.1` 實跑合格（攤平 `external/grilling` 後 `ok - 3 skills load`；原版測試只掃 `skills/*/` 一層，所以我哋自己個 `check_skills` 係全倉遞歸）；正式 skill **點載入**喺 Claude／Codex 仍需嗰個 harness 先至驗到。
+- **3 份** `SKILL.md` 嘅 frontmatter 已用 taste-skill 原檔 `tests/frontmatter.mjs` + `yaml@2.6.1` 實跑合格（2026-11-02；攤平 `external/grilling` 後 `ok - 3 skills load`；原版測試只掃 `skills/*/` 一層，所以我哋自己個 `check_skills` 係全倉遞歸）。**2026-11-06 加** `web-motion` + `external/motion-prompt` 後，`node scripts/check_skills_v1.0.mjs .` 驗 5 份全過；`external/motion-prompt` 嘅 upstream 含 `scripts/motion-prompt.mjs`（未喺 Claude／Codex 實測）；正式 skill **點載入**喺 Claude／Codex 仍需嗰個 harness 先至驗到。
 - 247 站／盲測／Chrome inspector 係 taste-skill 自己嘅講法，未覆核；見 [設計檢查](../design-review.md) §未核實。

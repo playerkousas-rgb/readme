@@ -2,6 +2,8 @@
 
 > 呢份管用戶提供嘅**第 2 份爆紅清單**（「AI動畫／網頁動態」「AI編程工作流／方法論」「GitHub爆紅AI工具懶人包」「Edge AI／本地大模型」「AI實用工具 — 音樂與辦公室」五類，共 14 個位）：逐項用 **GitHub API（2026-11-06 快照）**核實 repo／星數／授權，並按「我哋 SCOUT SYSTEM 棧（Git＋Vercel＋GAS＋Supabase＋Gemini Canvas／單一 HTML）」評估邊個啱用。
 > 收錄方式同 [34](34-ai-workflow-tools.md) 一致：保留上游連結、授權、限制，唔搬成套 repo 入本倉；**本頁唔新增規則 ID，亦唔代表已安裝或試跑任何外部工具**。配色／PPT／語音／Reverse API／`grill-me` 見 [34](34-ai-workflow-tools.md)；Skill 治理見 [29](29-reading-map.md)；設計資源見 [23](23-design-resources.md)。
+>
+> **2026-11-06 跟進採用（「啱嘅先用」）**：新增 promoted skill [`web-motion`](../templates/repo-starter/skills/promoted/web-motion/SKILL.md)（GSAP＋scroll 術語＋Motion Prompt 編號嘅本地合成入口）同 external 原文 [`motion-prompt`](../templates/repo-starter/skills/external/motion-prompt/SKILL.md)（verbatim，commit `7819d38`，MIT，含 CLI script）。兩份已入起手包目錄＋`AGENTS.md` 開工順序；gsap-skills 不 vendor（87KB、8 份，上游官方 source 為準）。pstack 維持「讀，唔裝」。
 
 ## 0. 核實總表（2026-11-06 GitHub API 快照，唔係永久數字）
 
@@ -57,6 +59,7 @@
 - **內容**（上游 skills 目錄實測 2026-11-06）：24 條 `principle-*` 原則 skill——對我哋最有用：`principle-laziness-protocol`、`principle-subtract-before-you-add`、`principle-foundational-thinking`、`principle-fix-root-causes`、`principle-sequence-verifiable-units`、`principle-prove-it-works`、`principle-test-behavior-not-implementation`、`principle-outcome-oriented-execution`、`principle-guard-the-context-window`。23 個 playbooks（feature／bug-fix／refactoring／hillclimb／runtime-forensics…）；主入口 `/poteto-mode`；另有 `/Recall`、`/swarm` 等指令。
 - **對我哋**：我哋嘅 瘦身 S、PREFLIGHT「exit 1 即停手」、`final_check` 六角度、F 防呆（fail closed）——同 pstack 嘅 `prove-it-works`／`sequence-verifiable-units`／`subtract-before-you-add` 係同一套工程紀律。**適合嘅姿勢係「讀完抄要義」**：有用嘅原則寫落 PLAYBOOK／AGENTS 嘅用語，維持「單一真理倉」，唔係裝成套 plugin。
 - **唔好抄**：多 agent swarm／multi-model 編配（佢預設 grok＋opus 分工）係佢生態；我哋棧唔需要；亦唔係「裝咗就會月產千 PR」。
+- **採用（2026-11-06）**：維持「讀，唔裝」；無新增 vendor 檔。24 條 `principle-*` 原文留上游，需要時逐份讀；同 29 讀 taste-skill 同一姿勢。
 - **未實測**：本輪只讀 README／plugin.json／skills 目錄；未安裝、未跑 `/poteto-mode`、未對照 24 條原文逐條消化。
 
 ### 2.2 GSAP 官方 AI Skills — AI 寫動畫唔使鬥估
@@ -64,7 +67,7 @@
 - **來源**：[`greensock/gsap-skills`](https://github.com/greensock/gsap-skills)（GreenSock 官方，MIT，17,959★）；Agent Skills 格式，可配 Cursor／Claude Code／Codex／Copilot（40+ agents）。
 - **關鍵事實**（官方 README）：**GSAP 100% 免費**——Webflow 收購後所有 GSAP plugins（含 SplitText／MorphSVG 等曾屬 Club GSAP）全免費商用，由公開 npm `gsap` 安裝，唔使 Club membership／`.npmrc`／token。
 - **對我哋**：單一 HTML／Gemini Canvas app 要加 UI 動效（卡片入場、ScrollTrigger 故事區塊、Flip 排序動畫），可以喺 prompt 入面指明用 GSAP＋餵此 skill，減少「AI 亂估舊版 API」。GSAP 經 CDN 引入，對 5MB 上限（C13-g）影響細。
-- **未實測**：未喺任何 repo 安裝此 skill；未對照 GSAP 版本；未量化「裝咗之後 AI 寫 GSAP 正確率」。
+- **採用（2026-11-06）**：唔 vendor；`web-motion` 施工要點已寫明「AI 寫 GSAP 先對 greensock/gsap-skills」。未喺任何 app repo 實跑；未對照 GSAP 版本；未量化「裝咗之後 AI 寫 GSAP 正確率」。
 
 ### 2.3 Motion Prompt — 跟 AI 講動態，用編號唔好用形容詞
 
@@ -72,7 +75,7 @@
 - 上游列咗三種用法：① `npx skills add showheyohtaki/motion-prompt` 裝 skill（Claude Code／Codex）② 直接攞編號落 prompt ③ 開 [gallery](https://showheyohtaki.github.io/motion-prompt/) 挑。
 - **對我哋**：叫 AI 做網頁／Canvas UI／動效時直接講「motion2 #131 …」呢類精確詞；配合 §6 嘅 scroll 術語，取代「有質感啲／郁流暢啲」呢類無法驗收嘅講法。
 - **唔好做**：唔好 fork 後自改編號（失去「共享語言」價值）；示例圖片要署名出處（W8）；粵語／繁體語境有需要可以自己補譯，但要寫入自己嘅 CREDITS。
-- **未實測**：未逐 pack 試；gallery 喺出站限制下未開過；「144 個」係舊版宣傳，現行係 192。
+- **採用（2026-11-06）**：`external/motion-prompt` 已 verbatim vendor 入起手包（commit `7819d38`；`SKILL.md`／`references/porting.md`／`scripts/motion-prompt.mjs`；sha256：`5029cb5d…`／`4c98715d…`／`1c422c72…`），CATALOG 已入目錄；施工指名用法寫入 promoted [`web-motion`](../templates/repo-starter/skills/promoted/web-motion/SKILL.md)。CLI **未實跑**（要網絡）；gallery 喺出站限制下未開過；「144 個」係舊版宣傳，現行係 192。
 
 ## 3. 有場景先試（試完記錄，唔好裝為裝）
 
@@ -118,15 +121,16 @@
 
 - **Cantolyrics AI**（[cantolyrics.ai](https://cantolyrics.ai)，創辦人 song4song._／Jenny Wong）：0243 聲調＋主題 → 5 分鐘 3 版粵語填詞＋押韻庫＋K-song／Ballad 風格。**當終端用家服務睇**——童軍營火會填詞可以自己去玩；唔入 repo、唔整合、唔依賴。
 - **KAREOKIE**（[bizmark.hk](http://bizmark.hk)）：Windows 免費、閉源；AI 去人聲、自由升降 Key、歌詞自動對時、日文振假名、QR 排隊點歌、即時音準評分、多語系、本地處理保私隱。**營火會 karaoke 可以考慮用**；但非開源、Windows only、唔嵌入我哋任何產品。
-- **6 個滾動動畫術語**（#5）：直接攞用——**Scroll-triggered**（入 viewport 觸發）／**Scroll-linked**（同滾動位置綁定，如進度條）／**Parallax**（視差）／**Sticky**（吸頂）／**Scroll Snap**（分頁式吸附）／**Horizontal Scroll**（橫向滾動）。跟 AI 講「Menu 用 Sticky，卡片用 Scroll-triggered」即夠，唔使裝任何嘢。**Menu Sticky＋卡片 Scroll-triggered 就係我哋故事頁應該用嘅預設**。
+- **6 個滾動動畫術語**（#5）：直接攞用——**Scroll-triggered**（入 viewport 觸發）／**Scroll-linked**（同滾動位置綁定，如進度條）／**Parallax**（視差）／**Sticky**（吸頂）／**Scroll Snap**（分頁式吸附）／**Horizontal Scroll**（橫向滾動）。跟 AI 講「Menu 用 Sticky，卡片用 Scroll-triggered」即夠。**已併入起手包 [`web-motion`](../templates/repo-starter/skills/promoted/web-motion/SKILL.md) 速查表；Menu Sticky＋卡片 Scroll-triggered 就係我哋故事頁應該用嘅預設**。
 - **#2「7 個 AI 動畫技能」溯源**：GSAP（官方核實 ✓）／HyperFrames（✓ 同 HyperFrames 出片路線相關）／Pixel2Motion／Remotion／Video Shotcraft／story-to-handdrawn／LottieFiles——全部圍住 **GSAP（網頁內動畫）／HyperFrames／Remotion（出片兩條路）** 三個底層生態；**先揀底層路線，再揀 skill**，唔好逐個裝。
 
 ## 7. 查證限制／維護
 
 - **已做**（2026-11-06）：GitHub API 逐個查 17 個 repo 嘅 metadata（stars／forks／license／created_at／pushed_at／archived／fork）；讀 pstack README／plugin.json／skills 目錄（24 條 `principle-*` 實證）、motion-prompt README（192／繁中 packs 實證）、gsap-skills README 頭、HyperFrames README 頭＋Node≥22、Remotion LICENSE 頭（Free/Company 兩級實證）、Hindsight／Paperclip／Agent-Reach／MoneyPrinterTurbo／Univer／Edge0 README 頭（至少各 25–50 行）。
+- **已做跟進採用（2026-11-06）**：vendor `external/motion-prompt`（verbatim，`sha256` 三檔已記 §2.3）；新增 promoted `web-motion`；起手包 CATALOG／AGENTS／bucket README 同步；`check_skills`／`consistency`／`guard`／`final_check` 全綠。**未實跑** motion-prompt CLI（要網絡）、未喺 app repo 實裝 GSAP、未出過任何動畫。
 - **未做**：安裝／執行任何工具；未出過任何片／任何動態 logo；未開 cantolyrics.ai／bizmark.hk／marcorefusestocode／gallery 頁（出站限制＋非 GitHub，**請親身開一次睇條款**）；Remotion「非牟利免費」資格未向官方確認；HyperFrames／Pixel2Motion／Video Shotcraft／story-to-handdrawn 未量化任何輸出。
 - **星數會變**：引用前重查；跨 repo 對比星數唔代表品質（Edge0 9k★ 但技術方向啱先得，MoneyPrinterTurbo 140k★ 但版權唔啱我哋）。
 - **更新時機**：真正採用前、上游大改版後、引用星數前；更新來源 commit／日期／限制，再跑 `node scripts/guard.mjs`、`node scripts/consistency_v1.0.mjs . --json`、`node scripts/final_check_v1.0.mjs --json`。文件檢查通過唔會升級「未實測」狀態。
 - **單一入口**：PPT／語音／Reverse API／`grill-me` 去 [34](34-ai-workflow-tools.md)；Skill 治理去 [29](29-reading-map.md)＋[`skills/CATALOG.md`](../templates/repo-starter/skills/CATALOG.md)；設計資源去 [23](23-design-resources.md)；本頁只放「爆紅清單核實」，唔複製其他功能表。
 
-**一句結論**：即時慳落嚟用係四樣零安裝——**pstack 原則（讀）＋ gsap-skills（讀）＋ Motion Prompt 編號 ＋ scroll 術語**；有影片場景先試 HyperFrames／story-to-handdrawn／Pixel2Motion；懶人包入面 100k★ 級嘅 Paperclip／MoneyPrinterTurbo／Agent-Reach／VoiceStudio／Edge0／Hindsight／Univer，**而家全部唔啱我哋**。
+**一句結論**：啱嘅已用——`web-motion`（GSAP 免費、scroll 術語、Motion Prompt 編號）＋ `external/motion-prompt` 已入起手包；pstack 維持「讀，唔裝」；有影片場景先試 HyperFrames／story-to-handdrawn／Pixel2Motion；懶人包入面 100k★ 級嘅 Paperclip／MoneyPrinterTurbo／Agent-Reach／VoiceStudio／Edge0／Hindsight／Univer，**而家全部唔啱我哋**。

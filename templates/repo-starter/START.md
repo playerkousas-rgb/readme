@@ -17,7 +17,8 @@ node /path/to/readme/scripts/preflight_v1.0.mjs /path/to/readme --allow-placehol
 cp -r templates/repo-starter/. /path/to/NEW_REPO/
 cd /path/to/NEW_REPO
 # ① 改晒 {{...}}（grep 一次確保無剩）
-grep -rn '{{' . || echo 'OK: 無未填 placeholder'
+#    注意：`skills/external/` 係外部原文 verbatim（例如 motion-prompt 嘅 JSX `style={{`）——佢哋唔係佔位，唔好「修正」
+grep -rn '{{' . | grep -v 'skills/external/' || echo 'OK: 無未填 placeholder'
 # ② 由唯一真理倉抄現成模板（唔好喺起手包複製第二份）
 cp /path/to/readme/templates/git/gitignore        .gitignore
 cp /path/to/readme/templates/github/guard.yml     /tmp/guard.yml   # 放入 .github/workflows/ 先

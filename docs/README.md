@@ -59,7 +59,7 @@
 | [26-reverse-api-walkthrough.md](26-reverse-api-walkthrough.md) | 「自製 API」用自己 repo 講清楚 + 可跑 demo |
 | [29-reading-map.md](29-reading-map.md) | API 設計／Agent Skills／文件分類嘅閱讀地圖 |
 | [34-ai-workflow-tools.md](34-ai-workflow-tools.md) | **第三方 GitHub 開源 AI 工具**：PPT Master／Reverse API Engineer／`grill-me`／VoxCPM2 嘅來源、授權、限制、驗收；本機使用條件／未實測狀態明寫，唔重抄 25／26／INTAKE |
-| [35-viral-ai-tools.md](35-viral-ai-tools.md) | **2026-11 爆紅清單核實**：Motion Prompt／gsap-skills／pstack／HyperFrames／Remotion／Paperclip／MoneyPrinterTurbo／VoiceStudio／Univer／Agent-Reach／Hindsight／Edge0 等 17 個 repo（GitHub API 2026-11-06 快照＋授權陷阱）；按 SCOUT SYSTEM 棧評估；零安裝三樣＋有場景先試＋暫不採用分級；未實測狀態明寫 |
+| [35-viral-ai-tools.md](35-viral-ai-tools.md) | **2026-11 爆紅清單核實＋採用**：Motion Prompt／gsap-skills／pstack／HyperFrames／Remotion／Paperclip／MoneyPrinterTurbo／VoiceStudio／Univer／Agent-Reach／Hindsight／Edge0 等 17 個 repo（GitHub API 2026-11-06 快照＋授權陷阱）；已入起手包 `web-motion`＋`external/motion-prompt`；HyperFrames／story-to-handdrawn／Pixel2Motion 有場景先試；其餘暫不採用；未實測狀態明寫 |
 
 ## 章 4 — 交付、驗收、出事
 
