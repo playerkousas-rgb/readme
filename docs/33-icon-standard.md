@@ -5,7 +5,7 @@
 
 > **狀態**：定案（2026-10-28），G 系列第 11 條（G1–G10 見 [docs/05](05-git.md)）。
 > **實測來源**：`hkcamping` v1.12.1（icons/ 244 KB、dist 467.5 KB、guard 18/18、test 21/21、ui 112/112）。
-> **用法**：每個新 app 開工第一件事就照抄呢一節，**唔再逐次重新設計、唔再逐次討論格式**。
+> **用法**：每個新 app 開工第一件事就照抄呢一節，**唔再逐次重新設計、唔再逐次討論格式**。出檔工具：[`templates/iconmaker/icon_maker_v1.0.html`](../templates/iconmaker/icon_maker_v1.0.html)（上載母圖→本地出齊 9 檔＋16px 手繪格＋maskable 66% 預覽，用法同限制見其 [README](../templates/iconmaker/README.md)）。
 > 完整對照（色票＋每個檔實際體積）見 `playerkousas-rgb/hkcamping` README「App Icon／favicon（v1.12.1）」一節。
 
 ### 1. 一句話原則

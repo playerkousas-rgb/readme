@@ -10,7 +10,8 @@
 | Vercel 設定 | `vercel/vercel.json` | repo 根 `vercel.json`（已含 `/icons/*` immutable 標頭，**G11**） |
 | Vercel 上傳黑名單 | `vercel/vercelignore` | repo 根 `.vercelignore` |
 | 極簡 package | `vercel/package.json` | repo 根 `package.json` |
-| **🖼️ 站台圖標規範** | [README §9 G11](../README.md#9-g11-全站圖標標準iconfavicon) | 9 個 PNG／ICO + `<head>` 5 link ＋ 4 meta（唔係抄檔，係照規格出圖） |
+| **🖼️ 站台圖標規範** | [README §9 G11](../README.md#9-g11-全站圖標標準iconfavicon) | 9 個 PNG／ICO + `<head>` 5 link ＋ 4 meta |
+| **🖼️ G11 圖標產生器（Type A）** | [`iconmaker/icon_maker_v1.0.html`](iconmaker/icon_maker_v1.0.html)＋[`iconmaker/README.md`](iconmaker/README.md) | 上載母圖→本地出齊 9 檔＋16px 手繪格＋maskable 66% 預覽＋head/manifest；照 [docs/33](../docs/33-icon-standard.md) 規格 |
 | env 清單 | `vercel/env.example` | repo 根 `.env.example` + 本機 `.env.local` |
 | `/api/proxy` 骨架 | `vercel/api/proxy.mjs` | `api/proxy.mjs` |
 | `/api/super` 骨架 | `vercel/api/super.mjs` | `api/super.mjs` |
@@ -48,6 +49,7 @@
 | Canvas 紀錄 schema | `canvas/RECORDS_v1.0.md` | Git + Sheet `RECORDS` |
 | Canvas 守護測試 | `canvas/brain.test.mjs` | Git（`node --test brain.test.mjs`） |
 | Canvas prompts | `canvas/PROMPTS_v1.0.md` | 7 條，貼去 Gemini Canvas |
+| **🎨 Canvas 風格 presets** | `canvas/STYLE_PRESETS_v1.0.md` | 9 個風格句＋鎖定主體句；貼落現有 Type B 產生器用，唔新起 app；見 [docs/40 §2.2](../docs/40-canvas-diy-candidates.md) |
 | Canvas 目錄說明 | `canvas/README.md` | 三步起機 + 鐵則 |
 
 完整目錄：[templates/canvas/](canvas/README.md) · 規格：[docs/09-gemini-canvas.md](../docs/09-gemini-canvas.md)
