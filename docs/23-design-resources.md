@@ -155,6 +155,26 @@
 
 ---
 
+### 5.3 八個 UI 部位畫廊：按「而家欠邊一格」去睇（2026-11-06 增補）
+
+> 來源：用戶提供嘅短片清單（your.engineer.ben「8 個免費做網站金礦網站」），逐站對應返我哋開工會欠嘅 UI 部位。**本輪未能開站核實**（出站限制，2026-11-06）：下面只按片中描述同站名登記用途，**站內內容、收費、授權未驗**，第一次用嗰陣自己開嚟睇清楚先。核實總表同取捨判斷見 [37 §3](37-ai-tools-design-prompts.md)。
+> 用法守返本頁一貫規矩：畫廊係**靈感同詞彙**，唔係模板倉——開工掃一輪、揀一個方向、寫落 `DESIGN.md`，唔好逐站抄排版／圖案（W8）；真係借用咗素材先寫 `CREDITS.md`。
+
+| 欠邊格 | 去 | 用嚟做乜 | 我哋嘅紅線 |
+|---|---|---|---|
+| 成版 3D 滾動效果 | Scrolltide（網址未核實，自行搜尋確認官方站） | 3D scroll 網站嘅 prompt＋code 參考 | 3D／重 scroll 好易食效能：守 [35](35-viral-ai-tools.md) scroll 術語講清需求、只郁 `transform`／`opacity`、`prefers-reduced-motion` 要有 fallback；單一 HTML 守 C13-g ≤5MB |
+| 導覽列 navbar | [navbar.gallery](https://navbar.gallery) | 睇真實網站點做頂欄／選單 | 抄結構唔抄品牌外觀；手機版選單要實測 390 寬 |
+| 頁尾 footer | [footer.design](https://footer.design) | 頁尾欄目／連結排法參考 | 我哋頁尾硬性要有 `© SCOUT SYSTEM`（W1），畫廊點排都唔可以遮咗佢 |
+| 按鈕／CTA | [cta.gallery](https://cta.gallery) | 主次按鈕、行動呼籲文案同排位 | 一版一個主 CTA 先係重點；唔好學晒所有花款落同一頁 |
+| 整體風格方向 | [styles.refero.design](https://styles.refero.design) | 真實產品嘅設計風格對照，開工前定調 | 定咗調就寫入 `DESIGN.md` 全站跟，唔好逐版換風格（呼應 `design-review` 唔自己發明風格） |
+| 首頁 Hero 區 | [supahero.io](https://supahero.io) | Hero 構圖／標題層次範例庫 | Hero 圖／字體係人哋素材，借構圖唔借圖（W8） |
+| 3D 圖標 | [3dicons.co](https://3dicons.co) | 裝飾用 3D icon 靈感 | **唔可以做站台圖標／favicon**：圖標一律跟 [G11](33-icon-standard.md)（9 個 PNG／ICO、maskable 66%）；3D icon 只可做內容裝飾，仲要睇授權 |
+| Liquid Glass 元素 | [glass.samasante.com](https://glass.samasante.com) | 玻璃擬態元件參考 | 玻璃面最易出對比事故：文字壓玻璃要實測 AA 對比（§5.2 第 3 步），睇唔清就唔用 |
+
+同 §5／§5.1 分工：§5 係工具（字體／icon 系統／組件）、§5.1 係配色入口、本節係**排版部位畫廊**。開新 Git 嗰陣三節各掃一次就夠，唔使逐個站 bookmark 落嚟當做咗設計。
+
+---
+
 ## 6. 維護約定
 
 - 星星數每季（或想引用之前）用呢條命令實測，唔好靠記憶：
