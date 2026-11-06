@@ -90,6 +90,7 @@
 | 一次過搵晒 API／Prompt／開源 prompt 庫 | [docs/15-resource-index.md](docs/15-resource-index.md) — `f/prompts.chat` → `prompt` → `api` → 呢個 repo |
 | **揀第三方 GitHub 開源 AI 工具**（PPT／Reverse API／需求訪談／語音） | **[docs/34-ai-workflow-tools.md](docs/34-ai-workflow-tools.md)** — PPT Master、Reverse API Engineer、`grill-me`、VoxCPM2：上游來源／授權、用途、本機使用條件同驗收；未實測事項明寫 |
 | **爆紅 AI 清單揀邊個啱我哋**（動態／方法論／懶人包／Edge／粵語填詞） | **[docs/35-viral-ai-tools.md](docs/35-viral-ai-tools.md)** — 已用：起手包 `web-motion`＋`external/motion-prompt`；有場景先試 HyperFrames／story-to-handdrawn／Pixel2Motion；Paperclip／MoneyPrinterTurbo／Agent-Reach／VoiceStudio／Univer／Hindsight／Edge0 暫不採用；17 個 repo 已用 GitHub API 核實（2026-11-06） |
+| **教 AI 偷懶／免費平替啱唔啱我哋**（Ponytail／FreeBuff／Blender 城市／9 個開源平替） | **[docs/36-lazy-coding-and-open-alternatives.md](docs/36-lazy-coding-and-open-alternatives.md)** — 即刻吸收：Ponytail「寫 code 前七級梯」checklist（讀，唔裝 plugin）；FreeBuff 唔好用喺真 repo（數據條款）；其餘平替逐個判端用家試／有場景先試／唔採用；11 個 repo 已用 GitHub API 核實（2026-11-06） |
 | **開新 Git 前揀設計資源**（字體／配色／Icon／插畫／UI library／模板／DESIGN.md／系統設計） | **[docs/23-design-resources.md](docs/23-design-resources.md)** — 5 個主庫 ＋ Nippon Colors／Adobe Color／Color Hunt ＋ 配色對比驗收 ＋ 10 步開工 checklist |
 | 睇真實 Gemini Canvas app 踩過咩坑 | [docs/16-canvas-case-scout-comic.md](docs/16-canvas-case-scout-comic.md) — 童軍漫畫生成器 v4.2.1 實戰 |
 | 驗一個單一 HTML 交唔交到貨 | `node scripts/audit_single_html_v1.0.mjs <檔名>` — S/F/A/W/V/C 靜態審計 |
@@ -200,6 +201,7 @@ docs/
   24–33                      相近產品／API 教學／repo 治理／圖標等（完整索引：docs/README.md）
   34-ai-workflow-tools.md     第三方 GitHub 開源 AI 工具：PPT Master／Reverse API Engineer／grill-me／VoxCPM2 核實與驗收
   35-viral-ai-tools.md        2026-11 爆紅清單核實＋採用：17 個 repo GitHub API 快照；web-motion／external motion-prompt 已入起手包
+  36-lazy-coding-and-open-alternatives.md  爆紅清單第三輪：Ponytail 七級梯（已吸收做 checklist）／FreeBuff／Blender 城市／9 個開源平替核實
   （圖標規範**唯一來源係 [docs/33](docs/33-icon-standard.md)** — 2026-11-02 由 README §9 抽出；9 個 PNG／ICO、maskable 66%、16px 手繪）
 templates/
   README.md               可抄嘢對照表 + 一鍵抄指令

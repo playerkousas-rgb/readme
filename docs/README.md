@@ -1,6 +1,6 @@
 # `docs/` 分章索引 — 邊份管邊樣
 
-> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–35 唔使再靠估。
+> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–36 唔使再靠估。
 > 整理日期：2026-11-06 · 規則衝突時以 [PLAYBOOK](../PLAYBOOK.md) 為準 · 案例已隔離去 [19](19-ecportal-troop-case.md)，**唔係通用底線**。
 
 ## 點用
@@ -60,6 +60,7 @@
 | [29-reading-map.md](29-reading-map.md) | API 設計／Agent Skills／文件分類嘅閱讀地圖 |
 | [34-ai-workflow-tools.md](34-ai-workflow-tools.md) | **第三方 GitHub 開源 AI 工具**：PPT Master／Reverse API Engineer／`grill-me`／VoxCPM2 嘅來源、授權、限制、驗收；本機使用條件／未實測狀態明寫，唔重抄 25／26／INTAKE |
 | [35-viral-ai-tools.md](35-viral-ai-tools.md) | **2026-11 爆紅清單核實＋採用**：Motion Prompt／gsap-skills／pstack／HyperFrames／Remotion／Paperclip／MoneyPrinterTurbo／VoiceStudio／Univer／Agent-Reach／Hindsight／Edge0 等 17 個 repo（GitHub API 2026-11-06 快照＋授權陷阱）；已入起手包 `web-motion`＋`external/motion-prompt`；HyperFrames／story-to-handdrawn／Pixel2Motion 有場景先試；其餘暫不採用；未實測狀態明寫 |
+| [36-lazy-coding-and-open-alternatives.md](36-lazy-coding-and-open-alternatives.md) | **爆紅清單第三輪核實**：Ponytail（七級梯已改寫做 checklist，讀唔裝）／FreeBuff（數據條款，唔用喺真 repo）／Concept Studio Blender 城市（查無 repo，版權先行）／9 個開源平替逐個判（11 個 repo GitHub API 2026-11-06 快照）；未實測狀態明寫，唔重抄 34／35 |
 
 ## 章 4 — 交付、驗收、出事
 
