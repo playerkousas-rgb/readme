@@ -46,7 +46,7 @@
 | 隱形水印／版權／原圖成品圖紀錄 | [12 W 系列](12-copyright-scout-system.md) ＋ [`templates/watermark/`](../templates/watermark/README.md) |
 | 檔名＋內文雙版號點做 | [13 V 系列](13-versioning.md) |
 | **開新 Git 要字體／配色／Icon／UI library／模板** | [23 設計資源總索引](23-design-resources.md) — 五個主庫；配色工具 Nippon Colors／Adobe Color／Color Hunt＋對比驗收見 §5.1–5.2 |
-| **第三方 GitHub 開源 AI 工具：整 PPT、分析網站 API、問清楚需求** | [34 AI 工具整理](34-ai-workflow-tools.md) — PPT Master／Reverse API Engineer／`grill-me`，來源／授權同本機使用條件見該頁；API 深入去 [25](25-reverse-api-reuse.md)／[26](26-reverse-api-walkthrough.md)，Skill 治理去 [29](29-reading-map.md) |
+| **第三方 GitHub 開源 AI 工具：整 PPT、分析網站 API、問清楚需求、語音合成** | [34 AI 工具整理](34-ai-workflow-tools.md) — PPT Master／Reverse API Engineer／`grill-me`／VoxCPM2，來源／授權同本機使用條件見該頁；API 深入去 [25](25-reverse-api-reuse.md)／[26](26-reverse-api-walkthrough.md)，Skill 治理去 [29](29-reading-map.md) |
 
 ---
 
