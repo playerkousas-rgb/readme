@@ -1,6 +1,6 @@
 # `docs/` 分章索引 — 邊份管邊樣
 
-> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–39 唔使再靠估。
+> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–40 唔使再靠估。
 > 整理日期：2026-11-06 · 規則衝突時以 [PLAYBOOK](../PLAYBOOK.md) 為準 · 案例已隔離去 [19](19-ecportal-troop-case.md)，**唔係通用底線**。
 
 ## 點用
@@ -64,6 +64,7 @@
 | [37-ai-tools-design-prompts.md](37-ai-tools-design-prompts.md) | **爆紅清單第四輪核實**：FreeLLMAPI（吸收「睇 API 三樣」讀法；工具只限個人實驗）／Claude SEO（自家公開站上線前有場景先試）／8 個設計畫廊已入 [23 §5.3](23-design-resources.md)／生圖 20 種風格詞彙＋5 條句式（自己重寫、未實測）；新聞同 Radiocast 唔收錄做規範，原因寫明 |
 | [38-animation-3d-prediction-tools.md](38-animation-3d-prediction-tools.md) | **爆紅清單第五輪核實＋ repo 形狀普查**：89 個 repo 實測（React 26／Next 9／靜態 HTML 32／shadcn 0，Animate UI 而家零個 repo 跑到）／ApiVault（已入 [15](15-resource-index.md) 做搵 API 第二層）／Qwen3.5-3D-Coder（觀察名單）／SUAPP AIM＋Convertio（端用家）／MiroFish（只當假設產生器）；未實測明寫 |
 | [39-verified-sites-and-diy.md](39-verified-sites-and-diy.md) | **10 站實測＋自己做總清單**：Scrolltide（付費，更正免費講法）／Refero DESIGN.md 庫／3dicons（CC0）／liquid-glass（MIT v0.1）／LogoDiffusion（出真 SVG）；自己做：`seo_check_v1.0.mjs` 已做＋`web-motion` 補 framer-motion 線，DESIGN.md 庫／ApiVault 搜尋頁／pre-mortem 模板排下次 |
+| [40-canvas-diy-candidates.md](40-canvas-diy-candidates.md) | **Gemini＋Canvas 自己整候選判決**：G11 圖標產生器（Type A，第一）／風格海報 presets 升級現有產生器（Type B）／Pre-mortem 鬧場（Type C，假設唔係證據）／相片預備（Type A 可選）；SEO script／LLM 路由／電台／3D 世界等唔用 Canvas 嘅原因逐個寫明；未開工狀態明寫 |
 
 ## 章 4 — 交付、驗收、出事
 
