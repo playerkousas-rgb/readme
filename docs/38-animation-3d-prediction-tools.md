@@ -3,7 +3,7 @@
 > 呢份管用戶提供嘅**第 5 份爆紅清單**（Animate UI 2.0／apivault.dev／Qwen3.5-4B-3D-Coder／SUAPP AIM／Convertio／MiroFish，共 6 個位）：逐項核實，並按「我哋 SCOUT SYSTEM 棧（Git＋Vercel＋GAS＋Supabase＋Gemini Canvas／單一 HTML）」評估邊個啱用。有 GitHub repo 嘅用 **GitHub API（2026-11-06 快照）**核實；冇 repo 嘅網站／模型／商業插件，明寫未核實。
 > 收錄方式同 [34](34-ai-workflow-tools.md)–[37](37-ai-tools-design-prompts.md) 一致：**本頁唔新增規則 ID，亦唔代表已安裝或試跑任何外部工具**。網頁動畫主檔係起手包 `web-motion`（見 [35 §2](35-viral-ai-tools.md)）；揀 API 去 [15](15-resource-index.md)（本輪已補 ApiVault 一行）；開新 repo 第 0 步問真人去 [`INTAKE.md`](../templates/repo-starter/INTAKE.md)。
 >
-> **一句結論先講**：冇一件要即刻裝。最接近「啱用」嘅係 ApiVault——但佢只係**搵 API 嗰陣嘅第二層目錄**，唔取代我哋自己 `api` repo（§3，已入 [15](15-resource-index.md) 快速表）。Animate UI 只啱 React／shadcn 項目（§2）；MiroFish 只可以當「假設產生器」，永遠唔當市場證據（§4）；其餘係端用家工具或者未核實嘅觀察名單。
+> **一句結論先講**：冇一件要即刻裝。最接近「啱用」嘅係 ApiVault——但佢只係**搵 API 嗰陣嘅第二層目錄**，唔取代我哋自己 `api` repo（§3，已入 [15](15-resource-index.md) 快速表）。Animate UI 要有 shadcn／Radix 先用得，而我哋 89 個 repo 而家係 **零個**（§2，2026-11-07 普查更正）；MiroFish 只可以當「假設產生器」，永遠唔當市場證據（§4）；其餘係端用家工具或者未核實嘅觀察名單。
 
 ## 0. 核實總表（2026-11-06 GitHub API 快照／未核實標明）
 
@@ -20,19 +20,38 @@
 
 | 你而家要做乜 | 建議入口 | 點解 |
 |---|---|---|
-| React／shadcn 項目（例如 Next.js 站）想成個 app 加動畫 | §2 Animate UI（有呢類項目先試） | 一句 CLI 換 primitive＋現成 motion tokens；單一 HTML／Canvas 唔啱，走 GSAP 路線 |
-| 單一 HTML／Canvas 加動畫 | 繼續起手包 [`web-motion`](../templates/repo-starter/skills/promoted/web-motion/SKILL.md)（GSAP＋編號，[35](35-viral-ai-tools.md)） | 唔好為咗動畫成個 app 搬去 React |
+| 之後開 React／Next 項目兼決定用 shadcn，想成個 app 加動畫 | §2 Animate UI（到時先試） | 要有 `components.json`＋Radix／Base UI／React Aria primitive 先跑到 CLI；我哋現有 89 個 repo 係零個，唔好為佢而轉會 |
+| 現有 React app 加動畫 | 沿用各 repo 已有嘅 framer-motion（普查 105 個檔案在用）＋ [`web-motion`](../templates/repo-starter/skills/promoted/web-motion/SKILL.md) 嘅術語／驗收 | 已經在用嘅嘢先係基準，唔好見新工具就成套換 |
+| 靜態 HTML/JS／Canvas 加動畫 | [`web-motion`](../templates/repo-starter/skills/promoted/web-motion/SKILL.md)（GSAP＋編號，[35](35-viral-ai-tools.md)） | 靜態嗰 32 個 repo 行呢條線 |
 | 搵免費公開 API 砌 app | 自己 [`api` repo](15-resource-index.md) 第一層 → §3 ApiVault 第二層 | 香港 API 我哋自己份先係真理；ApiVault 補全球目錄 |
 | 未出產品前想有人「鬧吓」個 idea | §4 MiroFish（試玩姿勢，只出假設清單） | 模擬人格鬧嘅點可能有用，但唔係證據；真人嗰關繼續行 INTAKE |
 | 整 3D 場景／浮雕／轉格式 | §5：全部端用家層面，唔入 app | 製作工具同 app 依賴分開；檔案上雲前諗私隱 |
 
-## 2. Animate UI — 只啱 React／shadcn 嗰條線
+## 2. Animate UI — 要有 shadcn 先用得；而家係零個 repo
 
 - **佢係咩**：將 Radix／Base UI／React Aria 嘅 primitive 預先加好 Motion 動畫，你換 import（或者跑 `npx @animate-ui/cli@latest animate all`）就成個 component 有動畫，唔使逐個手寫。片講嘅「一句 prompt＋一句 CLI」大致屬實——上游仲有自家 `SKILL.md` 畀 agent 用，同埋 `audit` 命令去捉慢／jank 嘅動畫。片講嘅數字（24 種動畫、70+ component）未逐個數，引用前去上游 docs 自己對。
 - **同片講法有出入嗰點**：片話佢「鍵盤導航唔做動畫」，但上游 SKILL.md 嘅哲學係 springs 為主、鍵盤同 pointer 一樣處理；真正硬性嗰條係**尊重 `prefers-reduced-motion`**（我哋 `web-motion` 本來就當紅線）。即係話：片嘅「成套規則」方向啱（有 tokens、有 gate、有 audit），細節唔好照抄，要跟返上游文件同我哋驗收。
-- **對我哋嘅用法**：只有 **React／Next.js＋shadcn 項目**（例如提示站嗰類）先有資格試；試嗰陣：① 先 `--dry-run` 睇佢改乜，唔好直接 `animate all` 落主 branch；② Commons Clause 睇清——用喺自己產品冇問題，**唔可以將啲 component 打包轉售／再分發**，引入嗰陣喺該 repo `CREDITS.md` 記低（W8）；③ 試完照 `design-review` 望圖驗收（390／768／1440＋reduced-motion），唔好用佢個 audit 分數代替人眼。
-- **唔好做**：唔好因為佢方便，將單一 HTML／Gemini Canvas app 搬去 React（違反棧契約同 C13-g 路線）；唔好 vendor 佢份 SKILL.md 入真理倉（同 [36](36-lazy-coding-and-open-alternatives.md) 唔 vendor Ponytail 同一理由：`web-motion` 已係我哋動畫施工入口，多一份外來 skill 就多一個真理源）。
-- **未實測**：冇安裝、冇跑過 CLI、冇喺任何 React 項目驗過佢嘅動畫質素／效能。
+
+### 2.1 更正（2026-11-07）：我哋啲 repo 實際係咩形狀
+
+> 上一版寫「Animate UI 只啱 React／shadcn 項目，例如提示站」同埋對外講「我哋主力係單一 HTML/Canvas」，**冇數過 GitHub 就落筆，係錯嘅**。2026-11-07 用 GitHub API 普查 `playerkousas-rgb` 全部 **89 個 repo**（逐個讀根目錄＋`package.json` 依賴；GitHub Code Search 輔助），實情係：
+
+| 形狀（按 `package.json` 依賴判） | 數目 | 代表 |
+|---|---:|---|
+| React＋Vite 等 | 26 | SCOUTBOOK／CUBSBOOK／ROVERBOOK／VSBOOK／map3d／GEMINI／Veritas 系 |
+| Next.js | 9 | prompt／member-portal／troop-portal／dbs 系／cardmaster |
+| Vite vanilla | 3 | code／MCScript／Zentangle |
+| 靜態 HTML/JS（`package.json` 只做 scripts／test／build） | 25 | HKMAP／hkcamping／scoutbadge／vsmeeting／DRAWSCOUT |
+| 純 HTML（冇 `package.json`） | 7 | decode／oneclick-photo／morse-beacon-app／Infographic |
+| 文件／其他／Node 工具／攞唔到 | 19 | readme／api／answer／router 系／4 個 portal |
+| **shadcn（`components.json`）** | **0** | Code Search 全帳戶 0 個檔案；`radix-ui` 引用 0 個檔案 |
+| 動畫現況 | — | `framer-motion` 有 105 個檔案在用（React 線現行路線）；`gsap` 得 5 個檔案；`tailwindcss` 103 個檔案 |
+
+即係：**主力係 React＋Vite（26）同 Next.js（9）打頭、靜態 HTML/JS（合計 32）居次**；單一 HTML／Gemini Canvas 係其中一種交付格式（[09](09-gemini-canvas.md) 管嗰條線），唔係大多數。以後邊個再講「我哋主力係 X」，先數完呢張表先講。
+
+- **咁 Animate UI 仲啱唔啱**：佢 CLI 要靠 `components.json` 搵 shadcn component、再換 Radix／Base UI／React Aria primitive——我哋係零 shadcn、零 Radix，所以**現有冇一個 repo 直接跑到**。要有資格試，要等將來某個 React／Next 項目由零決定用 shadcn嗰日；到時：① 先 `--dry-run` 睇佢改乜，唔好直接 `animate all` 落主 branch；② Commons Clause 睇清——用喺自己產品冇問題，**唔可以轉售／再分發啲 component**，引入嗰陣寫入該 repo `CREDITS.md`（W8）；③ 照 `design-review` 望圖驗收（390／768／1440＋reduced-motion），唔好用佢個 audit 分數代替人眼。而家 React 線嘅動畫就繼續用已在用嘅 framer-motion，唔好為新工具成套換。
+- **唔好做**：唔好為咗 Animate UI 將現有 repo 搬去 shadcn／Radix（搬 UI 底層唔係加動畫，係重寫）；唔好 vendor 佢份 SKILL.md 入真理倉（同 [36](36-lazy-coding-and-open-alternatives.md) 唔 vendor Ponytail 同一理由：`web-motion` 已係我哋動畫施工入口）。
+- **未實測**：冇安裝、冇跑過 CLI；上面普查只數根目錄同 `package.json` 依賴，冇逐個 repo 深挖 `src/` 結構，個別 repo 可能有例外（例如根目錄係靜態殼、子目錄先係 app），引用個別 repo 形狀前自己開嚟對。
 
 ## 3. ApiVault — 搵 API 嘅第二層，唔係真理源
 

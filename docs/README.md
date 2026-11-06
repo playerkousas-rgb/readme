@@ -62,7 +62,7 @@
 | [35-viral-ai-tools.md](35-viral-ai-tools.md) | **2026-11 爆紅清單核實＋採用**：Motion Prompt／gsap-skills／pstack／HyperFrames／Remotion／Paperclip／MoneyPrinterTurbo／VoiceStudio／Univer／Agent-Reach／Hindsight／Edge0 等 17 個 repo（GitHub API 2026-11-06 快照＋授權陷阱）；已入起手包 `web-motion`＋`external/motion-prompt`；HyperFrames／story-to-handdrawn／Pixel2Motion 有場景先試；其餘暫不採用；未實測狀態明寫 |
 | [36-lazy-coding-and-open-alternatives.md](36-lazy-coding-and-open-alternatives.md) | **爆紅清單第三輪核實**：Ponytail（七級梯已改寫做 checklist，讀唔裝）／FreeBuff（數據條款，唔用喺真 repo）／Concept Studio Blender 城市（查無 repo，版權先行）／9 個開源平替逐個判（11 個 repo GitHub API 2026-11-06 快照）；未實測狀態明寫，唔重抄 34／35 |
 | [37-ai-tools-design-prompts.md](37-ai-tools-design-prompts.md) | **爆紅清單第四輪核實**：FreeLLMAPI（吸收「睇 API 三樣」讀法；工具只限個人實驗）／Claude SEO（自家公開站上線前有場景先試）／8 個設計畫廊已入 [23 §5.3](23-design-resources.md)／生圖 20 種風格詞彙＋5 條句式（自己重寫、未實測）；新聞同 Radiocast 唔收錄做規範，原因寫明 |
-| [38-animation-3d-prediction-tools.md](38-animation-3d-prediction-tools.md) | **爆紅清單第五輪核實**：Animate UI（MIT＋Commons Clause，只啱 React／shadcn）／ApiVault（已入 [15](15-resource-index.md) 做搵 API 第二層，repo 已停更）／Qwen3.5-3D-Coder（社群模型，觀察名單）／SUAPP AIM＋Convertio（端用家，私隱／版權）／MiroFish（84k★屬實，只當假設產生器）；未實測狀態明寫 |
+| [38-animation-3d-prediction-tools.md](38-animation-3d-prediction-tools.md) | **爆紅清單第五輪核實＋ repo 形狀普查**：89 個 repo 實測（React 26／Next 9／靜態 HTML 32／shadcn 0，Animate UI 而家零個 repo 跑到）／ApiVault（已入 [15](15-resource-index.md) 做搵 API 第二層）／Qwen3.5-3D-Coder（觀察名單）／SUAPP AIM＋Convertio（端用家）／MiroFish（只當假設產生器）；未實測明寫 |
 
 ## 章 4 — 交付、驗收、出事
 
