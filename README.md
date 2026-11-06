@@ -4,7 +4,7 @@
 > 呢個 repo **唔係一個 app**，而係我所有 app 共用嘅**說明書 ＋ 可複製模板 ＋ 自動防呆檢查**。
 > **案例隔離（2026-10-27）**：通用規則包括 S/F/A/W/V、研發前調查 P1 ＋ 技術棧契約；ecportal 旅團／進度追蹤嘅專案設定全部喺 [docs/19](docs/19-ecportal-troop-case.md)，**唔係通用底線**；邊個 repo 有問題喺 [docs/20](docs/20-repo-health-audit.md)。
 
-更新日期：2026-11-02 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase ＋ Gemini／Canvas**
+更新日期：2026-11-06 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase ＋ Gemini／Canvas**
 
 ---
 
@@ -88,7 +88,8 @@
 | 喺 Gemini 自動注入 API KEY | [docs/14-api-key-injection.md](docs/14-api-key-injection.md) — **C13 三軌自動注入（已實作可用）**：唯一 slot＋平台代理＋BYOK 後備；全端 app 先至用 server-side secret；[docs/09 C5](docs/09-gemini-canvas.md#c5--type-b喺-gemini-自動注入-api-keyc13已實作可用) |
 | 改版（檔名＋內文雙版號） | [docs/13-versioning.md](docs/13-versioning.md) |
 | 一次過搵晒 API／Prompt／開源 prompt 庫 | [docs/15-resource-index.md](docs/15-resource-index.md) — `f/prompts.chat` → `prompt` → `api` → 呢個 repo |
-| **開新 Git 前揀設計資源**（字體／配色／Icon／插畫／UI library／模板／DESIGN.md／系統設計） | **[docs/23-design-resources.md](docs/23-design-resources.md)** — 5 個主庫實測星星數 ＋ 10 步開工 checklist ＋ 視覺 vs 系統設計分流 |
+| **揀第三方 GitHub 開源 AI 工具**（PPT／Reverse API／需求訪談） | **[docs/34-ai-workflow-tools.md](docs/34-ai-workflow-tools.md)** — PPT Master、Reverse API Engineer、`grill-me`：上游來源／授權、用途、本機使用條件同驗收；未實測事項明寫 |
+| **開新 Git 前揀設計資源**（字體／配色／Icon／插畫／UI library／模板／DESIGN.md／系統設計） | **[docs/23-design-resources.md](docs/23-design-resources.md)** — 5 個主庫 ＋ Nippon Colors／Adobe Color／Color Hunt ＋ 配色對比驗收 ＋ 10 步開工 checklist |
 | 睇真實 Gemini Canvas app 踩過咩坑 | [docs/16-canvas-case-scout-comic.md](docs/16-canvas-case-scout-comic.md) — 童軍漫畫生成器 v4.2.1 實戰 |
 | 驗一個單一 HTML 交唔交到貨 | `node scripts/audit_single_html_v1.0.mjs <檔名>` — S/F/A/W/V/C 靜態審計 |
 | 保護 PROMPT 設定／記錄原圖成品圖 | [docs/09-gemini-canvas.md](docs/09-gemini-canvas.md#c6--type-c腦殼分離html-殼--gs-腦) ＋ [templates/canvas/](templates/canvas/README.md) |
@@ -195,6 +196,8 @@ docs/
   21-fix-plans.md              三個問題嘅實作修復方案（已實測：升級／Git 暴脹／舊 sig 重放）
   22-scout-circulars-agent-handoff.md  貼去 scout-circulars AGENT 嘅對話式問題清單
   23-design-resources.md      設計資源總索引（字體／配色／Icon／UI library／DESIGN.md／系統設計）＋開工 checklist
+  24–33                      相近產品／API 教學／repo 治理／圖標等（完整索引：docs/README.md）
+  34-ai-workflow-tools.md     第三方 GitHub 開源 AI 工具：PPT Master／Reverse API Engineer／grill-me 核實與驗收
   （圖標規範**唯一來源係 [docs/33](docs/33-icon-standard.md)** — 2026-11-02 由 README §9 抽出；9 個 PNG／ICO、maskable 66%、16px 手繪）
 templates/
   README.md               可抄嘢對照表 + 一鍵抄指令
