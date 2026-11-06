@@ -1,13 +1,13 @@
-# 34 — AI 開發／文件處理工具（整理、核實與落地）
+# 34 — AI 開發／文件處理／語音工具（整理、核實與落地）
 
 > 呢份管用戶提供嘅第三方 GitHub 開源 AI 工具清單：用途、查證結果、採用條件同本倉入口；整理日期 **2026-11-06**。配色工具放 [23 §5.1](23-design-resources.md)，API 細節放 [25](25-reverse-api-reuse.md)／[26](26-reverse-api-walkthrough.md)，Skill 治理放 [29](29-reading-map.md)。本頁唔新增規則 ID，亦唔代表已安裝或試跑外部工具。
 
-## 0. 收錄範圍：6 項已確認（3 個配色站＋3 個 AI 工具）
+## 0. 收錄範圍：7 項已確認（3 個配色站＋4 個 AI 資源）
 
-**用戶最終確認：AI 開發／文件處理組只有 3 個，冇第 4 個；全部係其他人嘅 GitHub 開源項目／Skill，唔係自有 repo。** 原貼文編號由 ④ 跳到 ⑥，唔再按編號缺口補項；連同 3 個配色站，呢份清單合共 **6 項**。
+**範圍更新：原 AI 清單用戶確認只有 3 個、冇第 4 個；本輪用戶另行新增 VoxCPM2，而家 AI 資源共 4 個，總清單 7 項（3 配色＋4 AI）。** 全部係第三方 GitHub 開源項目／Skill／模型，唔係自有 repo；VoxCPM2 係新增資源，唔係還原原本缺失嘅第 ⑤ 項。
 
-- **來源分類**：已識別嘅 PPT Master、Reverse API Engineer、`mattpocock/skills` 均係第三方 GitHub repo；本輪 GitHub API 授權欄位係 MIT。`grill-me` 係 `mattpocock/skills` 入面嘅 Skill，唔係獨立 repo。
-- **使用位置**：可下載到本機／相容 agent 環境使用（PPT workflow、RAE CLI、Skill 檔）；「本機用」唔等於離線推理或零模型費用，亦唔代表本輪已安裝實測。
+- **來源分類**：PPT Master、Reverse API Engineer、`mattpocock/skills` 嘅 GitHub API 授權欄位係 MIT；`grill-me` 係 `mattpocock/skills` 入面嘅 Skill。新增 `OpenBMB/VoxCPM` 授權欄位係 Apache-2.0，README 指權重同 code 均 Apache-2.0。
+- **使用位置**：可下載到本機／相容環境使用（PPT workflow、RAE CLI、Skill 檔、VoxCPM2 推理）；「本機用」唔等於首次下載離線、零硬件成本或零模型費用，亦唔代表本輪已安裝實測。
 - **收錄方式**：保留上游連結、用途、授權、查證 commit 同限制，唔將其他人成套 repo 搬入本倉；現有 `grilling` MIT 引用原文維持不變，呢輪冇新增外部 Skill。
 
 | 資源 | 原貼文識別 | 整理後入口 | 本輪狀態 |
@@ -18,6 +18,7 @@
 | PPT Master | ③・影片 ID `DfHiF9Wj_Yg` | 本頁 §2 | 已讀上游文件；未安裝／生成 PPTX |
 | Reverse API Engineer | ④・影片 ID `DfHiKBBlJ3k` | 本頁 §3 → [25](25-reverse-api-reuse.md)／[26](26-reverse-api-walkthrough.md) | 已更新文件入口；未執行逆向／打目標網站 API |
 | `/grill-me`／`grilling` | ⑥・影片 ID `DfJSVWrotqt` | 本頁 §4 → 現有 [`INTAKE.md`](../templates/repo-starter/INTAKE.md) | 已核對上游原文；本地方法已有，Slash 指令未安裝實測 |
+| VoxCPM2 | 新增・影片 ID `DfFR6jqgjaY` | 本頁 §5 | 已讀上游 README／LICENSE／metadata；未下載權重／合成實測 |
 
 > 影片 ID 只保留做來源線索，**唔等於已核實影片內容**。下面以項目官方 README／檔案為依據；宣傳說話同實際驗證分開寫。
 
@@ -29,8 +30,9 @@
 | 搞清楚網站資料由邊個 endpoint 嚟 | §3 Reverse API Engineer（候選） | 授權／條款紀錄＋去敏請求分析＋ reviewed client |
 | 想法太模糊，驚 AI 做出嚟唔對 | §4 現有 `INTAKE.md` | 用戶確認嘅 `SCOPE.md`＋驗收條件 |
 | 揀色、抽色、搵配色靈感 | [23 §5.1–5.2](23-design-resources.md) | 有來源、有語意、有對比驗證嘅 design tokens |
+| 文字轉語音／聲音設計／獲授權聲音克隆 | §5 VoxCPM2（候選） | 同意／來源紀錄＋AI 標記＋抽聽合格音檔 |
 
-**建議次序**：先問清楚 → 查官方 API／現有方案 → 需要時先試工具 → 人手驗收。唔係每個 project 都要裝齊三套 AI 工具。
+**建議次序**：先問清楚 → 查官方 API／現有方案 → 需要時先試工具 → 人手驗收。唔係每個 project 都要裝齊四套 AI 工具／模型。
 
 ## 2. PPT Master：真正有價值係「可繼續改」，唔係「一鍵完美」
 
@@ -141,7 +143,42 @@
 
 驗收唔係「佢問咗好多問題」，而係：答案有冇寫入 SCOPE；有冇明確唔做清單；每項重要要求有冇可測條件；用戶有冇確認；實作後有冇對返規格。呢啲先係減少「做出嚟唔對」嘅防線。
 
-## 5. 將工具串起嚟：每一步都有可檢查產出
+## 5. VoxCPM2：本機 TTS／聲音設計／克隆；同意同 AI 標記係前置條件
+
+來源：[`OpenBMB/VoxCPM`](https://github.com/OpenBMB/VoxCPM)，本輪讀取 commit `4b8dd4440d33396b3f429201f8af0529b4d2c601` 嘅 [README](https://github.com/OpenBMB/VoxCPM/blob/4b8dd4440d33396b3f429201f8af0529b4d2c601/README.md)、[LICENSE](https://github.com/OpenBMB/VoxCPM/blob/4b8dd4440d33396b3f429201f8af0529b4d2c601/LICENSE) 同 [pyproject.toml](https://github.com/OpenBMB/VoxCPM/blob/4b8dd4440d33396b3f429201f8af0529b4d2c601/pyproject.toml)。GitHub API 喺 **2026-11-06** 回傳 **41,110 stars、Apache-2.0**，repo 非 fork。
+
+### 5.1 核實結果／原清單修正
+
+| 原清單講法 | 文件核實後應該點寫 |
+|---|---|
+| 開源免費、40.8k 星 | README 指 model weights 同 code 用 Apache-2.0，可商用；星數係快照，本輪係 41,110。硬件、電費、hosting／雲端 GPU 可以另外收費。 |
+| 20 億參數、200 萬小時訓練 | 官方 README 寫 2B、over 2 million hours；係上游自述，唔係本倉獨立審計訓練數據。 |
+| 無需分詞器 | 上游叫 Tokenizer-Free，行連續語音表徵／AudioVAE V2；唔等於完全唔使文字處理。 |
+| 30 種語言＋9 種中文方言 | 官方列表包括廣東話、四川話等；支援列表唔等於每種語言／方言品質一致，要抽聽驗收。 |
+| 用文字描述設計聲音 | Voice Design 可用自然語言描述，唔使參考音；README 格式係將描述放喺 text 開頭括號。結果可能變動，上游建議試 1–3 次。 |
+| 5–15 秒就能克隆 | 官方 README 只寫 short reference clip；5–15 秒係社群整合文件嘅乾淨參考音建議，唔係任意 clip 都保證成功。Ultimate Cloning 另需準確 transcript。 |
+| 48kHz 錄音棚品質 | 原生 48kHz 輸出、16kHz 參考音輸入係官方規格；「錄音棚品質」係上游形容，本輪未實測音質。 |
+| RTX 4090 上 0.3 倍實時 | 官方參考係 RTF ~0.30（標準 PyTorch），Nano-vLLM 約 ~0.13；VRAM 約 8GB。RTF 越低越快，~0.3 即約比實時快，唔係「慢到 0.3 倍」。 |
+| Apache 2.0 但嚴禁仿冒詐騙 | 上游 Risks 明確嚴禁 impersonation、fraud、disinformation，並建議標明 AI 生成。授權可商用唔等於可以用嚟冒充他人。 |
+
+### 5.2 本機試用條件（未實測）
+
+- 官方 README 列 **Python ≥3.10（<3.13）、PyTorch ≥2.5.0、CUDA ≥12.0**（NVIDIA GPU 路徑）；VRAM 約 8GB 係官方參考。CPU／MPS／edge 路徑存在，但效能唔可以套用 RTX 4090 數字。
+- 安裝係 `pip install voxcpm`，首次載入會下載模型權重；權重、參考音、生成音檔唔好 commit 入 Git（[S10](01-slim.md)），用本機／外部儲存或 artifact。
+- Voice Design 範例（未實測）：`(平靜、清晰、中等語速) 呢段係 AI 生成語音測試，唔係真人錄音。` 克隆就用自己聲音或已獲明確授權嘅參考音；唔好攞公眾人物、客戶、細路聲音做未授權測試。
+- 同本倉現有語音相關項目分工：`voice_slide_web` 係簡報播放控制方向，唔係 TTS 模型；見 [24](24-similar-products.md)。
+
+### 5.3 收貨／安全 checklist
+
+- [ ] **同意／授權**：參考音來源、使用目的、授權範圍有紀錄；只克隆自己聲音或獲明確 許可 嘅聲音；嚴禁仿冒、詐騙、誤導。
+- [ ] **AI 標記**：輸出檔名／描述／發布頁面標明 AI 生成；跟上游建議同發布平台規則。
+- [ ] **私隱**：非公開參考音唔好上傳第三方 demo；本機處理都要控制 log／暫存，唔必要保留原始聲音（[A12](03-security.md)）。
+- [ ] **品質**：抽聽咬字、廣東話聲調、停頓、雜音同長文穩定性；長文分段，唔好一次過塞成篇合約。
+- [ ] **效能**：記錄實際硬件、RTF、VRAM、生成時間；唔好用官方 4090 數字當自己機器保證。
+- [ ] **來源／授權痕跡**：`CREDITS.md` 記 OpenBMB repo、commit、Apache-2.0；私人同意紀錄唔使公開，但要可追溯（[W8](12-copyright-scout-system.md)）。
+- [ ] **未實測狀態**：本頁只係文件核實；未下載權重、未合成、未克隆、未量 RTF。
+
+## 6. 將工具串起嚟：每一步都有可檢查產出
 
 | 階段 | 做乜 | 產出／依據 |
 |---|---|---|
@@ -150,14 +187,15 @@
 | 3・定視覺 | 配色站搵靈感 → 對比檢查 → token | [23 §5.2](23-design-resources.md)；`DESIGN.md`／`CREDITS.md` |
 | 4・實作與測試 | 按現有 S/F/A/W/V 同技術棧契約施工 | `guard`＋測試＋真實操作；唔係單靠 AI 自稱完成 |
 | 5・有需要先出簡報 | 用已核實材料試 PPT Master，跟 §2.4 收貨 | 可編輯檔＋來源／成本／限制紀錄 |
+| 6・有需要先出語音 | 用已授權參考音／文字試 VoxCPM2，跟 §5.3 收貨 | AI 標記音檔＋同意／來源／硬件紀錄 |
 
-> 呢條係按需要選用嘅工作路線，唔係「每個 app 必須裝 PPT Master／RAE／外掛 Skill」嘅新底線。
+> 呢條係按需要選用嘅工作路線，唔係「每個 app 必須裝 PPT Master／RAE／外掛 Skill／VoxCPM2」嘅新底線。
 
-## 6. 查證限制／維護
+## 7. 查證限制／維護
 
-- **已做**：2026-11-06 用 GitHub API 查三個已識別第三方上游 repo metadata、commit、README／指定 Skill 文件；配色站只核對公開搜尋索引內嘅官方頁摘要。冇將搜尋摘要當操作實測。
-- **範圍定案**：2026-11-06 用戶確認冇第 4 個 AI 工具；已移除待補位，唔再按原貼文編號缺口補項。
-- **未做**：安裝／執行三個已識別 AI 工具、模型付費測試、PPTX 人手驗收、第三方網站逆向、Skill slash-command 實測、配色站登入／上傳／匯出、地區可用性測試。原貼文三條影片亦未核實內容。
+- **已做**：2026-11-06 用 GitHub API 查四個第三方上游 repo（PPT Master／RAE／mattpocock/skills／OpenBMB/VoxCPM）metadata、commit、README／指定 Skill／LICENSE 文件；配色站只核對公開搜尋索引內嘅官方頁摘要。冇將搜尋摘要當操作實測。
+- **範圍更新**：原貼文 AI 組確認只有 3 個；本輪另行新增 VoxCPM2，而家共 4 個 AI 資源。唔將新增當作原本缺失嘅第 ⑤ 項。
+- **未做**：安裝／執行四個 AI 工具／模型、模型付費測試、PPTX 人手驗收、VoxCPM2 權重下載／TTS／克隆／RTF 量測、第三方網站逆向、Skill slash-command 實測、配色站登入／上傳／匯出、地區可用性測試。原貼文影片（包括 `DfFR6jqgjaY`）亦未核實內容。
 - **自有方案限制**：本輪查 `playerkousas-rgb/PPTMAKER` GitHub API 回傳 **404**，未能核實現況；[28](28-repo-taxonomy.md) 嘅「空殼／預留」只係舊盤點，唔當作今日仍存在的證明。自有 `voice_slide_web` 屬簡報播放方向，見 [24](24-similar-products.md)，唔等於 PPT 生成器。
 - **單一入口**：配色去 23；PPT 評估留本頁；Reverse API 深入內容留 25／26；Skill 方法／目錄留 INTAKE／CATALOG。15、29、README 只放指針，唔複製多份功能表。
 - **重新核實時機**：真正採用前、工具升級後、引用星數前。更新來源 commit／日期／限制，再跑 `node scripts/guard.mjs`、`node scripts/consistency_v1.0.mjs . --json`、`node scripts/final_check_v1.0.mjs --json`。文件檢查通過唔會升級「未實測」狀態。
