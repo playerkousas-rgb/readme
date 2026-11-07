@@ -7,7 +7,7 @@
 
 | 站 | 實測結果 | 有冇用 | 判 |
 |---|---|---|---|
-| [Scrolltide](https://scrolltide.co) | **唔係免費**：$299 一次性付費，140 模板／75 組件／55 shaders，大部分 Premium、得小量 Free；賣點係「copy prompt 貼畀 AI」，技術棧明寫 React／Vite／Next／Tailwind／Framer Motion／GSAP／Three.js | 有用但未買 | **買之前先試免費嗰幾個**。佢棧同我哋 React 主力（[38 §2.1 普查](38-animation-3d-prediction-tools.md)）真係啱；$299 係一次性唔貴，但未試過手感、未睇授權條款，唔好衝動課金。片中「8 個免費金礦」講法喺呢站係錯嘅，已更正 [23 §5.3](23-design-resources.md) |
+| [Scrolltide](https://scrolltide.co) | **唔係免費**：$299 一次性付費，140 模板／75 組件／55 shaders，大部分 Premium、得小量 Free；賣點係「copy prompt 貼畀 AI」，技術棧明寫 React／Vite／Next／Tailwind／Framer Motion／GSAP／Three.js | 付費，唔保留 | ❌ **已剔除**（用戶規矩 2026-11-07：唔係免費嘅唔需要保留，見 [41 §4](41-free-self-build-shortlist.md)）。唔再考慮課金；React 動畫點寫行返自家 `web-motion` skill（framer-motion 線，見本頁 §3.2）。片中「8 個免費金礦」講法喺呢站係錯嘅，已更正 [23 §5.3](23-design-resources.md) |
 | [navbar.gallery](https://navbar.gallery) | 免費，550+ 個真實網站 navbar，可按 dropdown／megamenu／sidebar／searchbar 等分類，每個有截圖＋原站連結 | 有用 | **開工參考**，已入 [23 §5.3](23-design-resources.md)。借結構唔借品牌樣 |
 | [footer.design](https://footer.design) | 免費，footer 專門畫廊，可按 type／style 篩選 | 有用（細但專） | 同上。記住我哋 footer 硬性要有 © SCOUT SYSTEM |
 | [cta.gallery](https://cta.gallery) | 免費，CTA 畫廊，可按行業／明暗篩選 | 有用 | 同上。一頁一個主 CTA 先係學到嘅紀律，唔係抄款 |
