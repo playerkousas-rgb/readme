@@ -96,7 +96,7 @@
 | **動畫 CLI／API 目錄／AI 預測啱唔啱我哋**（Animate UI／ApiVault／MiroFish） | **[docs/38-animation-3d-prediction-tools.md](docs/38-animation-3d-prediction-tools.md)** — ApiVault 入 [docs/15](docs/15-resource-index.md) 做搵 API 第二層；Animate UI 要 shadcn 先用得（我哋 89 個 repo 普查：React 26／Next 9／靜態 32、shadcn 零個，2026-11-07）；MiroFish 只當假設產生器、唔當市場證據 |
 | **10 個站實測＋邊啲值得自己做**（設計畫廊／Logo／SEO） | **[docs/39-verified-sites-and-diy.md](docs/39-verified-sites-and-diy.md)** — 10 站逐個開嚟核實（Scrolltide 係付費、3dicons CC0、Refero DESIGN.md 庫）；自己做總清單：已做 `scripts/seo_check_v1.0.mjs`＋`web-motion` 補 framer-motion 線，其餘逐個判 |
 | **邊啲嘢應該用 Gemini＋Canvas 自己整** | **[docs/40-canvas-diy-candidates.md](docs/40-canvas-diy-candidates.md)** — 第一：G11 圖標產生器（Type A）；第二：現有產生器加風格 presets（Type B，唔新起）；第三：Pre-mortem 鬧場（Type C，產出只當假設）；其餘唔用 Canvas 嘅原因逐個寫明 |
-| **值得自己做總清單（淨係免費）** | **[docs/41-free-self-build-shortlist.md](docs/41-free-self-build-shortlist.md)** — Gemini AI（風格產生器／Pre-mortem）／自架本機（粵語配音／出片）／前端網站（圖標・相片工具已做、API 搜尋頁未起）三種做法一次過睇；付費嘅唔保留（Scrolltide 已剔除） |
+| **值得自己做總清單（淨係免費）** | **[docs/41-free-self-build-shortlist.md](docs/41-free-self-build-shortlist.md)** — Gemini AI（風格產生器／Pre-mortem）值得做；本機／自架用戶決定唔做；前端網站圖標・相片工具已做；付費嘅唔保留（Scrolltide 已剔除） |
 | **開新 Git 前揀設計資源**（字體／配色／Icon／插畫／UI library／模板／DESIGN.md／系統設計） | **[docs/23-design-resources.md](docs/23-design-resources.md)** — 5 個主庫 ＋ Nippon Colors／Adobe Color／Color Hunt ＋ 配色對比驗收 ＋ 10 步開工 checklist |
 | 睇真實 Gemini Canvas app 踩過咩坑 | [docs/16-canvas-case-scout-comic.md](docs/16-canvas-case-scout-comic.md) — 童軍漫畫生成器 v4.2.1 實戰 |
 | 驗一個單一 HTML 交唔交到貨 | `node scripts/audit_single_html_v1.0.mjs <檔名>` — S/F/A/W/V/C 靜態審計 |
