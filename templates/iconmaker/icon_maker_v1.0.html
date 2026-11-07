@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="app-version" content="v1.0">
+<meta name="copyright" content="© SCOUT SYSTEM">
+<title>Icon Maker v1.0 — © SCOUT SYSTEM</title>
+<style>
+  :root { color-scheme: light; --ink:#22302a; --muted:#5c6b63; --line:#d8e0da; --accent:#2c5a3c; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, "Noto Sans TC", sans-serif; color:var(--ink); background:#f7f8f6; }
+  main { max-width: 1080px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  section { background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:16px; }
+  h2 { font-size:1.05rem; margin:0 0 10px; }
+  label { display:block; font-weight:600; margin:10px 0 4px; }
+  input[type="text"], input[type="url"] { width:100%; padding:8px; border:1px solid var(--line); border-radius:8px; }
+  input[type="color"] { width:56px; height:36px; padding:2px; }
+  button { background:var(--accent); color:#fff; border:0; border-radius:8px; padding:9px 14px; cursor:pointer; font-size:.95rem; }
+  button.sec { background:#e8ede9; color:var(--ink); }
+  button:disabled { opacity:.45; cursor:not-allowed; }
+  .row { display:flex; gap:12px; flex-wrap:wrap; align-items:end; }
+  .row > div { flex:1 1 200px; }
+  #drop { border:2px dashed var(--line); border-radius:12px; padding:22px; text-align:center; color:var(--muted); }
+  #drop.over { border-color: var(--accent); color: var(--accent); }
+  .grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:12px; }
+  .card { border:1px solid var(--line); border-radius:10px; padding:10px; text-align:center; }
+  .card img { max-width:100%; background: repeating-conic-gradient(#eee 0% 25%, #fff 0% 50%) 50% / 16px 16px; }
+  .card .nm { font-family: ui-monospace, monospace; font-size:.78rem; word-break: break-all; margin-top:6px; }
+  .card .kb { color:var(--muted); font-size:.82rem; }
+  .round { border-radius:50%; }
+  .safe { outline: 2px dashed #e8822b; outline-offset: -18%; }
+  #pixel { width:256px; height:256px; image-rendering: pixelated; border:1px solid var(--line); cursor: crosshair; background:#fff; }
+  pre { background:#14231b; color:#d9f2e2; padding:12px; border-radius:10px; overflow:auto; font-size:.8rem; }
+  .warn { color:#9a4d00; } .bad { color:#b3261e; font-weight:700; } .ok { color:var(--accent); font-weight:700; }
+  footer { text-align:center; color:var(--muted); margin-top:24px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>🖼️ Icon Maker <span id="ver1">v1.0</span></h1>
+  <p class="sub">上載母圖（手繪 → LogoDiffusion／Gemini 出嘅母圖都得）→ 出齊 docs/33 G11 嘅 9 個圖標檔。全部喺你部機本地處理，張圖唔會上載去任何地方。</p>
+
+  <section>
+    <h2>1. 母圖</h2>
+    <div id="drop">將正方形母圖拖嚟呢度，或者 <label for="file" style="display:inline;color:var(--accent);cursor:pointer;text-decoration:underline">揀檔</label>
+      <input id="file" type="file" accept="image/*" hidden>
+      <div style="font-size:.85rem;margin-top:6px">要求：正方形、滿版（full bleed，冇白邊冇圓角框）、主體喺正中央佔 60–70%、至少 4 隻色（docs/33 §4）。</div>
+    </div>
+    <div class="row">
+      <div><label for="appName">App 名（manifest name）</label><input id="appName" type="text" value="My App"></div>
+      <div><label for="siteUrl">網站絕對網址（og:image 用）</label><input id="siteUrl" type="url" value="https://example.vercel.app/"></div>
+      <div><label for="theme">主題色（theme_color／og 底色）</label><input id="theme" type="color" value="#2c5a3c"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>2. 16×16 手繪格（唔准靠縮，docs/33 §6）</h2>
+    <p class="sub">母圖縮落去會做起稿；跟住逐格執：揀色，㩒格仔上色。認唔認得出，最終要用眼驗呢格。</p>
+    <canvas id="pixel" width="16" height="16"></canvas>
+    <div class="row" style="margin-top:8px;align-items:center">
+      <div style="flex:0 0 auto"><label for="paint" style="margin:0">筆色</label> <input id="paint" type="color" value="#2c5a3c"></div>
+      <div style="flex:0 0 auto"><button class="sec" id="resetPixel" type="button">由母圖重新起稿</button></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>3. 產出（9 個檔，總預算 ≤ 260 KB）</h2>
+    <div class="grid" id="out"></div>
+    <p id="total"></p>
+    <div class="row">
+      <div style="flex:0 0 auto"><button id="dlAll" type="button" disabled>全部下載</button></div>
+      <div style="flex:0 0 auto"><button class="sec" id="expState" type="button">匯出設定 JSON</button></div>
+      <div style="flex:0 0 auto"><label for="impFile" class="sec" style="display:inline-block;padding:9px 14px;border-radius:8px;background:#e8ede9;cursor:pointer;margin:0">匯入設定 JSON</label><input id="impFile" type="file" accept="application/json" hidden></div>
+    </div>
+    <p class="warn">逐個下載如果畀瀏覽器攔，允許呢個頁面「多個下載」再㩒。ICO 已喺瀏覽器本地砌好（16／32／48 三合一 PNG-in-ICO）；相容性第一次用嗰陣，要喺分頁／iOS 主畫面／WhatsApp 實測（docs/33 §9）。</p>
+  </section>
+
+  <section>
+    <h2>4. 掛法（copy 去 index.html 同 manifest）</h2>
+    <h3 style="margin:8px 0 4px">&lt;head&gt; 5 link ＋ 4 meta</h3>
+    <pre id="headSnippet"></pre>
+    <button class="sec" id="copyHead" type="button">Copy head</button>
+    <h3 style="margin:16px 0 4px">manifest.webmanifest</h3>
+    <pre id="manifestOut"></pre>
+    <button class="sec" id="copyManifest" type="button">Copy manifest</button>
+  </section>
+
+  <footer>© SCOUT SYSTEM · Icon Maker <strong>v1.0</strong> · 本地工具，唔上載圖片</footer>
+</main>
+
+<script>
+const APP_VERSION = 'v1.0';
+const $ = (id) => document.getElementById(id);
+let master = null;            // HTMLImageElement
+let pixelEdited = false;
+const blobs = new Map();      // name -> {blob, url}
+
+const ICONS = [
+  { name: 'favicon-16.png', size: 16, kind: 'pixel' },
+  { name: 'favicon-32.png', size: 32, kind: 'icon' },
+  { name: 'apple-touch-icon.png', size: 180, kind: 'icon' },
+  { name: 'icon-192.png', size: 192, kind: 'icon' },
+  { name: 'icon-512.png', size: 512, kind: 'icon' },
+  { name: 'icon-maskable-192.png', size: 192, kind: 'icon', maskable: true },
+  { name: 'icon-maskable-512.png', size: 512, kind: 'icon', maskable: true },
+  { name: 'og-image.png', size: 0, kind: 'og' },
+];
+
+function makeCanvas(w, h) { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; }
+function drawCover(ctx, img, w, h) {
+  const s = Math.max(w / img.naturalWidth, h / img.naturalHeight);
+  const dw = img.naturalWidth * s, dh = img.naturalHeight * s;
+  ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+}
+function iconCanvas(size) {
+  const c = makeCanvas(size, size); drawCover(c.getContext('2d'), master, size, size); return c;
+}
+function ogCanvas() {
+  const c = makeCanvas(1200, 630), ctx = c.getContext('2d');
+  ctx.fillStyle = $('theme').value; ctx.fillRect(0, 0, 1200, 630);
+  drawCover(ctx, master, 1200, 630);
+  ctx.fillStyle = 'rgba(0,0,0,0.35)'; ctx.fillRect(0, 470, 1200, 160);
+  ctx.fillStyle = '#fff'; ctx.font = 'bold 64px system-ui, sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText($('appName').value || 'My App', 600, 570, 1100);
+  return c;
+}
+function toBlobP(canvas) { return new Promise((res) => canvas.toBlob(res, 'image/png')); }
+
+async function buildIco() {
+  const parts = [];
+  for (const s of [16, 32, 48]) {
+    const src = s === 16 ? pixelCanvas16() : iconCanvas(s);
+    parts.push({ s, buf: new Uint8Array(await (await toBlobP(src)).arrayBuffer()) });
+  }
+  const head = 6 + 16 * parts.length;
+  let offset = head, total = head;
+  for (const p of parts) total += p.buf.length;
+  const out = new DataView(new ArrayBuffer(total));
+  out.setUint16(0, 0, true); out.setUint16(2, 1, true); out.setUint16(4, parts.length, true);
+  parts.forEach((p, i) => {
+    const e = 6 + 16 * i;
+    out.setUint8(e, p.s >= 256 ? 0 : p.s); out.setUint8(e + 1, p.s >= 256 ? 0 : p.s);
+    out.setUint16(e + 4, 1, true); out.setUint16(e + 6, 32, true);
+    out.setUint32(e + 8, p.buf.length, true); out.setUint32(e + 12, offset, true);
+    new Uint8Array(out.buffer).set(p.buf, offset); offset += p.buf.length;
+  });
+  return new Blob([out.buffer], { type: 'image/x-icon' });
+}
+
+function pixelCanvas16() {
+  const src = $('pixel'), c = makeCanvas(16, 16);
+  c.getContext('2d').drawImage(src, 0, 0); return c;
+}
+function initPixelFromMaster() {
+  if (!master) return;
+  const px = $('pixel').getContext('2d');
+  px.imageSmoothingEnabled = true;
+  px.clearRect(0, 0, 16, 16); px.drawImage(iconCanvas(512), 0, 0, 16, 16);
+  pixelEdited = false;
+}
+
+async function renderAll() {
+  const out = $('out'); out.replaceChildren(); blobs.clear();
+  $('dlAll').disabled = !master;
+  renderSnippets();
+  if (!master) { $('total').textContent = '未有母圖，產出區係空嘅。'; return; }
+  const defs = [...ICONS];
+  let totalKB = 0;
+  // favicon.ico 要等 16/32 產出，獨立砌
+  for (const d of defs) {
+    const canvas = d.kind === 'og' ? ogCanvas() : d.kind === 'pixel' ? pixelCanvas16() : iconCanvas(d.size);
+    const blob = await toBlobP(canvas);
+    blobs.set(d.name, blob); totalKB += blob.size / 1024;
+    out.appendChild(card(d.name, blob, canvas.toDataURL(), d.maskable));
+  }
+  const ico = await buildIco();
+  blobs.set('favicon.ico', ico); totalKB += ico.size / 1024;
+  out.prepend(card('favicon.ico', ico, iconCanvas(32).toDataURL(), false));
+  const t = $('total');
+  t.textContent = `9 個檔合計 ${totalKB.toFixed(1)} KB（預算 ≤ 260 KB）`;
+  t.className = totalKB <= 260 ? 'ok' : 'bad';
+  if (totalKB > 260) t.textContent += '——超預算：母圖減色／簡化先再出（docs/33 §8），唔好換格式。';
+}
+
+function card(name, blob, dataUrl, maskable) {
+  const div = document.createElement('div'); div.className = 'card';
+  const img = document.createElement('img'); img.src = dataUrl; img.alt = name;
+  if (maskable) { img.classList.add('round', 'safe'); img.title = '圓裁＋66% 安全區預覽（橙色虛線）'; }
+  img.style.width = name === 'og-image.png' ? '100%' : '96px'; img.style.height = 'auto';
+  const nm = document.createElement('div'); nm.className = 'nm'; nm.textContent = name;
+  const kb = document.createElement('div'); kb.className = 'kb'; kb.textContent = (blob.size / 1024).toFixed(1) + ' KB';
+  const btn = document.createElement('button'); btn.type = 'button'; btn.textContent = '下載';
+  btn.addEventListener('click', () => download(name));
+  div.append(img, nm, kb, btn); return div;
+}
+function download(name) {
+  const blob = blobs.get(name); if (!blob) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+
+function renderSnippets() {
+  const base = ($('siteUrl').value || 'https://example.vercel.app/').replace(/\/?$/, '/');
+  const theme = $('theme').value;
+  $('headSnippet').textContent = [
+    '<link rel="icon" href="/icons/favicon.ico" sizes="any" />',
+    '<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />',
+    '<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />',
+    '<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />',
+    '<link rel="manifest" href="/manifest.webmanifest" />',
+    `<meta name="theme-color" content="${theme}" />`,
+    `<meta property="og:image" content="${base}icons/og-image.png" />`,
+    '<meta property="og:image:width" content="1200" />',
+    '<meta property="og:image:height" content="630" />',
+  ].join('\n');
+  $('manifestOut').textContent = JSON.stringify({
+    name: $('appName').value || 'My App', short_name: $('appName').value || 'My App',
+    display: 'standalone', background_color: theme, theme_color: theme,
+    icons: [
+      { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: '/icons/icon-maskable-192.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' },
+      { src: '/icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+    ],
+  }, null, 2);
+}
+
+function loadMaster(file) {
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => { master = img; initPixelFromMaster(); renderAll(); };
+  img.src = url;
+}
+
+$('file').addEventListener('change', (e) => loadMaster(e.target.files[0]));
+const drop = $('drop');
+drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
+drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('over'); loadMaster(e.dataTransfer.files[0]); });
+for (const id of ['appName', 'siteUrl', 'theme']) $(id).addEventListener('input', renderAll);
+$('resetPixel').addEventListener('click', () => { initPixelFromMaster(); renderAll(); });
+$('pixel').addEventListener('click', (e) => {
+  const r = e.target.getBoundingClientRect();
+  const x = Math.floor((e.clientX - r.left) / r.width * 16), y = Math.floor((e.clientY - r.top) / r.height * 16);
+  const ctx = $('pixel').getContext('2d');
+  ctx.fillStyle = $('paint').value; ctx.fillRect(x, y, 1, 1); pixelEdited = true; renderAll();
+});
+$('dlAll').addEventListener('click', async () => {
+  for (const name of ['favicon.ico', ...ICONS.map(d => d.name)]) { download(name); await new Promise(r => setTimeout(r, 350)); }
+});
+$('copyHead').addEventListener('click', () => navigator.clipboard.writeText($('headSnippet').textContent));
+$('copyManifest').addEventListener('click', () => navigator.clipboard.writeText($('manifestOut').textContent));
+$('expState').addEventListener('click', () => {
+  const state = { schemaVersion: 1, appVersion: APP_VERSION, appName: $('appName').value, siteUrl: $('siteUrl').value, theme: $('theme').value };
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }));
+  a.download = 'icon-maker-state_v1.0.json'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+});
+$('impFile').addEventListener('change', async (e) => {
+  try {
+    const s = JSON.parse(await e.target.files[0].text());
+    if (s.schemaVersion !== 1) { alert('設定檔 schemaVersion 唔啱，冇匯入。'); return; }
+    $('appName').value = s.appName || 'My App'; $('siteUrl').value = s.siteUrl || ''; $('theme').value = s.theme || '#2c5a3c';
+    renderAll();
+  } catch { alert('設定檔讀唔到，冇匯入。'); }
+});
+renderAll();
+</script>
+</body>
+</html>

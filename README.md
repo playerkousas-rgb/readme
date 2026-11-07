@@ -4,7 +4,7 @@
 > 呢個 repo **唔係一個 app**，而係我所有 app 共用嘅**說明書 ＋ 可複製模板 ＋ 自動防呆檢查**。
 > **案例隔離（2026-10-27）**：通用規則包括 S/F/A/W/V、研發前調查 P1 ＋ 技術棧契約；ecportal 旅團／進度追蹤嘅專案設定全部喺 [docs/19](docs/19-ecportal-troop-case.md)，**唔係通用底線**；邊個 repo 有問題喺 [docs/20](docs/20-repo-health-audit.md)。
 
-更新日期：2026-11-06 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase ＋ Gemini／Canvas**
+更新日期：2026-11-07 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase**（GEMINI 系統規範已集中去 GEMINI repo，本倉唔再做佢嘅入口）
 
 ---
 
@@ -42,12 +42,12 @@
 
 ## 0. 30 秒：五大通用鐵律（違反 = 唔准 deploy）
 
-> 五套規則**全部 app 都適用**（工具／App／系統、Gemini 三種結構都一樣），
+> 五套規則**全部 app 都適用**（工具／App／系統都一樣），
 > 就好似瘦身系統咁，係底線唔係選項。
 
 | # | 鐵律 | 一句版 | 詳情 |
 |---|------|--------|------|
-| 1 | **瘦身 S** | 唔好用嘅嘢一件都唔部署（**Vercel/dist 類**） | `dist < 5MB`、bundle `< 2MB`、`api` 零依賴；**單一 HTML / Gemini Canvas 例外：5MB 上限、唔強制瘦身（C13-g，越輕越快）** | [01-slim](docs/01-slim.md) |
+| 1 | **瘦身 S** | 唔好用嘅嘢一件都唔部署（**Vercel/dist 類**） | `dist < 5MB`、bundle `< 2MB`、`api` 零依賴；**單一 HTML 例外：5MB 上限、唔強制瘦身（越輕越快）** | [01-slim](docs/01-slim.md) |
 | 2 | **防呆 F** | 人手一定會錯，所以要畀系統兜住 | fail closed、白名單、冪等鍵、樂觀鎖、dry-run、CI 硬攔 | [02-foolproof](docs/02-foolproof.md) |
 | 3 | **安全 A** | 永遠假設前端已經被攻陷 | secret 只留 server、所有授權 server-side 計、HMAC sig、RLS、審計鏈 | [03-security](docs/03-security.md) |
 | 4 | **COPYRIGHT SCOUT SYSTEM W** | 版權要講出口、寫入圖、留紀錄 | `© SCOUT SYSTEM` 頁尾＋中繼資料；生成圖落 DCT 隱形水印（v1/v2）；原圖／成品圖／使用紀錄 | [12-copyright](docs/12-copyright-scout-system.md) |
@@ -83,17 +83,19 @@
 | 檢查每次 commit / deploy | [docs/10-checklists.md](docs/10-checklists.md#2-每次施工commit-前) |
 | 上線前 Go / No-Go | [docs/10-checklists.md](docs/10-checklists.md#3-上線前-go--no-go) |
 | 出事（key 外洩／爆 quota／資料唔見） | [docs/11-incidents.md](docs/11-incidents.md) |
-| 決定 Gemini app 用邊種結構 | [docs/09-gemini-canvas.md](docs/09-gemini-canvas.md) — **A 全開放／B 隱藏水印／C 腦殼分離** |
 | 加隱形水印、用解碼器驗圖 | [docs/12-copyright-scout-system.md](docs/12-copyright-scout-system.md) ＋ [templates/watermark/](templates/watermark/README.md) |
-| 喺 Gemini 自動注入 API KEY | [docs/14-api-key-injection.md](docs/14-api-key-injection.md) — **C13 三軌自動注入（已實作可用）**：唯一 slot＋平台代理＋BYOK 後備；全端 app 先至用 server-side secret；[docs/09 C5](docs/09-gemini-canvas.md#c5--type-b喺-gemini-自動注入-api-keyc13已實作可用) |
 | 改版（檔名＋內文雙版號） | [docs/13-versioning.md](docs/13-versioning.md) |
 | 一次過搵晒 API／Prompt／開源 prompt 庫 | [docs/15-resource-index.md](docs/15-resource-index.md) — `f/prompts.chat` → `prompt` → `api` → 呢個 repo |
 | **揀第三方 GitHub 開源 AI 工具**（PPT／Reverse API／需求訪談／語音） | **[docs/34-ai-workflow-tools.md](docs/34-ai-workflow-tools.md)** — PPT Master、Reverse API Engineer、`grill-me`、VoxCPM2：上游來源／授權、用途、本機使用條件同驗收；未實測事項明寫 |
 | **爆紅 AI 清單揀邊個啱我哋**（動態／方法論／懶人包／Edge／粵語填詞） | **[docs/35-viral-ai-tools.md](docs/35-viral-ai-tools.md)** — 已用：起手包 `web-motion`＋`external/motion-prompt`；有場景先試 HyperFrames／story-to-handdrawn／Pixel2Motion；Paperclip／MoneyPrinterTurbo／Agent-Reach／VoiceStudio／Univer／Hindsight／Edge0 暫不採用；17 個 repo 已用 GitHub API 核實（2026-11-06） |
+| **教 AI 偷懶／免費平替啱唔啱我哋**（Ponytail／FreeBuff／Blender 城市／9 個開源平替） | **[docs/36-lazy-coding-and-open-alternatives.md](docs/36-lazy-coding-and-open-alternatives.md)** — 即刻吸收：Ponytail「寫 code 前七級梯」checklist（讀，唔裝 plugin）；FreeBuff 唔好用喺真 repo（數據條款）；其餘平替逐個判端用家試／有場景先試／唔採用；11 個 repo 已用 GitHub API 核實（2026-11-06） |
+| **免費 API／SEO 插件／設計畫廊／生圖風格啱唔啱我哋**（FreeLLMAPI／Claude SEO／20 種風格） | **[docs/37-ai-tools-design-prompts.md](docs/37-ai-tools-design-prompts.md)** — 即刻吸收：睇 API 三樣讀法＋8 個畫廊站入 [docs/23 §5.3](docs/23-design-resources.md)；Claude SEO 自家公開站上線前先試；FreeLLMAPI 只限個人實驗；生圖吸收詞彙＋句式（未實測）；GitHub API 已核實 2 個 repo（2026-11-06） |
+| **動畫 CLI／API 目錄／AI 預測啱唔啱我哋**（Animate UI／ApiVault／MiroFish） | **[docs/38-animation-3d-prediction-tools.md](docs/38-animation-3d-prediction-tools.md)** — ApiVault 入 [docs/15](docs/15-resource-index.md) 做搵 API 第二層；Animate UI 要 shadcn 先用得（我哋 89 個 repo 普查：React 26／Next 9／靜態 32、shadcn 零個，2026-11-07）；MiroFish 只當假設產生器、唔當市場證據 |
+| **10 個站實測＋邊啲值得自己做**（設計畫廊／Logo／SEO） | **[docs/39-verified-sites-and-diy.md](docs/39-verified-sites-and-diy.md)** — 10 站逐個開嚟核實（Scrolltide 係付費、3dicons CC0、Refero DESIGN.md 庫）；自己做總清單：已做 `scripts/seo_check_v1.0.mjs`＋`web-motion` 補 framer-motion 線，其餘逐個判 |
+| **邊啲嘢應該用 Gemini＋Canvas 自己整** | **[docs/40-canvas-diy-candidates.md](docs/40-canvas-diy-candidates.md)** — 第一：G11 圖標產生器（Type A）；第二：現有產生器加風格 presets（Type B，唔新起）；第三：Pre-mortem 鬧場（Type C，產出只當假設）；其餘唔用 Canvas 嘅原因逐個寫明 |
+| **值得自己做總清單（淨係免費）** | **[docs/41-free-self-build-shortlist.md](docs/41-free-self-build-shortlist.md)** — Gemini AI（風格產生器／Pre-mortem）值得做；本機／自架用戶決定唔做；前端網站圖標・相片工具已做；付費嘅唔保留（Scrolltide 已剔除） |
+| **開 Icon Maker／Photo Prep 新 repo** | **[docs/42-iconmaker-photoprep-repo-briefs.md](docs/42-iconmaker-photoprep-repo-briefs.md)** — 兩個工具各一段開工對話成稿，開新 repo 後貼去第一個 AI 對話即用（唔加 AI、唔起後端、真機驗收清單） |
 | **開新 Git 前揀設計資源**（字體／配色／Icon／插畫／UI library／模板／DESIGN.md／系統設計） | **[docs/23-design-resources.md](docs/23-design-resources.md)** — 5 個主庫 ＋ Nippon Colors／Adobe Color／Color Hunt ＋ 配色對比驗收 ＋ 10 步開工 checklist |
-| 睇真實 Gemini Canvas app 踩過咩坑 | [docs/16-canvas-case-scout-comic.md](docs/16-canvas-case-scout-comic.md) — 童軍漫畫生成器 v4.2.1 實戰 |
-| 驗一個單一 HTML 交唔交到貨 | `node scripts/audit_single_html_v1.0.mjs <檔名>` — S/F/A/W/V/C 靜態審計 |
-| 保護 PROMPT 設定／記錄原圖成品圖 | [docs/09-gemini-canvas.md](docs/09-gemini-canvas.md#c6--type-c腦殼分離html-殼--gs-腦) ＋ [templates/canvas/](templates/canvas/README.md) |
 | 用 Git / PR / branch | [docs/05-git.md](docs/05-git.md) |
 | 部署去 Vercel | [docs/06-vercel.md](docs/06-vercel.md) |
 | 寫 Google Apps Script（Sheet 當 DB） | [docs/07-apps-script.md](docs/07-apps-script.md) |
@@ -129,17 +131,12 @@ Vercel           = 前端靜態 host + /api serverless（verifySession → injec
 Apps Script      = 單位自己嘅 leaf 後端（Sheet 當 DB、/exec、sig、ScriptLock）
                    ＋ Type C 嘅「腦」（brain_vX.Y.gs，保護 prompt／原圖成品圖紀錄）
 Supabase         = 共用／跨平台數據（Postgres + RLS + Auth + Storage + 推送訂閱）
-Gemini / Canvas  = 生 UI 殼；三種結構：
-                   A 全開放（一個 HTML）
-                   B 隱藏水印（HTML + DCT 水印 + 解碼器 + API KEY 注入位）
-                   C 腦殼分離（HTML 殼 + GS 腦，記錄原圖／成品圖／使用紀錄）
 ```
 
 **鐵則**：
 - **secret 只可以喺 Vercel env / GAS ScriptProperties / Supabase Vault**，永遠唔入 Git、唔入前端、唔入 URL/QR、唔入 Sheet 儲存格。
 - **前端永遠唔直接揸 service key**：Vercel `/api` 做 proxy，Supabase 用 `anon key + RLS`，GAS 用一次性 `sig`。
 - **身份只誕生一次**：喺身份錨點開戶，其他系統靠 `sig` / 同步收到鏡像，唔准各自開、唔准下游反寫上游。
-- **Gemini app 嘅 prompt 同紀錄都係敏感資產**：Type C 一律放 `Code.gs` + Sheet／Drive；Type A/B 唔好寫入 HTML（「檢視原始碼」即公開）→ [09-gemini-canvas](docs/09-gemini-canvas.md)。
 - **所有生成圖要有 `© SCOUT SYSTEM`**：可見頁尾 + DCT 隱形水印雙軌（[W1/W2](docs/12-copyright-scout-system.md)）。
 - **所有交付檔要雙版號**：檔名 `_vX.Y` + 內文 `APP_VERSION`，每次更新兩邊一齊改（[V1](docs/13-versioning.md)）。
 
@@ -200,14 +197,20 @@ docs/
   24–33                      相近產品／API 教學／repo 治理／圖標等（完整索引：docs/README.md）
   34-ai-workflow-tools.md     第三方 GitHub 開源 AI 工具：PPT Master／Reverse API Engineer／grill-me／VoxCPM2 核實與驗收
   35-viral-ai-tools.md        2026-11 爆紅清單核實＋採用：17 個 repo GitHub API 快照；web-motion／external motion-prompt 已入起手包
+  36-lazy-coding-and-open-alternatives.md  爆紅清單第三輪：Ponytail 七級梯（已吸收做 checklist）／FreeBuff／Blender 城市／9 個開源平替核實
+  37-ai-tools-design-prompts.md  爆紅清單第四輪：FreeLLMAPI（只限實驗）／Claude SEO（有場景先試）／設計畫廊入 23 §5.3／生圖詞彙句式
+  38-animation-3d-prediction-tools.md  爆紅清單第五輪：Animate UI（React 先試）／ApiVault（入 15 做第二層）／MiroFish（只出假設）／3D 生成觀察名單
+  39-verified-sites-and-diy.md  10 站實測＋自己做總清單：已做 seo_check script＋web-motion 補 React 線
+  40-canvas-diy-candidates.md  用 Gemini＋Canvas 自己整嘅候選判決：圖標產生器（A）／風格 presets（B）／Pre-mortem（C）
   （圖標規範**唯一來源係 [docs/33](docs/33-icon-standard.md)** — 2026-11-02 由 README §9 抽出；9 個 PNG／ICO、maskable 66%、16px 手繪）
 templates/
   README.md               可抄嘢對照表 + 一鍵抄指令
   vercel/ git/ github/ gas/ supabase/   各平台 config / SQL / workflow
   watermark/              W 系列：codec / 解碼器 / 生成器 / key 注入器 / 測試（全部 _v1.0）
-  canvas/                 C 系列：brain_v1.0.gs / shell_v1.0.html / 部署拷貝 / 合約 / PROMPT / RECORDS
+  canvas/                 C 系列：brain_v1.0.gs / shell_v1.0.html / 部署拷貝 / 合約 / PROMPT / RECORDS / STYLE_PRESETS（風格句共用）
 scripts/guard.mjs         自動防呆檢查（本機 + CI 同一條）
 scripts/audit_single_html_v1.0.mjs  單一 HTML / Canvas artifact 交付前審計（S/F/A/W/V/C）
+scripts/seo_check_v1.0.mjs  公開頁 SEO/GEO 靜態檢查（title/og/JSON-LD 等；docs/39 §3.1）
 scripts/refresh_resources_v1.0.mjs  由 api/data/apis.csv 更新 docs/15 分類表
 scripts/final_check_v1.0.mjs      交付前一條命令跑六角度實測（docs/17）
 .github/workflows/        呢個 repo 自己都跑 guard（dogfooding）
@@ -234,11 +237,6 @@ scripts/final_check_v1.0.mjs      交付前一條命令跑六角度實測（docs
 > 已知例外／勘誤：① ecportal `進度追蹤旅系統升級版.md §9` 仍寫「版號只留本 MD」—— 新 app 一律跟 [V 系列](docs/13-versioning.md)。
 > ② `BUILD.md §S3` 寫 `installCommand: npm install --omit=dev` —— 已證實會令 Vercel build 搵唔到 `vite`；新 app 用 `--include=dev`（[VL3/VL8](docs/06-vercel.md#vl8--部署衛生s8)）。
 
-**新增案例（通用規則嘅實證，唔係專案级 as-built）**：
-[docs/16-canvas-case-scout-comic.md](docs/16-canvas-case-scout-comic.md) — 你嘅 Gemini Canvas app「童軍漫畫生成器 v4.2.1」。
-佢個 `VERSION_LOG` 記錄咗 S/F/A/W/V 嘅真實踩坑（1.20MB→433KB、`localStorage` sandbox 炸 app、兩處 key 宣告、
-**C13 三軌自動注入已實作、實測可用**），並附 [單一 HTML 審計器](scripts/audit_single_html_v1.0.mjs) 實跑結果（5MB 版）。
-
 ---
 
 ## 7. 相關 repo（你 GitHub 帳戶 `playerkousas-rgb` 入面）
@@ -250,7 +248,6 @@ scripts/final_check_v1.0.mjs      交付前一條命令跑六角度實測（docs
 | [`api`](https://github.com/playerkousas-rgb/api) | 🇭🇰 **香港免費 API 天書**：`data/apis.csv` 機讀總索引 + 20+ 份 `docs/*.md`（天氣／交通／AI／封港名單…） | **開新 app 揀 API 之前先睇**；特別 [`docs/ai.md`](https://github.com/playerkousas-rgb/api/blob/main/docs/ai.md)、[`docs/hk-blocked.md`](https://github.com/playerkousas-rgb/api/blob/main/docs/hk-blocked.md) 直接約束 [14-api-key-injection](docs/14-api-key-injection.md) |
 | [`prompt`](https://github.com/playerkousas-rgb/prompt) | **提示站 Prompt Studio**（Next.js，https://prompt-smoky-pi.vercel.app）：欄位 ↔ 卡面區塊 ↔ 提示詞片段三向連動 | Prompt 資產庫；對應 [C9 保護 PROMPT](docs/09-gemini-canvas.md#c9--type-c保護-prompt-設定)、[V5 版號入紀錄](docs/13-versioning.md) |
 | [`DRAWSCOUT`](https://github.com/playerkousas-rgb/DRAWSCOUT) ／ [`decode`](https://github.com/playerkousas-rgb/decode) | 出圖 app ／ 水印解碼器（你畀我嘅 `drawscout.html` 就係呢條線） | [W2 隱形水印](docs/12-copyright-scout-system.md) 嘅真實來源；已收錄做 `templates/watermark/drawscout_decoder_v1.0.html` |
-| [`GEMINI`](https://github.com/playerkousas-rgb/GEMINI) | Gemini 相關試驗 | 對照 [09 三種結構](docs/09-gemini-canvas.md) |
 | 其餘 5 個旅團 as-built repo | `vsbadge`／`roverbadge`／`cubsbadge`／`scoutbadge`／`scout-circulars` | **屬專案案例** → [docs/19 §12](docs/19-ecportal-troop-case.md)；健康問題 → [docs/20](docs/20-repo-health-audit.md) |
 
 > **去留決定**：`api` 同 `prompt` **兩個都保留**（佢哋係兩個真理源，`docs/15` 只放入口唔複製內容）；

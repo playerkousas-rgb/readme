@@ -421,7 +421,7 @@ function checkRuleSync() {
   for (const d of ['docs/01-slim.md', 'docs/04-settings-super.md', 'docs/09-gemini-canvas.md',
                    'docs/10-checklists.md', 'docs/12-copyright-scout-system.md', 'docs/13-versioning.md',
                    'docs/14-api-key-injection.md', 'docs/15-resource-index.md',
-                   'docs/16-canvas-case-scout-comic.md', 'docs/18-as-built-gap-audit.md',
+                   'docs/18-as-built-gap-audit.md',
                    'docs/19-ecportal-troop-case.md', 'docs/20-repo-health-audit.md',
                    'docs/21-fix-plans.md',
                    'docs/22-scout-circulars-agent-handoff.md',

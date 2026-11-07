@@ -11,7 +11,7 @@ description: >-
 # Web Motion
 
 ## What
-幫我哋棧（單一 HTML／Gemini Canvas／Vercel 靜態頁）加**有編號、可驗收**嘅網頁動態；唔出片（HTML→MP4 去 docs/35 §3 問題先揀路線）、唔生圖、唔改商業邏輯。
+幫我哋啲 app 加**有編號、可驗收**嘅網頁動態。先分清條線（2026-11-07 普查，見真理倉 docs/38 §2.1）：**React／Next 線**（26＋9 個 repo）沿用各 repo 已在用嘅 framer-motion；**靜態 HTML/JS／Canvas 線**（32 個 repo）用 GSAP／CSS。唔出片（HTML→MP4 去 docs/35 §3 問題先揀路線）、唔生圖、唔改商業邏輯。
 
 ## When
 - 要加：卡片入場、scroll 故事區、menu 吸頂、視差、按鈕 hover／flip、頁首過場。
@@ -25,7 +25,9 @@ description: >-
    - `node <skill-dir>/scripts/motion-prompt.mjs get 005 012` ／ `prompt 005`
    - 或者直接指名「Motion Prompt `#012`」，請 agent 自己去 `get`。
    - **唔好 fork／改編號**；離線就開上游繁中 packs 人手指名。
-2. **GSAP 100% 免費**（Webflow 收購後，SplitText／MorphSVG 等全部 plugin 免費商用；公開 npm `gsap`，無 Club token）：AI 寫 GSAP 前先對官方 [greensock/gsap-skills](https://github.com/greensock/gsap-skills)（MIT）——唔好估舊 Club API、唔好教人加 `.npmrc`。
+2. **按線揀引擎，唔好成套換**：
+   - **React／Next 線**：沿用該 repo 已裝嘅 **framer-motion**（我哋 React repo 現行路線，唔好為咗新工具搬去 GSAP 或者 Animate UI／shadcn——嗰個要成套 UI 底層先跑到，見真理倉 docs/38 §2）。寫法跟返該 repo 既有 pattern：`motion` component＋`AnimatePresence` 做進出、`whileInView` 做 scroll-triggered；進場用 ease-out／spring、離場快過進場；全局節奏要改就收埋做一組 transition token，唔好逐個 component 散寫數字。
+   - **靜態／Canvas 線**：**GSAP 100% 免費**（Webflow 收購後，SplitText／MorphSVG 等全部 plugin 免費商用；公開 npm `gsap`，無 Club token）：AI 寫 GSAP 前先對官方 [greensock/gsap-skills](https://github.com/greensock/gsap-skills)（MIT）——唔好估舊 Club API、唔好教人加 `.npmrc`。
 3. **scroll 術語速查**（直接攞用）：
 
    | 術語 | 意思 | 典型用法 |
@@ -48,6 +50,6 @@ description: >-
 ## It's working if
 - [ ] 施工單入面嘅動態需求**全部有編號或術語**；搵唔到「有質感啲／郁流暢啲」式形容詞
 - [ ] `prefers-reduced-motion` fallback 有；只郁 `transform`／`opacity`；三寬無 layout shift
-- [ ] GSAP 經 npm／CDN 一份，無新增多餘依賴；Canvas／單一 HTML ≤5MB
+- [ ] 引擎跟返條線：React 線用返已裝 framer-motion、靜態線 GSAP 經 npm／CDN 一份，無新增多餘依賴；Canvas／單一 HTML ≤5MB
 - [ ] `node scripts/check_skills_v1.0.mjs .` PASS；有 UI 再跑 `design-review` 留 `ROUND n` 紀錄
 - [ ] 上游來源（motion-prompt／gsap-skills／GSAP 本體）寫入該 repo `CREDITS.md`（W8）

@@ -62,6 +62,8 @@
 4. 出完 UI 對一次：**顏色全部出自 token？字階只用 5 級？圓角只用 2 種？** 唔係就返去改 `DESIGN.md` 或者改 code，唔好兩邊都改。
 5. 交付加 `© SCOUT SYSTEM`（W1）＋圖標走 [README §9 G11](../README.md#9-g11-全站圖標標準iconfavicon)。
 
+> 唔想用別人品牌做底，可以直接用自家嗰三套：[`templates/repo-starter/docs/design-styles_v1.0.md`](../templates/repo-starter/docs/design-styles_v1.0.md)（Scout Field／Paper／Clean，未喺真 app 實測，用前驗對比）。
+
 **三個風險（實測要知）**：
 - 品牌 design system 係**別人嘅商標資產**：抄「感覺／比例／token 命名」可以，**抄 logo、品牌 icon、獨有插畫**唔可以（W8）。
 - 上游係社群整理，個別 `DESIGN.md` 可能過時或同真實官網有出入 → **以官網 live 版為最終對照**。
@@ -152,6 +154,26 @@
 5. **留來源、唔留機密**：用咗第三方素材喺 `CREDITS.md` 記來源／授權；只借用色值亦保留 reference URL 方便回溯。唔確定圖片權利／資料敏感性，就先用自己圖或公開授權圖試抽色。
 
 > 呢五步係將現有 F1／W8／S1 同設計 review 落實到配色，唔新增一套色票規範。AI 工具點配合整體開發流程 → [34](34-ai-workflow-tools.md)。
+
+---
+
+### 5.3 八個 UI 部位畫廊：按「而家欠邊一格」去睇（2026-11-06 增補）
+
+> 來源：用戶提供嘅短片清單（your.engineer.ben「8 個免費做網站金礦網站」），逐站對應返我哋開工會欠嘅 UI 部位。**2026-11-07 已逐站開嚟核實**（用戶提供正確網址）：大部分真係免費畫廊，但 **Scrolltide 唔係免費**——$299 一次性付費 library（140 模板／75 組件／55 shaders，大部分 Premium，得小量 Free），片中「8 個免費」講法要更正。逐站核實同取捨見 [39 §1](39-verified-sites-and-diy.md)。
+> 用法守返本頁一貫規矩：畫廊係**靈感同詞彙**，唔係模板倉——開工掃一輪、揀一個方向、寫落 `DESIGN.md`，唔好逐站抄排版／圖案（W8）；真係借用咗素材先寫 `CREDITS.md`。
+
+| 欠邊格 | 去 | 用嚟做乜 | 我哋嘅紅線 |
+|---|---|---|---|
+| 成版 scroll／3D 效果 | [Scrolltide](https://scrolltide.co)（**付費** $299 一次性；140 模板／75 組件／55 shaders） | 現成 scroll 動畫模板＋prompt，技術棧啱晒我哋（React／Vite／Next／Tailwind／Framer Motion／GSAP／Three.js） | 未買未試，唔好當免費；3D／重 scroll 好易食效能：只郁 `transform`／`opacity`、`prefers-reduced-motion` 要有 fallback；買之前先用佢小量 Free 模板試手感 |
+| 導覽列 navbar | [navbar.gallery](https://navbar.gallery)（已核實：550+ 範例，可按 dropdown／megamenu／sidebar 等分類） | 睇真實網站點做頂欄／選單 | 抄結構唔抄品牌外觀；手機版選單要實測 390 寬 |
+| 頁尾 footer | [footer.design](https://footer.design)（已核實：footer 專門畫廊，可按 type／style 篩） | 頁尾欄目／連結排法參考 | 我哋頁尾硬性要有 `© SCOUT SYSTEM`（W1），畫廊點排都唔可以遮咗佢 |
+| 按鈕／CTA | [cta.gallery](https://cta.gallery)（已核實：可按行業／明暗模式篩） | 主次按鈕、行動呼籲文案同排位 | 一版一個主 CTA 先係重點；唔好學晒所有花款落同一頁 |
+| 整體風格方向 | [styles.refero.design](https://styles.refero.design)（已核實：2,000+ 個 **AI 睇得明嘅 DESIGN.md** 風格庫） | 揀一個真實產品嘅設計系統（色／字體／間距／組件）做起點，AI 跟住佢出畫面 | **唔好成份抄人哋品牌**（Stripe／Apple 嗰啲係人哋商標身分）：借結構同紀律，自己嘅色／字體要換返；定咗調寫入自己 `DESIGN.md` 全站跟（呼應 `design-review`） |
+| 首頁 Hero 區 | [supahero.io](https://supahero.io)（已核實：hero 範例庫，現屬 Screensdesign） | Hero 構圖／標題層次範例庫 | Hero 圖／字體係人哋素材，借構圖唔借圖（W8） |
+| 3D 圖標 | [3dicons.co](https://3dicons.co)（已核實：1,500+ 個，**CC0**——個人／商業免署名；有線上 editor 改色改角度） | 內容裝飾用 3D icon（活動頁、海報、簡報） | **唔可以做站台圖標／favicon**：圖標一律跟 [G11](33-icon-standard.md)（9 個 PNG／ICO、maskable 66%）；CC0 嗰批先免署名，Pro 版另計，落載前睇清嗰隻係邊個授權 |
+| Liquid Glass 元素 | [glass.samasante.com](https://glass.samasante.com)（已核實：`@samasante/liquid-glass` v0.1.0、MIT、零依賴，真折射唔係 backdrop-filter扮嘢） | 玻璃擬態元件（React 可 `pnpm add`） | v0.1.0 好新，試就細範圍試；玻璃面最易出對比事故：文字壓玻璃要實測 AA 對比（§5.2 第 3 步），睇唔清就唔用 |
+
+同 §5／§5.1 分工：§5 係工具（字體／icon 系統／組件）、§5.1 係配色入口、本節係**排版部位畫廊**。開新 Git 嗰陣三節各掃一次就夠，唔使逐個站 bookmark 落嚟當做咗設計。
 
 ---
 
