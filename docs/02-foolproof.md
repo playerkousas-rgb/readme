@@ -99,6 +99,33 @@ export function isOpen(v) { return OPEN.has(String(v ?? '').trim().toLowerCase()
 if (seen.has(req.transferId)) return seen.get(req.transferId);
 ```
 
+### F6-b — 寫入結果狀態（送咗之後點算）
+
+冪等鍵保障嘅係**送之前**；送咗之後 server timeout／斷線，係另一個窿：**唔知對面做咗未**。
+唔准將佢當「失敗」再送一次，亦唔准當「成功」呃用戶。五個狀態要分開（借鑑 [43 §2.3](43-api-anything-codegraph.md)）：
+
+| 狀態 | 意思 | 可以做乜 |
+|------|------|----------|
+| `not_sent` | 肯定未離開本機（lock 攞唔到／ledger 寫唔到／白名單拒） | 可以重試 |
+| `not_applied` | 對面明確答咗「冇執行」（驗證失敗、業務拒絕） | 修正後重試 |
+| `accepted` | 收到 2xx／API 回 success——**只代表收貨，唔代表生效** | 要 readback 先可升級 |
+| `may_have_applied` | 已送出但結果不確定（timeout／斷線／5xx） | **唔准自動重送**；先查證 |
+| `applied` | 送完再讀回，搵到預期變更 | 先算完成 |
+
+```
+送之前：攞 lock + 寫 ledger（寫唔到就 not_sent，唔好照送）
+送咗後：accepted / may_have_applied → run 一次 readback（用冪等鍵查返嗰筆）
+        搵到 → applied；搵唔到 → 保持 may_have_applied，交人手查
+```
+
+- **readback 係一次讀，唔係重寫**；查唔到就維持不確定，唔好「再試一次寫」。
+- `may_have_applied` 嘅錯誤回應**唔可以**標示為「安全重試」（對應 [F13](#f13--統一錯誤碼) error code 表）。
+- 前端見不確定狀態：黃色「處理中，撳呢度查證」，**唔好顯示綠色**（[F8](#f8--三色狀態--一鍵診斷)）。
+- `AUDIT_LOG` 要記低最終狀態同 readback 結果，唔好只記「已發出」（[A13](03-security.md#a13--審計鏈)）。
+
+> **驗收係人手 + runtime**：guard 只查得到規則有冇寫入 PLAYBOOK／本檔（F16 文件同步），
+> **查唔到你個 backend 有冇真係做 readback**。要喺自己 app 造一次 timeout 實測，睇下有冇重複寫。
+
 ---
 
 ## F7 — 樂觀鎖 + 原子寫入 + tombstone
@@ -137,6 +164,10 @@ if (seen.has(req.transferId)) return seen.get(req.transferId);
 
 適用：批量匯入、批量改密碼、刪用戶、閂入口、改 registry、migration、換 key。
 **批量操作前自動提示備份**（F11）；閂下游入口之前要確認「已搬數 + 已測 sig 連線」。
+
+**第 ④ 步（補）— 執行後讀回確認**：三步確認只保障「用戶同意咗」，唔保障「真係做咗」。
+批量執行完要 run 一次 readback（點算／抽樣對照 dry-run 預期），回報 `applied` / `may_have_applied`
+逐項結果，唔好淨係講「已完成」；不確定嗰批**唔准自動重跑**，跟 [F6-b](#f6-b--寫入結果狀態送咗之後點算)。
 
 ---
 
@@ -289,8 +320,9 @@ const E = {
 ```
 [ ] 每個新 action 入咗白名單，而且有測試
 [ ] 每個寫入有冪等鍵 + baseVersion
+[ ] 每個寫入分辨 accepted / may_have_applied / applied，不確定唔自動重送（F6-b，人手造 timeout 實測）
 [ ] 每個開關 fail closed
-[ ] 每個危險動作有 dry-run + 確認 + 回滾
+[ ] 每個危險動作有 dry-run + 確認 + 回滾 + 執行後 readback（F9）
 [ ] 每個 env 有 .env.example + 開機自檢
 [ ] 每個匯出有 schemaVersion + sha256，而且實測還原過
 [ ] 每條「一定要」有對應測試（F14）

@@ -12,7 +12,8 @@
  *     A1/W6 build bundle key leak / vite loadEnv 空前綴 / client URL ?key= /
  *     W1 版權標示 / W2 水印常數 / W6 注入版唔入 repo /
  *     V1 檔名+內文雙版號 / V4 部署拷貝同步 / V6 contract fileVersion /
- *     F16 PLAYBOOK 規則 ID 同步 / as-built 案例留存 + docs/19 案例隔離 / docs/23 設計資源索引。
+ *     F16 PLAYBOOK 規則 ID 同步 / as-built 案例留存 + docs/19 案例隔離 / docs/23 設計資源索引 /
+ *     A16 Actions pin SHA（workflow + templates/github 範本）。
  */
 
 import { readdirSync, statSync, readFileSync, existsSync } from 'node:fs';
@@ -396,12 +397,51 @@ function checkCopyright() {
   }
 }
 
+/* ---------- 8b. Actions pin SHA（A16 / G） ---------- */
+// workflow 嘅 `uses:` 要釘 40-hex commit SHA：tag／branch 可以被人移位（供應鏈）。
+// 本機 action（./path）唔使 SHA；docker:// 要 @sha256: digest。
+function checkActionsPin() {
+  const targets = [];
+  const wfDir = path.join(ROOT, '.github', 'workflows');
+  if (existsSync(wfDir)) {
+    for (const n of readdirSync(wfDir)) if (/\.ya?ml$/.test(n)) targets.push(path.join(wfDir, n));
+  }
+  // 真理倉：範本都要釘，否則新 repo 一抄出去就帶住浮動 tag
+  const tplDir = path.join(ROOT, 'templates', 'github');
+  if (isTruthRepo && existsSync(tplDir)) {
+    for (const n of readdirSync(tplDir)) if (/\.ya?ml$/.test(n)) targets.push(path.join(tplDir, n));
+  }
+  if (!targets.length) { ok('A16：無 workflow（跳過 Actions pin SHA 檢查）'); return; }
+
+  let uses = 0;
+  let bad = 0;
+  for (const p of targets) {
+    const lines = readFileSync(p, 'utf8').split('\n');
+    lines.forEach((line, i) => {
+      const m = /^\s*-?\s*uses:\s*['"]?([^'"\s#]+)/.exec(line);
+      if (!m) return;
+      const ref = m[1];
+      if (ref.startsWith('./') || ref.startsWith('../')) return;        // 本機 composite action
+      uses++;
+      const okRef = ref.startsWith('docker://')
+        ? /@sha256:[0-9a-f]{64}$/.test(ref)
+        : /@[0-9a-f]{40}$/.test(ref);
+      if (!okRef) {
+        bad++;
+        err(`A16：${rel(p)}:${i + 1} uses ${ref} 未釘 commit SHA — tag／branch 可以移位，改 @<40-hex SHA> + 版號註解（docs/03-security.md A16）`);
+      }
+    });
+  }
+  if (!bad) ok(`A16：${targets.length} 個 workflow／範本嘅 ${uses} 個外部 action 全部釘 SHA`);
+}
+
 /* ---------- 9. 規則文件同步（F16） ---------- */
 function checkRuleSync() {
   if (!isTruthRepo) { ok('F16：app repo，跳過規則同步檢查'); return; }
   const pb = read('PLAYBOOK.md');
   const need = ['S1', 'S7', 'S12', 'F4', 'F14', 'F15', 'F16', 'A1', 'A7', 'A14',
-                'W1', 'W6', 'V1', 'V6', 'G1', 'G11', 'VL1', 'X1', 'U1', 'C1', 'C12', 'C13'];
+                'W1', 'W6', 'V1', 'V6', 'G1', 'G11', 'VL1', 'X1', 'U1', 'C1', 'C12', 'C13',
+                'L1', 'L2', 'L3', 'L4', 'L5', 'L6'];
   const miss = need.filter((id) => !pb.includes(id));
   if (miss.length) err(`F16：PLAYBOOK.md 缺規則 ID ${miss.join(', ')}`);
   else ok(`F16：PLAYBOOK.md 規則 ID 齊（${need.length} 個抽樣）`);
@@ -427,6 +467,29 @@ function checkRuleSync() {
                    'docs/22-scout-circulars-agent-handoff.md',
                    'docs/23-design-resources.md']) {
     if (!readme.includes(d)) err(`F16：README.md 未指向 ${d}`);
+  }
+
+  // L1–L6 雙語介面（2026-11-08 定案）：規則／詳情／範本／檢查器／checklist 要齊。
+  // 只驗「真理倉有冇把規則寫齊」，唔驗任何 app 有冇英文 —— L 係預設要做・可豁免，
+  // 豁免同字串量係人手判斷，guard 唔可以硬擋（docs/44 L6）。
+  const lDoc = 'docs/44-bilingual-ui.md';
+  const lTpl = 'templates/i18n/lang_toggle_v1.0.js';
+  const lChk = 'scripts/i18n_check_v1.0.mjs';
+  for (const f of [lDoc, lTpl, lChk]) {
+    if (!existsSync(path.join(ROOT, f))) err(`F16/L：缺 ${f}（雙語介面規則要詳情 + 範本 + 檢查器）`);
+  }
+  const cl = existsSync(path.join(ROOT, 'docs/10-checklists.md')) ? read('docs/10-checklists.md') : '';
+  const pbTxt = read('PLAYBOOK.md');
+  if (!readme.includes(lDoc)) err(`F16/L：README.md 未指向 ${lDoc}`);
+  if (!cl.includes('L1')) err('F16/L：docs/10-checklists.md 未登記 L1 雙閘判定／豁免');
+  // 雙閘同豁免格式唔可以喺搬字途中消失
+  for (const k of ['300', 'EXCEPTION: L1']) {
+    if (!pbTxt.includes(k)) err(`F16/L：PLAYBOOK.md 雙語規則缺「${k}」（雙閘門檻／豁免格式）`);
+  }
+  if (!/可豁免/.test(pbTxt)) err('F16/L：PLAYBOOK.md 要寫明 L 係「可豁免」，唔係硬鐵律');
+  if (existsSync(path.join(ROOT, lDoc)) && existsSync(path.join(ROOT, lTpl)) && existsSync(path.join(ROOT, lChk))
+      && readme.includes(lDoc) && cl.includes('L1')) {
+    ok('F16/L：雙語介面 L1–L6 四處同步（PLAYBOOK + docs/44 + 範本 + 檢查器 + checklist）');
   }
 }
 
@@ -458,7 +521,7 @@ if (ASSETS_ONLY) {
 } else {
   checkVercelIgnore(); checkHygiene(); checkDist(); checkSecrets();
   checkBundleLeak(); checkEnvLeakPattern(); checkEnvIgnore();
-  checkLinks(); checkAnchors(); checkVersionSync(); checkCopyright(); checkRuleSync(); checkAsBuilt();
+  checkLinks(); checkAnchors(); checkVersionSync(); checkCopyright(); checkActionsPin(); checkRuleSync(); checkAsBuilt();
 }
 
 for (const c of checks) console.log(`  ✓ ${c}`);

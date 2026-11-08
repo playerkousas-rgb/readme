@@ -1,6 +1,6 @@
 # PLAYBOOK — 核心規範總綱（唯一規則編號表）
 
-> **點用**：呢份係「必看」嘅濃縮版。每條規則有一個 ID（S/F/A/W/V/G/VL/X/U/C/P）。
+> **點用**：呢份係「必看」嘅濃縮版。每條規則有一個 ID（S/F/A/W/V/G/VL/X/U/C/P/L）。
 > **案例隔離**：由 ecportal 案例抽出嘅「可選模式」R1–R8 已移去 [docs/19](docs/19-ecportal-troop-case.md)，**唔係通用底線**；新 app 守 S/F/A/W/V、P1 ＋ 技術棧契約。checklist、CI、PR template 全部用 ID 引用，唔好改 ID。
 > **層級**：呢份 = 所有 app 嘅**最低要求**。個別 app 可以加嚴，唔可以減；要減就喺 PR 寫例外原因 + 補償措施。
 > 深挖：每個章節尾有對應 `docs/` 連結。
@@ -19,6 +19,7 @@
 
 > 用戶講「系統」兩個字 = 自動當第三類，**設定層同隱藏超管係硬性交付物**，唔係 nice-to-have。
 > 無論邊一類，**S 瘦身／F 防呆／A 安全／W COPYRIGHT SCOUT SYSTEM／V 雙版號** 五套通用規則全部適用。
+> **另外兩條條件式通用規則**（同屬通用，但唔係 CI 硬擋）：**P1** 研發前搜尋（上面，人工檢查）；**L1–L6 雙語介面**（下面 §7.5，詳情 [docs/44](docs/44-bilingual-ui.md)）——唔太重嘅 app 預設要有英文版 + 右上角切換掣，可豁免但要寫 `EXCEPTION`。
 
 ---
 
@@ -82,10 +83,10 @@
 | **F3** | registry 驅動 | 導航／功能入口／下游連結由註冊表生成；未登記 = 唔存在 |
 | **F4** | fail closed | 只有 `1/true/yes/on/open` 算開；其他值（包括串錯字）一律閂 |
 | **F5** | 白名單 > 黑名單 | action／檔種／origin／欄位／重定向 URL 全部用 allowlist |
-| **F6** | 冪等鍵 | `transferId`／`nonce`／`jti`／`baseVersion`；重複請求結果一致，唔會雙寫 |
+| **F6** | 冪等鍵 + 寫入結果狀態 | `transferId`／`nonce`／`jti`／`baseVersion`；重複請求結果一致，唔會雙寫。**送咗之後**分 `not_sent`／`not_applied`／`accepted`／`may_have_applied`／`applied`；2xx 只係 accepted，readback 搵到先算 applied，不確定**唔准自動重送**（[F6-b](docs/02-foolproof.md#f6-b--寫入結果狀態送咗之後點算)） |
 | **F7** | 樂觀鎖 + 原子寫入 | 寫入帶 `baseVersion`；撞版回 `conflict:true`；後端 lock + 暫存行一次過 commit；刪除 = tombstone |
 | **F8** | 三色狀態 | 黃＝未存、綠＝已存、紅＝衝突；一鍵複製診斷報告 `{version,bytes,sizes,stagingRows}` |
-| **F9** | 危險動作三步 | dry-run → diff 預覽 → 確認；批量操作前自動提醒備份 |
+| **F9** | 危險動作三步 + 讀回 | dry-run → diff 預覽 → 確認；批量操作前自動提醒備份；**執行後 readback 對照預期**先回報 applied（F6-b） |
 | **F10** | 校驗和 + schema 版本 | 匯出／匯入帶 `sha256` + `schemaVersion`；唔對就拒，唔好靜靜轉壞 |
 | **F11** | 備份三時機 | 升級前／批量操作前／7 日冇備份；每週自動 Drive 留 13 份；`importAll` 驗 hash 原子還原 |
 | **F12** | 開機自檢 | 必要 env 未設＝**拒絕敏感 action**（唔係照跑）；啟動時 dump 一份「缺邊個 key」診斷 |
@@ -185,6 +186,25 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 
 ---
 
+## 7.5 雙語介面 L1–L6（**預設要做・可豁免**，詳情 [docs/44](docs/44-bilingual-ui.md)）
+
+> **2026-11-08 用戶定案**：「如果該 APP 唔係太重，就加入英文版，中英對照，右上角有切換掣嗰種，像 4 個 BOOK 那樣。」
+> 參考實作 = SCOUTBOOK／CUBSBOOK／ROVERBOOK／VSBOOK 嘅 `web/src/i18n.jsx`（pinned commit 見 docs/44 §0）。
+> **層級**：同 P1 一樣係**有紀錄嘅人工判斷** — 預設要做，可豁免；豁免要寫 `EXCEPTION: L1 — 原因 — 補償措施`。**唔係** S/F/A/W/V 嗰種 CI 硬擋底線。
+
+| ID | 規則 | 硬要求 |
+|----|------|--------|
+| **L1** | 雙閘判定 | **兩項都達標 → 預設要做**：① 體積：加咗英文仍過 S7（`dist` <5MB／bundle <2MB）或 C13-g（單一 HTML ≤5MB）；② 字串：要譯嘅 UI 字串 ≤300 條。任何一項超標 → 可豁免，PR／SCOPE 寫 `EXCEPTION: L1` + 實際數字 |
+| **L2** | 右上角一鍵切換 | 掣放 header／top bar **右側**，唔可以收埋入選單；**顯示目標語言**（中文模式顯示 `EN`，英文模式顯示 `中文`）；`aria-label` + `title` 講明動作；鍵盤撳到；列印時隱藏 |
+| **L3** | 狀態 + `lang` | 切換時同時設 `data-lang`（畀 CSS）同 `<html lang>`（`en` / `zh-Hant-HK`）；`localStorage` **全部 try/catch**（私隱模式會 throw）；key 有 app 前綴（`<app>.lang`）；**預設中文**，唔好用 `navigator.language` 自動切 |
+| **L4** | 乾淨分離 | 螢幕**一次一種語言**；唔准寫死「日期 Date」並排字串（SCOUTBOOK `ui_contracts` 有測試攔）；術語單一字典，全 app 譯法一致。列印／官方表格可中英並排，限 `@media print` 範圍 |
+| **L5** | 實作形狀 | React：`LangProvider` + `useLang()` + `bi(lang, zh, en)`；單一 HTML：零依賴 `data-i18n` + 字典（範本 [`templates/i18n/lang_toggle_v1.0.js`](templates/i18n/lang_toggle_v1.0.js)）。**缺譯 fall back 中文，唔可以空白**；唔准為翻譯引入 i18n 套件（S1） |
+| **L6** | 驗收 | `node scripts/i18n_check_v1.0.mjs <檔或目錄>` 驗結構（掣／`lang`／try-catch／字典鍵）；**撳掣換字、F5 記住、窄螢幕唔爆版、螢幕閱讀器讀音 = 人手實測**。檢查器對「完全冇雙語」只出 WARN，唔會 FAIL |
+
+> **範圍（用戶 2026-11-08 定案）**：呢條係**為未來 app 而設嘅定義**，只適用於**本定案之後新開嘅 app**。用戶講明「各自 APP 唔使做」＋「我只想為未來 APP 定義」——**現有 repo 一律唔追溯**（包括大改／重構；除非用戶主動開口要求嗰個 app 加英文）。規則同範本放真理倉，新 app 開工時跟。
+
+---
+
 ## 8. 技術棧契約（快表）
 
 | 棧 | 必做 ID | 詳細 |
@@ -257,6 +277,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 - [ ] 每個危險動作有 dry-run / 確認 / 回滾指令
 - [ ] W1 版權標示 + W2 水印（如出圖）+ W6 交付檔無真 key
 - [ ] V1 檔名＋內文版號一致 + V4 部署拷貝已 sync（Type C）
+- [ ] L1–L6：雙閘達標嘅 app 有英文 + 右上角切換掣（`i18n_check` 無 FAIL + 人手撳實測）；唔做有寫 `EXCEPTION: L1`（[docs/44](docs/44-bilingual-ui.md)）
 - [ ] `docs/` 同 `PLAYBOOK.md` 已更新（規則改動時）
 - [ ] PR 描述寫明：身份錨點有冇改、registry 有冇加、key 有冇 rotate
 
@@ -266,3 +287,5 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 
 違反 S/F/A/W/V（同 G11 圖標標準）任何一條 = **regression**，CI 同 code review 直接擋。
 真係有例外：喺 PR 用 `EXCEPTION: <ID> — 原因 — 補償措施 — 復原日期` 格式寫明，並喺 `docs/10-checklists.md` 登記，唔准靜靜過。
+
+**條件式通用規則（P1／L1–L6）唔入上面呢個硬擋清單**：佢哋係「預設要做、可豁免」。豁免照用同一個 `EXCEPTION:` 格式寫原因同補償（L1 要寫埋邊個閘超標同實際數字），並喺 `docs/10-checklists.md` 登記。**冇寫 EXCEPTION 又冇做 = 施工未完成**，喺 code review 追，唔係喺 CI 擋。

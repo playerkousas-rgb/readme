@@ -15,8 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      # A16：Actions 釘 commit SHA（tag 可以被人移位）；版號註解畀 Dependabot 認得再升。
+      # SHA 於 2026-11-08 用 GitHub API 核實（tags/v4.4.0 → object.sha）。
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '20'
       - name: Guard
@@ -29,6 +31,12 @@ jobs:
         run: node --test scripts/audit.test.mjs
       - name: 六角度 orchestrator 守護測試
         run: node --test scripts/final_check.test.mjs
+      - name: Actions pin SHA + 寫入狀態規則同步（A16 / F6-b / F16）
+        run: node --test scripts/actions_pin.test.mjs
+      - name: 雙語介面 L 檢查器 + 規則同步（L1–L6 / F14 / F16）
+        run: node --test scripts/i18n_check.test.mjs
+      - name: 雙語範本自查（L6 / dogfooding）
+        run: node scripts/i18n_check_v1.0.mjs templates/i18n/lang_toggle_v1.0.js
       - name: 單一 HTML 交付審計（C13-f / dogfooding）
         run: |
           node scripts/audit_single_html_v1.0.mjs templates/watermark/drawscout_decoder_v1.0.html
