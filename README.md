@@ -4,7 +4,7 @@
 > 呢個 repo **唔係一個 app**，而係我所有 app 共用嘅**說明書 ＋ 可複製模板 ＋ 自動防呆檢查**。
 > **案例隔離（2026-10-27）**：通用規則包括 S/F/A/W/V、研發前調查 P1 ＋ 技術棧契約；ecportal 旅團／進度追蹤嘅專案設定全部喺 [docs/19](docs/19-ecportal-troop-case.md)，**唔係通用底線**；邊個 repo 有問題喺 [docs/20](docs/20-repo-health-audit.md)。
 
-更新日期：2026-11-07 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase**（GEMINI 系統規範已集中去 GEMINI repo，本倉唔再做佢嘅入口）
+更新日期：2026-11-08 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase**（GEMINI 系統規範已集中去 GEMINI repo，本倉唔再做佢嘅入口）
 
 ---
 
@@ -61,6 +61,8 @@
 
 **研發前額外必做 P1**：先上網找相近產品及自己的現有方案，記錄來源、差異與決策；無法查證須說明限制。[PLAYBOOK P1](PLAYBOOK.md#0-開工前三分類決定做幾多) · [相近產品參考](docs/24-similar-products.md)
 
+**未來新開嘅唔太重 app 預設要做 L1–L6 雙語介面**（2026-11-08 定案，**只為未來 app 定義，現有 repo 唔追溯**）：英文版 ＋ **右上角一鍵切換掣**，做法跟 SCOUTBOOK／CUBSBOOK／ROVERBOOK／VSBOOK。判定係**雙閘**——體積（加咗英文仍過 S7 `dist` <5MB／C13-g 單一 HTML ≤5MB）**同**字串量（要譯嘅 UI 字串 ≤300 條）兩項都達標就要做；任何一項超標可豁免，但要喺 PR／SCOPE 寫 `EXCEPTION: L1 — 原因 — 補償措施`。**呢條係預設交付項、可豁免，唔係第六條硬鐵律**（同上表五套 CI 硬擋底線分開）。[PLAYBOOK §7.5](PLAYBOOK.md) · [docs/44 雙語介面](docs/44-bilingual-ui.md)
+
 ## 1. 我要做嘢，應該睇邊份？（導覽）
 
 | 我想… | 睇 |
@@ -91,6 +93,8 @@
 | **教 AI 偷懶／免費平替啱唔啱我哋**（Ponytail／FreeBuff／Blender 城市／9 個開源平替） | **[docs/36-lazy-coding-and-open-alternatives.md](docs/36-lazy-coding-and-open-alternatives.md)** — 即刻吸收：Ponytail「寫 code 前七級梯」checklist（讀，唔裝 plugin）；FreeBuff 唔好用喺真 repo（數據條款）；其餘平替逐個判端用家試／有場景先試／唔採用；11 個 repo 已用 GitHub API 核實（2026-11-06） |
 | **免費 API／SEO 插件／設計畫廊／生圖風格啱唔啱我哋**（FreeLLMAPI／Claude SEO／20 種風格） | **[docs/37-ai-tools-design-prompts.md](docs/37-ai-tools-design-prompts.md)** — 即刻吸收：睇 API 三樣讀法＋8 個畫廊站入 [docs/23 §5.3](docs/23-design-resources.md)；Claude SEO 自家公開站上線前先試；FreeLLMAPI 只限個人實驗；生圖吸收詞彙＋句式（未實測）；GitHub API 已核實 2 個 repo（2026-11-06） |
 | **動畫 CLI／API 目錄／AI 預測啱唔啱我哋**（Animate UI／ApiVault／MiroFish） | **[docs/38-animation-3d-prediction-tools.md](docs/38-animation-3d-prediction-tools.md)** — ApiVault 入 [docs/15](docs/15-resource-index.md) 做搵 API 第二層；Animate UI 要 shadcn 先用得（我哋 89 個 repo 普查：React 26／Next 9／靜態 32、shadcn 零個，2026-11-07）；MiroFish 只當假設產生器、唔當市場證據 |
+| **網站學成 API／程式碼知識圖譜啱唔啱我哋**（API Anything／CodeGraph） | **[docs/43-api-anything-codegraph.md](docs/43-api-anything-codegraph.md)** — 公開 GitHub 源碼評審（pinned commit＋file/line 連結）：學確定性歸納／證據分級／write 不確定狀態／index freshness；API Anything 只限本機偵察、唔入 app 依賴；CodeGraph 食獨立 `.mjs`／`.py`，Markdown／plain HTML 唔食，`.gs` 自訂映射唔等於 GAS 支援；telemetry default on；未安裝未實測（2026-11-08） |
+| **未來新 app 要唔要加英文版、個掣點放**（雙語介面 L） | **[docs/44-bilingual-ui.md](docs/44-bilingual-ui.md)** — L1–L6：雙閘判定（體積 ＋ ≤300 字串）／右上角一鍵切換顯示目標語言／`data-lang`＋`lang`＋`localStorage` try-catch／螢幕乾淨分離（列印先並排）／零依賴範本 `templates/i18n/lang_toggle_v1.0.js`＋`scripts/i18n_check_v1.0.mjs`；預設要做可豁免，唔係硬鐵律；只為未來新開 app 而設，現有 repo 唔追溯（2026-11-08） |
 | **10 個站實測＋邊啲值得自己做**（設計畫廊／Logo／SEO） | **[docs/39-verified-sites-and-diy.md](docs/39-verified-sites-and-diy.md)** — 10 站逐個開嚟核實（Scrolltide 係付費、3dicons CC0、Refero DESIGN.md 庫）；自己做總清單：已做 `scripts/seo_check_v1.0.mjs`＋`web-motion` 補 framer-motion 線，其餘逐個判 |
 | **邊啲嘢應該用 Gemini＋Canvas 自己整** | **[docs/40-canvas-diy-candidates.md](docs/40-canvas-diy-candidates.md)** — 第一：G11 圖標產生器（Type A）；第二：現有產生器加風格 presets（Type B，唔新起）；第三：Pre-mortem 鬧場（Type C，產出只當假設）；其餘唔用 Canvas 嘅原因逐個寫明 |
 | **值得自己做總清單（淨係免費）** | **[docs/41-free-self-build-shortlist.md](docs/41-free-self-build-shortlist.md)** — Gemini AI（風格產生器／Pre-mortem）值得做；本機／自架用戶決定唔做；前端網站圖標・相片工具已做；付費嘅唔保留（Scrolltide 已剔除） |
@@ -202,6 +206,7 @@ docs/
   38-animation-3d-prediction-tools.md  爆紅清單第五輪：Animate UI（React 先試）／ApiVault（入 15 做第二層）／MiroFish（只出假設）／3D 生成觀察名單
   39-verified-sites-and-diy.md  10 站實測＋自己做總清單：已做 seo_check script＋web-motion 補 React 線
   40-canvas-diy-candidates.md  用 Gemini＋Canvas 自己整嘅候選判決：圖標產生器（A）／風格 presets（B）／Pre-mortem（C）
+  44-bilingual-ui.md        L1–L6 雙語介面：雙閘判定／右上角一鍵切換／乾淨分離；跟 4 個 BOOK 實作（預設要做・可豁免）
   （圖標規範**唯一來源係 [docs/33](docs/33-icon-standard.md)** — 2026-11-02 由 README §9 抽出；9 個 PNG／ICO、maskable 66%、16px 手繪）
 templates/
   README.md               可抄嘢對照表 + 一鍵抄指令
@@ -211,6 +216,7 @@ templates/
 scripts/guard.mjs         自動防呆檢查（本機 + CI 同一條）
 scripts/audit_single_html_v1.0.mjs  單一 HTML / Canvas artifact 交付前審計（S/F/A/W/V/C）
 scripts/seo_check_v1.0.mjs  公開頁 SEO/GEO 靜態檢查（title/og/JSON-LD 等；docs/39 §3.1）
+scripts/i18n_check_v1.0.mjs  雙語介面 L2–L5 靜態檢查（掣／lang／try-catch／字典鍵；docs/44）
 scripts/refresh_resources_v1.0.mjs  由 api/data/apis.csv 更新 docs/15 分類表
 scripts/final_check_v1.0.mjs      交付前一條命令跑六角度實測（docs/17）
 .github/workflows/        呢個 repo 自己都跑 guard（dogfooding）

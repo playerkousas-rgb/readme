@@ -84,6 +84,8 @@
 
 ## 3. Reverse API Engineer：自動化偵察，唔係永久 API 保證
 
+> **2026-11-08 後續**：新候選 API Anything 已喺 [43 §2](43-api-anything-codegraph.md) 做公開 GitHub 源碼評審同判級（確定性 core 同 agent 分工、證據分級；只限本機偵察、local-only、唔入 app 依賴）；本節 RAE 評估維持不變。
+
 來源：[`kalil0321/reverse-api-engineer`](https://github.com/kalil0321/reverse-api-engineer)，本輪 commit `cd221e9ef5fe30d4fb66ad0d5198f179191aca57`。最新 [README](https://github.com/kalil0321/reverse-api-engineer/blob/cd221e9ef5fe30d4fb66ad0d5198f179191aca57/README.md) 仍以 Claude 為預設 SDK，但亦列其他 SDK／多種輸出語言，唔應寫死成「只可用 Claude、只出 Python」。[25](25-reverse-api-reuse.md) 嘅舊版本盤點保留做歷史紀錄。
 
 ```text

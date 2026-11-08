@@ -14,6 +14,7 @@
 ### 1.1 判定
 ```
 [ ] P1：研發前上網查相近產品及自己現有項目；記錄日期、關鍵字、來源、差異、費用／授權、未核實項與採用／整合／自建理由（無法搜尋須說明限制）；參考 docs/24
+[ ] L1 雙閘判定（雙語介面；**只適用於 2026-11-08 之後新開嘅 app**，舊 app 唔追溯）：加咗英文之後嘅體積（S7 dist <5MB / C13-g 單一 HTML ≤5MB）＋ 要譯嘅 UI 字串數（≤300）；兩項都達標 = 預設要做英文 + 右上角切換掣；任一超標可豁免，寫 EXCEPTION: L1 + 實際數字（[44](44-bilingual-ui.md)）
 [ ] 類型：工具 / App / 系統
 [ ] 若「系統」→ 設定層 + 隱藏超管 + registry + 審計鏈全部係硬性交付物
 [ ] 兩條公理答到：身份 = 邊個 ID + 邊個資料源？接入 = 交俾邊個 + 登記邊個 registry？
@@ -72,7 +73,11 @@
 [ ] 新 env → .env.example 條目 + F12 自檢 + rotation 步驟
 [ ] 新設定 → SCHEMA 條目 + 預設 + failClosed + audit
 [ ] 新寫入 → 冪等鍵 + baseVersion + 錯誤碼（F6/F7/F13）
-[ ] 危險動作 → dry-run / diff / 確認 / 回滾（F9/F18）
+[ ] 新寫入 → 狀態分 accepted / may_have_applied / applied + readback；不確定唔自動重送（F6-b；guard 只驗文件，要人手造 timeout 實測）
+[ ] 危險動作 → dry-run / diff / 確認 / 回滾 + 執行後 readback（F9/F18）
+[ ] 有做雙語 → node scripts/i18n_check_v1.0.mjs <檔或目錄> 無 FAIL（L2–L5：掣／data-lang+lang／localStorage try-catch／字典鍵）
+[ ] 有做雙語 → 人手實測：撳掣換到字、F5 記住、私隱窗口唔炸、390px 唔爆版、英文模式冇殘留中文（L6；機器驗唔到）
+[ ] 新開 app 雙閘達標但唔做英文 → PR／SCOPE 寫 EXCEPTION: L1 + 原因 + 補償，並喺 §8 登記（唔准靜靜跳過；舊 app 唔使填）
 [ ] 改規則 → PLAYBOOK + docs + guard + templates 四處同步（F16）
 [ ] 改版 → 檔名 + 內文全部 vX.Y + 版本登記表 + 測試（V3）
 [ ] 交付檔有 © SCOUT SYSTEM 頁尾 + meta copyright（W1）
@@ -127,6 +132,7 @@
 [ ] README / BUILD / docs 同 as-built 一致
 [ ] 通用規則同專案文件無矛盾（G10）
 [ ] runbook 放咗喺 docs/ 或呢個真理倉
+[ ] L1–L6（**只限新開 app**）：雙閘達標有英文 + 右上角切換掣，或者 §8 有 L1 豁免紀錄；舊 app 唔追溯（[44](44-bilingual-ui.md)）
 ```
 
 > **任何一格未剔 = No-Go。** 例外要用 `EXCEPTION: <ID> — 原因 — 補償 — 復原日期` 寫喺 PR。
@@ -208,3 +214,4 @@
 | — | — | — | — | — | — | — |
 
 > 例外唔可以永久。每次季度檢討要清一次。
+> **L1（雙語介面）**：屬「預設要做・可豁免」，唔係 CI 硬擋；豁免一定要寫低邊個閘超標同實際數字（例 `EXCEPTION: L1 — UI 字串 480 條 >300 — 只做導覽／按鈕英文，書冊正文留中文 — 持續`）。冇紀錄又冇做 = 施工未完成，code review 追。

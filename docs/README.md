@@ -1,6 +1,6 @@
 # `docs/` 分章索引 — 邊份管邊樣
 
-> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–42 唔使再靠估。
+> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–44 唔使再靠估。
 > 整理日期：2026-11-06 · 規則衝突時以 [PLAYBOOK](../PLAYBOOK.md) 為準 · 案例已隔離去 [19](19-ecportal-troop-case.md)，**唔係通用底線**。
 
 ## 點用
@@ -37,6 +37,13 @@
 | [12-copyright-scout-system.md](12-copyright-scout-system.md) | W 版權三軌、W6 key、W8 第三方來源 |
 | [13-versioning.md](13-versioning.md) | V 雙版號 |
 
+**條件式通用規則**（同屬通用，但預設要做・可豁免，唔係 CI 硬擋）：
+
+| 檔 | 規則 |
+|---|---|
+| [44-bilingual-ui.md](44-bilingual-ui.md) | **L1–L6 雙語介面**：雙閘（體積 ＋ ≤300 字串）判定要做定豁免；右上角一鍵切換、乾淨分離；跟 4 個 BOOK 實作（pinned）。**只為未來新開 app 定義，現有 repo 唔追溯**。詳情亦見 [PLAYBOOK §7.5](../PLAYBOOK.md) |
+| [24-similar-products.md](24-similar-products.md) | **P1** 研發前搜尋相近產品（人工檢查，記錄來源同決策） |
+
 ## 章 2 — 技術棧契約
 
 | 檔 | 棧 |
@@ -63,6 +70,7 @@
 | [36-lazy-coding-and-open-alternatives.md](36-lazy-coding-and-open-alternatives.md) | **爆紅清單第三輪核實**：Ponytail（七級梯已改寫做 checklist，讀唔裝）／FreeBuff（數據條款，唔用喺真 repo）／Concept Studio Blender 城市（查無 repo，版權先行）／9 個開源平替逐個判（11 個 repo GitHub API 2026-11-06 快照）；未實測狀態明寫，唔重抄 34／35 |
 | [37-ai-tools-design-prompts.md](37-ai-tools-design-prompts.md) | **爆紅清單第四輪核實**：FreeLLMAPI（吸收「睇 API 三樣」讀法；工具只限個人實驗）／Claude SEO（自家公開站上線前有場景先試）／8 個設計畫廊已入 [23 §5.3](23-design-resources.md)／生圖 20 種風格詞彙＋5 條句式（自己重寫、未實測）；新聞同 Radiocast 唔收錄做規範，原因寫明 |
 | [38-animation-3d-prediction-tools.md](38-animation-3d-prediction-tools.md) | **爆紅清單第五輪核實＋ repo 形狀普查**：89 個 repo 實測（React 26／Next 9／靜態 HTML 32／shadcn 0，Animate UI 而家零個 repo 跑到）／ApiVault（已入 [15](15-resource-index.md) 做搵 API 第二層）／Qwen3.5-3D-Coder（觀察名單）／SUAPP AIM＋Convertio（端用家）／MiroFish（只當假設產生器）；未實測明寫 |
+| [43-api-anything-codegraph.md](43-api-anything-codegraph.md) | **公開 GitHub 源碼評審**：API Anything（確定性 core 同 agent 分工；local save／holdout／heal replay 係唔同閘；write 不確定狀態＋readback；capture/加密/sharing 有條件）／CodeGraph（靜態 lexical graph＋provenance＋freshness；支援獨立 `.mjs`／`.py`，`.gs` 可映射但唔係 GAS 完整支援；telemetry default on）；pinned file/line 證據、benchmark 限制、SCOUT 零安裝採用清單（2026-11-08），未安裝未實測 |
 | [39-verified-sites-and-diy.md](39-verified-sites-and-diy.md) | **10 站實測＋自己做總清單**：Scrolltide（付費，更正免費講法）／Refero DESIGN.md 庫／3dicons（CC0）／liquid-glass（MIT v0.1）／LogoDiffusion（出真 SVG）；自己做：`seo_check_v1.0.mjs` 已做＋`web-motion` 補 framer-motion 線，DESIGN.md 庫／ApiVault 搜尋頁／pre-mortem 模板排下次 |
 | [40-canvas-diy-candidates.md](40-canvas-diy-candidates.md) | **Gemini＋Canvas 自己整候選判決**：G11 圖標產生器（Type A，第一）／風格海報 presets 升級現有產生器（Type B）／Pre-mortem 鬧場（Type C，假設唔係證據）／相片預備（Type A 可選）；SEO script／LLM 路由／電台／3D 世界等唔用 Canvas 嘅原因逐個寫明；未開工狀態明寫 |
 | [42-iconmaker-photoprep-repo-briefs.md](42-iconmaker-photoprep-repo-briefs.md) | **兩個新 repo 開工對話**：Icon Maker／Photo Prep 各一段成稿（背景／要做／紅線／驗收），開新 repo 後貼去第一個 AI 對話即用；起好要返嚟更新 41／40 狀態 |

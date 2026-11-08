@@ -15,6 +15,7 @@
 | **🖼️ 相片預備工具（Type A）** | [`iconmaker/photo_prep_v1.0.html`](iconmaker/photo_prep_v1.0.html) | 上載前壓到目標 KB（預設 500KB）／轉 JPEG·WebP·PNG／去 EXIF；本地處理唔上載 |
 | **💀 Pre-mortem 模板** | [`repo-starter/docs/pre-mortem.md`](repo-starter/docs/pre-mortem.md) | 開工前 AI 分飾四人鬧 idea；產出只入「待驗證假設」，唔代替問真人 |
 | **🎨 House DESIGN 風格庫** | [`repo-starter/docs/design-styles_v1.0.md`](repo-starter/docs/design-styles_v1.0.md) | 自家 3 套 DESIGN.md 起點（Field／Paper／Clean）；揀一套抄入新 repo，唔抄人哋品牌 |
+| **🌐 雙語切換（L1–L6）** | [`i18n/lang_toggle_v1.0.js`](i18n/lang_toggle_v1.0.js) | 單一 HTML／Canvas 零依賴範本：`data-i18n` + 字典 + 右上角掣；改 `LANG_KEY` 前綴同 `DICT` 即用。React app 抄 4 個 BOOK 嘅 `i18n.jsx` 形狀（[docs/44](../docs/44-bilingual-ui.md)）；驗用 `scripts/i18n_check_v1.0.mjs`。**只為未來新開 app 而設，現有 repo 唔追溯** |
 | env 清單 | `vercel/env.example` | repo 根 `.env.example` + 本機 `.env.local` |
 | `/api/proxy` 骨架 | `vercel/api/proxy.mjs` | `api/proxy.mjs` |
 | `/api/super` 骨架 | `vercel/api/super.mjs` | `api/super.mjs` |
@@ -71,6 +72,9 @@ cp templates/github/guard.yml         "$APP/.github/workflows/guard.yml"
 cp templates/github/dependabot.yml    "$APP/.github/dependabot.yml"
 cp ../readme/scripts/guard.mjs        "$APP/scripts/guard.mjs"
 cp ../readme/scripts/{audit_single_html_v1.0.mjs,final_check_v1.0.mjs} "$APP/scripts/"
+# 可選（新開 app 而 L1 雙閘達標就預設要做；舊 app 唔追溯）：雙語介面範本 + 檢查器
+cp ../readme/templates/i18n/lang_toggle_v1.0.js "$APP/"
+cp ../readme/scripts/i18n_check_v1.0.mjs        "$APP/scripts/"
 cd "$APP" && node scripts/guard.mjs
 ```
 
@@ -99,6 +103,9 @@ cp templates/git/gitignore                    "$APP/.gitignore"
 cp templates/github/guard.yml                 "$APP/.github/workflows/guard.yml"
 cp ../readme/scripts/guard.mjs                "$APP/scripts/guard.mjs"
 cp ../readme/scripts/{audit_single_html_v1.0.mjs,final_check_v1.0.mjs}  "$APP/scripts/"
+# 可選（新開 app 而 L1 雙閘達標就預設要做；舊 app 唔追溯）：殼加雙語掣；語言留喺殼，唔寫入 GAS（docs/44 L5）
+cp ../readme/templates/i18n/lang_toggle_v1.0.js "$APP/"
+cp ../readme/scripts/i18n_check_v1.0.mjs        "$APP/scripts/"
 cd "$APP" && node sync_canvas_v1.0.mjs && node --test && node scripts/guard.mjs
 ```
 
