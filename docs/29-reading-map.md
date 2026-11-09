@@ -1,6 +1,7 @@
 # 29 — 閱讀地圖：API 設計、Agent Skills、點分類放好
 
 > 接 [docs/README](README.md) 章 3／章 6 · 整理日期 **2026-11-02**
+> **2026-11-09 增補入口**：UI 設計／動效 Skills 同實物 CAD 分類、來源及採用邊界見 [45](45-ui-skills-text-to-cad.md)；只列未來借鑑，唔代表已安裝或自動觸發。
 > **2026-11-06 增補入口**：[34 §4](34-ai-workflow-tools.md) 核實 `grill-me`／`grilling`／`grill-with-docs`／`to-spec` 分工，澄清 design tree／frontier 係概念，並接返本地 `INTAKE.md`。下面星數／結構係 11-02 歷史快照，唔當作今日數字。
 > 目標：唔係堆書單，係答「想將 API 設計／SKILL／文件分類放好，應該讀邊幾份、读完改邊個檔」。
 > **核實範圍**：GitHub 上嘅 repo 用 `api.github.com` 查過（星星／授權／結構）；非 GitHub 網頁（diataxis.fr、cloud.google.com 等）本 sandbox 出站唔通，**未實測，只列作公認參考**，請自行開。
