@@ -24,6 +24,9 @@
    https://github.com/playerkousas-rgb/api
    尤其：docs/ai.md（AI 香港可用性）／docs/hk-blocked.md（封港名單）／docs/glue.md（零成本架構）
         ↓ 點樣安全咁用？
+③-g public-apis / Global   全球公開 API 目錄（機讀總索引 list.json + 分類）
+   https://github.com/public-apis/public-apis · ~140k stars · JSON/MD · 僅做查找入口
+        ↓ 研發前 P1 調查（README §0）
 ④ readme（呢個 repo）     S/F/A/W/V 通用規則 + 模板 + guard
    特別 [14-api-key-injection.md](14-api-key-injection.md) 講「GEMINI 自動注入」同香港做法
 ⑤ 專案案例（旅團 as-built 5 repo）  → [19 §12](19-ecportal-troop-case.md)（**唔係通用資源**）
@@ -39,6 +42,7 @@
 | 將 prompt 拆成可視化欄位／生圖 | [`prompt` README](https://github.com/playerkousas-rgb/prompt#readme)（三向連動、簡易／進階） |
 | 出圖但唔想用 API key | [`prompt/app/api/generate/route.ts`](https://github.com/playerkousas-rgb/prompt/blob/main/app/api/generate/route.ts) 嘅 **Pollinations 免金鑰** default；對照 [14 §2.2](14-api-key-injection.md#22--24-三條要-runtime-ai嘅路揀一條) |
 | 香港有乜免費 API 用 | [`api/README.md`](https://github.com/playerkousas-rgb/api#readme) → [`api/data/apis.csv`](https://github.com/playerkousas-rgb/api/blob/main/data/apis.csv)（可直接開 Excel／Sheet） |
+| **全球公開 API 目錄（非香港專屬）** | [`public-apis/public-apis`](https://github.com/public-apis/public-apis)（機讀總索引 `list.json` + 分類）→ 研發前 P1 調查（README §0）；對照 [14 §2.2](14-api-key-injection.md#22--24-三條要-runtime-ai嘅路揀一條) 與 [15 §3](15-resource-index.md#3-api-repo-分類索引)（僅做查找，不可直接塞入 dist S1） |
 | 自己 `api` repo 冇、想碌全球公開 API 目錄 | [ApiVault](https://apivault.dev)（51 分類發現工具）→ 短list 後返官方文件行 [37 §2.1](37-ai-tools-design-prompts.md)「驗證／格式／限額」三樣先用；目錄收錄會過期，唔當真理（判級見 [38 §3](38-animation-3d-prediction-tools.md)） |
 | 天文台／交通／醫療／地圖 API | [`api/docs/weather.md`](https://github.com/playerkousas-rgb/api/blob/main/docs/weather.md)／[`transport.md`](https://github.com/playerkousas-rgb/api/blob/main/docs/transport.md)／[`health.md`](https://github.com/playerkousas-rgb/api/blob/main/docs/health.md)／[`geo.md`](https://github.com/playerkousas-rgb/api/blob/main/docs/geo.md) |
 | AI API 喺香港用唔用到 | [`api/docs/ai.md`](https://github.com/playerkousas-rgb/api/blob/main/docs/ai.md) ＋ [`hk-blocked.md`](https://github.com/playerkousas-rgb/api/blob/main/docs/hk-blocked.md) → 對應 [14 §2](14-api-key-injection.md#2-香港真正用得到嘅做法你個水印-html-就係) |
@@ -120,6 +124,7 @@
 - 呢份**只放連結同摘要**，唔複製內容（F1）。內容真理喺各自 repo。
 - 視覺／UI 類素材唔喺呢份：去 [23-design-resources.md](23-design-resources.md)（API／Prompt／開源庫先係呢份）。
 - 第三方 GitHub 開源 AI 工具評估／文件處理入口去 [34-ai-workflow-tools.md](34-ai-workflow-tools.md)；呢份只指針，唔複製工具功能表，亦唔將外部 repo 當自有項目。
+- **全球公開 API 目錄（public-apis）亦屬此類指針，僅對應規則 ID（S/F/A/W/V），不可直接塞入 dist（S1）或複製內容（F1/W8）。**
 - 每月（或 `api` repo 有 push 時）跑 `node scripts/refresh_resources_v1.0.mjs` 更新分類表。
 - 連結改咗 → 更新呢份 + [README §7](../README.md#7-相關-repo你-github-帳戶-playerkousas-rgb-入面)；`node scripts/guard.mjs` 會驗內部連結。
 - 任何新增資源要對應返一條規則 ID（S/F/A/W/V/C），否則只係 bookmark，唔係規範。
