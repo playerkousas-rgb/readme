@@ -93,6 +93,7 @@
 | **教 AI 偷懶／免費平替啱唔啱我哋**（Ponytail／FreeBuff／Blender 城市／9 個開源平替） | **[docs/36-lazy-coding-and-open-alternatives.md](docs/36-lazy-coding-and-open-alternatives.md)** — 即刻吸收：Ponytail「寫 code 前七級梯」checklist（讀，唔裝 plugin）；FreeBuff 唔好用喺真 repo（數據條款）；其餘平替逐個判端用家試／有場景先試／唔採用；11 個 repo 已用 GitHub API 核實（2026-11-06） |
 | **免費 API／SEO 插件／設計畫廊／生圖風格啱唔啱我哋**（FreeLLMAPI／Claude SEO／20 種風格） | **[docs/37-ai-tools-design-prompts.md](docs/37-ai-tools-design-prompts.md)** — 即刻吸收：睇 API 三樣讀法＋8 個畫廊站入 [docs/23 §5.3](docs/23-design-resources.md)；Claude SEO 自家公開站上線前先試；FreeLLMAPI 只限個人實驗；生圖吸收詞彙＋句式（未實測）；GitHub API 已核實 2 個 repo（2026-11-06） |
 | **動畫 CLI／API 目錄／AI 預測啱唔啱我哋**（Animate UI／ApiVault／MiroFish） | **[docs/38-animation-3d-prediction-tools.md](docs/38-animation-3d-prediction-tools.md)** — ApiVault 入 [docs/15](docs/15-resource-index.md) 做搵 API 第二層；Animate UI 要 shadcn 先用得（我哋 89 個 repo 普查：React 26／Next 9／靜態 32、shadcn 零個，2026-11-07）；MiroFish 只當假設產生器、唔當市場證據 |
+| **UI 設計 Skills／文字生成 CAD 有冇用**（emilkowalski／text-to-cad） | **[docs/45-ui-skills-text-to-cad.md](docs/45-ui-skills-text-to-cad.md)** — UI：最壞資料／手機體驗／動效判斷列為未來借鑑；CAD：實物製作有場景先試；未安裝未實測，未改起手包 Skill |
 | **網站學成 API／程式碼知識圖譜啱唔啱我哋**（API Anything／CodeGraph） | **[docs/43-api-anything-codegraph.md](docs/43-api-anything-codegraph.md)** — 公開 GitHub 源碼評審（pinned commit＋file/line 連結）：學確定性歸納／證據分級／write 不確定狀態／index freshness；API Anything 只限本機偵察、唔入 app 依賴；CodeGraph 食獨立 `.mjs`／`.py`，Markdown／plain HTML 唔食，`.gs` 自訂映射唔等於 GAS 支援；telemetry default on；未安裝未實測（2026-11-08） |
 | **未來新 app 要唔要加英文版、個掣點放**（雙語介面 L） | **[docs/44-bilingual-ui.md](docs/44-bilingual-ui.md)** — L1–L6：雙閘判定（體積 ＋ ≤300 字串）／右上角一鍵切換顯示目標語言／`data-lang`＋`lang`＋`localStorage` try-catch／螢幕乾淨分離（列印先並排）／零依賴範本 `templates/i18n/lang_toggle_v1.0.js`＋`scripts/i18n_check_v1.0.mjs`；預設要做可豁免，唔係硬鐵律；只為未來新開 app 而設，現有 repo 唔追溯（2026-11-08） |
 | **10 個站實測＋邊啲值得自己做**（設計畫廊／Logo／SEO） | **[docs/39-verified-sites-and-diy.md](docs/39-verified-sites-and-diy.md)** — 10 站逐個開嚟核實（Scrolltide 係付費、3dicons CC0、Refero DESIGN.md 庫）；自己做總清單：已做 `scripts/seo_check_v1.0.mjs`＋`web-motion` 補 framer-motion 線，其餘逐個判 |
@@ -207,6 +208,7 @@ docs/
   39-verified-sites-and-diy.md  10 站實測＋自己做總清單：已做 seo_check script＋web-motion 補 React 線
   40-canvas-diy-candidates.md  用 Gemini＋Canvas 自己整嘅候選判決：圖標產生器（A）／風格 presets（B）／Pre-mortem（C）
   44-bilingual-ui.md        L1–L6 雙語介面：雙閘判定／右上角一鍵切換／乾淨分離；跟 4 個 BOOK 實作（預設要做・可豁免）
+  45-ui-skills-text-to-cad.md  UI 設計／動效 Skills 與參數化 CAD 分類評估：未安裝未實測
   （圖標規範**唯一來源係 [docs/33](docs/33-icon-standard.md)** — 2026-11-02 由 README §9 抽出；9 個 PNG／ICO、maskable 66%、16px 手繪）
 templates/
   README.md               可抄嘢對照表 + 一鍵抄指令
