@@ -4,7 +4,7 @@
 > 呢個 repo **唔係一個 app**，而係我所有 app 共用嘅**說明書 ＋ 可複製模板 ＋ 自動防呆檢查**。
 > **案例隔離（2026-10-27）**：通用規則包括 S/F/A/W/V、研發前調查 P1 ＋ 技術棧契約；ecportal 旅團／進度追蹤嘅專案設定全部喺 [docs/19](docs/19-ecportal-troop-case.md)，**唔係通用底線**；邊個 repo 有問題喺 [docs/20](docs/20-repo-health-audit.md)。
 
-更新日期：2026-11-08 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase**（GEMINI 系統規範已集中去 GEMINI repo，本倉唔再做佢嘅入口）
+更新日期：2026-11-12 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase**（GEMINI 系統規範已集中去 GEMINI repo，本倉唔再做佢嘅入口）
 
 ---
 
@@ -96,6 +96,7 @@
 | **UI 設計 Skills／文字生成 CAD 有冇用**（emilkowalski／text-to-cad） | **[docs/45-ui-skills-text-to-cad.md](docs/45-ui-skills-text-to-cad.md)** — UI：最壞資料／手機體驗／動效判斷列為未來借鑑；CAD：實物製作有場景先試；未安裝未實測，未改起手包 Skill |
 | **網站學成 API／程式碼知識圖譜啱唔啱我哋**（API Anything／CodeGraph） | **[docs/43-api-anything-codegraph.md](docs/43-api-anything-codegraph.md)** — 公開 GitHub 源碼評審（pinned commit＋file/line 連結）：學確定性歸納／證據分級／write 不確定狀態／index freshness；API Anything 只限本機偵察、唔入 app 依賴；CodeGraph 食獨立 `.mjs`／`.py`，Markdown／plain HTML 唔食，`.gs` 自訂映射唔等於 GAS 支援；telemetry default on；未安裝未實測（2026-11-08） |
 | **未來新 app 要唔要加英文版、個掣點放**（雙語介面 L） | **[docs/44-bilingual-ui.md](docs/44-bilingual-ui.md)** — L1–L6：雙閘判定（體積 ＋ ≤300 字串）／右上角一鍵切換顯示目標語言／`data-lang`＋`lang`＋`localStorage` try-catch／螢幕乾淨分離（列印先並排）／零依賴範本 `templates/i18n/lang_toggle_v1.0.js`＋`scripts/i18n_check_v1.0.mjs`；預設要做可豁免，唔係硬鐵律；只為未來新開 app 而設，現有 repo 唔追溯（2026-11-08） |
+| 想 App 化（加入主畫面）＋版本更新 | [docs/46](docs/46-pwa-install-and-update.md) — I1–I8／UP1–UP5 |
 | **10 個站實測＋邊啲值得自己做**（設計畫廊／Logo／SEO） | **[docs/39-verified-sites-and-diy.md](docs/39-verified-sites-and-diy.md)** — 10 站逐個開嚟核實（Scrolltide 係付費、3dicons CC0、Refero DESIGN.md 庫）；自己做總清單：已做 `scripts/seo_check_v1.0.mjs`＋`web-motion` 補 framer-motion 線，其餘逐個判 |
 | **邊啲嘢應該用 Gemini＋Canvas 自己整** | **[docs/40-canvas-diy-candidates.md](docs/40-canvas-diy-candidates.md)** — 第一：G11 圖標產生器（Type A）；第二：現有產生器加風格 presets（Type B，唔新起）；第三：Pre-mortem 鬧場（Type C，產出只當假設）；其餘唔用 Canvas 嘅原因逐個寫明 |
 | **值得自己做總清單（淨係免費）** | **[docs/41-free-self-build-shortlist.md](docs/41-free-self-build-shortlist.md)** — Gemini AI（風格產生器／Pre-mortem）值得做；本機／自架用戶決定唔做；前端網站圖標・相片工具已做；付費嘅唔保留（Scrolltide 已剔除） |
@@ -173,7 +174,7 @@ Type B/C 專用起機指令：[templates/README.md](templates/README.md) · [wat
 
 ```
 README.md                 ← 你而家喺度（入口／導覽）
-PLAYBOOK.md               ← 核心規範總綱（唯一規則編號表：S/F/A/W/V/G/VL/X/U/C）
+PLAYBOOK.md               ← 核心規範總綱（唯一規則編號表：S/F/A/W/V/G/VL/X/U/C/I/UP）
 docs/
   00-quickcard.md          一頁紙速查卡
   01-slim.md               S1–S12 瘦身
@@ -209,6 +210,7 @@ docs/
   40-canvas-diy-candidates.md  用 Gemini＋Canvas 自己整嘅候選判決：圖標產生器（A）／風格 presets（B）／Pre-mortem（C）
   44-bilingual-ui.md        L1–L6 雙語介面：雙閘判定／右上角一鍵切換／乾淨分離；跟 4 個 BOOK 實作（預設要做・可豁免）
   45-ui-skills-text-to-cad.md  UI 設計／動效 Skills 與參數化 CAD 分類評估：未安裝未實測
+  46-pwa-install-and-update.md  PWA 安裝入口 I1–I8＋版本更新 UP1–UP5：「安裝要有掣、更新要問過人」（2026-11-12 定案；出門玩 v1.2.0＋4 個 BOOK pinned）
   （圖標規範**唯一來源係 [docs/33](docs/33-icon-standard.md)** — 2026-11-02 由 README §9 抽出；9 個 PNG／ICO、maskable 66%、16px 手繪）
 templates/
   README.md               可抄嘢對照表 + 一鍵抄指令

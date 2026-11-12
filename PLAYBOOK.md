@@ -1,6 +1,6 @@
 # PLAYBOOK — 核心規範總綱（唯一規則編號表）
 
-> **點用**：呢份係「必看」嘅濃縮版。每條規則有一個 ID（S/F/A/W/V/G/VL/X/U/C/P/L）。
+> **點用**：呢份係「必看」嘅濃縮版。每條規則有一個 ID（S/F/A/W/V/G/VL/X/U/C/P/L/I/UP）。
 > **案例隔離**：由 ecportal 案例抽出嘅「可選模式」R1–R8 已移去 [docs/19](docs/19-ecportal-troop-case.md)，**唔係通用底線**；新 app 守 S/F/A/W/V、P1 ＋ 技術棧契約。checklist、CI、PR template 全部用 ID 引用，唔好改 ID。
 > **層級**：呢份 = 所有 app 嘅**最低要求**。個別 app 可以加嚴，唔可以減；要減就喺 PR 寫例外原因 + 補償措施。
 > 深挖：每個章節尾有對應 `docs/` 連結。
@@ -202,6 +202,19 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | **L6** | 驗收 | `node scripts/i18n_check_v1.0.mjs <檔或目錄>` 驗結構（掣／`lang`／try-catch／字典鍵）；**撳掣換字、F5 記住、窄螢幕唔爆版、螢幕閱讀器讀音 = 人手實測**。檢查器對「完全冇雙語」只出 WARN，唔會 FAIL |
 
 > **範圍（用戶 2026-11-08 定案）**：呢條係**為未來 app 而設嘅定義**，只適用於**本定案之後新開嘅 app**。用戶講明「各自 APP 唔使做」＋「我只想為未來 APP 定義」——**現有 repo 一律唔追溯**（包括大改／重構；除非用戶主動開口要求嗰個 app 加英文）。規則同範本放真理倉，新 app 開工時跟。
+
+---
+
+## 7.6 PWA 安裝＋版本更新 I1–I8／UP1–UP5（詳情 [docs/46](docs/46-pwa-install-and-update.md)）
+
+> **2026-11-12 用戶定案**：「安裝要有掣、更新要問過人」——唔靠瀏覽器自己彈，也唔准背景偷換版。
+> **適用**：所有有 UI 嘅 web app（純靜態／Vite／Next 都一樣）。出門玩 Pocket Play v1.2.0（minigame）同 4 個 BOOK（SCOUTBOOK v2.1.3／CUBSBOOK v1.3.0／ROVERBOOK v2.2.0／VSBOOK v1.0.3，2026-11-12 pinned）已按此實作（README／CHANGELOG 聲稱部署在 Vercel；本倉未獨立核實）。
+> 層級：有 UI 嘅 web app **通用**；驗收以**真機**為準（靜態檢查只兜底結構），唔係 CI 硬擋。
+
+| ID | 規則 | 一句實作 |
+|----|------|----------|
+| **I1–I8** | PWA 安裝入口 | 首頁／header 有「加入主畫面」掣：standalone 自動隱藏；Android `beforeinstallprompt` 攔住存起、用戶按下先 `prompt()`；iOS 出三步教學卡；manifest／圖標跟 [G11/docs/33](docs/33-icon-standard.md) — 詳情 [docs/46](docs/46-pwa-install-and-update.md) |
+| **UP1–UP5** | Service Worker 更新要問過人 | 新 SW 停在 `waiting`，唔准自動 `skipWaiting()`（首次安裝除外）；頁面出「有新版本 → 立即更新／稍後」，一鍵 `SKIP_WAITING` → `controllerchange` → reload（**2–3 秒 timeout 兜底**），reload 前存好 localStorage — 詳情 [docs/46](docs/46-pwa-install-and-update.md) |
 
 ---
 

@@ -1,7 +1,7 @@
 # `docs/` 分章索引 — 邊份管邊樣
 
-> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–45 唔使再靠估。
-> 整理日期：2026-11-06 · 規則衝突時以 [PLAYBOOK](../PLAYBOOK.md) 為準 · 案例已隔離去 [19](19-ecportal-troop-case.md)，**唔係通用底線**。
+> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–46 唔使再靠估。
+> 整理日期：2026-11-12 · 規則衝突時以 [PLAYBOOK](../PLAYBOOK.md) 為準 · 案例已隔離去 [19](19-ecportal-troop-case.md)，**唔係通用底線**。
 
 ## 點用
 
@@ -42,6 +42,7 @@
 | 檔 | 規則 |
 |---|---|
 | [44-bilingual-ui.md](44-bilingual-ui.md) | **L1–L6 雙語介面**：雙閘（體積 ＋ ≤300 字串）判定要做定豁免；右上角一鍵切換、乾淨分離；跟 4 個 BOOK 實作（pinned）。**只為未來新開 app 定義，現有 repo 唔追溯**。詳情亦見 [PLAYBOOK §7.5](../PLAYBOOK.md) |
+| [46-pwa-install-and-update.md](46-pwa-install-and-update.md) | **I1–I8／UP1–UP5 PWA 安裝入口＋版本更新**：所有有 UI 嘅 web app；「安裝要有掣、更新要問過人」——唔靠瀏覽器自彈、SW 唔准背景偷換版；真機驗收（Android Chrome＋iOS Safari）；實戰來源出門玩 v1.2.0＋4 個 BOOK（SCOUTBOOK／CUBSBOOK／ROVERBOOK／VSBOOK，2026-11-12 pinned）。詳情亦見 [PLAYBOOK §7.6](../PLAYBOOK.md) |
 | [24-similar-products.md](24-similar-products.md) | **P1** 研發前搜尋相近產品（人工檢查，記錄來源同決策） |
 
 ## 章 2 — 技術棧契約
