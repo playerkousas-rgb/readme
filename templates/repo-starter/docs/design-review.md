@@ -23,6 +23,8 @@
 
 ## 2. House style：反 slop 清單
 
+> **版面原則（2026-11-12 加）**：*Avoid unnecessary secondary labels and descriptions. Let the layout do the explaining.* 唔好加唔必要嘅次級標籤同說明——用版面（留白、字級層次、分組）自己講嘢。下列每一條都係呢個原則嘅具體實例。
+
 | 唔好出現 | 換成 |
 |---|---|
 | eyebrow label、monospace 小 caption、index 編號 | 直接講，或用真正嘅字級層次 |
@@ -32,6 +34,7 @@
 | 灰色 bar／假螢幕／lorem 數字 | 真介面截圖、計得掂嘅數 |
 | 標題三行、孤字尾行、正文 >75 字闊 | 標題 ≤2 行、字級差 ≥3 倍 |
 | accent 色出現十次 | 只落喺**一個**主要動作 + 一個細節 |
+| 額外說明欄重複表格標題已講嘅嘢 | 唔好加——版面自己講嘢 |
 
 ## 3. 三寬度 + look-and-fix loop（對應我哋 `final_check`）
 
