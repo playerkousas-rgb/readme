@@ -23,7 +23,7 @@ description: >-
 1. **分清楚頁面定 app 屏幕**：頁面 = 一個主張、編輯式排版；app 屏幕 = dashboard／admin／收件箱／列表＋filter，要密集資料同安靜邊框。兩者唔可以互換（[`docs/design-review.md`](../../../docs/design-review.md) §1）。
 2. **寫低個 idea 一句 + live thing 一句**：如果換咗公司名／名詞呢頁都成立，即係無 idea，返去改方向，唔好執 detail。
 3. **Inventory 8–12 件**，每段要 **claim + proof**；假數字／灰條 dashboard 一律當 FAIL。
-4. **House rules 快速掃**（原文 19 條，濃縮 8 條）：標題 ≤2 行、第一屏有清楚 `h1`、左右邊距相等、無 eyebrow／無 monospace label／無 01 02 03 編號／無漸層／無靜態陰影／無 icon-topped 卡片陣。
+4. **House rules 快速掃**（原文 19 條，濃縮 8 條）：標題 ≤2 行、第一屏有清楚 `h1`、左右邊距相等、無 eyebrow／無 monospace label／無 01 02 03 編號／無漸層／無靜態陰影／無 icon-topped 卡片陣。**版面原則（2026-11-12 加）**：*Avoid unnecessary secondary labels and descriptions. Let the layout do the explaining.* 唔好加唔必要嘅次級標籤同說明——用版面（留白、字級層次、分組）自己講嘢。長文版見 [`docs/design-review.md`](../../../docs/design-review.md) §2。
 5. **三寬度望圖 390 / 768 / 1440**：每個寬度睇第一屏、標題孤字、段落 >75 字符、有冇嘢疊住標題或飛出電話畫面。**冇瀏覽器／screenshots 就要老實講「做唔到」，唔好扮做咗**（taste-skill `SKILL.md` §10）。
 6. **6 條 critique passes**：Squint／Edges／Space and frame／Type／Sameness／Substance。每條獨立做，唔好撈埋。
 7. **評分 40/30/20/10**（design／usability／creativity／content）＋ caps；用 `ROUND n` 固定格式寫低 **top 3 問題 + 各自喺邊張圖 + 點改**。

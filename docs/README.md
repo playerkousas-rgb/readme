@@ -43,6 +43,8 @@
 |---|---|
 | [44-bilingual-ui.md](44-bilingual-ui.md) | **L1–L6 雙語介面**：雙閘（體積 ＋ ≤300 字串）判定要做定豁免；右上角一鍵切換、乾淨分離；跟 4 個 BOOK 實作（pinned）。**只為未來新開 app 定義，現有 repo 唔追溯**。詳情亦見 [PLAYBOOK §7.5](../PLAYBOOK.md) |
 | [46-pwa-install-and-update.md](46-pwa-install-and-update.md) | **I1–I8／UP1–UP5 PWA 安裝入口＋版本更新**：所有有 UI 嘅 web app；「安裝要有掣、更新要問過人」——唔靠瀏覽器自彈、SW 唔准背景偷換版；真機驗收（Android Chrome＋iOS Safari）；實戰來源出門玩 v1.2.0＋4 個 BOOK（SCOUTBOOK／CUBSBOOK／ROVERBOOK／VSBOOK，2026-11-12 pinned）。詳情亦見 [PLAYBOOK §7.6](../PLAYBOOK.md) |
+| [47-readme-discipline.md](47-readme-discipline.md) | **README 寫作紀律（五條原則）**：每句都要有檢查或誠實限制兜住——「檢查全綠≠用得」「已修要有 commit＋實測」「未做要老實列」「體積版號係紀律」「唔好寫理論上應該 work」；來源案例 morse-beacon-app v5.1.0→v5.2.0（2026-11-12 定案） |
+| [48-video-audio-creative-tools.md](48-video-audio-creative-tools.md) | **影音／創作 AI 工具評估（7 個 GitHub repo）**：Concat／FilmCraft／VoiceStudio／AutoClip／yovoice／ArtCraft／MoneyPrinterTurbo（GitHub API 2026-11-12 快照）；逐個判決「啱唔啱我哋用」；VoiceStudio／MoneyPrinterTurbo 沿用 [35](35-viral-ai-tools.md)「暫不採用」只更新星數；ArtCraft 「可試」（唔係產品依賴，係內容製作工具；未實測） |
 | [24-similar-products.md](24-similar-products.md) | **P1** 研發前搜尋相近產品（人工檢查，記錄來源同決策） |
 
 ## 章 2 — 技術棧契約
