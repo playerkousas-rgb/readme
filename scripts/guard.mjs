@@ -6,6 +6,7 @@
  *   node scripts/guard.mjs            # 全部檢查
  *   node scripts/guard.mjs --assets   # 只查資源體積（npm run slim:dead 用）
  *   node scripts/guard.mjs --ci       # CI（同一套）
+ *   node scripts/guard.mjs --strict-icons  # G11 實際圖標問題由 warn 升做 FAIL
  *
  * 守：必需檔 / 疑似 secret（含注入版）/ 大檔 / 垃圾檔 / 圖同 dist 體積 /
  *     .vercelignore / Markdown 內部連結 + 錨點 /
@@ -13,7 +14,8 @@
  *     W1 版權標示 / W2 水印常數 / W6 注入版唔入 repo /
  *     V1 檔名+內文雙版號 / V4 部署拷貝同步 / V6 contract fileVersion /
  *     F16 PLAYBOOK 規則 ID 同步 / as-built 案例留存 + docs/19 案例隔離 / docs/23 設計資源索引 /
- *     A16 Actions pin SHA（workflow + templates/github 範本）。
+ *     A16 Actions pin SHA（workflow + templates/github 範本）/
+ *     G11 圖標實際檔案（icons/ 或 public/icons/ 9 檔＋-vN 後綴＋PNG IHDR＋ICO＋≤260KB＋<head> sizes/type＋manifest 512）。
  */
 
 import { readdirSync, statSync, readFileSync, existsSync } from 'node:fs';
@@ -24,6 +26,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ARGS = new Set(process.argv.slice(2));
 const ASSETS_ONLY = ARGS.has('--assets');
 const CI = ARGS.has('--ci');
+const STRICT_ICONS = ARGS.has('--strict-icons');
 
 const SKIP_DIRS = new Set([
   '.git', '.github', 'node_modules', 'dist', 'build', 'out', '.vercel', '.cache',
@@ -515,13 +518,163 @@ function checkAsBuilt() {
   }
 }
 
+/* ---------- 11. G11 圖標實際檔案（docs/33 §2/§7/§8/§9/§12） ---------- */
+// checkRuleSync 只驗「9 個檔名有冇寫喺文件」（F16 文件同步，只喺真理倉跑）。
+// 若 repo 有 icons/（或 public/icons/、web/public/icons/），呢度核對實際檔案：
+//   9 檔存在（容許 -vN immutable 改版後綴，docs/33 §9.5）＋ PNG IHDR 尺寸（零依賴，唔靠 identify）
+//   ＋ ICO 16/32/48 ＋ 9 檔合計 ≤260KB ＋ icon-512 ≥40KB ＋ <head> sizes/type ＋ manifest 512。
+// 無 icons 目錄嘅 repo（真理倉、純文檔、單頁工具）自動跳過，唔報錯。
+// 預設用 warn（過渡期唔硬擋舊 repo CI）；加 --strict-icons 升做 err。
+const ICON_SPECS = [
+  { file: 'favicon-16.png', w: 16, h: 16 },
+  { file: 'favicon-32.png', w: 32, h: 32 },
+  { file: 'apple-touch-icon.png', w: 180, h: 180 },
+  { file: 'icon-192.png', w: 192, h: 192 },
+  { file: 'icon-512.png', w: 512, h: 512 },
+  { file: 'icon-maskable-192.png', w: 192, h: 192 },
+  { file: 'icon-maskable-512.png', w: 512, h: 512 },
+  { file: 'og-image.png', w: 1200, h: 630 },
+];
+
+function findIconFile(dir, base) {
+  const entries = readdirSync(dir);
+  const ext = path.extname(base);
+  const stem = base.slice(0, -ext.length);
+  const re = new RegExp(`^${stem}-v(\\d+)\\${ext}$`, 'i');
+  const versioned = entries
+    .map((f) => ({ f, ver: Number(re.exec(f)?.[1] || 0) }))
+    .filter((x) => x.ver > 0)
+    .sort((a, b) => b.ver - a.ver);
+  if (versioned.length) return path.join(dir, versioned[0].f);
+  return entries.includes(base) ? path.join(dir, base) : null;
+}
+
+function pngSize(buf) {
+  // PNG signature (8) + IHDR length/type (8) → width@16, height@20（BE uint32）
+  if (buf.length < 24) return null;
+  if (buf[0] !== 0x89 || buf[1] !== 0x50 || buf[2] !== 0x4e || buf[3] !== 0x47) return null;
+  if (buf.toString('ascii', 12, 16) !== 'IHDR') return null;
+  return { w: buf.readUInt32BE(16), h: buf.readUInt32BE(20) };
+}
+
+function icoSizes(buf) {
+  // ICONDIR: reserved(2)=0, type(2)=1, count(2); 每 entry 16 bytes，w/h 各 1 byte（0 = 256）
+  if (buf.length < 6) return null;
+  if (buf.readUInt16LE(0) !== 0 || buf.readUInt16LE(2) !== 1) return null;
+  const count = buf.readUInt16LE(4);
+  if (count < 1) return null;
+  const out = [];
+  for (let i = 0; i < count; i++) {
+    const off = 6 + i * 16;
+    if (off + 1 >= buf.length) return null;
+    out.push({ w: buf[off] || 256, h: buf[off + 1] || 256 });
+  }
+  return out;
+}
+
+function checkIcons() {
+  const iconCandidates = ['icons', 'public/icons', 'web/public/icons'];
+  const relDir = iconCandidates.find((d) => {
+    const p = path.join(ROOT, d);
+    return existsSync(p) && statSync(p).isDirectory();
+  });
+  if (!relDir) {
+    ok('G11：無 icons/（或 public/icons/），跳過實際檔案驗證');
+    return;
+  }
+
+  const iconsDir = path.join(ROOT, relDir);
+  const report = STRICT_ICONS ? err : warn;
+  let issues = 0;
+  const flag = (msg) => { issues++; report(msg); };
+
+  let total = 0;
+  for (const spec of ICON_SPECS) {
+    const p = findIconFile(iconsDir, spec.file);
+    if (!p) { flag(`G11：缺圖標 ${relDir}/${spec.file}（docs/33 §2 9 檔一個都唔可以少）`); continue; }
+    const buf = readFileSync(p);
+    total += buf.length;
+    const size = pngSize(buf);
+    if (!size) { flag(`G11：${rel(p)} 唔係有效 PNG（讀唔到 IHDR）`); continue; }
+    if (size.w !== spec.w || size.h !== spec.h)
+      flag(`G11：${rel(p)} 尺寸 ${size.w}×${size.h}，要 ${spec.w}×${spec.h}（docs/33 §2）`);
+    else if (spec.file === 'icon-512.png' && buf.length < 40 * 1024)
+      warn(`G11：${rel(p)} 只有 ${(buf.length / 1024).toFixed(1)} KB < 40 KB（太細可能過度壓縮或細節不足）`);
+  }
+
+  const icoPath = findIconFile(iconsDir, 'favicon.ico');
+  if (!icoPath) {
+    flag(`G11：缺圖標 ${relDir}/favicon.ico（docs/33 §2）`);
+  } else {
+    const icoBuf = readFileSync(icoPath);
+    total += icoBuf.length;
+    const sizes = icoSizes(icoBuf);
+    if (!sizes) flag(`G11：${rel(icoPath)} 唔係有效 ICO`);
+    else {
+      const have = new Set(sizes.map((s) => s.w));
+      for (const need of [16, 32, 48]) {
+        if (!have.has(need)) flag(`G11：${rel(icoPath)} 缺 ${need}px 內嵌圖（要 16／32／48 三合一，docs/33 §2）`);
+      }
+    }
+  }
+
+  if (total > 260 * 1024) flag(`G11：9 檔總體積 ${Math.round(total / 1024)} KB > 260 KB（docs/33 §8）`);
+  if (!issues) ok(`G11：${relDir}/ 9 檔齊、尺寸正確、總體積 ${Math.round(total / 1024)} KB ≤ 260 KB`);
+
+  // <head> icon link 嘅 sizes/type（docs/33 §7）
+  const htmlRel = ['index.html', 'web/index.html', 'public/index.html'].find((f) => existsSync(path.join(ROOT, f)));
+  if (htmlRel) {
+    const html = readFileSync(path.join(ROOT, htmlRel), 'utf8');
+    const linkRe = /<link\b[^>]*>/gi;
+    let m, checked = 0, linkIssues = 0;
+    while ((m = linkRe.exec(html))) {
+      const tag = m[0];
+      const relM = /rel\s*=\s*["']([^"']*)["']/i.exec(tag);
+      if (!relM) continue;
+      const rels = relM[1].toLowerCase().split(/\s+/);
+      const isApple = rels.includes('apple-touch-icon');
+      const isIcon = rels.includes('icon');
+      if (!isIcon && !isApple) continue;
+      checked++;
+      const hrefM = /href\s*=\s*["']([^"']*)["']/i.exec(tag);
+      const href = hrefM ? hrefM[1] : '';
+      const hasSizes = /\bsizes\s*=/i.test(tag);
+      const hasType = /\btype\s*=/i.test(tag);
+      if (isApple && !hasSizes) {
+        linkIssues++;
+        flag(`G11：${htmlRel} apple-touch-icon 冇寫 sizes（${href}）— 取用方會當未知尺寸排後（docs/33 §7）`);
+      }
+      if (/\.png(\?|#|$)/i.test(href) && !hasType) {
+        linkIssues++;
+        flag(`G11：${htmlRel} PNG 圖標冇寫 type（${href}）— PNG 一定要有 type="image/png"（docs/33 §7）`);
+      }
+    }
+    if (checked && !linkIssues) ok(`G11：${htmlRel} ${checked} 條 icon link 嘅 sizes／type 檢查`);
+  }
+
+  // manifest 512（docs/33 §7/§12）：唔少 APP 嘅 512 只喺 manifest，唔喺 link
+  const manifestRel = ['manifest.webmanifest', 'public/manifest.webmanifest', 'web/public/manifest.webmanifest']
+    .find((f) => existsSync(path.join(ROOT, f)));
+  if (manifestRel) {
+    try {
+      const j = JSON.parse(readFileSync(path.join(ROOT, manifestRel), 'utf8'));
+      const icons = Array.isArray(j.icons) ? j.icons : [];
+      const has512 = icons.some((ic) => typeof ic.sizes === 'string' && ic.sizes.split(/\s+/).includes('512x512'));
+      if (!has512) flag(`G11：${manifestRel} 無 512x512 icon（docs/33 §7）`);
+      else ok(`G11：${manifestRel} 有 512x512 icon`);
+    } catch {
+      flag(`G11：${manifestRel} JSON 解析失敗`);
+    }
+  }
+}
+
 /* ---------- 執行 ---------- */
 if (ASSETS_ONLY) {
   checkHygiene(); checkDist();
 } else {
   checkVercelIgnore(); checkHygiene(); checkDist(); checkSecrets();
   checkBundleLeak(); checkEnvLeakPattern(); checkEnvIgnore();
-  checkLinks(); checkAnchors(); checkVersionSync(); checkCopyright(); checkActionsPin(); checkRuleSync(); checkAsBuilt();
+  checkLinks(); checkAnchors(); checkVersionSync(); checkCopyright(); checkActionsPin(); checkRuleSync(); checkAsBuilt(); checkIcons();
 }
 
 for (const c of checks) console.log(`  ✓ ${c}`);

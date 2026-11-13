@@ -81,13 +81,18 @@ convert -size 16x16 xc:'#F0B285' \
 <link rel="icon" href="/icons/favicon.ico" sizes="any" />
 <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
 <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
-<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/icons/apple-touch-icon.png" />
 <link rel="manifest" href="/manifest.webmanifest" />
 <meta name="theme-color" content="#XXXXXX" />
 <meta property="og:image" content="https://<絕對網域>/icons/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 ```
+
+> ⚠️ **`sizes` 同 `type` 一定要寫明**，尤其 `apple-touch-icon`。
+> 冇寫 `sizes` 的話，按尺寸排優嘅取用方（索引站、書籤管理器）會當佢「未知尺寸」排到 32px 細圖之後 —— 結果有 180px 大圖都唔用，攞 32px 放大化開。
+> - `sizes` 一律寫明（`16x16`／`32x32`／`180x180`／`192x192`／`512x512`；`.ico` 寫 `any`）
+> - **PNG 一定要有 `type="image/png"`**；`.ico` 可以唔寫 `type`（瀏覽器一定識）
 
 > ⚠️ **`og:image` 必須絕對網址**。用相對路徑＝分享平台攞唔到＝貼落 WhatsApp 淨係得一行字。
 
@@ -139,3 +144,12 @@ convert favicon-16.png favicon-32.png favicon-48.png favicon.ico
 以上數字全部來自 `hkcamping` **v1.12.1** 實測（icons/ 244 KB、dist 467.5 KB、guard 18/18、test 21/21、ui 112/112）。
 如要對照實際檔案，去 [`playerkousas-rgb/hkcamping`](https://github.com/playerkousas-rgb/hkcamping) 嘅 README
 「App Icon／favicon（v1.12.1）」一節，有完整表格同設計色票。
+
+### 12. 取用方配合原則（如有入口站／索引頁抓其他站圖標）
+
+日後如有新 app 扮演「取用方」（例如入口站、書籤頁、目錄頁去抓其他站嘅圖標），按呢四條通用原則配合：
+
+1. **大圖優先**：按實際顯示尺寸 × 2（高密度螢幕）揀大圖（512 → 180/192 → 細圖），唔好優先揀 32–128px。
+2. **合併 `<link>` 同 `manifest` 候選**：唔好讀完 `<link rel="icon">` 就停 —— 唔少 app 嘅 `512×512` 只放喺 `manifest.webmanifest`。
+3. **缺屬性容錯**：`apple-touch-icon` 冇寫 `sizes` 當 `180×180`；冇寫 `type` 由副檔名推斷。
+4. **外部細圖降級，唔好硬放大**：控制唔到素材嘅外部連結，若攞到嘅圖細過顯示門檻（如 `<64px`），降級顯示字母牌／預設圖示，好過將 16px 硬拉大成一嚿糊。
