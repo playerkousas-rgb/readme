@@ -1,9 +1,18 @@
 # `docs/` 分章索引 — 邊份管邊樣
 
-> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–46 唔使再靠估。
-> 整理日期：2026-11-12 · 規則衝突時以 [PLAYBOOK](../PLAYBOOK.md) 為準 · 案例已隔離去 [19](19-ecportal-troop-case.md)，**唔係通用底線**。
+> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–49 唔使再靠估。
+> 整理日期：2026-11-13 · 規則衝突時以 [PLAYBOOK](../PLAYBOOK.md) 為準 · 案例已隔離去 [19](19-ecportal-troop-case.md)，**唔係通用底線**。
 
 ## 點用
+
+**Agent 按需讀，唔使順序讀晒 00–49**：先用根 README §1 揀任務，再用下面章節定位；必守規則讀 PLAYBOOK，工具評審只喺相關任務先讀，唔係安裝清單。
+
+| 任務分類 | 直達章節 |
+|---|---|
+| 必守規則／技術棧 | [章 1](#章-1--五大通用鐵律s--f--a--w--v)／[章 2](#章-2--技術棧契約) |
+| 設計／Skills／第三方工具評審 | [章 3](#章-3--研發前調查-p1-同資源索引) |
+| 驗收／案例／Repo 治理 | [章 4](#章-4--交付驗收出事)／[章 5](#章-5--專案案例同審計已隔離唔係通用底線)／[章 6](#章-6--repo-治理2026-11-02-新章) |
+
 
 | 你得… | 去 |
 |---|---|
@@ -44,7 +53,6 @@
 | [44-bilingual-ui.md](44-bilingual-ui.md) | **L1–L6 雙語介面**：雙閘（體積 ＋ ≤300 字串）判定要做定豁免；右上角一鍵切換、乾淨分離；跟 4 個 BOOK 實作（pinned）。**只為未來新開 app 定義，現有 repo 唔追溯**。詳情亦見 [PLAYBOOK §7.5](../PLAYBOOK.md) |
 | [46-pwa-install-and-update.md](46-pwa-install-and-update.md) | **I1–I8／UP1–UP5 PWA 安裝入口＋版本更新**：所有有 UI 嘅 web app；「安裝要有掣、更新要問過人」——唔靠瀏覽器自彈、SW 唔准背景偷換版；真機驗收（Android Chrome＋iOS Safari）；實戰來源出門玩 v1.2.0＋4 個 BOOK（SCOUTBOOK／CUBSBOOK／ROVERBOOK／VSBOOK，2026-11-12 pinned）。詳情亦見 [PLAYBOOK §7.6](../PLAYBOOK.md) |
 | [47-readme-discipline.md](47-readme-discipline.md) | **README 寫作紀律（五條原則）**：每句都要有檢查或誠實限制兜住——「檢查全綠≠用得」「已修要有 commit＋實測」「未做要老實列」「體積版號係紀律」「唔好寫理論上應該 work」；來源案例 morse-beacon-app v5.1.0→v5.2.0（2026-11-12 定案） |
-| [48-video-audio-creative-tools.md](48-video-audio-creative-tools.md) | **影音／創作 AI 工具評估（7 個 GitHub repo）**：Concat／FilmCraft／VoiceStudio／AutoClip／yovoice／ArtCraft／MoneyPrinterTurbo（GitHub API 2026-11-12 快照）；逐個判決「啱唔啱我哋用」；VoiceStudio／MoneyPrinterTurbo 沿用 [35](35-viral-ai-tools.md)「暫不採用」只更新星數；ArtCraft 「可試」（唔係產品依賴，係內容製作工具；未實測） |
 | [24-similar-products.md](24-similar-products.md) | **P1** 研發前搜尋相近產品（人工檢查，記錄來源同決策） |
 
 ## 章 2 — 技術棧契約
@@ -73,7 +81,9 @@
 | [36-lazy-coding-and-open-alternatives.md](36-lazy-coding-and-open-alternatives.md) | **爆紅清單第三輪核實**：Ponytail（七級梯已改寫做 checklist，讀唔裝）／FreeBuff（數據條款，唔用喺真 repo）／Concept Studio Blender 城市（查無 repo，版權先行）／9 個開源平替逐個判（11 個 repo GitHub API 2026-11-06 快照）；未實測狀態明寫，唔重抄 34／35 |
 | [37-ai-tools-design-prompts.md](37-ai-tools-design-prompts.md) | **爆紅清單第四輪核實**：FreeLLMAPI（吸收「睇 API 三樣」讀法；工具只限個人實驗）／Claude SEO（自家公開站上線前有場景先試）／8 個設計畫廊已入 [23 §5.3](23-design-resources.md)／生圖 20 種風格詞彙＋5 條句式（自己重寫、未實測）；新聞同 Radiocast 唔收錄做規範，原因寫明 |
 | [38-animation-3d-prediction-tools.md](38-animation-3d-prediction-tools.md) | **爆紅清單第五輪核實＋ repo 形狀普查**：89 個 repo 實測（React 26／Next 9／靜態 HTML 32／shadcn 0，Animate UI 而家零個 repo 跑到）／ApiVault（已入 [15](15-resource-index.md) 做搵 API 第二層）／Qwen3.5-3D-Coder（觀察名單）／SUAPP AIM＋Convertio（端用家）／MiroFish（只當假設產生器）；未實測明寫 |
+| [48-video-audio-creative-tools.md](48-video-audio-creative-tools.md) | **影音／創作 AI 工具評估（7 個 GitHub repo）**：Concat／FilmCraft／VoiceStudio／AutoClip／yovoice／ArtCraft／MoneyPrinterTurbo（GitHub API 2026-11-12 快照）；逐個判決「啱唔啱我哋用」；VoiceStudio／MoneyPrinterTurbo 沿用 [35](35-viral-ai-tools.md)「暫不採用」只更新星數；ArtCraft 「可試」（唔係產品依賴，係內容製作工具；未實測） |
 | [45-ui-skills-text-to-cad.md](45-ui-skills-text-to-cad.md) | **UI 設計 Skills／參數化 CAD**：emilkowalski/skills（最壞資料／手機／動效判斷，列為未來借鑑）／text-to-cad（實物場景先試）；來源、授權、安全界線及未實測狀態 |
+| [49-design-skills-studio-dotfiles-effectcraft.md](49-design-skills-studio-dotfiles-effectcraft.md) | **五個 repo 判「值唔值得學／收錄」**：awesome-design-md／taste-skill 已收錄（只更新快照）；ai-design-skills 借到 `name`＝資料夾名＋`compatibility` 上限並已入 checker；BULDEE creative-studio 只參考 ADR／phase gate、唔安裝；dotfiles 無 LICENSE 只讀概念；EffectCraft 有場景先試（同 [48](48-video-audio-creative-tools.md) ArtCraft 同族）。GitHub API 2026-11-13，未安裝未實測 |
 | [43-api-anything-codegraph.md](43-api-anything-codegraph.md) | **公開 GitHub 源碼評審**：API Anything（確定性 core 同 agent 分工；local save／holdout／heal replay 係唔同閘；write 不確定狀態＋readback；capture/加密/sharing 有條件）／CodeGraph（靜態 lexical graph＋provenance＋freshness；支援獨立 `.mjs`／`.py`，`.gs` 可映射但唔係 GAS 完整支援；telemetry default on）；pinned file/line 證據、benchmark 限制、SCOUT 零安裝採用清單（2026-11-08），未安裝未實測 |
 | [39-verified-sites-and-diy.md](39-verified-sites-and-diy.md) | **10 站實測＋自己做總清單**：Scrolltide（付費，更正免費講法）／Refero DESIGN.md 庫／3dicons（CC0）／liquid-glass（MIT v0.1）／LogoDiffusion（出真 SVG）；自己做：`seo_check_v1.0.mjs` 已做＋`web-motion` 補 framer-motion 線，DESIGN.md 庫／ApiVault 搜尋頁／pre-mortem 模板排下次 |
 | [40-canvas-diy-candidates.md](40-canvas-diy-candidates.md) | **Gemini＋Canvas 自己整候選判決**：G11 圖標產生器（Type A，第一）／風格海報 presets 升級現有產生器（Type B）／Pre-mortem 鬧場（Type C，假設唔係證據）／相片預備（Type A 可選）；SEO script／LLM 路由／電台／3D 世界等唔用 Canvas 嘅原因逐個寫明；未開工狀態明寫 |
