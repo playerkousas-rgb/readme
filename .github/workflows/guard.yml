@@ -35,6 +35,8 @@ jobs:
         run: node --test scripts/actions_pin.test.mjs
       - name: 雙語介面 L 檢查器 + 規則同步（L1–L6 / F14 / F16）
         run: node --test scripts/i18n_check.test.mjs
+      - name: G11 圖標實際檔案 + docs/33 §7/§12 規則同步（G11 / F14 / F16）
+        run: node --test scripts/g11_icons.test.mjs
       - name: 雙語範本自查（L6 / dogfooding）
         run: node scripts/i18n_check_v1.0.mjs templates/i18n/lang_toggle_v1.0.js
       - name: 單一 HTML 交付審計（C13-f / dogfooding）
