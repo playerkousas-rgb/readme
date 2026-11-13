@@ -53,6 +53,7 @@
 - **定位**：「The IDE for artists」——互動式 AI 圖像／影片創作；2D 合成、3D staging、角色 pose、場景構建、image-to-video；可選不同模型。
 - **對我哋**：我哋有 [docs/16](16-canvas-case-scout-comic.md) 童軍漫畫生成器（Gemini Canvas 路線）。ArtCraft 可以做更複雜嘅視覺合成（3D 場景、角色一致性），但佢係 **desktop IDE**，唔係可以整合入我哋 web app 嘅 library。MIT OR Apache-2.0 授權冇問題。
 - **可試原因**：如果將來要做「Scout 宣傳片」「活動海報」「漫畫分鏡」呢類需要 3D／角色一致性嘅視覺內容，可以試 ArtCraft 出素材，再用我哋 Gemini Canvas 路線做最終產物。**未實測**。
+- **同族**：同一個 ArtCraft 家族嘅 [`storytold/effectcraft`](https://github.com/storytold/effectcraft)（動態圖形／合成，8,698★）已喺 [49 §2.4](49-design-skills-studio-dotfiles-effectcraft.md) 評審，判「有場景先試」；本頁唔重複。
 
 ### 1.7 MoneyPrinterTurbo（MIT，142,767★）— 維持原判
 

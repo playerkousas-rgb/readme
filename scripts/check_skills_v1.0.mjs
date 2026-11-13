@@ -75,6 +75,21 @@ for (const p of walk(root)) {
     errors.push(`${where}: description ${fm.description.length} 字 > 1024`);
   if ('disable-model-invocation' in fm && !/^(true|false)$/.test(fm['disable-model-invocation']))
     errors.push(`${where}: disable-model-invocation 要 true/false`);
+  // 2026-11-13：spec（agentskills.io）＋ 兩個上游（elayadesign/ai-design-skills 嘅
+  // scripts/validate_skills.py、kettleofketchup/dotfiles 嘅 AGENTS.md）都指同一件事：
+  // name 同資料夾名唔一致，strict client（Codex 等）會**靜靜跳過成個 skill**，唔報錯。
+  // 只見於標準 skills/ 樹先強制，舊 repo 單數 skill/ 照舊 PASS（向後兼容）。
+  if (where.split('/').slice(0, -1).includes('skills')) {
+    const folder = path.basename(path.dirname(p));
+    if (name !== folder)
+      errors.push(`${where}: name "${name}" 要等於資料夾名 "${folder}"（唔係 strict client 會靜靜唔載入）`);
+    if ('compatibility' in fm) {
+      if (typeof fm.compatibility !== 'string' || !fm.compatibility.trim())
+        errors.push(`${where}: compatibility 要非空字串`);
+      else if (fm.compatibility.length > 500)
+        errors.push(`${where}: compatibility ${fm.compatibility.length} 字 > 500`);
+    }
+  }
   if (name) {
     const dup = found.find((f) => f.name === name);
     if (dup) errors.push(`${where}: name "${name}" 同 ${dup.where} 撞名`);

@@ -84,6 +84,7 @@ tests/frontmatter.mjs            CI 驗 frontmatter
 **Frontmatter 硬規則**（由 taste-skill `tests/frontmatter.mjs` 抄，已寫入 [`scripts/check_skills_v1.0.mjs`](../scripts/check_skills_v1.0.mjs)）：
 
 - `---` 區塊喺第一行；`name` 係 kebab-case、≤64 字；`description` 非空、≤1024 字。
+- `name` 要**等於資料夾名**（`skills/<name>/SKILL.md`）；`compatibility` 有就要 1–500 字。依據：agentskills.io 規格、[elayadesign/ai-design-skills](https://github.com/elayadesign/ai-design-skills) 嘅 `validate_skills.py`、[kettleofketchup/dotfiles](https://github.com/kettleofketchup/dotfiles) 嘅 `AGENTS.md`（三者都指 strict client 會靜靜跳過唔匹配嘅 skill）。2026-11-13 已入 checker（只在標準 `skills/` 樹強制），見 [49 §3](49-design-skills-studio-dotfiles-effectcraft.md#3-今次真正落地咗乜已跑過)。
 - 名唔可以重複；`disable-model-invocation` 要 boolean。
 - `description` 入面 `word: word` 要 quote，否則 strict YAML parser 會靜靜 drop 成個 skill。
 - **User-invoked vs model-invoked**（mattpocock `.agents/invocation.md`）：前者 `disable-model-invocation: true` + description 寫俾人睇；後者保留觸發句「Use when…」。兩者喺 README 分兩組。
@@ -105,6 +106,7 @@ tests/frontmatter.mjs            CI 驗 frontmatter
 ## 5. 兩個外國 Repo 評審（Q6）
 
 > 數據：GitHub API **2026-11-02** 快照。兩者都係 MIT、都極活躍（前一日仲有 push）。
+> **2026-11-13 更新**：`taste-skill` 星數快照 107,744→114,630（forks 7,278→7,704），結構同結論不變；同類設計 skill（`ai-design-skills`）嘅對照同取捨見 [49](49-design-skills-studio-dotfiles-effectcraft.md)。
 
 | | [mattpocock/skills](https://github.com/mattpocock/skills) | [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) |
 |---|---|---|
