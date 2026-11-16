@@ -420,6 +420,66 @@ test('SG16：GEMINI 係第五個派發入口（Canvas 類），可派發但唔�
   );
 });
 
+test('SG17：五個入口入場準備度唔同 —— 唔使逐個「打招呼」，程式用 admit 分四級', () => {
+  // 1) 每個入口都有 admit 欄，四級分得清
+  assert.equal(gate.PORTAL_REGISTRY.appstore.admit, 'always', 'APP STORE 永遠預設入口');
+  assert.equal(gate.PORTAL_REGISTRY.library.admit, 'conditional', '圖書館要先改 noreferrer');
+  assert.equal(gate.PORTAL_REGISTRY.member.admit, 'optional', '成員系統逐個 App 決定');
+  assert.equal(gate.PORTAL_REGISTRY.district.admit, 'optional', '區管理系統逐個 App 決定');
+  assert.equal(gate.PORTAL_REGISTRY.gemini.admit, 'never', 'Gemini 永遠唔做放行來源');
+
+  // 2) 由 admit 推導出嚟嘅四組，同註冊表完全對齊
+  assert.deepEqual([...gate.DEFAULT_PORTAL_IDS], ['appstore']);
+  assert.deepEqual([...gate.CONDITIONAL_PORTAL_IDS], ['library']);
+  assert.deepEqual([...gate.OPTIONAL_PORTAL_IDS], ['member', 'district']);
+  assert.deepEqual([...gate.NEVER_ADMIT_PORTAL_IDS], ['gemini']);
+  // 四組加起來 = 五個入口，一個都冇漏、冇重複
+  const all = [
+    ...gate.DEFAULT_PORTAL_IDS,
+    ...gate.CONDITIONAL_PORTAL_IDS,
+    ...gate.OPTIONAL_PORTAL_IDS,
+    ...gate.NEVER_ADMIT_PORTAL_IDS,
+  ].sort();
+  assert.deepEqual(all, [...gate.PORTAL_IDS].sort(), 'admit 分組要覆蓋全部入口');
+
+  // 3) resolvePortalIds：唔寫死 portalIds 時嘅安全預設
+  assert.deepEqual([...gate.resolvePortalIds()], ['appstore'], '咩都唔傳 → 只認 APP STORE');
+  assert.deepEqual([...gate.resolvePortalIds([], 'all')], ['appstore', 'library', 'member', 'district'],
+    "portalIdsAdmit: 'all' → 1–4 全開");
+  assert.ok(!gate.resolvePortalIds([], 'all').includes('gemini'), "portalIdsAdmit: 'all' 永遠唔會包 gemini");
+  assert.deepEqual([...gate.resolvePortalIds(['library'], 'all')], ['library'], '明寫 portalIds 就照用（唔會被覆蓋）');
+  assert.deepEqual([...gate.resolvePortalIds(null, ['member'])], ['member'], 'admit 可以係陣列');
+
+  // 4) 真閘門行為：portalIdsAdmit: 'all' 要放行 1–4 任何一個入口，但唔放行 Gemini
+  for (const ref of [
+    'https://scoutappstore.vercel.app/',
+    'https://scout-circulars.vercel.app/',
+    'https://member-portal-sigma-swart.vercel.app/',
+    'https://scout-district-portal.vercel.app/',
+  ]) {
+    const { win } = makeMockEnv({ referrer: ref });
+    const res = gate.initStoreGate({ appKey: 'sg17', mode: 'entry-gate', portalIdsAdmit: 'all' }, win);
+    assert.equal(res.allowed, true, `${ref} 應該放行`);
+    assert.equal(res.reason, 'referrer-whitelist');
+  }
+  {
+    const { win } = makeMockEnv({ referrer: 'https://gemini.google.com/app' });
+    const res = gate.initStoreGate({ appKey: 'sg17', mode: 'entry-gate', portalIdsAdmit: 'all' }, win);
+    assert.equal(res.allowed, false, "portalIdsAdmit: 'all' 都唔可以放行 Gemini（Canvas 派發線管唔到閘）");
+    assert.equal(res.reason, 'missing-whitelist-entry');
+  }
+
+  // 5) 卡上嘅入口掣：'all' 出四個，預設只出一個（唔會靜靜地加咗圖書館）
+  assert.deepEqual(
+    [...gate.normalizePortals({ portalIdsAdmit: 'all' })].map((p) => p.id),
+    ['appstore', 'library', 'member', 'district'],
+  );
+  assert.deepEqual(
+    [...gate.normalizePortals({ portalIds: gate.resolvePortalIds() })].map((p) => p.id),
+    ['appstore'],
+  );
+});
+
 test('SG8：入口網站自己永遠唔會被閘（portalIds 含自身 origin 時 fail-closed 攔截，防自我鎖死）', () => {
   const self = makeMockEnv({ referrer: '', selfOrigin: 'https://scoutappstore.vercel.app' });
   const res = gate.initStoreGate({
@@ -669,7 +729,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   const dix = read('docs', 'README.md');
   const wf = read('.github', 'workflows', 'guard.yml');
 
-  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7', 'SG8', 'SG9', 'SG10', 'SG11', 'SG12', 'SG13', 'SG14', 'SG15', 'SG16']) {
+  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7', 'SG8', 'SG9', 'SG10', 'SG11', 'SG12', 'SG13', 'SG14', 'SG15', 'SG16', 'SG17']) {
     assert.ok(pb.includes(id) && doc.includes(id), `PLAYBOOK / docs/50 缺 ${id}`);
   }
   assert.ok(intake.includes('Q8') && intake.includes('entry-gate'), 'INTAKE 第 0 步要有 Q8 主動告知白名單與 entry-gate');
@@ -695,7 +755,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   assert.ok(doc.includes('gemini.google.com'), 'docs/50 要登記 Gemini origin');
   assert.ok(!/portalIds: \['gemini'/.test(doc), 'docs/50 唔應該示範把 gemini 放入 portalIds');
   // SG7：直開網址／404／加入主畫面 嘅情境表要喺 docs/50 §3.4 有紀錄
-  for (const kw of ['3.4', '404', '加入主畫面', '白名單真實代價', '3.6', 'push_subscriptions', '3.7', 'Delist', 'visible=false', '3.8', 'drawtheroute', 'LEADER_PASSWORD', 'supportNudge', 'SG13', 'SG14', '書架位置有限', 'skipPortalIds']) {
+  for (const kw of ['3.4', '404', '加入主畫面', '白名單真實代價', '3.6', 'push_subscriptions', '3.7', 'Delist', 'visible=false', '3.8', 'drawtheroute', 'LEADER_PASSWORD', 'supportNudge', 'SG13', 'SG14', '書架位置有限', 'skipPortalIds', '3.10', 'SG17', 'DEFAULT_PORTAL_IDS', 'admit', 'noreferrer', 'gemini-woad-sigma']) {
     assert.ok(doc.includes(kw), `docs/50 §3.4 要覆蓋「${kw}」`);
   }
   assert.ok(intake.includes('SG7'), 'INTAKE Q8 要提 SG7 加入主畫面流程');
@@ -708,13 +768,13 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   assert.ok(doc.includes('WHITELIST-HANDOFF.md'), 'docs/50 要指向交接清單');
   // docs/51 白名單上線清單
   const list = read('docs', '51-whitelist-rollout-list.md');
-  for (const kw of ['A 組', 'B 組', 'C 組', 'D 組', '掃描限制', 'entry-gate']) {
+  for (const kw of ['A 組', 'B 組', 'C 組', 'D 組', '掃描限制', 'entry-gate', 'SG17', 'DEFAULT_PORTAL_IDS', 'L5662']) {
     assert.ok(list.includes(kw), `docs/51 要覆蓋「${kw}」`);
   }
   assert.ok(list.includes('website') && list.includes('scout-circulars'), 'D 組要列出入口本體');
   // A 組可直接貼嘅指令檔
   const instr = read('templates', 'repo-starter', 'A-GROUP-INSTRUCTION.md');
-  for (const kw of ['portalIds', 'allowStandalone', 'entry-gate', '真機', '回報', 'APPKEY']) {
+  for (const kw of ['portalIds', 'allowStandalone', 'entry-gate', '真機', '回報', 'APPKEY', 'SG17', 'DEFAULT_PORTAL_IDS']) {
     assert.ok(instr.includes(kw), `A-GROUP-INSTRUCTION 要覆蓋「${kw}」`);
   }
   assert.ok(list.includes('A-GROUP-INSTRUCTION.md'), 'docs/51 要指向 A 組指令檔');

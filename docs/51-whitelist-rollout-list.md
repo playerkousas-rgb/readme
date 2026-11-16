@@ -121,7 +121,7 @@
 | `scout-circulars` | 2. 圖書館（`feed`） | **載住 Push 訂閱**，必須維持 `open`（SG10-a） |
 | `member-portal` | 3. 成員系統（`internal`） | 自己就係入口 |
 | `scout-district-portal` | 4. 區管理系統（`internal`） | 自己就係入口 |
-| GEMINI | 5. Canvas 派發線 | 托管喺 Google，我哋改唔到 header（SG16） |
+| GEMINI | 5. Canvas 派發線 | 托管喺 Google，我哋改唔到 header（SG16）＋同 Vercel 子 App 零關係，唔會做佢哋入口（SG17） |
 
 ## 5. 未列入：非網站 repo（約 26 個）
 
@@ -139,19 +139,37 @@
   initStoreGate({
     appKey: '<repo-name-lowercase>',   // 每個 app 獨立前綴
     mode: 'entry-gate',
-    portalIds: ['appstore'],           // 第一批先只認 APP STORE；穩定後可加其餘入口
+    portalIds: ['appstore'],           // ＝DEFAULT_PORTAL_IDS（SG17）。第一批只認 APP STORE，
+                                       //   唔使問任何人；library 要等入口改好 noreferrer 才可加，
+                                       //   member／district 唔做 App 目錄、gemini 永遠唔入
     allowStandalone: true,             // B 組必開；A 組亦建議開（免費保險）
   });
 </script>
 ```
 
-## 7. 建議執行次序
+## 7. 要唔要「先同兩個大入口講」？→ 只有一件事要動（SG17）
+
+> **答案：唔使逐個入口打招呼。** 詳情規則見 [50 §3.10](50-app-store-whitelist-and-shutdown.md) ＋ **SG17**。五個入口嘅入場條件唔同，只有一個要改一行代碼：
+
+| 入口 | 要唔要事先處理 | 對 A／B 組 App 嘅影響 |
+|---|:--:|---|
+| **1. APP STORE** | ❌ **唔使** —— 佢本來就係預設入口（`DEFAULT_PORTAL_IDS`）；分享／QR 亦只由佢產生（SG9） | **每一隻都要寫** `portalIds: ['appstore']` |
+| **2. 圖書館** | ⚠️ **要，但只需一次**：`scout-circulars/index.html` L5662 小工具掣 `rel="noopener noreferrer"` → `rel="${isTool ? 'noopener' : 'noopener noreferrer'}"`。**Push／統計／通告流程一律唔准動**（SG10-a） | 改完之後，逐隻 App 自己決定加唔加 `library`；**A 組第一批唔加**（只認 APP STORE），所以第 1 批完全唔受影響 |
+| **3. 成員系統** | ❌ **唔使** —— 實查 `app/page.tsx` 只連 `/books`（4 本 BOOK）、通告圖書館、`districtbadgesystem30`、`scoutappstore`；**唔做 App 目錄** | 預設唔加。唯一例外＝4 本 `BOOK`（本身喺 C 組，BOOK 管制宜寬鬆，維持 `['appstore']` 已夠） |
+| **4. 區管理系統** | ❌ **唔使** —— 卡片／`/embed`／`/links` 只連自家 `builtin` 系統 | 預設唔加 |
+| **5. GEMINI** | ❌ **唔使，亦唔可以** —— 另一套系統、同 Vercel 子 App 零關係 | 永遠唔會放入 `portalIds`（程式剔除） |
+
+**所以「打招呼」呢一步唔存在**；真正要做嘅只有兩件：① **APP STORE 加 `?app=<slug>`**（下面第 0 步，為咗分享／QR，唔係為白名單）② **圖書館改 L5662 一行**（如果你要放圖書館入場）。兩件都係**機器層面**，唔需要同「入口嘅 AGENT」開會；成員系統／區管理系統／Gemini 更加唔關事。
+
+---
+
+## 8. 建議執行次序
 
 | 批次 | 內容 | 為咩 |
 |:--:|---|---|
-| **第 0 步** | 喺 APP STORE 加 `?app=<slug>` 深層連結，並把分享／QR 由 `app.url` 改指 APP STORE（[50 §4.4-6](50-app-store-whitelist-and-shutdown.md)） | **唔做呢步，一開閘分享連結就全部撞卡**（SG9-a） |
+| **第 0 步** | 喺 APP STORE 加 `?app=<slug>` 深層連結，並把分享／QR 由 `app.url` 改指 APP STORE（[50 §4.4-6](50-app-store-whitelist-and-shutdown.md)） | **唔做呢步，一開閘分享連結就全部撞卡**（SG9-a）。**唔需要問任何入口**——APP STORE 本來就係預設入口（SG17） |
 | **第 1 批** | A 組揀 3–5 個 | 驗證流程，風險最低 |
-| **第 2 批** | A 組其餘全部 | 批量複製 |
+| **第 2 批** | A 組其餘全部 | 批量複製。**同時間可選做**：圖書館改 L5662 一行（`noreferrer`），之後仍要逐隻 App 自己決定加唔加 `library` |
 | **第 3 批** | B 組（確認備份功能後） | 有儲存，要小心 |
 | **第 4 批** | C 組逐個判斷 | 有 `/api`，要睇後端 |
 | **永遠唔做** | D 組入口本體 | 會鎖死自己（SG8） |

@@ -11,7 +11,7 @@
 請先讀真理倉 `playerkousas-rgb/readme` 呢三份文件，然後照做：
 
 1. `templates/repo-starter/WHITELIST-HANDOFF.md`（交接清單，你要答嘅 6 條問題）
-2. `docs/50-app-store-whitelist-and-shutdown.md` 嘅 **§1 規則總表 SG1–SG16**、**§3.2**（本機儲存影響）、**§3.4**（新用戶直開網址／404／加入主畫面）
+2. `docs/50-app-store-whitelist-and-shutdown.md` 嘅 **§1 規則總表 SG1–SG17**、**§3.2**（本機儲存影響）、**§3.4**（新用戶直開網址／404／加入主畫面）
 3. `docs/51-whitelist-rollout-list.md`（我呢個 App 屬 A 組）
 
 ## 我要你做嘅事
@@ -45,7 +45,9 @@
   initStoreGate({
     appKey: '<APPKEY>',              // 用 repo 名細楷，例如 hm20c / icon-maker
     mode: 'entry-gate',
-    portalIds: ['appstore'],         // A 組第一批：只認 APP STORE
+    portalIds: ['appstore'],         // A 組第一批：只認 APP STORE（＝DEFAULT_PORTAL_IDS，唔使問任何人）
+                                     //   ⚠️ 唔好加 'library'（要等圖書館改好 noreferrer，SG17）
+                                     //   ⚠️ 唔好加 'member'／'district'（佢哋唔做 App 目錄，唔關你事）
     allowStandalone: true,           // 免費保險：已加主畫面嘅用家照用
     autoRedirectSeconds: 0           // 0 = 停低顯示提示卡，唔好秒彈走
   });
@@ -54,7 +56,9 @@
 
 **唔准做**：
 - ❌ 唔准自己寫死入口網址（一律用 `portalIds`，網址由真理倉 `PORTAL_REGISTRY` 統一）
-- ❌ 唔准把 `gemini` 放入 `portalIds`（佢屬 Canvas 派發線，管唔到閘，見 SG16）
+- ❌ 唔准把 `gemini` 放入 `portalIds`（佢屬 Canvas 派發線，管唔到閘，見 SG16；程式亦會自動剔除）
+- ❌ 唔准自行加 `library`／`member`／`district`（入口幾時入場由真理倉決定，見 SG17；你只寫 `['appstore']`）
+- ❌ 唔准改動 APP STORE／圖書館／任何入口 repo（你只改自己個 repo）
 - ❌ 唔准用 `iframe-only`（除非你肯定四類禁區全中）
 - ❌ 唔准改 `mode` 去 `closed`（要關站我會另外叫你做）
 - ❌ 唔准加任何後端驗票／簽票（我明確唔需要，見 SG12）

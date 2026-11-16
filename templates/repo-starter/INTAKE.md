@@ -52,7 +52,7 @@
    → 寫入 README 第一句同 SCOPE.md 兩條 bar；「唔做乜」去 docs/out-of-scope/。
 
 ❓ Q8 — 入口與白名單／關站模式（經官方入口任一進入）？
-   【AGENT 必須主動告知用戶本生態有 **4 個派發入口（outbound）＋1 個創作入口（inbound，GEMINI）**（真理倉 docs/50 §0.1 唯一登記：
+   【AGENT 必須主動告知用戶本生態有 **5 個正式派發入口，分兩條線：Vercel 派發線 1–4（outbound）＋Canvas 派發線 5（GEMINI）**（真理倉 docs/50 §0.1 唯一登記：
      1. APP STORE `https://scoutappstore.vercel.app`
      2. 圖書館 `https://scout-circulars.vercel.app`
      3. 成員系統 `https://member-portal-sigma-swart.vercel.app`
@@ -76,10 +76,11 @@
       - 【SG10】統計分工：**APP STORE 已有** `clicks／stars／hearts`（後台 Supabase 睇逐個 App 點擊／收藏／Like）＝主要答案；**圖書館現時唔統計**（主責通告＋Push，推廣 APP STORE 屬後期）；子 App 只喺想知「主畫面開啟」同「撞卡人數」時才加 `trackEndpoint`。
       - 【SG12】防「偷用」**唔係技術問題，係「表態」問題**（用戶定案）：領袖權限唔需要保、功能簡單嘅 App「佢抄得到都寫得到」。所以**唔准**建議為每個 App 起後端驗票／簽票基建；正解＝**`entry-gate` 令使用經入口** ＋ **`supportNudge` 邀一次 ❤️**。老實講清「原始碼擋唔到被抄走（`Ctrl+S`／`curl`）」，抄走代碼唔當損失，損失係「用你嘅成果但唔表態」。
       - 【SG13】`supportNudge` 文案要**講真話**：「書架位置有限：長期冇人收藏／Like 會收起，騰位俾新 App」。**預設 `skipPortalIds: ['appstore']`**——經 APP STORE 入嘅你後台已睇得到 `clicks/stars/hearts`，唔需要再提；只對「主畫面直開」「其他入口入」嘅人提一次。其餘：只在已放行時顯示、唔遮內容、有「唔使喇」、30 日一次、**嚴禁**迫 Like；`BOOK` 類建議關閉。
-      - 【SG14】書架政策要**公開前置寫明**、判定慢（`stars＋hearts` 連續 90 日 0 增幅→觀察，再 90 日仍 0→收起）、收起＝只 Delist 唔刪資料、**`BOOK` 類同自家系統豁免**；並提醒「Like 數 ≠ 使用人數」，收起前要出一次通告。
+      - 【SG14】書架政策要**公開前置寫明**、**唔准寫任何固定日數／數字門檻**（幾時收起由用戶睇後台自行判斷，AGENT 唔准代定）、收起＝只 Delist 唔刪資料（代碼／網址／用戶資料保留、隨時復活）、**`BOOK` 類同自家系統豁免**；並提醒「Like 數 ≠ 使用人數」。
       - 【SG11】要主動講清「收起 ≠ 用不到」：APP STORE 撳「隱藏」只係前端過濾（API 照回傳、App 網址照開得）。真正令人用唔到要按四級齒輪：Delist（隱藏）→ Gate（`entry-gate`）→ Soft close（`closed`）→ Hard close（Vercel Pause）。有本機儲存嘅 App（如 `BOOK`）只可以 Delist，**唔可以同時拆走入口**，落關站前先叫用戶匯出 JSON／QR 備份（SG11-a）。含個人資料／收費嘅 App **唔可以**靠「隱藏」做保護（SG11-b）。
       - 【SG10-a】如果該 App 會收 Push（例如圖書館），**必須維持 `open`**：唔可以 `iframe`、唔可以 `closed`、唔可以改 manifest `start_url`，否則已訂閱用戶收唔到通告。
       - 【SG8】四大入口自己永不被閘（`selfOrigin` 在 `portalIds` 內自動放行 `self-portal`）；直開網址**預設唔自動跳**（`autoRedirectSeconds: 0`），要自動就 3–5 秒並顯示目的地，或用 `autoRedirectPortalId` 指定。
+      - 【SG17】**唔使逐個入口「打招呼」**（用戶 2026-11-15 定案）：`portalIds` 預設值就係 `DEFAULT_PORTAL_IDS` ＝ `['appstore']`。`appstore`＝`always`（分享／QR 只由佢產生 → 每隻子 App 都寫，唔使問）；`library`＝`conditional`（要**先**改 `scout-circulars/index.html` L5662 一個 `noreferrer`，未改唔好加、加咗只會撞卡；**Push／統計／通告流程一律唔准動**）；`member`／`district`＝`optional`（實查兩邊唔做 App 目錄，只連入口＋自家系統 → 預設唔加；例外＝4 本 `BOOK`，但 BOOK 管制宜寬鬆，加咗冇壞、唔加亦足夠）；`gemini`＝`never`（放入 `portalIds` 都會被程式剔除）。要一次過開 1–4 就寫 `portalIdsAdmit: 'all'`（永遠唔會誤包 Gemini）。
       - 【SG7】要主動講清「加入主畫面」正確流程：**先由入口進入 → 再按瀏覽器選單加入主畫面**。直開網址唔會 404（會出白名單卡），但在入口母站裝／在 iframe 內裝只會裝到母站；真 404 沒有 manifest 裝唔到；已退役 app 嘅舊 icon 撳落去只會白屏。
       - 只有純無狀態計算機／圖卡／簡報，且確認母站已起 iframe 殼後，先可揀 `iframe-only`。
    → 見真理倉 [docs/50](https://github.com/playerkousas-rgb/readme/blob/main/docs/50-app-store-whitelist-and-shutdown.md)（SG1–SG15）。

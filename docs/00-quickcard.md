@@ -82,7 +82,9 @@ SG：關站／經四大官方入口白名單進入（按需啟用 → docs/50 §
           BOOK 類只可 Delist（保留入口＋allowStandalone），落關站前叫用戶匯出備份
     SG12：防偷用唔係技術問題，係表態問題 → entry-gate（經入口）＋ supportNudge（邀一次❤️），唔起後端驗票
     SG13：supportNudge 文案＝「書架位有限，長期冇人收藏/Like 會收起」；預設 skip appstore（你已睇得到 clicks）
-    SG14：書架政策要公開＋慢＋可逆（90日觀察 + 90日→只 Delist）；BOOK／自家系統豁免
+    SG14：書架政策要公開＋可逆＋唔刪資料；唔准寫死日數／門檻（睇後台自行判斷）；BOOK／自家系統豁免
+    SG17：唔使逐個入口「打招呼」！APP STORE＝永遠預設（分享／QR 由佢出）、圖書館＝改 L5662 noreferrer 後才加、
+          成員／區管理＝唔做 App 目錄（唔使理），GEMINI＝永遠唔會（放入 portalIds 都被剔除）
 ```
 詳情：[PLAYBOOK §7.5–§7.7](../PLAYBOOK.md) · [44 雙語介面](44-bilingual-ui.md) · [50 白名單與關站](50-app-store-whitelist-and-shutdown.md)
 

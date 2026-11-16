@@ -1,5 +1,5 @@
 /**
- * store_gate_v1.0.js — 關站與指定入口（SCOUT APP STORE／通告圖書館）白名單閘門（SG1–SG6 / docs/50-app-store-whitelist-and-shutdown.md）
+ * store_gate_v1.0.js — 關站與指定入口（SCOUT APP STORE／通告圖書館）白名單閘門（SG1–SG6、SG17 / docs/50-app-store-whitelist-and-shutdown.md）
  * © SCOUT SYSTEM · COPYRIGHT SCOUT SYSTEM
  *
  * 用法（放喺 index.html 嘅 <head> 最頂，零依賴；支援單一或多個指定入口）：
@@ -26,6 +26,14 @@
  *   4. district  4. 區管理系統     https://scout-district-portal.vercel.app/（playerkousas-rgb/scout-district-portal）
  *   ⚠️ 註冊表只係「邊個入口有資格放行」，唔等於全部入口都改好：library／member／district 現時連結帶
  *      rel="noopener noreferrer"（會清空 Referer），要先改 rel="noopener" 先放行得到（docs/50 §4.4）。
+ *
+ * SG17（2026-11-15 用戶定案「唔使先逐個入口講」）—— 每個入口登記埋「幾時納入 portalIds」：
+ *   admit: 'always'      → DEFAULT_PORTAL_IDS（appstore：分享／QR 都由佢產生，所以一定係入口）
+ *   admit: 'conditional' → CONDITIONAL_PORTAL_IDS（library：要先改好 noreferrer 先生效）
+ *   admit: 'optional'    → OPTIONAL_PORTAL_IDS（member／district：唔做 App 目錄，逐個 App 決定）
+ *   admit: 'never'       → NEVER_ADMIT_PORTAL_IDS（gemini：Canvas 派發線，管唔到閘，放入嚟都冇用）
+ *   所以新子 App 最省事嘅寫法係 portalIds: DEFAULT_PORTAL_IDS（＝只認 APP STORE）；
+ *   要「1–4 全開」就寫 { portalIdsAdmit: 'all' }（唔會誤包 Gemini）。
  *
  * 四種模式：
  *   - 'open'        ：公開直連（預設，唔攔截）
@@ -58,6 +66,7 @@ const PORTAL_REGISTRY = Object.freeze({
   appstore: Object.freeze({
     id: 'appstore',
     kind: 'outbound', // 派發方向：由呢個門口撳出去開子 App（有 Referer，可做 entry-gate）
+    admit: 'always', // SG17：預設就要納入 portalIds（分享／QR 都由佢產生）
     role: 'main', // 1. 真正主站（全方位）：唯一應該帶分享連結／QR 嘅入口
     order: 1,
     labelZh: '1. 前往 APP STORE',
@@ -70,6 +79,7 @@ const PORTAL_REGISTRY = Object.freeze({
   library: Object.freeze({
     id: 'library',
     kind: 'outbound', // 派發方向：由呢個門口撳出去開子 App（有 Referer，可做 entry-gate）
+    admit: 'conditional', // SG17：要先喺圖書館改 L5662 `noreferrer`，未改之前放佢入 portalIds 只會撞卡
     role: 'feed', // 2. 每天更新通告嘅引流入口：新 APP 即時可入
     order: 2,
     labelZh: '2. 前往圖書館',
@@ -82,6 +92,7 @@ const PORTAL_REGISTRY = Object.freeze({
   member: Object.freeze({
     id: 'member',
     kind: 'outbound', // 派發方向：由呢個門口撳出去開子 App（有 Referer，可做 entry-gate）
+    admit: 'optional', // SG17：成員系統唔做 App 目錄，只連 APP STORE／圖書館＋4 本 BOOK → 逐個 App 決定
     role: 'internal', // 3. 自家出產副系統（成員系統）
     order: 3,
     labelZh: '3. 前往成員系統',
@@ -100,6 +111,7 @@ const PORTAL_REGISTRY = Object.freeze({
     id: 'gemini',
     kind: 'canvas', // Canvas 類派發入口：可派發，但唔可被閘、唔做放行來源
     gateable: false, // 我哋管唔到 Google 網域嘅 header／frame
+    admit: 'never', // SG17：唔係「唔使問」，係「問都冇用」——放入 portalIds 永遠唔會成為放行來源
     stats: 'gemini-side', // 統計喺 Gemini 自己嗰邊（用戶：那邊我也有完善的統計）
     role: 'canvas',
     order: 5,
@@ -113,6 +125,7 @@ const PORTAL_REGISTRY = Object.freeze({
   district: Object.freeze({
     id: 'district',
     kind: 'outbound', // 派發方向：由呢個門口撳出去開子 App（有 Referer，可做 entry-gate）
+    admit: 'optional', // SG17：區管理系統（卡片／/embed）只連自家系統 → 逐個 App 決定
     role: 'internal', // 4. 自家出產副系統（區管理系統）
     order: 4,
     labelZh: '4. 前往區管理系統',
@@ -139,6 +152,47 @@ const CANVAS_PORTAL_IDS = Object.freeze(
 
 /** @deprecated 舊名，等於 CANVAS_PORTAL_IDS */
 const INBOUND_PORTAL_IDS = CANVAS_PORTAL_IDS;
+
+/**
+ * SG17：`portalIds` 預設值 = 一定要納入嘅入口。
+ * 只有 APP STORE（`admit: 'always'`）—— 因為分享連結／QR code 只由佢產生（SG9），
+ * 佢一定係每一隻子 App 嘅入口；圖書館要改完 `noreferrer` 先生效（`conditional`），
+ * 成員／區管理系統唔做 App 目錄（`optional`），Gemini 管唔到閘（`never`）。
+ * 所以「五個入口係唔係要先逐個講」＝**唔使**：子 App 一律寫 `portalIds: DEFAULT_PORTAL_IDS` 就係
+ * 「經 APP STORE 入」，之後任何一個入口要加入，都只係本 repo 改一行 + 該 App 加一個 id。
+ */
+const DEFAULT_PORTAL_IDS = Object.freeze(
+  Object.keys(PORTAL_REGISTRY).filter((k) => PORTAL_REGISTRY[k].admit === 'always'),
+);
+
+/** 要先行動／先確認之後才可加入 `portalIds` 嘅入口（SG17）：library → 改 `noreferrer` */
+const CONDITIONAL_PORTAL_IDS = Object.freeze(
+  Object.keys(PORTAL_REGISTRY).filter((k) => PORTAL_REGISTRY[k].admit === 'conditional'),
+);
+
+/** 逐個 App 自行決定要唔要加嘅入口（SG17）：member／district（自家副系統，唔做 App 目錄） */
+const OPTIONAL_PORTAL_IDS = Object.freeze(
+  Object.keys(PORTAL_REGISTRY).filter((k) => PORTAL_REGISTRY[k].admit === 'optional'),
+);
+
+/** 永遠唔可以放入 `portalIds` 做放行來源（SG17）：gemini */
+const NEVER_ADMIT_PORTAL_IDS = Object.freeze(
+  Object.keys(PORTAL_REGISTRY).filter((k) => PORTAL_REGISTRY[k].admit === 'never'),
+);
+
+/**
+ * SG17：`portalIds` 缺漏時嘅安全預設值。
+ * 唔傳 `portalIds` 但傳咗 `portalIdsAdmit`（例如 `'all'`）→ 自動展開成真正可以管閘嘅入口；
+ * 咩都唔傳 → 只認 APP STORE（永遠唔會靜靜地連 Gemini 都當入口）。
+ */
+function resolvePortalIds(portalIds, admit) {
+  if (Array.isArray(portalIds) && portalIds.length > 0) return portalIds;
+  if (admit === 'all' || admit === 'every') {
+    return [...OUTBOUND_PORTAL_IDS];
+  }
+  if (Array.isArray(admit) && admit.length > 0) return admit;
+  return [...DEFAULT_PORTAL_IDS];
+}
 
 /** 由 registry id 取入口資料；唔識嘅 id 回 null（由呼叫方 fail-safe 過濾） */
 function getPortal(id, overrides = {}) {
@@ -254,6 +308,12 @@ function normalizePortals(options = {}) {
   }
   if (Array.isArray(options.portalIds) && options.portalIds.length > 0) {
     pushAll(portalsFromIds(options.portalIds).map(toEntry).filter(Boolean));
+  } else if (options.portalIdsAdmit) {
+    // SG17：冇寫死 portalIds 時，可以用 portalIdsAdmit 一次過揀：
+    //   'all' → OUTBOUND_PORTAL_IDS（1–4，Gemini 永遠唔會入圍）
+    //   陣列 → 逐個指名
+    //   唔傳 → DEFAULT_PORTAL_IDS（只有 APP STORE）
+    pushAll(portalsFromIds(resolvePortalIds(options.portalIds, options.portalIdsAdmit)).map(toEntry).filter(Boolean));
   }
   if (merged.length > 0) return merged;
   const fallbackUrl = parseAllowedOrigin(options.storeUrl || DEFAULT_STORE_URL, allowLocalhost)
@@ -684,6 +744,11 @@ if (typeof globalThis !== 'undefined') {
     OUTBOUND_PORTAL_IDS,
     CANVAS_PORTAL_IDS,
     INBOUND_PORTAL_IDS,
+    DEFAULT_PORTAL_IDS,
+    CONDITIONAL_PORTAL_IDS,
+    OPTIONAL_PORTAL_IDS,
+    NEVER_ADMIT_PORTAL_IDS,
+    resolvePortalIds,
     getPortal,
     portalsFromIds,
     buildTrackPayload,
@@ -709,6 +774,11 @@ if (typeof module !== 'undefined' && module.exports) {
     OUTBOUND_PORTAL_IDS,
     CANVAS_PORTAL_IDS,
     INBOUND_PORTAL_IDS,
+    DEFAULT_PORTAL_IDS,
+    CONDITIONAL_PORTAL_IDS,
+    OPTIONAL_PORTAL_IDS,
+    NEVER_ADMIT_PORTAL_IDS,
+    resolvePortalIds,
     getPortal,
     portalsFromIds,
     buildTrackPayload,

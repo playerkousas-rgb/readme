@@ -108,7 +108,7 @@
 | 用 Git / PR / branch | [docs/05-git.md](docs/05-git.md) |
 | 部署去 Vercel | [docs/06-vercel.md](docs/06-vercel.md) |
 | **邊啲 App 現在就可以加白名單？（全 repo 掃描清單）** | **[docs/51-whitelist-rollout-list.md](docs/51-whitelist-rollout-list.md)** — 由 GitHub API 逐個 repo 掃 `/api`／`manifest`／SW／本機儲存痕跡，分 A（35 個即做）／B（6 個要 `allowStandalone`）／C（24 個有後端，最後做）／D（4 個入口本體，唔可以加）＋ 建議執行次序 |
-| **暫時關站／設只准經四大官方入口白名單進入、唔適合白名單點算** | **[docs/50-app-store-whitelist-and-shutdown.md](docs/50-app-store-whitelist-and-shutdown.md)** — SG1–SG6 ＋ §0.1 **官方四大準入入口註冊表**（1. APP STORE `scoutappstore`｜2. 圖書館 `scout-circulars`｜3. 成員系統 `member-portal-sigma-swart`｜4. 區管理系統 `scout-district-portal`，程式碼對應 `PORTAL_REGISTRY`／`portalIds`）：開新 APP 主動告知、五類 `iframe` 禁區轉行頂層跳板 `entry-gate`、`BOOK` 本機儲存與主畫面 PWA 影響、Pause vs 軟關站（2026-11-15 定案） |
+| **暫時關站／設只准經四大官方入口白名單進入、唔適合白名單點算** | **[docs/50-app-store-whitelist-and-shutdown.md](docs/50-app-store-whitelist-and-shutdown.md)** — SG1–SG17 ＋ §0.1 **官方四大準入入口註冊表**（1. APP STORE `scoutappstore`｜2. 圖書館 `scout-circulars`｜3. 成員系統 `member-portal-sigma-swart`｜4. 區管理系統 `scout-district-portal`，程式碼對應 `PORTAL_REGISTRY`／`portalIds`）：開新 APP 主動告知、五類 `iframe` 禁區轉行頂層跳板 `entry-gate`、`BOOK` 本機儲存與主畫面 PWA 影響、Pause vs 軟關站（2026-11-15 定案） |
 | 寫 Google Apps Script（Sheet 當 DB） | [docs/07-apps-script.md](docs/07-apps-script.md) |
 | 用 Supabase（Postgres / Auth / Storage / Push） | [docs/08-supabase.md](docs/08-supabase.md) |
 | 抄嘢（config / SQL / workflow / Canvas 骨架 / 水印） | [templates/](templates/README.md) |
