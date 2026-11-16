@@ -218,7 +218,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 
 ---
 
-## 7.7 關站與準入白名單入口 SG1–SG13（**按需啟用**，詳情 [docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+## 7.7 關站與準入白名單入口 SG1–SG14（**按需啟用**，詳情 [docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
 
 > **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經 APP STORE（repo `website`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
 > **2026-11-15 用戶第二次定案（四大官方入口）**：準入白名單入口一共 **4 個**，登記於真理倉 [docs/50 §0.1](docs/50-app-store-whitelist-and-shutdown.md) ＋ 程式碼嘅 `PORTAL_REGISTRY`。子 App 一律用 `portalIds` 引用，唔准自己另抄一堆網址。
@@ -253,7 +253,8 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | **SG11-a** | `BOOK` 類下架要先保入口＋備份 | 有真實紀錄（成員進度／考章）→ 只可以 Delist，**唔可以同時拆走入口**；必須 `allowStandalone: true`；落 ③④ 前先出通告叫用戶匯出 JSON／QR |
 | **SG11-b** | 敏感 App 唔可以靠「隱藏」做保護 | `visible=false` 唔係安全邊界（API 照回傳）→ 要 `entry-gate` ＋ §4.3 簽票 ＋ 後端 `VL1 /api/proxy` 驗 session；要全停就 Vercel Pause |## 8. 技術棧契約（快表）
 | **SG12** | 防偷用唔係技術問題，係「表態」問題 | 用戶定案：領袖權限**不用保**（有空改功能變數即可）；功能簡單嘅 App「佢抄得到都寫得到」。→ **唔准**過度工程（唔需要為每個 App 起後端驗票）；真正要做＝**經入口 `entry-gate`** ＋ **一次輕量支持邀請 `supportNudge`**；抄走代碼唔當損失，損失係「用你嘅成果但唔表態」 |
-| **SG13** | 支持提示係「邀請」唔係「收費閘」 | 只在**已放行**時顯示；`role="complementary"`（唔係 `dialog`，唔遮內容唔阻擋）；一定有「唔使喇」；每 30 日最多一次；Safari 私隱封 storage 要靜默；**嚴禁**倒數／延時／遮罩迫 Like；`BOOK` 類建議**關閉** |
+| **SG13** | 支持提示要講真話，只對「睇唔到嘅人」講 | 文案用「**書架位置有限：長期冇人收藏／Like 會收起，騰位俾新 App**」（唔用客氣話）。**預設 `skipPortalIds: ['appstore']`**：經 APP STORE 入嘅你已睇得到 `clicks`／`stars`／`hearts`，唔提；只對「主畫面直開」同「其他入口入」嘅人提。其餘：只在已放行時顯示、`role="complementary"`、有「唔使喇」、30 日一次、Safari 封 storage 靜默、**嚴禁**迫 Like |
+| **SG14** | 書架政策要公開、要慢、要可逆 | 公開前置寫明；判定以 `stars＋hearts` 為主、`clicks` 參考；**90 日 0 增幅→觀察，再 90 日仍 0→收起**；收起＝只 Delist（唔刪代碼／網址／資料）；**豁免 `BOOK` 類同自家系統**；Like 數 ≠ 使用人數，收起前要出通告並保留恢復機制 |
 | 棧 | 必做 ID | 詳細 |
 |----|---------|------|
 | **Git** | G1–G10：main 保護、feature branch → PR、Conventional Commits、tag、lockfile、Actions pin SHA、CODEOWNERS、secret scanning、唔 commit binary、docs 跟版本 | [docs/05-git.md](docs/05-git.md) |
@@ -325,7 +326,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 - [ ] W1 版權標示 + W2 水印（如出圖）+ W6 交付檔無真 key
 - [ ] V1 檔名＋內文版號一致 + V4 部署拷貝已 sync（Type C）
 - [ ] L1–L6：雙閘達標嘅 app 有英文 + 右上角切換掣（`i18n_check` 無 FAIL + 人手撳實測）；唔做有寫 `EXCEPTION: L1`（[docs/44](docs/44-bilingual-ui.md)）
-- [ ] SG1–SG13（圖書館維持 `open`；下架按四齒輪逐級落；專業工具用 `entry-gate`＋`supportNudge`，唔做後端驗票；`BOOK` 類關閉支持提示）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`；「加入主畫面」引導係「先入口、後安裝」；分享／QR 只由 APP STORE 產生、下架按「Delist→Gate→Soft→Hard」逐級落、`BOOK` 類落 ③④ 前已通知用戶備份（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+- [ ] SG1–SG14（圖書館維持 `open`；下架按四齒輪逐級落；`supportNudge` 文案已寫明書架政策、預設 skip appstore；書架政策已公開、`BOOK`／自家系統豁免）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`；「加入主畫面」引導係「先入口、後安裝」；分享／QR 只由 APP STORE 產生、下架按「Delist→Gate→Soft→Hard」逐級落、`BOOK` 類落 ③④ 前已通知用戶備份（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
 - [ ] README 寫作紀律（[docs/47](docs/47-readme-discipline.md)）：每句「已修」有檢查或實測、每句「未做」寫限制、冇「理論上應該 work」字樣
 - [ ] `docs/` 同 `PLAYBOOK.md` 已更新（規則改動時）
 - [ ] PR 描述寫明：身份錨點有冇改、registry 有冇加、key 有冇 rotate

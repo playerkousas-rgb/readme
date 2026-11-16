@@ -308,7 +308,7 @@ test('SG10：逐入口到訪統計 opt-in，預設零請求；payload 唔含任�
 });
 
 test('SG13：支持提示非阻塞、可關、每 N 日最多一次；唔會遮住內容亦唔會阻擋操作', () => {
-  const cfg = { url: 'https://scoutappstore.vercel.app/?app=hm20c', days: 30 };
+  const cfg = { url: 'https://scoutappstore.vercel.app/?app=hm20c', days: 30, skipPortalIds: [] };
 
   // 1) 放行時顯示，只係 complement（唔係 dialog、唔會遮內容）
   const ok = makeMockEnv({ referrer: 'https://scoutappstore.vercel.app/' });
@@ -331,13 +331,13 @@ test('SG13：支持提示非阻塞、可關、每 N 日最多一次；唔會遮�
   assert.ok(ok.store.get('hm20c.support_nudge_at'), '要記錄已提示時間');
   const again = makeMockEnv({ referrer: 'https://scoutappstore.vercel.app/' });
   again.store.set('hm20c.support_nudge_at', String(Date.now() - 86400000)); // 1 日前
-  gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', supportNudge: cfg }, again.win);
+  gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', portalIds: ['appstore'], supportNudge: cfg }, again.win);
   assert.equal(again.doc.getElementById('scoutSupportNudge'), null, '30 日內唔應該再騷擾');
 
   // 4) 超過 N 日 → 再出一次
   const later = makeMockEnv({ referrer: 'https://scoutappstore.vercel.app/' });
   later.store.set('hm20c.support_nudge_at', String(Date.now() - 31 * 86400000));
-  gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', supportNudge: cfg }, later.win);
+  gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', portalIds: ['appstore'], supportNudge: cfg }, later.win);
   assert.ok(later.doc.getElementById('scoutSupportNudge'), '超過 30 日可以再提一次');
 
   // 5) 被攔截（未經入口）唔應該出支持提示（先講清楚點入嚟）
@@ -347,13 +347,42 @@ test('SG13：支持提示非阻塞、可關、每 N 日最多一次；唔會遮�
 
   // 6) 冇設 supportNudge = 完全冇提示（預設行為不變）
   const none = makeMockEnv({ referrer: 'https://scoutappstore.vercel.app/' });
-  gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate' }, none.win);
+  gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', portalIds: ['appstore'] }, none.win);
   assert.equal(none.doc.getElementById('scoutSupportNudge'), null);
 
   // 7) 儲存被封（Safari 私隱）都唔可以 throw
   const blocked2 = makeMockEnv({ referrer: 'https://scoutappstore.vercel.app/', storageThrows: true });
-  const r = gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', supportNudge: cfg }, blocked2.win);
+  const r = gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', portalIds: ['appstore'], supportNudge: cfg }, blocked2.win);
   assert.equal(r.allowed, true, '儲存壞咗都要照開');
+});
+
+test('SG13：經 APP STORE 正常入嘅已經睇得到 clicks，預設唔再出支持提示（skipPortalIds: [\'appstore\']）', () => {
+  const cfg = { url: 'https://scoutappstore.vercel.app/?app=hm20c', days: 30 };
+
+  // 1) 由 APP STORE 入（正常路徑）→ 唔提，因為 clicks 已經計咗
+  const viaStore = makeMockEnv({ referrer: 'https://scoutappstore.vercel.app/' });
+  gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', portalIds: ['appstore'], supportNudge: cfg }, viaStore.win);
+  assert.equal(viaStore.doc.getElementById('scoutSupportNudge'), null, '經 APP STORE 入唔應該再提');
+
+  // 2) 由其他入口入（例如成員系統／圖書館）→ 提一次
+  const viaOther = makeMockEnv({ referrer: 'https://member-portal-sigma-swart.vercel.app/' });
+  gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', portalIds: ['appstore', 'member'], supportNudge: cfg }, viaOther.win);
+  assert.ok(viaOther.doc.getElementById('scoutSupportNudge'), '由非主站入口入要提一次');
+
+  // 3) 由主畫面 PWA 直開（無入口身份）→ 都要提（clicks 計唔到佢）
+  const viaPwa = makeMockEnv({ referrer: '', standalone: true });
+  gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', portalIds: ['appstore'], supportNudge: cfg }, viaPwa.win);
+  assert.ok(viaPwa.doc.getElementById('scoutSupportNudge'), '主畫面直開要提');
+
+  // 4) 自訂 skipPortalIds（例如連 member 都唔提）
+  const skipMore = makeMockEnv({ referrer: 'https://member-portal-sigma-swart.vercel.app/' });
+  gate.initStoreGate({
+    appKey: 'hm20c',
+    mode: 'entry-gate',
+    portalIds: ['appstore', 'member'],
+    supportNudge: { url: cfg.url, days: 30, skipPortalIds: ['appstore', 'member'] },
+  }, skipMore.win);
+  assert.equal(skipMore.doc.getElementById('scoutSupportNudge'), null, '自訂 skipPortalIds 要生效');
 });
 
 test('SG8：入口網站自己永遠唔會被閘（portalIds 含自身 origin 時 fail-closed 攔截，防自我鎖死）', () => {
@@ -602,7 +631,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   const dix = read('docs', 'README.md');
   const wf = read('.github', 'workflows', 'guard.yml');
 
-  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7', 'SG8', 'SG9', 'SG10', 'SG11', 'SG12', 'SG13']) {
+  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7', 'SG8', 'SG9', 'SG10', 'SG11', 'SG12', 'SG13', 'SG14']) {
     assert.ok(pb.includes(id) && doc.includes(id), `PLAYBOOK / docs/50 缺 ${id}`);
   }
   assert.ok(intake.includes('Q8') && intake.includes('entry-gate'), 'INTAKE 第 0 步要有 Q8 主動告知白名單與 entry-gate');
@@ -623,7 +652,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   }
   assert.ok(doc.includes('PORTAL_REGISTRY') && doc.includes('portalIds'), 'docs/50 要寫明 PORTAL_REGISTRY／portalIds 用法');
   // SG7：直開網址／404／加入主畫面 嘅情境表要喺 docs/50 §3.4 有紀錄
-  for (const kw of ['3.4', '404', '加入主畫面', '白名單真實代價', '3.6', 'push_subscriptions', '3.7', 'Delist', 'visible=false', '3.8', 'drawtheroute', 'LEADER_PASSWORD', 'supportNudge', 'SG13']) {
+  for (const kw of ['3.4', '404', '加入主畫面', '白名單真實代價', '3.6', 'push_subscriptions', '3.7', 'Delist', 'visible=false', '3.8', 'drawtheroute', 'LEADER_PASSWORD', 'supportNudge', 'SG13', 'SG14', '書架位置有限', 'skipPortalIds']) {
     assert.ok(doc.includes(kw), `docs/50 §3.4 要覆蓋「${kw}」`);
   }
   assert.ok(intake.includes('SG7'), 'INTAKE Q8 要提 SG7 加入主畫面流程');

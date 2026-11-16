@@ -147,8 +147,8 @@ const COPY = {
     countdownSuffix: ' 秒後自動前往主站…',
     installHint: '想「加入主畫面」用 App 模式開啟？請先由上述入口進入本程式，再用瀏覽器選單「加入主畫面」（直接開網址安裝會得到打不開的圖示）。',
     autoRedirectHint: '唔想等？直接撳上面任何一個入口掣。',
-    supportText: '多謝你使用。如果覺得有用，去 APP STORE 按❤️收藏／Like 支持下，我下次就知要唔要繼續更新。',
-    supportCta: '去支持下',
+    supportText: '書架位置有限：長期冇人收藏／Like 嘅 App 會收起，騰返個位俾新 App。覺得有用就按一下❤️，一個就夠。',
+    supportCta: '按❤️支持',
     supportDismiss: '唔使喇',
   },
   en: {
@@ -488,9 +488,9 @@ function initStoreGate(options = {}, win = typeof window !== 'undefined' ? windo
     }
     reportGateDecision(win, decision, options);
     if (options.supportNudge && typeof doc !== 'undefined' && doc && doc.body) {
-      renderSupportNudge(doc, win, options);
+      renderSupportNudge(doc, win, options, decision);
     } else if (options.supportNudge && typeof doc !== 'undefined' && doc && typeof doc.addEventListener === 'function') {
-      doc.addEventListener('DOMContentLoaded', () => renderSupportNudge(doc, win, options), { once: true });
+      doc.addEventListener('DOMContentLoaded', () => renderSupportNudge(doc, win, options, decision), { once: true });
     }
     return decision;
   }
@@ -522,9 +522,13 @@ function writeLocal(win, key, value) {
   }
 }
 
-function renderSupportNudge(doc, win, options = {}) {
+function renderSupportNudge(doc, win, options = {}, decision = {}) {
   const cfg = options.supportNudge;
   if (!cfg || !cfg.url || !doc || !doc.body) return null;
+  // 用戶邏輯：經 APP STORE（main）正常入嘅，clicks 已經睇得到，唔需要再提佢。
+  // 預設 skipPortalIds: ['appstore']，可用 skipPortalIds: [] 關閉呢個行為。
+  const skip = Array.isArray(cfg.skipPortalIds) ? cfg.skipPortalIds : ['appstore'];
+  if (decision && decision.matchedPortalId && skip.includes(decision.matchedPortalId)) return null;
   const key = `${String(options.appKey || 'scoutapp')}.support_nudge_at`;
   const days = Number(cfg.days) > 0 ? Number(cfg.days) : 30;
   const last = Number(readLocal(win, key) || 0);
