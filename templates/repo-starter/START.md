@@ -40,7 +40,7 @@ node scripts/preflight_v1.0.mjs . --json
 
 | | 會 | 唔會（要人手／AGENT 自己寫） |
 |---|---|---|
-| **問需求（第 0 步）** | AGENT 跟 [`INTAKE.md`](INTAKE.md) **主動問用戶** 7 條（形式／UI／身份／後台／Gemini／授權／定位），一輪問晒 + 每條建議答案 + **用戶確認先郁手**；答案寫入 `SCOPE.md` | ❌ 唔會自己估、唔會代用戶揀授權；**fact 自己查**（形式名／模板檔／P1），唔好問用戶 |
+| **問需求（第 0 步）** | AGENT 跟 [`INTAKE.md`](INTAKE.md) **主動問用戶** 8 條（形式／UI／身份／後台／Gemini／授權／定位／`website` 白名單入口），一輪問晒 + 每條建議答案 + **用戶確認先郁手**；答案寫入 `SCOPE.md` | ❌ 唔會自己估、唔會代用戶揀授權；**fact 自己查**（形式名／模板檔／P1），唔好問用戶 |
 | **開局** | AGENT 讀 [`AGENTS.md`](AGENTS.md) → 第 0 步 PREFLIGHT 8 個 check 全過 → 第 1 步讀 `repo-setup` 跟住做 12 樣 + 按形式揀 13／14 項 | ❌ 唔會「一 `git init` 就自動彈個 skill 出嚟」；無 Skill tool／plugin harness，要 AGENT 主動讀 |
 | **版面靚 D** | 有 UI 時 `repo-setup` 明確叫 `design-review`：house rules、inventory 8–12、claim+proof、6 條 critique、40/30/20/10 rubric、`ROUND n` 格式、最多 3 輪 look-and-fix | ❌ 唔會自動出圖／截图／計分：無瀏覽器、無 Chrome inspector、無 247 站 library。望圖 390/768/1440 要人手，冇就要寫「做唔到」（[PREFLIGHT 未核實](PREFLIGHT.md)） |
 | **設計流程** | 兩份 `SKILL.md` 寫低 What／When／開局步驟／It's working if；`docs/design-review.md` 係長文 rubric；交付前兩軸 review（Standards／Spec 分開） | ❌ 唔會自動產生 review 報告、`ROUND n` critique、ADR；要 AGENT 自己寫低 |

@@ -7,7 +7,12 @@
 | 想要 | 抄 | 去邊 |
 |------|-----|------|
 | Git ignore | `git/gitignore` | 新 repo `.gitignore`（**記得改返個點**） |
-| Vercel 設定 | `vercel/vercel.json` | repo 根 `vercel.json`（已含 `/icons/*` immutable 標頭，**G11**） |
+| Vercel 設定 | `vercel/vercel.json` | repo 根 `vercel.json`（預設 `open` 直連；已含 `/icons/*` immutable 標頭，**G11**） |
+| **🔒 Vercel 純 iframe 白名單設定（SG4）** | [`vercel/vercel.iframe-whitelist.json`](vercel/vercel.iframe-whitelist.json) | 只限適合 `<iframe>` 嘅無狀態小工具（且四大入口已有 `<iframe>` 殼）：設 `CSP frame-ancestors`（四個派發入口以空格分隔（Gemini 屬創作方向，唔列入 `frame-ancestors`））、移走 `SAMEORIGIN`、`302` 防永久快取（[docs/50 §0.1](../docs/50-app-store-whitelist-and-shutdown.md)） |
+| **📨 A 組直接可用指令（複製即貼）** | [`repo-starter/A-GROUP-INSTRUCTION.md`](repo-starter/A-GROUP-INSTRUCTION.md) | 逐個 A 組 App 開對話時直接複製嘅完整訊息：答 6 條 → 抄閘門檔 → `<head>` 掛入 → 真機三項 → 固定回報格式（[docs/51](../docs/51-whitelist-rollout-list.md) A 組） |
+| **🏪 APP STORE 第 0 步指令（複製即貼）** | [`repo-starter/APP-STORE-INSTRUCTION.md`](repo-starter/APP-STORE-INSTRUCTION.md) | 貼去 `playerkousas-rgb/website` 對話：加 `?app=<slug>` 深層連結 ＋ 11 個分享／QR／卡片位置逐個列明（實查 `041f0742` 行號）、唔准做清單、真機 6 項、回報格式。**呢步唔做就唔好開任何子站閘**（SG9-a） |
+| **📋 逐個 App 白名單交接清單** | [`repo-starter/WHITELIST-HANDOFF.md`](repo-starter/WHITELIST-HANDOFF.md) | 可直接貼去該 App 嘅對話：6 條問題（本機資料／PWA／Push／後端 API／今日入口／類型）→ 按類型落實 `mode`／`portalIds`／`allowStandalone`／`supportNudge` → 真機三項驗收（[docs/50 §3.8-D](../docs/50-app-store-whitelist-and-shutdown.md)） |
+| **🚪 白名單／關站前端閘門（SG3/SG5/SG6）** | [`vercel/store_gate_v1.0.js`](vercel/store_gate_v1.0.js) | 開 APP 時清晰告知用戶有白名單或暫時關站；內置 `PORTAL_REGISTRY` **五個入口**（1 APP STORE／2 圖書館／3 成員系統／4 區管理系統／5 **GEMINI＝用戶自己 private repo 部署嘅 Vercel app**，五個全部可放行），用 `portalIds` 引用；每個入口有 `admit` 分級（`always`／`conditional`／`optional`／`never`，**SG17**）→ 新 App 寫 `portalIds: DEFAULT_PORTAL_IDS` 即只認 APP STORE，唔使逐個入口問；，支援頂層跳板 `entry-gate`（專治唔適合 `<iframe>` 嘅 App，放行 `standalone` PWA）、`iframe-only`、`closed` |
 | Vercel 上傳黑名單 | `vercel/vercelignore` | repo 根 `.vercelignore` |
 | 極簡 package | `vercel/package.json` | repo 根 `package.json` |
 | **🖼️ 站台圖標規範** | [README §9 G11](../README.md#9-g11-全站圖標標準iconfavicon) | 9 個 PNG／ICO + `<head>` 5 link ＋ 4 meta |
@@ -30,7 +35,7 @@
 | **📇 SKILL 唯一目錄（CATALOG）** | [`repo-starter/skills/CATALOG.md`](repo-starter/skills/CATALOG.md) | **以後加 SKILL 必入**：5 份 listed + 加新四步；`external/grilling`／`external/motion-prompt` 係 MIT 原文；漏入目錄 `check_skills` 會 FAIL |
 | **🧠 skills 收納 + 觸發軸（可選 13b）** | [`repo-starter/docs/skills/README.md`](repo-starter/docs/skills/README.md) | 4 個 bucket（promoted／in-progress／deprecated／**external**）+ user-／model-invoked；**所有新 repo**：AGENT 開局讀 `skills/promoted/repo-setup/SKILL.md` |
 | **📄 SKILL.md 範本（可選 13c）** | [`repo-starter/docs/skills/0000-template.md`](repo-starter/docs/skills/0000-template.md) | frontmatter 規格 + What／When／Common questions／It's working if |
-| **❓ INTAKE 問卷（第 0 步）** | [`repo-starter/INTAKE.md`](repo-starter/INTAKE.md) | **抄檔之前** AGENT 主動問用戶 7 條；借 mattpocock `grilling/SKILL.md`；答案寫入 `SCOPE.md` |
+| **❓ INTAKE 問卷（第 0 步）** | [`repo-starter/INTAKE.md`](repo-starter/INTAKE.md) | **抄檔之前** AGENT 主動問用戶 8 條（含告知 `website` 白名單入口與關站模式）；借 mattpocock `grilling/SKILL.md`；答案寫入 `SCOPE.md` |
 | **🛑 PREFLIGHT 開局 gate（13d，必跑）** | [`repo-starter/PREFLIGHT.md`](repo-starter/PREFLIGHT.md) | **AGENT 設定／commit repo 之前**一條命令擋住；唔係每次 push 嘅 YML |
 | **🛑 PREFLIGHT 腳本** | [`../scripts/preflight_v1.0.mjs`](../scripts/preflight_v1.0.mjs) | 零依賴 orchestrator：8 個 check 一次過，`--json`／exit 1；抄入新 repo `scripts/` |
 | **🔐 系統基本功能驗收（第 14 項）** | [`repo-starter/docs/system-basics.md`](repo-starter/docs/system-basics.md) | 有身份／有登入系統先加：帳號生命週期 8 樣（含忘記密碼）＋ ADMIN 回報系統 8 樣；見 [docs/31](../docs/31-system-basics.md) |

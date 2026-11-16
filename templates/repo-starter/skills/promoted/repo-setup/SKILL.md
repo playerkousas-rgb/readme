@@ -22,7 +22,7 @@ description: >-
 
 ### 開局步驟（照次序；同真理倉 README 🆕 6 步對齊）
 
-0. **先主動問用戶**（[`INTAKE.md`](../../../INTAKE.md)）：借 [`external/grilling/SKILL.md`](../../external/grilling/SKILL.md)（實體檔，[原檔](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md)）嘅方法 —— 一輪問晒「而家問得」嘅 frontier（形式／UI／身份／後台／Gemini／授權／定位），每條俾**建議答案**；**fact 自己查**（`ls`／讀模板／P1），**決定留畀用戶**；**用戶確認先好抄檔**。**喺任何 `cp`／`git init` 之前**。若用戶喺真理倉 README 已經答咗並確認，跳過呢步，唔好重複問。
+0. **先主動問用戶**（[`INTAKE.md`](../../../INTAKE.md)）：借 [`external/grilling/SKILL.md`](../../external/grilling/SKILL.md)（實體檔，[原檔](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md)）嘅方法 —— 一輪問晒「而家問得」嘅 frontier（形式／UI／身份／後台／Gemini／授權／定位／`website` 白名單入口與關站模式），每條俾**建議答案**；主動告知用戶本生態有 `scoutappstore.vercel.app` 白名單及關站機制，若該 App 有 `localStorage`／PWA／Push／登入 Cookie 則提醒**唔適合 `iframe` 白名單**並建議改用頂層跳板 `entry-gate`（[docs/50](https://github.com/playerkousas-rgb/readme/blob/main/docs/50-app-store-whitelist-and-shutdown.md)）；**fact 自己查**（`ls`／讀模板／P1），**決定留畀用戶**；**用戶確認先好抄檔**。**喺任何 `cp`／`git init` 之前**。若用戶喺真理倉 README 已經答咗並確認，跳過呢步，唔好重複問。
 1. 由 [`START.md`](../../../START.md) ⓪–④ 抄起手包：填 `{{...}}`、**先揀授權**先至將 `LICENSE-MIT.txt` 改名做 `LICENSE`、抄 5 支真理 script、`git init`、跑 [`PREFLIGHT`](../../../PREFLIGHT.md) gate（`exit 1` 即刻停手，8 個 check）。
 2. 讀 [`AGENTS.md`](../../../AGENTS.md) → [`SCOPE.md`](../../../SCOPE.md) → [`GLOSSARY.md`](../../../GLOSSARY.md)。**將第 0 步嘅答案寫入 `SCOPE.md`**（做乜／唔做乜兩條 bar）+ README 第一句；一個事實只寫一次，用字跟 GLOSSARY。
 3. **用第 0 步用戶確認嘅答案按形式揀**，唔好按內容／主題、唔好自己估（[docs/28](https://github.com/playerkousas-rgb/readme/blob/main/docs/28-repo-taxonomy.md)）：
@@ -46,7 +46,7 @@ description: >-
 
 ## Common questions
 
-- **Q：用戶已經講清楚「做一個純前端、無登入嘅日期工具」，仲使問？** A：唔使重複問；但要將答案對返 `INTAKE.md` Q1–Q7，寫入 `SCOPE.md` 並同用戶確認一句「理解啱？」先好郁手。
+- **Q：用戶已經講清楚「做一個純前端、無登入嘅日期工具」，仲使問？** A：唔使重複問；但要將答案對返 `INTAKE.md` Q1–Q8（包括主動告知 `website` 白名單入口選項），寫入 `SCOPE.md` 並同用戶確認一句「理解啱？」先好郁手。
 - **Q：fact 可唔可以問用戶？** A：唔好。形式名、模板有乜檔、85 repo baseline、授權差異、ToS 要 AGENT 自己查（`grilling` 原文：finding facts is your job, never the user's）。
 - **Q：冇 commit 點做 code-review 個 three-dot diff？** A：用 `git archive <base>` export 對工作樹，寫明「fixed point + 邊啲新／改／刪」；唔好扮有 diff。
 - **Q：冇 sub-agent 點辦？** A：兩軸**分開兩份報告**寫，各自報總數同最差一項，唔揀單一贏家；寫明環境限制。

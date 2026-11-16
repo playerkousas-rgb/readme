@@ -1,6 +1,6 @@
 # PLAYBOOK — 核心規範總綱（唯一規則編號表）
 
-> **點用**：呢份係「必看」嘅濃縮版。每條規則有一個 ID（S/F/A/W/V/G/VL/X/U/C/P/L/I/UP）。
+> **點用**：呢份係「必看」嘅濃縮版。每條規則有一個 ID（S/F/A/W/V/G/VL/X/U/C/P/L/I/UP/SG）。
 > **案例隔離**：由 ecportal 案例抽出嘅「可選模式」R1–R8 已移去 [docs/19](docs/19-ecportal-troop-case.md)，**唔係通用底線**；新 app 守 S/F/A/W/V、P1 ＋ 技術棧契約。checklist、CI、PR template 全部用 ID 引用，唔好改 ID。
 > **層級**：呢份 = 所有 app 嘅**最低要求**。個別 app 可以加嚴，唔可以減；要減就喺 PR 寫例外原因 + 補償措施。
 > 深挖：每個章節尾有對應 `docs/` 連結。
@@ -218,6 +218,50 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 
 ---
 
+## 7.7 關站與準入白名單入口 SG1–SG17（**按需啟用**，詳情 [docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+
+> **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經 APP STORE（repo `website`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
+> **2026-11-15 用戶第二次定案（四大官方入口）**：準入白名單入口一共 **4 個**，登記於真理倉 [docs/50 §0.1](docs/50-app-store-whitelist-and-shutdown.md) ＋ 程式碼嘅 `PORTAL_REGISTRY`。子 App 一律用 `portalIds` 引用，唔准自己另抄一堆網址。
+> **層級**：按需啟用（預設 `open` 公開直連，現有 repo 唔自動追溯）。一旦揀咗經指定入口白名單進入或暫時關站，必須跟 **SG1–SG6**。
+
+| # | 入口 | Origin | 現時撳入行為 | `<iframe>` 殼 |
+|:--:|---|---|---|---|
+| 1 | **APP STORE**（[`website`](https://github.com/playerkousas-rgb/website)） | `https://scoutappstore.vercel.app` | 頂層 `location.href` | ❌ |
+| 2 | **圖書館**（[`scout-circulars`](https://github.com/playerkousas-rgb/scout-circulars)） | `https://scout-circulars.vercel.app` | 新分頁，**帶 `noreferrer`**（要改） | ❌ |
+| 3 | **成員系統**（[`member-portal`](https://github.com/playerkousas-rgb/member-portal)） | `https://member-portal-sigma-swart.vercel.app` | `/books` `<iframe>` ＋「開啟原網站」**帶 `noreferrer`**（要改） | ✅ |
+| 4 | **區管理系統**（[`scout-district-portal`](https://github.com/playerkousas-rgb/scout-district-portal)） | `https://scout-district-portal.vercel.app` | `/embed` `<iframe>` ＋新分頁**帶 `noreferrer`**（要改） | ✅ |
+| 5 | **GEMINI**（**自家 private repo** `GEMINI`） | `https://gemini-woad-sigma.vercel.app` | 同 1–4 一樣係自己部署嘅 Vercel app：可掛閘、**可以**做放行來源；統計喺佢自己嗰邊 | 自己控制 |
+
+> 子 App 寫法：`initStoreGate({ appKey, mode: 'entry-gate', portalIds: ['appstore','library','member','district'], allowStandalone: true })`。
+
+| ID | 規則 | 硬要求 |
+|----|------|--------|
+| **SG1** | 開新 APP 時主動告知 | AGENT 喺 [`INTAKE.md`](templates/repo-starter/INTAKE.md) 第 0 步（Q8）必須主動告知用戶本生態設有**四大官方入口**（APP STORE／圖書館／成員系統／區管理系統，[docs/50 §0.1](docs/50-app-store-whitelist-and-shutdown.md)）白名單及關站機制，由用戶揀 `open`／`entry-gate`／`iframe-only`／`closed` 並寫入 `SCOPE.md` |
+| **SG2** | `<iframe>` 五類禁區自動轉軌 | `*.vercel.app` 屬 Public Suffix List（跨子網域＝跨站）。凡有 ① `localStorage`／`IndexedDB` 長期資料（含 4 個 `BOOK` 及 C13 BYOK key）② PWA 加入主畫面（`I1–I8`）③ Web Push（`U9`）④ `SameSite=Lax` 登入 Cookie（`A4`）⑤ 相機／GPS／Wake Lock 權限 —— **嚴禁用 `iframe-only`**，必須改用頂層跳板 `entry-gate` 或維持 `open` |
+| **SG3** | 用家開 APP 時清晰告知有白名單／關站 | 禁黑屏或無解釋閃走；掛 [`templates/vercel/store_gate_v1.0.js`](templates/vercel/store_gate_v1.0.js) 隱藏底層內容並顯示無障礙對話框告知「此程式需經 SCOUT APP STORE 開啟」或「此網站目前暫時關閉」＋ `target="_top"` 前往主站掣 |
+| **SG4** | 純 `<iframe>` 白名單雙層配置 | 只限純無狀態小工具／圖卡／簡報，且**須等母站 `website` 實作 `<iframe>` 檢視器後先可開**（`041f074` 現時係頂層跳轉）；用 [`vercel.iframe-whitelist.json`](templates/vercel/vercel.iframe-whitelist.json) 設 `CSP: frame-ancestors`、**移除 `X-Frame-Options: SAMEORIGIN`** |
+| **SG5** | 不適合 `<iframe>` 改用頂層跳板 `entry-gate` | App 留喺頂層獨立網域運行；輕量級驗 `new URL(referrer).origin` 白名單 Set ＋ `sessionStorage`（`try/catch`）＋ `allowStandalone: true` 放行已裝主畫面 PWA；敏感／有 `/api` 升級用 60 秒 HMAC `sig` `/api/enter` 驗票。**經任何一個入口做頂層跳轉都唔會影響 `BOOK` 嘅 `localStorage`**（只認子站 origin）；`iframe` 先會令儲存分區 |
+| **SG6** | 暫時關站雙軌 | 硬關站：Vercel Dashboard `Pause Project`（連 `/api` 即停）；軟關站：`store_gate_v1.0.js` `mode: 'closed'` 或 `vercel.json` `redirects` **`"permanent": false`（302，嚴禁 `true`/308 永久快取）** |
+| **SG7** | 「加入主畫面」只准由入口第一次進入 | 直開網址唔會 404（會出白名單卡），但**唔准教用家直開網址再裝**：在入口母站裝會裝到母站；真 404 冇 `manifest` 裝唔到；舊 icon 撳落去白屏。標準話術「先由入口進入 → 再按瀏覽器選單加入主畫面」，配 `allowStandalone: true` 令裝好後撳 icon 直開 |
+| **SG7-a** | 白名單有代價，必須講清 | 分享連結／搜尋／書籤／QR／推播深層連結一律撞卡，WhatsApp 內置瀏覽器另有沙盒；有 Push 嘅 app 維持 `open` 或改用簽票（docs/50 §3.4）。**「唔使用 iframe 就對 App 內部零影響」≠「對所有東西零影響」** |
+| **SG8** | 入口自己永不被閘 | 四大入口自己嘅 origin 在 `portalIds` 內即自動放行（`reason: 'self-portal'`）——入口就係入口，唔需要再經其他地方；`closed` 優先蓋過 self 放行；入口自己唔應該掛 `entry-gate` |
+| **SG8-a** | 直開網址預設唔自動跳 | `autoRedirectSeconds: 0` 為預設（停低顯示入口卡，避免用家以為壞咗、亦避免其餘三個入口變裝飾）；要自動就 3–5 秒＋顯示目的地，或用 `autoRedirectPortalId` 指定入口 |
+| **SG9** | 入口角色分工，分享只由 `main` | `main`＝APP STORE（主站，**唯一**帶分享連結／QR）／`feed`＝圖書館（每日引流）／`internal`＝成員系統、區管理系統（自家副系統）。`website/app.js` L723／L727 現時直接分享 `app.url`（子站），開閘後會全部撞卡，要改指 `?app=<slug>` |
+| **SG9-a** | 落地次序 | ① APP STORE 支援 `?app=<slug>` → ② 分享掣／QR 改深層連結 → ③ 子 App 開 `entry-gate`；次序錯＝分享連結即刻失效 |
+| **SG10** | 統計按入口分工，唔好重複起爐灶 | **APP STORE 已有** `apps.clicks／stars／hearts`（`bump_clicks`／`bump_stars`／`bump_hearts`）＝逐 App 點擊／收藏／Like，**唯一權威來源**；**圖書館現時唔統計**（主責通告＋Push，推廣 APP STORE 屬後期）；子 App `trackEndpoint` 只作 opt-in 補充（主畫面開啟 `standalone-pwa`／撞卡 `missing-whitelist-entry`）；無數據 ≠ 無人用 |
+| **SG10-a** | 圖書館要維持 `open` | `scout-circulars` 載住 Push 訂閱（`push_subscriptions`）→ **唔可以 `iframe`、唔可以 `closed`、唔可以改 `start_url`**；要限經入口只可以局部限非通告頁 |
+| **SG11** | 「收起」≠「用不到」：四個下架齒輪 | **實查**：APP STORE「隱藏」只係前端過濾（`store.js` L782 `select("*")` 拉晒再 `a.visible !== false` 篩走），**App 本身照開得**。四齒輪＝① Delist（隱藏，URL 仍可入）② Gate（`entry-gate`，擋直開但主畫面照用）③ Soft close（`closed`，見告示）④ Hard close（Vercel Pause，完全離線）。按意圖揀，唔係按「幾快」 |
+| **SG11-a** | `BOOK` 類下架要先保入口＋備份 | 有真實紀錄（成員進度／考章）→ 只可以 Delist，**唔可以同時拆走入口**；必須 `allowStandalone: true`；落 ③④ 前先出通告叫用戶匯出 JSON／QR |
+| **SG11-b** | 敏感 App 唔可以靠「隱藏」做保護 | `visible=false` 唔係安全邊界（API 照回傳）→ 要 `entry-gate` ＋ §4.3 簽票 ＋ 後端 `VL1 /api/proxy` 驗 session；要全停就 Vercel Pause |
+| **SG12** | 防偷用唔係技術問題，係「表態」問題 | 用戶定案：領袖權限**不用保**（有空改功能變數即可）；功能簡單嘅 App「佢抄得到都寫得到」。→ **唔准**過度工程（唔需要為每個 App 起後端驗票）；真正要做＝**經入口 `entry-gate`** ＋ **一次輕量支持邀請 `supportNudge`**；抄走代碼唔當損失，損失係「用你嘅成果但唔表態」 |
+| **SG13** | 支持提示要講真話，只對「睇唔到嘅人」講 | 文案用「**書架位置有限：長期冇人收藏／Like 會收起，騰位俾新 App**」（唔用客氣話）。**預設 `skipPortalIds: ['appstore']`**：經 APP STORE 入嘅你已睇得到 `clicks`／`stars`／`hearts`，唔提；只對「主畫面直開」同「其他入口入」嘅人提。其餘：只在已放行時顯示、`role="complementary"`、有「唔使喇」、30 日一次、Safari 封 storage 靜默、**嚴禁**迫 Like |
+| **SG14** | 書架政策：唔寫死門檻，三條要守 | **唔准**寫固定日數／數字門檻（用戶睇後台自行判斷）；只守 ① 公開前置（政策寫喺 APP STORE 說明）② 收起＝只 Delist，代碼／網址／資料保留 ③ 豁免 `BOOK` 類同自家系統；Like 數 ≠ 使用人數，所以決定權喺用戶 |
+| **SG15** | 逐個 App 由該 App 嘅 AGENT 決定 | 真理倉唔替個別 App 決定細節 → 一律派 [`WHITELIST-HANDOFF.md`](templates/repo-starter/WHITELIST-HANDOFF.md)：6 條問題 → 按類型落實 → 真機三項驗收 → 回報格式 |
+| **SG16** | 五個入口全部同等（**2026-11-15 第二次修正**） | 用戶：「我說的是我的 REPO "GEMINI"」＋「因為果個係私人 REPO」→ 第 5 個入口係**用戶自己 private repo 部署嘅 Vercel app**（`gemini-woad-sigma.vercel.app`），**唔係** Google 的 Gemini／Canvas。所以 **1–5 全部屬 `outbound`**：可掛 `store_gate`、帶 `Referer`、可做 `entry-gate` 放行來源；`portalIds: ['appstore','gemini']` 正常生效；`CANVAS_PORTAL_IDS`／`INBOUND_PORTAL_IDS` 固定為**空陣列**（舊錯分類已撤銷）。⚠️ private repo → agent 用 GitHub API 可能回 `403`，**讀唔到唔等於唔存在、唔准寫成死連** |
+| **SG17** | 要唔要先逐個入口「打招呼」？ → **唔使** | 用戶 2026-11-15：「GEMINI 是另一系統佢同其他 App 完全無關係當然唔洗；成員系統區管理系統其實都唔會直入 APP，佢地係連 APP STORE 同圖書館的，最多成員連埋 BOOK。」→ 每個入口登記 `admit`：`appstore`=`always`（分享／QR 只由佢產生，所有子 App 預設寫入）、`library`=`conditional`（**只需**改 `index.html` L5662 一個 `noreferrer`，Push／統計／通告流程一律唔准動）、`member`／`district`=`optional`（實查兩邊唔做 App 目錄，只連入口＋自家系統；例外＝4 本 BOOK，但 BOOK 管制宜寬鬆）、`gemini`=`optional`（自己 private repo 嘅 Vercel app，可以加）。程式：`DEFAULT_PORTAL_IDS = ['appstore']`、`portalIdsAdmit: 'all'` ＝ 1–4 全開、永遠唔會誤包 Gemini |
+
+---
+
 ## 8. 技術棧契約（快表）
 
 | 棧 | 必做 ID | 詳細 |
@@ -291,6 +335,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 - [ ] W1 版權標示 + W2 水印（如出圖）+ W6 交付檔無真 key
 - [ ] V1 檔名＋內文版號一致 + V4 部署拷貝已 sync（Type C）
 - [ ] L1–L6：雙閘達標嘅 app 有英文 + 右上角切換掣（`i18n_check` 無 FAIL + 人手撳實測）；唔做有寫 `EXCEPTION: L1`（[docs/44](docs/44-bilingual-ui.md)）
+- [ ] SG1–SG17（圖書館維持 `open`；下架按四齒輪逐級落；`supportNudge` 文案已寫明書架政策、預設 skip appstore；書架政策已公開、`BOOK`／自家系統豁免）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`；「加入主畫面」引導係「先入口、後安裝」；分享／QR 只由 APP STORE 產生、下架按「Delist→Gate→Soft→Hard」逐級落、`BOOK` 類落 ③④ 前已通知用戶備份（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
 - [ ] README 寫作紀律（[docs/47](docs/47-readme-discipline.md)）：每句「已修」有檢查或實測、每句「未做」寫限制、冇「理論上應該 work」字樣
 - [ ] `docs/` 同 `PLAYBOOK.md` 已更新（規則改動時）
 - [ ] PR 描述寫明：身份錨點有冇改、registry 有冇加、key 有冇 rotate

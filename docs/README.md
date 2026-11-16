@@ -53,6 +53,8 @@
 | [44-bilingual-ui.md](44-bilingual-ui.md) | **L1–L6 雙語介面**：雙閘（體積 ＋ ≤300 字串）判定要做定豁免；右上角一鍵切換、乾淨分離；跟 4 個 BOOK 實作（pinned）。**只為未來新開 app 定義，現有 repo 唔追溯**。詳情亦見 [PLAYBOOK §7.5](../PLAYBOOK.md) |
 | [46-pwa-install-and-update.md](46-pwa-install-and-update.md) | **I1–I8／UP1–UP5 PWA 安裝入口＋版本更新**：所有有 UI 嘅 web app；「安裝要有掣、更新要問過人」——唔靠瀏覽器自彈、SW 唔准背景偷換版；真機驗收（Android Chrome＋iOS Safari）；實戰來源出門玩 v1.2.0＋4 個 BOOK（SCOUTBOOK／CUBSBOOK／ROVERBOOK／VSBOOK，2026-11-12 pinned）。詳情亦見 [PLAYBOOK §7.6](../PLAYBOOK.md) |
 | [47-readme-discipline.md](47-readme-discipline.md) | **README 寫作紀律（五條原則）**：每句都要有檢查或誠實限制兜住——「檢查全綠≠用得」「已修要有 commit＋實測」「未做要老實列」「體積版號係紀律」「唔好寫理論上應該 work」；來源案例 morse-beacon-app v5.1.0→v5.2.0（2026-11-12 定案） |
+| [50-app-store-whitelist-and-shutdown.md](50-app-store-whitelist-and-shutdown.md) | **SG1–SG6 關站與準入白名單入口**：**§0.1 官方四大入口註冊表**（1. APP STORE／2. 圖書館／3. 成員系統／4. 區管理系統；程式碼 `PORTAL_REGISTRY`／`portalIds`）、`iframe` 機制與禁區五類、`BOOK` 本機儲存與主畫面 PWA（Android 共用／iOS 分家）、INTAKE Q8、`store_gate_v1.0.js`、Pause vs 軟關站；四個 repo pinned commit 實查（2026-11-15 定案） |
+| [51-whitelist-rollout-list.md](51-whitelist-rollout-list.md) | **白名單上線清單（全 repo 掃描）**：69 個有網址 repo 分 A／B／C／D 四組＋建議執行次序；掃描限制如實列明（入口檔 grep、需各 App AGENT 覆核） |
 | [24-similar-products.md](24-similar-products.md) | **P1** 研發前搜尋相近產品（人工檢查，記錄來源同決策） |
 
 ## 章 2 — 技術棧契約
