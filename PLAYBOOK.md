@@ -254,7 +254,8 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | **SG11-b** | 敏感 App 唔可以靠「隱藏」做保護 | `visible=false` 唔係安全邊界（API 照回傳）→ 要 `entry-gate` ＋ §4.3 簽票 ＋ 後端 `VL1 /api/proxy` 驗 session；要全停就 Vercel Pause |## 8. 技術棧契約（快表）
 | **SG12** | 防偷用唔係技術問題，係「表態」問題 | 用戶定案：領袖權限**不用保**（有空改功能變數即可）；功能簡單嘅 App「佢抄得到都寫得到」。→ **唔准**過度工程（唔需要為每個 App 起後端驗票）；真正要做＝**經入口 `entry-gate`** ＋ **一次輕量支持邀請 `supportNudge`**；抄走代碼唔當損失，損失係「用你嘅成果但唔表態」 |
 | **SG13** | 支持提示要講真話，只對「睇唔到嘅人」講 | 文案用「**書架位置有限：長期冇人收藏／Like 會收起，騰位俾新 App**」（唔用客氣話）。**預設 `skipPortalIds: ['appstore']`**：經 APP STORE 入嘅你已睇得到 `clicks`／`stars`／`hearts`，唔提；只對「主畫面直開」同「其他入口入」嘅人提。其餘：只在已放行時顯示、`role="complementary"`、有「唔使喇」、30 日一次、Safari 封 storage 靜默、**嚴禁**迫 Like |
-| **SG14** | 書架政策要公開、要慢、要可逆 | 公開前置寫明；判定以 `stars＋hearts` 為主、`clicks` 參考；**90 日 0 增幅→觀察，再 90 日仍 0→收起**；收起＝只 Delist（唔刪代碼／網址／資料）；**豁免 `BOOK` 類同自家系統**；Like 數 ≠ 使用人數，收起前要出通告並保留恢復機制 |
+| **SG14** | 書架政策：唔寫死門檻，三條要守 | **唔准**寫固定日數／數字門檻（用戶睇後台自行判斷）；只守 ① 公開前置（政策寫喺 APP STORE 說明）② 收起＝只 Delist，代碼／網址／資料保留 ③ 豁免 `BOOK` 類同自家系統；Like 數 ≠ 使用人數，所以決定權喺用戶 |
+| **SG15** | 逐個 App 由該 App 嘅 AGENT 決定 | 真理倉**唔替**每個 App 決定細節（「佢對自己個 App 熟 D 會諗多 D」）→ 一律派 [`templates/repo-starter/WHITELIST-HANDOFF.md`](templates/repo-starter/WHITELIST-HANDOFF.md)：6 條問題 → 按類型落實 → 真機三項驗收 → 回報格式 |
 | 棧 | 必做 ID | 詳細 |
 |----|---------|------|
 | **Git** | G1–G10：main 保護、feature branch → PR、Conventional Commits、tag、lockfile、Actions pin SHA、CODEOWNERS、secret scanning、唔 commit binary、docs 跟版本 | [docs/05-git.md](docs/05-git.md) |

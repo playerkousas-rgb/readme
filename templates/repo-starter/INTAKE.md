@@ -79,7 +79,8 @@
       - 【SG8】四大入口自己永不被閘（`selfOrigin` 在 `portalIds` 內自動放行 `self-portal`）；直開網址**預設唔自動跳**（`autoRedirectSeconds: 0`），要自動就 3–5 秒並顯示目的地，或用 `autoRedirectPortalId` 指定。
       - 【SG7】要主動講清「加入主畫面」正確流程：**先由入口進入 → 再按瀏覽器選單加入主畫面**。直開網址唔會 404（會出白名單卡），但在入口母站裝／在 iframe 內裝只會裝到母站；真 404 沒有 manifest 裝唔到；已退役 app 嘅舊 icon 撳落去只會白屏。
       - 只有純無狀態計算機／圖卡／簡報，且確認母站已起 iframe 殼後，先可揀 `iframe-only`。
-   → 見真理倉 [docs/50](https://github.com/playerkousas-rgb/readme/blob/main/docs/50-app-store-whitelist-and-shutdown.md)（SG1–SG6）。
+   → 見真理倉 [docs/50](https://github.com/playerkousas-rgb/readme/blob/main/docs/50-app-store-whitelist-and-shutdown.md)（SG1–SG15）。
+   → 逐個 App 交接用 [`WHITELIST-HANDOFF.md`](WHITELIST-HANDOFF.md)（6 條問題＋回報格式，可直接貼去該 App 對話）。
 ```
 
 ---

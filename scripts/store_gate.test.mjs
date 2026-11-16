@@ -631,7 +631,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   const dix = read('docs', 'README.md');
   const wf = read('.github', 'workflows', 'guard.yml');
 
-  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7', 'SG8', 'SG9', 'SG10', 'SG11', 'SG12', 'SG13', 'SG14']) {
+  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7', 'SG8', 'SG9', 'SG10', 'SG11', 'SG12', 'SG13', 'SG14', 'SG15']) {
     assert.ok(pb.includes(id) && doc.includes(id), `PLAYBOOK / docs/50 缺 ${id}`);
   }
   assert.ok(intake.includes('Q8') && intake.includes('entry-gate'), 'INTAKE 第 0 步要有 Q8 主動告知白名單與 entry-gate');
@@ -657,4 +657,10 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   }
   assert.ok(intake.includes('SG7'), 'INTAKE Q8 要提 SG7 加入主畫面流程');
   assert.ok(pb.includes('PORTAL_REGISTRY') || pb.includes('portalIds'), 'PLAYBOOK 要提註冊表／portalIds');
+  // SG15：逐個 App 交接清單要存在且可貼去該 App 對話
+  const handoff = read('templates', 'repo-starter', 'WHITELIST-HANDOFF.md');
+  for (const kw of ['portalIds', 'allowStandalone', 'supportNudge', '真機', '本機資料']) {
+    assert.ok(handoff.includes(kw), `WHITELIST-HANDOFF 要覆蓋「${kw}」`);
+  }
+  assert.ok(doc.includes('WHITELIST-HANDOFF.md'), 'docs/50 要指向交接清單');
 });
