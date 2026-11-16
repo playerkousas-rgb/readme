@@ -778,5 +778,19 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
     assert.ok(instr.includes(kw), `A-GROUP-INSTRUCTION 要覆蓋「${kw}」`);
   }
   assert.ok(list.includes('A-GROUP-INSTRUCTION.md'), 'docs/51 要指向 A 組指令檔');
+  // APP STORE 第 0 步指令（SG9-a）：要存在、要指對實查位置、要講明唔准做乜
+  const appInstr = read('templates', 'repo-starter', 'APP-STORE-INSTRUCTION.md');
+  for (const kw of [
+    '?app=', 'appDeepLink', 'slug', 'app.js', 'index.html', 'QR', '回報',
+    'openApp()', 'start_url', 'bump_clicks', 'noreferrer', '真機',
+  ]) {
+    assert.ok(appInstr.includes(kw), `APP-STORE-INSTRUCTION 要覆蓋「${kw}」`);
+  }
+  for (const kw of ['L723', 'L727', 'L739', 'L2319', 'L2283', 'L52', 'L120']) {
+    assert.ok(appInstr.includes(kw), `APP-STORE-INSTRUCTION 要列出實查行號「${kw}」`);
+  }
+  assert.ok(list.includes('APP-STORE-INSTRUCTION.md'), 'docs/51 要指向 APP STORE 第 0 步指令');
+  assert.ok(read('templates', 'README.md').includes('APP-STORE-INSTRUCTION.md'), 'templates/README 要登記 APP STORE 指令');
+
   assert.ok(rd.includes('51-whitelist-rollout-list.md'), '根 README 要指向 docs/51');
 });

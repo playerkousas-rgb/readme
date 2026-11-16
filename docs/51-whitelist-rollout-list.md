@@ -167,9 +167,11 @@
 
 | 批次 | 內容 | 為咩 |
 |:--:|---|---|
-| **第 0 步** | 喺 APP STORE 加 `?app=<slug>` 深層連結，並把分享／QR 由 `app.url` 改指 APP STORE（[50 §4.4-6](50-app-store-whitelist-and-shutdown.md)） | **唔做呢步，一開閘分享連結就全部撞卡**（SG9-a）。**唔需要問任何入口**——APP STORE 本來就係預設入口（SG17） |
+| **第 0 步** | 喺 APP STORE 加 `?app=<slug>` 深層連結，並把分享／QR／卡片 href 由 `app.url` 改指 APP STORE（[50 §4.4-6](50-app-store-whitelist-and-shutdown.md)）。**可直接貼嘅指令：[`templates/repo-starter/APP-STORE-INSTRUCTION.md`](../templates/repo-starter/APP-STORE-INSTRUCTION.md)**（已列明 11 個實查位置） | **唔做呢步，一開閘分享連結就全部撞卡**（SG9-a）。**唔需要問任何入口**——APP STORE 本來就係預設入口（SG17） |
 | **第 1 批** | A 組揀 3–5 個 | 驗證流程，風險最低 |
 | **第 2 批** | A 組其餘全部 | 批量複製。**同時間可選做**：圖書館改 L5662 一行（`noreferrer`），之後仍要逐隻 App 自己決定加唔加 `library` |
 | **第 3 批** | B 組（確認備份功能後） | 有儲存，要小心 |
 | **第 4 批** | C 組逐個判斷 | 有 `/api`，要睇後端 |
 | **永遠唔做** | D 組入口本體 | 會鎖死自己（SG8） |
+
+> **第 0 步要貼嘅訊息**：[`APP-STORE-INSTRUCTION.md`](../templates/repo-starter/APP-STORE-INSTRUCTION.md)（APP STORE 對話用）；第 1／2 批（A 組）用 [`A-GROUP-INSTRUCTION.md`](../templates/repo-starter/A-GROUP-INSTRUCTION.md)。
