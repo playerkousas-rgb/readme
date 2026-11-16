@@ -706,4 +706,11 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
     assert.ok(handoff.includes(kw), `WHITELIST-HANDOFF 要覆蓋「${kw}」`);
   }
   assert.ok(doc.includes('WHITELIST-HANDOFF.md'), 'docs/50 要指向交接清單');
+  // docs/51 白名單上線清單
+  const list = read('docs', '51-whitelist-rollout-list.md');
+  for (const kw of ['A 組', 'B 組', 'C 組', 'D 組', '掃描限制', 'entry-gate']) {
+    assert.ok(list.includes(kw), `docs/51 要覆蓋「${kw}」`);
+  }
+  assert.ok(list.includes('website') && list.includes('scout-circulars'), 'D 組要列出入口本體');
+  assert.ok(rd.includes('51-whitelist-rollout-list.md'), '根 README 要指向 docs/51');
 });

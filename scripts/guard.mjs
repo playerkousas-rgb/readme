@@ -517,9 +517,13 @@ function checkRuleSync() {
     if (!/frame-ancestors\s+https:\/\/scoutappstore\.vercel\.app/.test(vjTxt)) err(`F16/SG：${sgVj} 缺 CSP frame-ancestors 白名單`);
     if (/"permanent"\s*:\s*true/.test(vjTxt)) err(`F16/SG：${sgVj} redirects 嚴禁用 permanent: true（308 永久快取會鎖死用家）`);
   }
+  const sgList = 'docs/51-whitelist-rollout-list.md';
+  if (!existsSync(path.join(ROOT, sgList))) err(`F16/SG：缺 ${sgList}（全 repo 白名單上線清單）`);
+  else if (!readme.includes(sgList)) err(`F16/SG：README.md 未指向 ${sgList}`);
+  else if (!cl.includes('51-whitelist')) err('F16/SG：docs/10-checklists.md 未登記 docs/51 清單');
   if (existsSync(path.join(ROOT, sgDoc)) && existsSync(path.join(ROOT, sgJs)) && existsSync(path.join(ROOT, sgVj))
       && readme.includes(sgDoc) && cl.includes('SG1') && intakeTxt.includes('Q8')) {
-    ok('F16/SG：關站與白名單入口 SG1–SG6 同步（PLAYBOOK + docs/50 + INTAKE Q8 + 閘門範本 + checklist）');
+    ok('F16/SG：關站與白名單入口 SG1–SG6 同步（PLAYBOOK + docs/50 + docs/51 清單 + INTAKE Q8 + 閘門範本 + checklist）');
   }
 }
 
