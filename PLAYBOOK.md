@@ -1,6 +1,6 @@
 # PLAYBOOK — 核心規範總綱（唯一規則編號表）
 
-> **點用**：呢份係「必看」嘅濃縮版。每條規則有一個 ID（S/F/A/W/V/G/VL/X/U/C/P/L/I/UP）。
+> **點用**：呢份係「必看」嘅濃縮版。每條規則有一個 ID（S/F/A/W/V/G/VL/X/U/C/P/L/I/UP/SG）。
 > **案例隔離**：由 ecportal 案例抽出嘅「可選模式」R1–R8 已移去 [docs/19](docs/19-ecportal-troop-case.md)，**唔係通用底線**；新 app 守 S/F/A/W/V、P1 ＋ 技術棧契約。checklist、CI、PR template 全部用 ID 引用，唔好改 ID。
 > **層級**：呢份 = 所有 app 嘅**最低要求**。個別 app 可以加嚴，唔可以減；要減就喺 PR 寫例外原因 + 補償措施。
 > 深挖：每個章節尾有對應 `docs/` 連結。
@@ -218,6 +218,32 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 
 ---
 
+## 7.7 關站與準入白名單入口 SG1–SG6（**按需啟用**，詳情 [docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+
+> **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經 APP STORE（repo `website`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
+> **2026-11-15 用戶第二次定案（四大官方入口）**：準入白名單入口一共 **4 個**，登記於真理倉 [docs/50 §0.1](docs/50-app-store-whitelist-and-shutdown.md) ＋ 程式碼嘅 `PORTAL_REGISTRY`。子 App 一律用 `portalIds` 引用，唔准自己另抄一堆網址。
+> **層級**：按需啟用（預設 `open` 公開直連，現有 repo 唔自動追溯）。一旦揀咗經指定入口白名單進入或暫時關站，必須跟 **SG1–SG6**。
+
+| # | 入口 | Origin | 現時撳入行為 | `<iframe>` 殼 |
+|:--:|---|---|---|---|
+| 1 | **APP STORE**（[`website`](https://github.com/playerkousas-rgb/website)） | `https://scoutappstore.vercel.app` | 頂層 `location.href` | ❌ |
+| 2 | **圖書館**（[`scout-circulars`](https://github.com/playerkousas-rgb/scout-circulars)） | `https://scout-circulars.vercel.app` | 新分頁，**帶 `noreferrer`**（要改） | ❌ |
+| 3 | **成員系統**（[`member-portal`](https://github.com/playerkousas-rgb/member-portal)） | `https://member-portal-sigma-swart.vercel.app` | `/books` `<iframe>` ＋「開啟原網站」**帶 `noreferrer`**（要改） | ✅ |
+| 4 | **區管理系統**（[`scout-district-portal`](https://github.com/playerkousas-rgb/scout-district-portal)） | `https://scout-district-portal.vercel.app` | `/embed` `<iframe>` ＋新分頁**帶 `noreferrer`**（要改） | ✅ |
+
+> 子 App 寫法：`initStoreGate({ appKey, mode: 'entry-gate', portalIds: ['appstore','library','member','district'], allowStandalone: true })`。
+
+| ID | 規則 | 硬要求 |
+|----|------|--------|
+| **SG1** | 開新 APP 時主動告知 | AGENT 喺 [`INTAKE.md`](templates/repo-starter/INTAKE.md) 第 0 步（Q8）必須主動告知用戶本生態設有**四大官方入口**（APP STORE／圖書館／成員系統／區管理系統，[docs/50 §0.1](docs/50-app-store-whitelist-and-shutdown.md)）白名單及關站機制，由用戶揀 `open`／`entry-gate`／`iframe-only`／`closed` 並寫入 `SCOPE.md` |
+| **SG2** | `<iframe>` 五類禁區自動轉軌 | `*.vercel.app` 屬 Public Suffix List（跨子網域＝跨站）。凡有 ① `localStorage`／`IndexedDB` 長期資料（含 4 個 `BOOK` 及 C13 BYOK key）② PWA 加入主畫面（`I1–I8`）③ Web Push（`U9`）④ `SameSite=Lax` 登入 Cookie（`A4`）⑤ 相機／GPS／Wake Lock 權限 —— **嚴禁用 `iframe-only`**，必須改用頂層跳板 `entry-gate` 或維持 `open` |
+| **SG3** | 用家開 APP 時清晰告知有白名單／關站 | 禁黑屏或無解釋閃走；掛 [`templates/vercel/store_gate_v1.0.js`](templates/vercel/store_gate_v1.0.js) 隱藏底層內容並顯示無障礙對話框告知「此程式需經 SCOUT APP STORE 開啟」或「此網站目前暫時關閉」＋ `target="_top"` 前往主站掣 |
+| **SG4** | 純 `<iframe>` 白名單雙層配置 | 只限純無狀態小工具／圖卡／簡報，且**須等母站 `website` 實作 `<iframe>` 檢視器後先可開**（`041f074` 現時係頂層跳轉）；用 [`vercel.iframe-whitelist.json`](templates/vercel/vercel.iframe-whitelist.json) 設 `CSP: frame-ancestors`、**移除 `X-Frame-Options: SAMEORIGIN`** |
+| **SG5** | 不適合 `<iframe>` 改用頂層跳板 `entry-gate` | App 留喺頂層獨立網域運行；輕量級驗 `new URL(referrer).origin` 白名單 Set ＋ `sessionStorage`（`try/catch`）＋ `allowStandalone: true` 放行已裝主畫面 PWA；敏感／有 `/api` 升級用 60 秒 HMAC `sig` `/api/enter` 驗票。**經任何一個入口做頂層跳轉都唔會影響 `BOOK` 嘅 `localStorage`**（只認子站 origin）；`iframe` 先會令儲存分區 |
+| **SG6** | 暫時關站雙軌 | 硬關站：Vercel Dashboard `Pause Project`（連 `/api` 即停）；軟關站：`store_gate_v1.0.js` `mode: 'closed'` 或 `vercel.json` `redirects` **`"permanent": false`（302，嚴禁 `true`/308 永久快取）** |
+
+---
+
 ## 8. 技術棧契約（快表）
 
 | 棧 | 必做 ID | 詳細 |
@@ -291,6 +317,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 - [ ] W1 版權標示 + W2 水印（如出圖）+ W6 交付檔無真 key
 - [ ] V1 檔名＋內文版號一致 + V4 部署拷貝已 sync（Type C）
 - [ ] L1–L6：雙閘達標嘅 app 有英文 + 右上角切換掣（`i18n_check` 無 FAIL + 人手撳實測）；唔做有寫 `EXCEPTION: L1`（[docs/44](docs/44-bilingual-ui.md)）
+- [ ] SG1–SG6（如有啟用四大入口白名單或軟關站）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
 - [ ] README 寫作紀律（[docs/47](docs/47-readme-discipline.md)）：每句「已修」有檢查或實測、每句「未做」寫限制、冇「理論上應該 work」字樣
 - [ ] `docs/` 同 `PLAYBOOK.md` 已更新（規則改動時）
 - [ ] PR 描述寫明：身份錨點有冇改、registry 有冇加、key 有冇 rotate

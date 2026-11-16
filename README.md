@@ -14,7 +14,7 @@
 
 | 步 | 做乜 | 檔 |
 |:--:|---|---|
-| **0** | **主動問用戶**：一輪問晒「而家問得」嘅問題（形式／有冇 UI／身份／後台／Gemini／授權／一句定位），每條俾建議答案；**fact 自己查、決定留畀用戶；用戶確認先好郁手** | [`INTAKE.md`](templates/repo-starter/INTAKE.md) ＋ 實體原文 [`external/grilling/SKILL.md`](templates/repo-starter/skills/external/grilling/SKILL.md)（MIT）；全部喺 [`skills/CATALOG.md`](templates/repo-starter/skills/CATALOG.md) 入咗目錄 |
+| **0** | **主動問用戶**：一輪問晒「而家問得」嘅問題（形式／有冇 UI／身份／後台／Gemini／授權／一句定位／四大官方入口白名單與關站模式），每條俾建議答案；**主動告知有白名單及邊類 App 唔適合 `iframe`**（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）；**fact 自己查、決定留畀用戶；用戶確認先好郁手** | [`INTAKE.md`](templates/repo-starter/INTAKE.md) ＋ 實體原文 [`external/grilling/SKILL.md`](templates/repo-starter/skills/external/grilling/SKILL.md)（MIT）；全部喺 [`skills/CATALOG.md`](templates/repo-starter/skills/CATALOG.md) 入咗目錄 |
 | 1 | 抄起手包 → 填 `{{...}}` → **揀授權** → 抄 5 支真理 script → `git init` | [`templates/repo-starter/START.md`](templates/repo-starter/START.md) ⓪–④ |
 | 2 | **主動讀 `repo-setup` 並跟住做**：12 樣核心 → 按**形式**揀第 13／14 項 → 兩軸 review（Standards／Spec 分開） | [`skills/promoted/repo-setup/SKILL.md`](templates/repo-starter/skills/promoted/repo-setup/SKILL.md) |
 | 3 | **有 UI／要出畫面**：`repo-setup` 第 4 步會明確叫你讀 `design-review`（house rules、inventory、390/768/1440 望圖、6 條 critique、`ROUND n`、40/30/20/10） | [`skills/promoted/design-review/SKILL.md`](templates/repo-starter/skills/promoted/design-review/SKILL.md) |
@@ -107,6 +107,7 @@
 | **開新 Git 前揀設計資源**（字體／配色／Icon／插畫／UI library／模板／DESIGN.md／系統設計） | **[docs/23-design-resources.md](docs/23-design-resources.md)** — 5 個主庫 ＋ Nippon Colors／Adobe Color／Color Hunt ＋ 配色對比驗收 ＋ 10 步開工 checklist |
 | 用 Git / PR / branch | [docs/05-git.md](docs/05-git.md) |
 | 部署去 Vercel | [docs/06-vercel.md](docs/06-vercel.md) |
+| **暫時關站／設只准經四大官方入口白名單進入、唔適合白名單點算** | **[docs/50-app-store-whitelist-and-shutdown.md](docs/50-app-store-whitelist-and-shutdown.md)** — SG1–SG6 ＋ §0.1 **官方四大準入入口註冊表**（1. APP STORE `scoutappstore`｜2. 圖書館 `scout-circulars`｜3. 成員系統 `member-portal-sigma-swart`｜4. 區管理系統 `scout-district-portal`，程式碼對應 `PORTAL_REGISTRY`／`portalIds`）：開新 APP 主動告知、五類 `iframe` 禁區轉行頂層跳板 `entry-gate`、`BOOK` 本機儲存與主畫面 PWA 影響、Pause vs 軟關站（2026-11-15 定案） |
 | 寫 Google Apps Script（Sheet 當 DB） | [docs/07-apps-script.md](docs/07-apps-script.md) |
 | 用 Supabase（Postgres / Auth / Storage / Push） | [docs/08-supabase.md](docs/08-supabase.md) |
 | 抄嘢（config / SQL / workflow / Canvas 骨架 / 水印） | [templates/](templates/README.md) |
@@ -214,6 +215,7 @@ docs/
   44-bilingual-ui.md        L1–L6 雙語介面：雙閘判定／右上角一鍵切換／乾淨分離；跟 4 個 BOOK 實作（預設要做・可豁免）
   45-ui-skills-text-to-cad.md  UI 設計／動效 Skills 與參數化 CAD 分類評估：未安裝未實測
   46-pwa-install-and-update.md  PWA 安裝入口 I1–I8＋版本更新 UP1–UP5：「安裝要有掣、更新要問過人」（2026-11-12 定案；出門玩 v1.2.0＋4 個 BOOK pinned）
+  50-app-store-whitelist-and-shutdown.md  關站與 App Store 白名單入口 SG1–SG6：Pause／iframe 白名單／唔適合 iframe 改行頂層跳板 entry-gate（2026-11-15 定案）
   （圖標規範**唯一來源係 [docs/33](docs/33-icon-standard.md)** — 2026-11-02 由 README §9 抽出；9 個 PNG／ICO、maskable 66%、16px 手繪）
 templates/
   README.md               可抄嘢對照表 + 一鍵抄指令

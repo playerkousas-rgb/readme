@@ -444,7 +444,8 @@ function checkRuleSync() {
   const pb = read('PLAYBOOK.md');
   const need = ['S1', 'S7', 'S12', 'F4', 'F14', 'F15', 'F16', 'A1', 'A7', 'A14',
                 'W1', 'W6', 'V1', 'V6', 'G1', 'G11', 'VL1', 'X1', 'U1', 'C1', 'C12', 'C13',
-                'L1', 'L2', 'L3', 'L4', 'L5', 'L6'];
+                'L1', 'L2', 'L3', 'L4', 'L5', 'L6',
+                'SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6'];
   const miss = need.filter((id) => !pb.includes(id));
   if (miss.length) err(`F16：PLAYBOOK.md 缺規則 ID ${miss.join(', ')}`);
   else ok(`F16：PLAYBOOK.md 規則 ID 齊（${need.length} 個抽樣）`);
@@ -493,6 +494,32 @@ function checkRuleSync() {
   if (existsSync(path.join(ROOT, lDoc)) && existsSync(path.join(ROOT, lTpl)) && existsSync(path.join(ROOT, lChk))
       && readme.includes(lDoc) && cl.includes('L1')) {
     ok('F16/L：雙語介面 L1–L6 四處同步（PLAYBOOK + docs/44 + 範本 + 檢查器 + checklist）');
+  }
+
+  // SG1–SG6 關站與 App Store 白名單入口（2026-11-15 定案）：
+  // 確保開新 APP 時主動告知（INTAKE Q8）、五類 iframe 禁區轉行 entry-gate、開 APP 時提示閘門範本及防 308 永久快取齊備。
+  const sgDoc = 'docs/50-app-store-whitelist-and-shutdown.md';
+  const sgJs = 'templates/vercel/store_gate_v1.0.js';
+  const sgVj = 'templates/vercel/vercel.iframe-whitelist.json';
+  const sgIntake = 'templates/repo-starter/INTAKE.md';
+  for (const f of [sgDoc, sgJs, sgVj, sgIntake]) {
+    if (!existsSync(path.join(ROOT, f))) err(`F16/SG：缺 ${f}（關站與白名單入口規則要詳情 + 範本 + INTAKE 問項）`);
+  }
+  if (!readme.includes(sgDoc)) err(`F16/SG：README.md 未指向 ${sgDoc}`);
+  if (!cl.includes('SG1')) err('F16/SG：docs/10-checklists.md 未登記 SG1 白名單入口判定');
+  const intakeTxt = existsSync(path.join(ROOT, sgIntake)) ? read(sgIntake) : '';
+  if (!intakeTxt.includes('Q8') || !intakeTxt.includes('entry-gate')) {
+    err('F16/SG：templates/repo-starter/INTAKE.md 未加入 Q8 主動告知白名單與 entry-gate 轉軌提示');
+  }
+  if (existsSync(path.join(ROOT, sgVj))) {
+    const vjTxt = read(sgVj);
+    if (/X-Frame-Options/i.test(vjTxt)) err(`F16/SG：${sgVj} 唔可以保留 X-Frame-Options（會同跨源 frame-ancestors 相沖）`);
+    if (!/frame-ancestors\s+https:\/\/scoutappstore\.vercel\.app/.test(vjTxt)) err(`F16/SG：${sgVj} 缺 CSP frame-ancestors 白名單`);
+    if (/"permanent"\s*:\s*true/.test(vjTxt)) err(`F16/SG：${sgVj} redirects 嚴禁用 permanent: true（308 永久快取會鎖死用家）`);
+  }
+  if (existsSync(path.join(ROOT, sgDoc)) && existsSync(path.join(ROOT, sgJs)) && existsSync(path.join(ROOT, sgVj))
+      && readme.includes(sgDoc) && cl.includes('SG1') && intakeTxt.includes('Q8')) {
+    ok('F16/SG：關站與白名單入口 SG1–SG6 同步（PLAYBOOK + docs/50 + INTAKE Q8 + 閘門範本 + checklist）');
   }
 }
 

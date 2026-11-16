@@ -55,6 +55,7 @@
 
 完整範本：[templates/vercel/vercel.json](../templates/vercel/vercel.json)。
 CSP 按 app 需要加（Canvas 單檔 app 要用 nonce 或 `'unsafe-inline'`，要寫明原因）。
+若該小工具要鎖定只准經四大官方入口（[docs/50 §0.1](50-app-store-whitelist-and-shutdown.md)：APP STORE／圖書館／成員系統／區管理系統）以 `<iframe>` 白名單開啟（[SG4](50-app-store-whitelist-and-shutdown.md)），改抄 [`templates/vercel/vercel.iframe-whitelist.json`](../templates/vercel/vercel.iframe-whitelist.json)（**必須移除 `X-Frame-Options: SAMEORIGIN`**，改用 `CSP frame-ancestors`）；唔適合 `<iframe>` 嘅 App（有 `localStorage`／PWA／Push／`SameSite=Lax` Cookie）一律唔改 header，改行頂層跳板 `store_gate_v1.0.js`。
 
 ---
 
@@ -168,6 +169,8 @@ Vercel Dashboard → Deployments → 揀上一個成功 deployment → Promote t
 | Preview 一大堆 deployment | 非 main 開咗 preview | S8 |
 | 改咗 env 但冇效 | 冇 Redeploy / cache 未 flush | F16 |
 | 403 但唔知邊度錯 | 錯誤訊息唔統一 | F13 |
+| 開咗 `iframe` 白名單後紀錄唔見／登入 401／主畫面 PWA 彈走 | `*.vercel.app` 屬跨站：Safari 隔離 `localStorage`、`SameSite=Lax` 唔送、standalone 觸發 `document` 轉址 | [SG2/SG5](50-app-store-whitelist-and-shutdown.md) 改行頂層 `entry-gate` |
+| 解除暫時關站／白名單後用家仲係不斷被跳走 | `vercel.json` `redirects` 誤設 `"permanent": true`（308 永久快取） | [SG6](50-app-store-whitelist-and-shutdown.md) 一律用 `"permanent": false`（302） |
 
 ---
 

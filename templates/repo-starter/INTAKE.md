@@ -14,7 +14,7 @@
 5. **用戶確認「係，理解啱」先好抄檔**；未確認唔好 `git init`、唔好揀授權、唔好改 `LICENSE`。
 6. **唔好靠估**：答唔到就寫「未定／待用戶確認」，唔好自己揀個 default 當答案。
 
-> ⚠️ **唔好問「你想用咩內容／主題分類」**：用戶明確講過要按**形式**分（輕／有後台／Gemini），唔係內容分類。下面 Q1–Q5 全部係形式問題。
+> ⚠️ **唔好問「你想用咩內容／主題分類」**：用戶明確講過要按**形式**分（輕／有後台／Gemini），唔係內容分類。下面 Q1–Q8 全部係形式與入口問題。
 
 ---
 
@@ -51,6 +51,28 @@
    ➡️ 建議：請用戶填一句，AGENT 唔好代寫。
    → 寫入 README 第一句同 SCOPE.md 兩條 bar；「唔做乜」去 docs/out-of-scope/。
 
+❓ Q8 — 入口與白名單／關站模式（經四大官方入口任一進入）？
+   【AGENT 必須主動告知用戶本生態有 **4 個官方準入白名單入口**（真理倉 docs/50 §0.1 唯一登記：
+     1. APP STORE `https://scoutappstore.vercel.app`
+     2. 圖書館 `https://scout-circulars.vercel.app`
+     3. 成員系統 `https://member-portal-sigma-swart.vercel.app`
+     4. 區管理系統 `https://scout-district-portal.vercel.app`）
+   及暫時關站機制】
+   open（公開直連，預設）· entry-gate（頂層跳板白名單，唔用 iframe，可揀四大入口任一或全部）·
+   iframe-only（純 iframe 白名單，須該入口已有 iframe 殼）· closed（暫時關站／維護告示）
+   ➡️ 建議：預設 `open`；若想規定經指定入口進入：
+      - 寫法 `portalIds: ['appstore','library','member','district']`（可只揀子集；自訂入口用 `portals`，優先於 portalIds）。
+      - 凡有 localStorage／IndexedDB 長期資料（含 C13 BYOK key）、PWA 加入主畫面、Web Push、
+        登入 Session Cookie（SameSite=Lax）或相機／GPS 權限 → **唔適合 iframe 白名單**，
+        必須提醒用戶改揀 `entry-gate`（頂層跳板白名單）或維持 `open`（SG2）。
+      - 若白名單包埋圖書館／成員系統／區管理系統，提醒該三處連結現時帶 `rel="noopener noreferrer"`（會清空 `Referer`），要先改 `rel="noopener"` 先放行得到：
+        `scout-circulars/index.html` L5662、`member-portal/components/BookSelector.tsx` L88、`scout-district-portal/app/embed/page.tsx` L45 同 `app/links/page.tsx` L138。
+      - 靠本機儲存嘅 App（含 4 個 `BOOK`）：經入口**頂層跳轉**零影響（`localStorage` 只認子站 origin，用咩入口都係同一個倉）；但**唔可以入 `iframe`**（會分區／睇唔返舊紀錄）。
+      - 已加主畫面 PWA：`allowStandalone: true` ＋ manifest `"display": "standalone"` → 撳 icon 直開自動放行；提醒 **iOS 主畫面容器同 Safari 分頁儲存分家**（Android Chrome 共用），要靠 JSON／QR 備份還原搬資料。
+      - 只有純無狀態計算機／圖卡／簡報，且確認母站已起 iframe 殼後，先可揀 `iframe-only`。
+   → 見真理倉 [docs/50](https://github.com/playerkousas-rgb/readme/blob/main/docs/50-app-store-whitelist-and-shutdown.md)（SG1–SG6）。
+```
+
 ---
 
 ## 第 2 輪：只問被解鎖嘅（唔好一開始就問）
@@ -77,6 +99,7 @@
 | Q5 Gemini | docs/09 結構 + 5MB + W1/V2 雙版號 |
 | Q6 授權 | 先揀先改 `LICENSE` |
 | Q7 定位 | `README.md` 第一句 + `SCOPE.md`；已拒絕去 `docs/out-of-scope/` |
+| Q8 入口／白名單 | 寫入 `SCOPE.md`；非 `open` 時抄 `templates/vercel/store_gate_v1.0.js`（開 APP 時告知白名單／關站）；純 `iframe-only` 另換 `vercel.iframe-whitelist.json`（[docs/50](https://github.com/playerkousas-rgb/readme/blob/main/docs/50-app-store-whitelist-and-shutdown.md)） |
 
 > **13d PREFLIGHT、5 份 SKILL.md 同 [`skills/CATALOG.md`](skills/CATALOG.md) 唔跟形式**：所有新 repo 都有，唔使問。
 > **PREFLIGHT 係第 4 步，唔係第 0 步**：佢驗檔，唔驗「你估中用戶需求未」。問清楚先抄檔，唔好倒轉。
