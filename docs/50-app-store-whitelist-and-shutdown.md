@@ -1,7 +1,7 @@
 # 50 — 關站與 App Store 白名單入口 SG1–SG6（經 website 進入・不適合白名單處理）
 
 > **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經指定入口（如 APP STORE `website` 或通告圖書館 `scout-circulars`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
-> **層級**：按需啟用嘅入口管制規則（預設 `open` 公開直連，唔強制鎖站；現有 repo 唔自動追溯）。支援**單一入口**或**多個指定入口並存**（例如同時容許由 **SCOUT APP STORE** 或 **通告圖書館** 進入，其餘直連一律攔截）。一旦開新 App 時揀咗白名單或日後要關站，必須按 **SG1–SG7** 處理，避免撞入 Safari 儲存隔離、PWA 主畫面踢人、`SameSite=Lax` Cookie 全滅、通告圖書館 `noreferrer` 清空 `Referer` 同 `308` 永久快取五大陷阱。
+> **層級**：按需啟用嘅入口管制規則（預設 `open` 公開直連，唔強制鎖站；現有 repo 唔自動追溯）。支援**單一入口**或**多個指定入口並存**（例如同時容許由 **SCOUT APP STORE** 或 **通告圖書館** 進入，其餘直連一律攔截）。一旦開新 App 時揀咗白名單或日後要關站，必須按 **SG1–SG8** 處理，避免撞入 Safari 儲存隔離、PWA 主畫面踢人、`SameSite=Lax` Cookie 全滅、通告圖書館 `noreferrer` 清空 `Referer` 同 `308` 永久快取五大陷阱。
 > **官方四大準入白名單入口（2026-11-15 用戶定案・真理倉唯一登記處）**：**1. APP STORE** · **2. 圖書館** · **3. 成員系統** · **4. 區管理系統**。四個入口嘅 repo、pinned commit、Origin、現時連結行為同 `<iframe>` 殼狀況全部實查列於 [§0.1](#01-官方四大準入白名單入口註冊表canonical-portal-registry)；程式碼層面嘅同一份表係 [`store_gate_v1.0.js`](../templates/vercel/store_gate_v1.0.js) 嘅 `PORTAL_REGISTRY`（子 App 只需寫 `portalIds: ['appstore','library','member','district']`）。日後加／改名／改網址，**只改呢兩處**。
 
 ---
@@ -53,7 +53,7 @@ initStoreGate({
 
 ---
 
-## 1. 規則總表 SG1–SG7（Store Gate）
+## 1. 規則總表 SG1–SG8（Store Gate）
 
 | ID | 規則 | 硬要求 / 一句驗收 |
 |---|---|---|
@@ -64,6 +64,7 @@ initStoreGate({
 | **SG5** | **不適合 `<iframe>` 嘅 App 改用頂層跳板 `entry-gate`** | App 保持**頂層獨立網域**執行（100% 保住 Safari `localStorage`、PWA、Push、`SameSite=Lax` Cookie）。輕量級用 `store_gate_v1.0.js`（`mode: 'entry-gate'`）：以 `new URL(referrer).origin` 嚴格比對白名單 Set（防 `.evil.com` 前綴偽造）＋ `sessionStorage`（`try/catch`）保同分頁重整 ＋ `allowStandalone: true` 放行已裝主畫面 PWA；嚴格級再加 `/api/enter` 60 秒 HMAC `sig` 驗票寫 `HttpOnly` Cookie |
 | **SG6** | **暫時關站分硬關站（Pause）與軟關站（告示頁）** | 硬關站：Vercel Dashboard → `Settings → General → Pause Project`（連 `/api` 即停、零額度，但出英文預設頁）；軟關站：`store_gate_v1.0.js` 設 `mode: 'closed'` 出中文維護卡，或 `vercel.json` `redirects` 設 **`"permanent": false`（302，嚴禁 `true`/308 永久快取）** 導回 `scoutappstore.vercel.app` |
 | **SG7** | **「加入主畫面」只准由指定入口第一次進入** | 直開網址嘅用家**唔會** 404（`store_gate_v1.0.js` 會出白名單卡），但**唔准教用家直接開網址然後「加入主畫面」**：① 在入口母站（例如 APP STORE）「加入主畫面」會裝到**母站**而唔係個 App；② 真 404／未部署路徑根本冇 `manifest`，瀏覽器唔會提供「加入主畫面」；③ 已退役 app 嘅舊主畫面圖示撳落去只會白屏／「找不到網頁」。標準話術一律係「**先由入口進入 → 再按瀏覽器選單加入主畫面**」，並靠 `allowStandalone: true` 令裝好之後撳 icon 直開 |
+| **SG8** | **入口網站自己永不被自己嘅閘擋** | 四大入口（APP STORE／圖書館／成員系統／區管理系統）**自己嘅 origin 一旦出現在 `portalIds` 就自動放行**（`reason: 'self-portal'`），因為「入口就係入口」，佢本身唔需要再經其他地方。**但**：① 入口自己**唔應該掛** `entry-gate`（佢唔係子 App）；② 入口若要軟關站，用 `mode: 'closed'`（`closed` 優先於 self 放行）；③ 子 App 記得**唔好**把入口 origin 當成自己 origin（判別靠 `location.origin`，唔靠 Referer） |
 
 ---
 
@@ -150,7 +151,9 @@ initStoreGate({
 
 ### 3.4 「全部 App 都經白名單」其實有影響；新用戶直點網址／404／加入主畫面又點？
 
-**先修正一個危險誤解**：白名單**唔係**「對所有東西沒影響」。要分清兩件事：
+> ✅ **你講得對嘅部分（已寫成 SG8）**：四大入口**自己**就係入口，佢哋嘅 origin 一在 `portalIds` 名單內就自動放行（`reason: 'self-portal'`），永遠唔會被自己嘅閘擋，亦唔需要再經其他地方。
+
+**但子 App 就唔同**：白名單**唔係**「對所有東西沒影響」。要分清兩件事：
 
 | 問題 | 答案 |
 |---|---|
@@ -176,6 +179,18 @@ initStoreGate({
 | **② 真 404**（路徑打錯／app 未部署／已刪除） | 平台（Vercel）預設 404 頁：**冇白名單卡、冇 `manifest`、冇閘門 script** | ❌ **完全冇得加入主畫面**（瀏覽器唔會提供呢個選項） | 唔需要處理；若想連 404 都友善，可加 `vercel.json` rewrite 去 404 引導頁（見下） |
 | **③ 已退役／換咗網域嘅舊 app** | 舊網址 404 或舊部署 | ❌ 冇得裝；**舊主畫面圖示撳落去＝白屏（iOS）／「找不到網頁」（Android）** | 舊 icon 要用家自己刪；公告講明新入口，唔好留住舊 icon 誤導 |
 | **④ 已經裝錯來源**（按 §3.3 教錯方法） | 在**入口母站**按「加入主畫面」→ icon 開出嚟係**母站**（唔係個 App）；在 `iframe` 內按 → 裝到母站 | 該 icon 存在但內容錯 | 刪 icon，改為「由入口入到 App 之後」再按加入主畫面 |
+
+**「直開網址會唔會自動跳去 APP STORE？」——預設：唔會自動跳，會停低顯示入口卡**
+
+| 設定 | 直開子 App 網址會發生咩事 |
+|---|---|
+| `autoRedirectSeconds: 0`（**預設**） | **停喺原地**顯示白名單卡：4 個入口掣＋安裝提示，用家自己揀。**唔會**自動跳 |
+| `autoRedirectSeconds: 3`（想自動） | 畫面顯示「3 秒後自動前往…（1. 前往 APP STORE）」，然後用 `location.replace()` 跳去**第一個入口**（即 APP STORE） |
+| `autoRedirectSeconds: 3` ＋ `autoRedirectPortalId: 'library'` | 自動跳去你指定嘅入口（例如圖書館），唔一定係 APP STORE |
+| `vercel.json` `redirects`（Edge 層 302，見 §4.2） | 連白名單卡都唔會出現，瀏覽器**立刻 302** 去 `https://scoutappstore.vercel.app/?from=whitelist` |
+
+> **建議**：`BOOK` 類／有紀錄嘅 App **保持 `0`（唔自動跳）**——用家由舊書籤入嚟即刻被彈走會以為壞咗；而且自動跳會令用家永遠只識 APP STORE，其餘三個入口等於冇用。想「自動」就把秒數設 3–5 秒，並一定要顯示目的地名稱（現已內置）。
+> **注意**：自動跳係 `location.replace()`，即係**唔會**留低上一頁紀錄；用家之後按返回唔會 loop。呢個係「頂層跳轉」而唔係 `iframe`，所以 `BOOK` 嘅 `localStorage` 唔受影響（§3.2）。
 
 **標準引導話術（SG7，四個入口都應該照抄）**：
 

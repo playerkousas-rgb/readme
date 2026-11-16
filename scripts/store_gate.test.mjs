@@ -24,6 +24,7 @@ function makeMockEnv({
   storageThrows = false,
   lang = 'zh-HK',
   dataLang = '',
+  selfOrigin = 'https://scoutbook-five.vercel.app',
 } = {}) {
   const store = new Map();
   const makeElement = (tag) => {
@@ -107,6 +108,7 @@ function makeMockEnv({
       },
     },
     location: {
+      origin: selfOrigin,
       replacedWith: null,
       replace(u) {
         this.replacedWith = u;
@@ -211,6 +213,38 @@ test('SG2/SG5：已加入主畫面嘅 standalone PWA（Android matchMedia / iOS 
   assert.equal(viaPortalRes.reason, 'referrer-whitelist');
 });
 
+test('SG8：入口網站自己永遠唔會被閘（portalIds 含自身 origin 時 fail-closed 攔截，防自我鎖死）', () => {
+  const self = makeMockEnv({ referrer: '', selfOrigin: 'https://scoutappstore.vercel.app' });
+  const res = gate.initStoreGate({
+    appKey: 'appstore_self',
+    mode: 'entry-gate',
+    portalIds: ['appstore', 'library', 'member', 'district'],
+  }, self.win);
+  assert.equal(res.allowed, true, '入口自己必須放行，否則四大入口全部鎖死');
+  assert.equal(res.reason, 'self-portal');
+  assert.equal(self.doc.getElementById('scoutStoreGate'), null, '入口自己唔應該見到任何閘卡');
+
+  // 子 App（自身 origin 唔在名單）照樣正常受閘
+  const child = makeMockEnv({ referrer: '' });
+  const childRes = gate.initStoreGate({ appKey: 'child', mode: 'entry-gate', portalIds: ['appstore'] }, child.win);
+  assert.equal(childRes.allowed, false);
+
+  // 入口自己用 iframe-only（例如母站自己都掛同一支 script）：仍然要放行，否則連母站都開唔到
+  const selfIframe = makeMockEnv({ referrer: '', selfOrigin: 'https://scout-circulars.vercel.app' });
+  const r3 = gate.initStoreGate({ appKey: 'self2', mode: 'iframe-only', portalIds: ['library'] }, selfIframe.win);
+  assert.equal(r3.allowed, true);
+  assert.equal(r3.reason, 'self-portal');
+
+  // 入口自己唔喺名單內（例如子 App 版）→ 照樣當普通子 App 攔截
+  const notSelf = makeMockEnv({ referrer: '', selfOrigin: 'https://scout-circulars.vercel.app' });
+  const r3b = gate.initStoreGate({ appKey: 'self2b', mode: 'iframe-only', portalIds: ['appstore'] }, notSelf.win);
+  assert.equal(r3b.allowed, false);
+
+  // closed（關站）係最高優先：連入口自己都應該見到告示，唔會被 self 放行掩蓋
+  const selfClosed = makeMockEnv({ referrer: '', selfOrigin: 'https://scoutappstore.vercel.app' });
+  const r4 = gate.initStoreGate({ appKey: 'self3', mode: 'closed' }, selfClosed.win);
+  assert.equal(r4.allowed, false, '軟關站要蓋過 self 放行');
+});
 test('SG7：直開網址（無入口 Referer）時提示卡要講清楚「加入主畫面」要由入口入，防裝出打不開嘅圖示', () => {
   const { win, doc } = makeMockEnv({ referrer: '' });
   gate.initStoreGate({ appKey: 'book', mode: 'entry-gate', portalIds: ['appstore', 'library'] }, win);
@@ -425,7 +459,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   const dix = read('docs', 'README.md');
   const wf = read('.github', 'workflows', 'guard.yml');
 
-  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7']) {
+  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7', 'SG8']) {
     assert.ok(pb.includes(id) && doc.includes(id), `PLAYBOOK / docs/50 缺 ${id}`);
   }
   assert.ok(intake.includes('Q8') && intake.includes('entry-gate'), 'INTAKE 第 0 步要有 Q8 主動告知白名單與 entry-gate');

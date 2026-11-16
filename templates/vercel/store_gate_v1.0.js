@@ -142,6 +142,7 @@ const COPY = {
     countdownPrefix: '將於 ',
     countdownSuffix: ' 秒後自動前往主站…',
     installHint: '想「加入主畫面」用 App 模式開啟？請先由上述入口進入本程式，再用瀏覽器選單「加入主畫面」（直接開網址安裝會得到打不開的圖示）。',
+    autoRedirectHint: '唔想等？直接撳上面任何一個入口掣。',
   },
   en: {
     whitelistBadge: 'Whitelist Only · Designated Portals',
@@ -277,6 +278,16 @@ function evaluateStoreGate(options = {}, env = {}) {
   if (mode === 'closed') {
     return { allowed: false, reason: 'closed', mode };
   }
+  // SG8：入口網站自己永遠唔會被自己嘅閘擋死（否則四大入口一齊鎖死）。
+  // 判定：當前頁面自己嘅 origin ∈ 白名單入口清單 → 放行；closed 已喺上面優先處理（關站蓋過一切），
+  // open 亦已喺上面直接放行，所以呢兩行唔會改變原有行為。
+  if (mode === 'iframe-only' || mode === 'entry-gate') {
+    const selfOrigin = parseAllowedOrigin(env.selfOrigin || '', allowLocalhost);
+    if (selfOrigin && allowedSet.has(selfOrigin)) {
+      return { allowed: true, reason: 'self-portal', mode, matchedOrigin: selfOrigin };
+    }
+  }
+
   if (mode === 'iframe-only') {
     const inIframe = Boolean(env.inIframe);
     return inIframe
@@ -396,13 +407,22 @@ function renderGateOverlay(doc, win, decision, options = {}) {
     if (sec > 0 && win && typeof win.setTimeout === 'function') {
       const sub = doc.createElement('p');
       sub.className = 'sg-sub';
-      sub.textContent = `${c.countdownPrefix}${sec}${c.countdownSuffix}`;
+      // 講清楚「會自動去邊個入口」，避免用家唔知跳去邊（預設永遠係第一粒＝APP STORE）
+      const primaryName = isMulti
+        ? (lang === 'en' ? portals[0].labelEn : portals[0].labelZh)
+        : '';
+      sub.textContent = isMulti
+        ? `${c.countdownPrefix}${sec}${c.countdownSuffix}（${primaryName}）`
+        : `${c.countdownPrefix}${sec}${c.countdownSuffix}`;
       box.appendChild(sub);
+      const autoTarget = (options.autoRedirectPortalId && getPortal(options.autoRedirectPortalId))
+        ? getPortal(options.autoRedirectPortalId).url
+        : primaryUrl;
       win.setTimeout(() => {
         try {
-          (win.top || win).location.replace(primaryUrl);
+          (win.top || win).location.replace(autoTarget);
         } catch {
-          win.location.replace(primaryUrl);
+          win.location.replace(autoTarget);
         }
       }, sec * 1000);
     }
@@ -431,11 +451,19 @@ function initStoreGate(options = {}, win = typeof window !== 'undefined' ? windo
     }
   }
 
+  let selfOrigin = '';
+  try {
+    selfOrigin = (win && win.location && win.location.origin) || '';
+  } catch {
+    selfOrigin = '';
+  }
+
   const decision = evaluateStoreGate(options, {
     inIframe,
     standalone: isStandaloneApp(win),
     hasSessionPass: readSessionPass(win, passKey),
     referrer: doc ? doc.referrer || '' : '',
+    selfOrigin,
   });
 
   if (decision.allowed) {
