@@ -64,6 +64,7 @@
 | `voice_slide_web` | https://voice-slide-web.vercel.app | 0 | 0 | 0 | 0 |
 | `vsmeeting` | https://vsmeeting.vercel.app | 0 | 1 | 1 | 0 |
 
+> **直接可用嘅指令**：[`templates/repo-starter/A-GROUP-INSTRUCTION.md`](../templates/repo-starter/A-GROUP-INSTRUCTION.md)（複製即貼去該 App 對話，只需改 `<APPKEY>`）。
 > 建議第一批先揀 3–5 個試（例如 `Aircraft-Encyclopedia`、`Icon-Maker`、`Photo-Prep`、`router`、`voice_slide_web`），真機驗一次再批次做。**有 `SW=1` 嘅**（`AYP`／`CUBSGAME`／`GAME`／`cubsmeeting`／`ghmeeting`／`scoutmeeting`／`vsmeeting`／`HKMAP`）要先確認個 Service Worker 係做離線快取定 Push 訂閱。
 
 ## 2. B 組：可以加，但要 `allowStandalone` 先做（本機儲存明顯）— 6 個

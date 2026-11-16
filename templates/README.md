@@ -9,6 +9,7 @@
 | Git ignore | `git/gitignore` | 新 repo `.gitignore`（**記得改返個點**） |
 | Vercel 設定 | `vercel/vercel.json` | repo 根 `vercel.json`（預設 `open` 直連；已含 `/icons/*` immutable 標頭，**G11**） |
 | **🔒 Vercel 純 iframe 白名單設定（SG4）** | [`vercel/vercel.iframe-whitelist.json`](vercel/vercel.iframe-whitelist.json) | 只限適合 `<iframe>` 嘅無狀態小工具（且四大入口已有 `<iframe>` 殼）：設 `CSP frame-ancestors`（四個派發入口以空格分隔（Gemini 屬創作方向，唔列入 `frame-ancestors`））、移走 `SAMEORIGIN`、`302` 防永久快取（[docs/50 §0.1](../docs/50-app-store-whitelist-and-shutdown.md)） |
+| **📨 A 組直接可用指令（複製即貼）** | [`repo-starter/A-GROUP-INSTRUCTION.md`](repo-starter/A-GROUP-INSTRUCTION.md) | 逐個 A 組 App 開對話時直接複製嘅完整訊息：答 6 條 → 抄閘門檔 → `<head>` 掛入 → 真機三項 → 固定回報格式（[docs/51](../docs/51-whitelist-rollout-list.md) A 組） |
 | **📋 逐個 App 白名單交接清單** | [`repo-starter/WHITELIST-HANDOFF.md`](repo-starter/WHITELIST-HANDOFF.md) | 可直接貼去該 App 嘅對話：6 條問題（本機資料／PWA／Push／後端 API／今日入口／類型）→ 按類型落實 `mode`／`portalIds`／`allowStandalone`／`supportNudge` → 真機三項驗收（[docs/50 §3.8-D](../docs/50-app-store-whitelist-and-shutdown.md)） |
 | **🚪 白名單／關站前端閘門（SG3/SG5/SG6）** | [`vercel/store_gate_v1.0.js`](vercel/store_gate_v1.0.js) | 開 APP 時清晰告知用戶有白名單或暫時關站；內置 `PORTAL_REGISTRY` **官方四大入口**（APP STORE／圖書館／成員系統／區管理系統，用 `portalIds` 引用），支援頂層跳板 `entry-gate`（專治唔適合 `<iframe>` 嘅 App，放行 `standalone` PWA）、`iframe-only`、`closed` |
 | Vercel 上傳黑名單 | `vercel/vercelignore` | repo 根 `.vercelignore` |

@@ -712,5 +712,11 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
     assert.ok(list.includes(kw), `docs/51 要覆蓋「${kw}」`);
   }
   assert.ok(list.includes('website') && list.includes('scout-circulars'), 'D 組要列出入口本體');
+  // A 組可直接貼嘅指令檔
+  const instr = read('templates', 'repo-starter', 'A-GROUP-INSTRUCTION.md');
+  for (const kw of ['portalIds', 'allowStandalone', 'entry-gate', '真機', '回報', 'APPKEY']) {
+    assert.ok(instr.includes(kw), `A-GROUP-INSTRUCTION 要覆蓋「${kw}」`);
+  }
+  assert.ok(list.includes('A-GROUP-INSTRUCTION.md'), 'docs/51 要指向 A 組指令檔');
   assert.ok(rd.includes('51-whitelist-rollout-list.md'), '根 README 要指向 docs/51');
 });
