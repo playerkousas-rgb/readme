@@ -57,8 +57,9 @@
      2. 圖書館 `https://scout-circulars.vercel.app`
      3. 成員系統 `https://member-portal-sigma-swart.vercel.app`
      4. 區管理系統 `https://scout-district-portal.vercel.app`
-     ＋ 5. GEMINI `https://gemini.google.com`（**方向相反**：係「入嚟創作」，Google 網域跨站、冇我哋 Referer →
-        **唔准放入 portalIds** 做放行來源；生成嘅 app 部署後要另定 mode，見 SG16 / docs/09 C13））
+     ＋ 5. GEMINI `https://gemini.google.com`（**Canvas 派發線**：同樣係整俾人用嘅入口，工具用 Canvas 寫、跑喺
+        Google 網域、Gemini 自己嗰邊有完善統計；但**我哋管唔到佢嘅閘**，所以**唔准放入 portalIds** 做放行來源。
+        Canvas app 要連受管制 App → 一律經 APP STORE 轉接，見 SG16 / docs/09 C13））
    及暫時關站機制】
    open（公開直連，預設）· entry-gate（頂層跳板白名單，唔用 iframe，可揀四大入口任一或全部）·
    iframe-only（純 iframe 白名單，須該入口已有 iframe 殼）· closed（暫時關站／維護告示）
