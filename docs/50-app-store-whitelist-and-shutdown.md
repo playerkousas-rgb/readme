@@ -1,7 +1,7 @@
 # 50 — 關站與 App Store 白名單入口 SG1–SG6（經 website 進入・不適合白名單處理）
 
 > **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經指定入口（如 APP STORE `website` 或通告圖書館 `scout-circulars`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
-> **層級**：按需啟用嘅入口管制規則（預設 `open` 公開直連，唔強制鎖站；現有 repo 唔自動追溯）。支援**單一入口**或**多個指定入口並存**（例如同時容許由 **SCOUT APP STORE** 或 **通告圖書館** 進入，其餘直連一律攔截）。一旦開新 App 時揀咗白名單或日後要關站，必須按 **SG1–SG6** 處理，避免撞入 Safari 儲存隔離、PWA 主畫面踢人、`SameSite=Lax` Cookie 全滅、通告圖書館 `noreferrer` 清空 `Referer` 同 `308` 永久快取五大陷阱。
+> **層級**：按需啟用嘅入口管制規則（預設 `open` 公開直連，唔強制鎖站；現有 repo 唔自動追溯）。支援**單一入口**或**多個指定入口並存**（例如同時容許由 **SCOUT APP STORE** 或 **通告圖書館** 進入，其餘直連一律攔截）。一旦開新 App 時揀咗白名單或日後要關站，必須按 **SG1–SG7** 處理，避免撞入 Safari 儲存隔離、PWA 主畫面踢人、`SameSite=Lax` Cookie 全滅、通告圖書館 `noreferrer` 清空 `Referer` 同 `308` 永久快取五大陷阱。
 > **官方四大準入白名單入口（2026-11-15 用戶定案・真理倉唯一登記處）**：**1. APP STORE** · **2. 圖書館** · **3. 成員系統** · **4. 區管理系統**。四個入口嘅 repo、pinned commit、Origin、現時連結行為同 `<iframe>` 殼狀況全部實查列於 [§0.1](#01-官方四大準入白名單入口註冊表canonical-portal-registry)；程式碼層面嘅同一份表係 [`store_gate_v1.0.js`](../templates/vercel/store_gate_v1.0.js) 嘅 `PORTAL_REGISTRY`（子 App 只需寫 `portalIds: ['appstore','library','member','district']`）。日後加／改名／改網址，**只改呢兩處**。
 
 ---
@@ -53,7 +53,7 @@ initStoreGate({
 
 ---
 
-## 1. 規則總表 SG1–SG6（Store Gate）
+## 1. 規則總表 SG1–SG7（Store Gate）
 
 | ID | 規則 | 硬要求 / 一句驗收 |
 |---|---|---|
@@ -63,6 +63,7 @@ initStoreGate({
 | **SG4** | **純 `<iframe>` 白名單雙層配置＋禁留 `SAMEORIGIN`** | 只限純無狀態小工具／圖卡／簡報，且**必須等母站 `website` 實作 `<iframe>` 檢視器後先可啟用**。用 [`templates/vercel/vercel.iframe-whitelist.json`](../templates/vercel/vercel.iframe-whitelist.json) 設 `CSP: frame-ancestors https://scoutappstore.vercel.app;`（**必須移除 `X-Frame-Options: SAMEORIGIN`**，否則自相矛盾擋死母站）＋ `<head>` 掛 `store_gate_v1.0.js`（`mode: 'iframe-only'`） |
 | **SG5** | **不適合 `<iframe>` 嘅 App 改用頂層跳板 `entry-gate`** | App 保持**頂層獨立網域**執行（100% 保住 Safari `localStorage`、PWA、Push、`SameSite=Lax` Cookie）。輕量級用 `store_gate_v1.0.js`（`mode: 'entry-gate'`）：以 `new URL(referrer).origin` 嚴格比對白名單 Set（防 `.evil.com` 前綴偽造）＋ `sessionStorage`（`try/catch`）保同分頁重整 ＋ `allowStandalone: true` 放行已裝主畫面 PWA；嚴格級再加 `/api/enter` 60 秒 HMAC `sig` 驗票寫 `HttpOnly` Cookie |
 | **SG6** | **暫時關站分硬關站（Pause）與軟關站（告示頁）** | 硬關站：Vercel Dashboard → `Settings → General → Pause Project`（連 `/api` 即停、零額度，但出英文預設頁）；軟關站：`store_gate_v1.0.js` 設 `mode: 'closed'` 出中文維護卡，或 `vercel.json` `redirects` 設 **`"permanent": false`（302，嚴禁 `true`/308 永久快取）** 導回 `scoutappstore.vercel.app` |
+| **SG7** | **「加入主畫面」只准由指定入口第一次進入** | 直開網址嘅用家**唔會** 404（`store_gate_v1.0.js` 會出白名單卡），但**唔准教用家直接開網址然後「加入主畫面」**：① 在入口母站（例如 APP STORE）「加入主畫面」會裝到**母站**而唔係個 App；② 真 404／未部署路徑根本冇 `manifest`，瀏覽器唔會提供「加入主畫面」；③ 已退役 app 嘅舊主畫面圖示撳落去只會白屏／「找不到網頁」。標準話術一律係「**先由入口進入 → 再按瀏覽器選單加入主畫面**」，並靠 `allowStandalone: true` 令裝好之後撳 icon 直開 |
 
 ---
 
@@ -146,6 +147,43 @@ initStoreGate({
 **實務做法（`BOOK` 類）**：① `mode: 'entry-gate'` ＋ `allowStandalone: true`，令入口同主畫面都得；② 保留並突顯「匯出 JSON／QR 備份」同「匯入還原」，喺「由 Safari 轉用主畫面」時提示用家搬一次；③ 唔可以用 `iframe-only`；④ 喺 `SCOPE.md` 寫明「iOS 主畫面與 Safari 儲存分家」已向用戶交代。
 
 ---
+
+### 3.4 「全部 App 都經白名單」其實有影響；新用戶直點網址／404／加入主畫面又點？
+
+**先修正一個危險誤解**：白名單**唔係**「對所有東西沒影響」。要分清兩件事：
+
+| 問題 | 答案 |
+|---|---|
+| **對「App 內部資料」有冇影響？** | 只要用**頂層 `entry-gate`**（唔用 `iframe`）就**零影響**——`localStorage`、IndexedDB、PWA、Cookie 全部照舊（§3.2、§3.3） |
+| **對「App 以外嘅所有嘢」有冇影響？** | **有，而且必須接受**：見下面清單，呢啲係白名單本身嘅代價，唔關 `iframe` 事 |
+
+**白名單真實代價（用戶必須知，否則會覺得「壞咗」）**：
+
+| 項目 | 會發生咩事 | 緩解 |
+|---|---|---|
+| **分享連結** | 朋友撳 WhatsApp 收到嘅 `xxx.vercel.app` 直連 → 見到白名單卡，要再撳一次掣入入口 | 分享連結一律指回四大入口（§4.4-6）；白名單卡要清楚（SG3） |
+| **Google 搜尋／書籤／QR code／舊通告 PDF 內連結** | 同上，一律撞卡 | 預期行為；重要對外文件改貼入口網址 |
+| **Web Push 深層連結** | 推播撳入屬頂層導覽、通常無 `Referer` → 會被 `entry-gate` 擋 | 有 Push 嘅 App（例如 `scout-circulars`）**維持 `open`**，或推播連結附一次性簽名票（§4.3） |
+| **WhatsApp／IG／FB 內置瀏覽器** | 有自己沙盒；`Referer` 有機會被剝走，儲存同系統瀏覽器分家 | 提示用家「用 Safari／Chrome 開啟」；必要時用 §4.3 簽票 |
+| **新用戶上手** | 多一步：要經入口先入到 | 入口頁寫清楚「第一次請由此進入」；白名單卡本身已係引導 |
+| **iOS 主畫面 vs Safari** | 兩個容器，紀錄分家（§3.3-B） | `BOOK` 保留 JSON／QR 備份還原 |
+
+**新用戶「直接點網址」嘅四種真實情境**：
+
+| 情境 | 實際會見到 | 可唔可以「加入主畫面」 | 處理 |
+|---|---|---|---|
+| **① 網址存在・`entry-gate`**（最常見） | **唔會 404**。`store_gate_v1.0.js` 出白名單卡，列出四大入口按鈕＋（SG7）「想加入主畫面？請先由入口進入」提示 | 該頁仍然有 `manifest`，所以**技術上裝得到**，但裝出嚟**一樣受閘**（撳 icon 開一樣見白名單卡，除非 `allowStandalone` 已放行） | 用家照卡指示經入口入一次，之後可以正常加入主畫面 |
+| **② 真 404**（路徑打錯／app 未部署／已刪除） | 平台（Vercel）預設 404 頁：**冇白名單卡、冇 `manifest`、冇閘門 script** | ❌ **完全冇得加入主畫面**（瀏覽器唔會提供呢個選項） | 唔需要處理；若想連 404 都友善，可加 `vercel.json` rewrite 去 404 引導頁（見下） |
+| **③ 已退役／換咗網域嘅舊 app** | 舊網址 404 或舊部署 | ❌ 冇得裝；**舊主畫面圖示撳落去＝白屏（iOS）／「找不到網頁」（Android）** | 舊 icon 要用家自己刪；公告講明新入口，唔好留住舊 icon 誤導 |
+| **④ 已經裝錯來源**（按 §3.3 教錯方法） | 在**入口母站**按「加入主畫面」→ icon 開出嚟係**母站**（唔係個 App）；在 `iframe` 內按 → 裝到母站 | 該 icon 存在但內容錯 | 刪 icon，改為「由入口入到 App 之後」再按加入主畫面 |
+
+**標準引導話術（SG7，四個入口都應該照抄）**：
+
+> 第一次使用：**請由 APP STORE／圖書館／成員系統／區管理系統進入**本程式 → 進入後按瀏覽器選單「加入主畫面」→ 之後就可以直接撳 icon 開啟（閣下嘅紀錄會保留）。
+
+**想連 404 都唔會令用家迷路（可選）**：靜態 app 可以在 `vercel.json` 加 rewrite，把所有未知路徑導去 `index.html`，令「打錯路徑」都出白名單卡而唔係平台 404 頁；但記住 **`rewrite` 唔可以取代 `redirects` 嘅 `permanent: false` 規則（SG6）**，亦唔好攔 `/assets/*` 同 `/icons/*`。
+
+**誠實邊界**：Vercel 平台層 404 頁**無法**注入我哋嘅提示卡（唔經我哋部署嘅檔案），只能靠上面 rewrite 或入口頁文案避免用家行到呢一步。
 
 ## 4. 實作範本與接線步驟
 

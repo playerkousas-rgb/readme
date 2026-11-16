@@ -92,7 +92,7 @@ function makeMockEnv({
   const timers = [];
   const win = {
     document: doc,
-    navigator: { standalone: navigatorStandalone },
+    navigator: { standalone: navigatorStandalone, serviceWorker: { ready: true } },
     matchMedia(q) {
       return { matches: q === '(display-mode: standalone)' && standalone };
     },
@@ -202,6 +202,43 @@ test('SG2/SG5：已加入主畫面嘅 standalone PWA（Android matchMedia / iOS 
     gate.initStoreGate({ appKey: 'book', mode: 'entry-gate', allowStandalone: false }, strict.win).allowed,
     false,
   );
+
+  // SG7 誠實邊界：iOS 主畫面 WebClip 嘅 standalone 容器會「獨立」儲存，
+  // 由 Safari 入口入 vs 撳 icon 入係兩個唔同倉。刻意經入口入亦會放行，兩者都正常。
+  const viaPortal = makeMockEnv({ referrer: 'https://scoutappstore.vercel.app/' });
+  const viaPortalRes = gate.initStoreGate({ appKey: 'book', mode: 'entry-gate' }, viaPortal.win);
+  assert.equal(viaPortalRes.allowed, true);
+  assert.equal(viaPortalRes.reason, 'referrer-whitelist');
+});
+
+test('SG7：直開網址（無入口 Referer）時提示卡要講清楚「加入主畫面」要由入口入，防裝出打不開嘅圖示', () => {
+  const { win, doc } = makeMockEnv({ referrer: '' });
+  gate.initStoreGate({ appKey: 'book', mode: 'entry-gate', portalIds: ['appstore', 'library'] }, win);
+  const dialog = doc.getElementById('scoutStoreGate');
+  const subs = dialog.children.filter((c) => c.className === 'sg-sub');
+  assert.ok(subs.some((el) => /加入主畫面/.test(el.textContent)), '要顯示加入主畫面提示');
+  assert.ok(subs.some((el) => /打不開/.test(el.textContent)), '要講明裝錯來源會打不開');
+
+  // 英文介面同樣要有
+  const en = makeMockEnv({ referrer: '', lang: 'en-US' });
+  gate.initStoreGate({ appKey: 'book', mode: 'entry-gate' }, en.win);
+  const enDialog = en.doc.getElementById('scoutStoreGate');
+  assert.ok(
+    enDialog.children.filter((c) => c.className === 'sg-sub').some((el) => /Add to Home Screen/i.test(el.textContent)),
+    '英文介面要有 Add to Home Screen 提示',
+  );
+
+  // showInstallHint: false 可以關閉（例如內部工具唔想提 PWA）
+  const quiet = makeMockEnv({ referrer: '' });
+  gate.initStoreGate({ appKey: 'book', mode: 'entry-gate', showInstallHint: false }, quiet.win);
+  const quietDialog = quiet.doc.getElementById('scoutStoreGate');
+  assert.equal(quietDialog.children.filter((c) => c.className === 'sg-sub').length, 0);
+
+  // 軟關站（closed）唔應該提安裝（關站中無得裝）
+  const closed = makeMockEnv({ referrer: '' });
+  gate.initStoreGate({ appKey: 'book', mode: 'closed' }, closed.win);
+  const closedDialog = closed.doc.getElementById('scoutStoreGate');
+  assert.equal(closedDialog.children.filter((c) => c.className === 'sg-sub').length, 0);
 });
 
 test('SG5/L3：Safari 私隱模式 sessionStorage 拋錯時唔會 crash，白名單 Referer 依然正常放行', () => {
@@ -388,7 +425,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   const dix = read('docs', 'README.md');
   const wf = read('.github', 'workflows', 'guard.yml');
 
-  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6']) {
+  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7']) {
     assert.ok(pb.includes(id) && doc.includes(id), `PLAYBOOK / docs/50 缺 ${id}`);
   }
   assert.ok(intake.includes('Q8') && intake.includes('entry-gate'), 'INTAKE 第 0 步要有 Q8 主動告知白名單與 entry-gate');
@@ -408,5 +445,10 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
     assert.ok(doc.includes(kw), `docs/50 要明寫四大入口「${kw}」`);
   }
   assert.ok(doc.includes('PORTAL_REGISTRY') && doc.includes('portalIds'), 'docs/50 要寫明 PORTAL_REGISTRY／portalIds 用法');
+  // SG7：直開網址／404／加入主畫面 嘅情境表要喺 docs/50 §3.4 有紀錄
+  for (const kw of ['3.4', '404', '加入主畫面', '白名單真實代價']) {
+    assert.ok(doc.includes(kw), `docs/50 §3.4 要覆蓋「${kw}」`);
+  }
+  assert.ok(intake.includes('SG7'), 'INTAKE Q8 要提 SG7 加入主畫面流程');
   assert.ok(pb.includes('PORTAL_REGISTRY') || pb.includes('portalIds'), 'PLAYBOOK 要提註冊表／portalIds');
 });

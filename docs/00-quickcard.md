@@ -72,6 +72,7 @@ L ：**未來新開**嘅唔太重 app 要有英文版 + 右上角一鍵切換掣
 SG：關站／經四大官方入口白名單進入（按需啟用 → docs/50 §0.1）：
     1.APP STORE（scoutappstore）2.圖書館（scout-circulars）3.成員系統（member-portal-sigma-swart）4.區管理系統（scout-district-portal）
     開新 app 主動告知；有 localStorage／PWA／Push／登入 Cookie 禁入 iframe，改行頂層 entry-gate（portalIds 引用四大入口）
+    SG7：加主畫面流程＝「先由入口進入 → 再按瀏覽器選單加入主畫面」；直開網址唔會 404（出白名單卡）
 ```
 詳情：[PLAYBOOK §7.5–§7.7](../PLAYBOOK.md) · [44 雙語介面](44-bilingual-ui.md) · [50 白名單與關站](50-app-store-whitelist-and-shutdown.md)
 

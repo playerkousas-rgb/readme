@@ -141,6 +141,7 @@ const COPY = {
     cta: '前往 SCOUT APP STORE',
     countdownPrefix: '將於 ',
     countdownSuffix: ' 秒後自動前往主站…',
+    installHint: '想「加入主畫面」用 App 模式開啟？請先由上述入口進入本程式，再用瀏覽器選單「加入主畫面」（直接開網址安裝會得到打不開的圖示）。',
   },
   en: {
     whitelistBadge: 'Whitelist Only · Designated Portals',
@@ -155,6 +156,7 @@ const COPY = {
     cta: 'Go to SCOUT APP STORE',
     countdownPrefix: 'Redirecting to portal in ',
     countdownSuffix: 's…',
+    installHint: 'To install this as a Home Screen app, open it from one of the portals above first, then use your browser\u2019s "Add to Home Screen". Installing straight from the raw URL creates an icon that cannot open.',
   },
 };
 
@@ -381,6 +383,14 @@ function renderGateOverlay(doc, win, decision, options = {}) {
     box.appendChild(h1);
     box.appendChild(p);
     box.appendChild(actions);
+
+    // SG7：直開網址時講清楚「加入主畫面」要由入口入，防止裝出一個打不開嘅圖示
+    if (options.showInstallHint !== false && !isClosed && win && win.navigator && win.navigator.serviceWorker) {
+      const hint = doc.createElement('p');
+      hint.className = 'sg-sub';
+      hint.textContent = c.installHint;
+      box.appendChild(hint);
+    }
 
     const sec = Number(options.autoRedirectSeconds || 0);
     if (sec > 0 && win && typeof win.setTimeout === 'function') {

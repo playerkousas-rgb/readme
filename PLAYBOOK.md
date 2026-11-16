@@ -218,7 +218,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 
 ---
 
-## 7.7 關站與準入白名單入口 SG1–SG6（**按需啟用**，詳情 [docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+## 7.7 關站與準入白名單入口 SG1–SG7（**按需啟用**，詳情 [docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
 
 > **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經 APP STORE（repo `website`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
 > **2026-11-15 用戶第二次定案（四大官方入口）**：準入白名單入口一共 **4 個**，登記於真理倉 [docs/50 §0.1](docs/50-app-store-whitelist-and-shutdown.md) ＋ 程式碼嘅 `PORTAL_REGISTRY`。子 App 一律用 `portalIds` 引用，唔准自己另抄一堆網址。
@@ -241,7 +241,8 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | **SG4** | 純 `<iframe>` 白名單雙層配置 | 只限純無狀態小工具／圖卡／簡報，且**須等母站 `website` 實作 `<iframe>` 檢視器後先可開**（`041f074` 現時係頂層跳轉）；用 [`vercel.iframe-whitelist.json`](templates/vercel/vercel.iframe-whitelist.json) 設 `CSP: frame-ancestors`、**移除 `X-Frame-Options: SAMEORIGIN`** |
 | **SG5** | 不適合 `<iframe>` 改用頂層跳板 `entry-gate` | App 留喺頂層獨立網域運行；輕量級驗 `new URL(referrer).origin` 白名單 Set ＋ `sessionStorage`（`try/catch`）＋ `allowStandalone: true` 放行已裝主畫面 PWA；敏感／有 `/api` 升級用 60 秒 HMAC `sig` `/api/enter` 驗票。**經任何一個入口做頂層跳轉都唔會影響 `BOOK` 嘅 `localStorage`**（只認子站 origin）；`iframe` 先會令儲存分區 |
 | **SG6** | 暫時關站雙軌 | 硬關站：Vercel Dashboard `Pause Project`（連 `/api` 即停）；軟關站：`store_gate_v1.0.js` `mode: 'closed'` 或 `vercel.json` `redirects` **`"permanent": false`（302，嚴禁 `true`/308 永久快取）** |
-
+| **SG7** | 「加入主畫面」只准由入口第一次進入 | 直開網址唔會 404（會出白名單卡），但**唔准教用家直開網址再裝**：在入口母站裝會裝到母站；真 404 冇 `manifest` 裝唔到；舊 icon 撳落去白屏。標準話術「先由入口進入 → 再按瀏覽器選單加入主畫面」，配 `allowStandalone: true` 令裝好後撳 icon 直開 |
+| **SG7-a** | 白名單有代價，必須講清 | 分享連結／搜尋／書籤／QR／推播深層連結一律撞卡，WhatsApp 內置瀏覽器另有沙盒；有 Push 嘅 app 維持 `open` 或改用簽票（docs/50 §3.4）。**「唔使用 iframe 就對 App 內部零影響」≠「對所有東西零影響」** |
 ---
 
 ## 8. 技術棧契約（快表）
@@ -317,7 +318,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 - [ ] W1 版權標示 + W2 水印（如出圖）+ W6 交付檔無真 key
 - [ ] V1 檔名＋內文版號一致 + V4 部署拷貝已 sync（Type C）
 - [ ] L1–L6：雙閘達標嘅 app 有英文 + 右上角切換掣（`i18n_check` 無 FAIL + 人手撳實測）；唔做有寫 `EXCEPTION: L1`（[docs/44](docs/44-bilingual-ui.md)）
-- [ ] SG1–SG6（如有啟用四大入口白名單或軟關站）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+- [ ] SG1–SG7（如有啟用四大入口白名單或軟關站）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`；「加入主畫面」引導係「先入口、後安裝」（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
 - [ ] README 寫作紀律（[docs/47](docs/47-readme-discipline.md)）：每句「已修」有檢查或實測、每句「未做」寫限制、冇「理論上應該 work」字樣
 - [ ] `docs/` 同 `PLAYBOOK.md` 已更新（規則改動時）
 - [ ] PR 描述寫明：身份錨點有冇改、registry 有冇加、key 有冇 rotate
