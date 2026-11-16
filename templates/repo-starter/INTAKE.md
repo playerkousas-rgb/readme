@@ -71,7 +71,8 @@
       - 已加主畫面 PWA：`allowStandalone: true` ＋ manifest `"display": "standalone"` → 撳 icon 直開自動放行；提醒 **iOS 主畫面容器同 Safari 分頁儲存分家**（Android Chrome 共用），要靠 JSON／QR 備份還原搬資料。
       - 【SG9】四個入口角色唔同（APP STORE＝主站、圖書館＝每日引流、成員系統／區管理系統＝自家副系統）：**對外分享連結同 QR code 只准指 APP STORE**，唔好傳子站直連；並提醒 APP STORE 要先支援 `?app=<slug>` 深層連結，次序係「APP STORE 支援 → 分享改指 → 子 App 開閘」。
       - 【SG10】統計分工：**APP STORE 已有** `clicks／stars／hearts`（後台 Supabase 睇逐個 App 點擊／收藏／Like）＝主要答案；**圖書館現時唔統計**（主責通告＋Push，推廣 APP STORE 屬後期）；子 App 只喺想知「主畫面開啟」同「撞卡人數」時才加 `trackEndpoint`。
-      - 【SG12】防「偷用」要按 App 價值分級，唔可以一刀切：**純前端 App**（如 `drawtheroute`）用 `entry-gate` 已達到「要經入口」目的，但要老實講「原始碼擋唔到被抄走（`Ctrl+S`／`curl`），抄走者只係失去你嘅持續更新」；**有 `/api`／領袖權限／第三方 API 額度嘅 App**（如 `HM20C` 嘅 `LEADER_PASSWORD`／`/api/leader-verify`）**必須** §4.3 簽票 ＋ VL1 後端驗票，前端遮罩＝零保護。**紀錄冊（`BOOK`）寬鬆**（目的係導向 BADGE 登記）／**專業工具收緊**／**自家系統靠後端登入**。
+      - 【SG12】防「偷用」**唔係技術問題，係「表態」問題**（用戶定案）：領袖權限唔需要保、功能簡單嘅 App「佢抄得到都寫得到」。所以**唔准**建議為每個 App 起後端驗票／簽票基建；正解＝**`entry-gate` 令使用經入口** ＋ **`supportNudge` 邀一次 ❤️**。老實講清「原始碼擋唔到被抄走（`Ctrl+S`／`curl`）」，抄走代碼唔當損失，損失係「用你嘅成果但唔表態」。
+      - 【SG13】`supportNudge` 只可以係「邀請」：只在已放行時顯示、唔遮內容、有「唔使喇」、每 30 日最多一次、**嚴禁**倒數／延時／遮罩迫 Like；**`BOOK` 類建議關閉**（唔好騷擾成員）。
       - 【SG11】要主動講清「收起 ≠ 用不到」：APP STORE 撳「隱藏」只係前端過濾（API 照回傳、App 網址照開得）。真正令人用唔到要按四級齒輪：Delist（隱藏）→ Gate（`entry-gate`）→ Soft close（`closed`）→ Hard close（Vercel Pause）。有本機儲存嘅 App（如 `BOOK`）只可以 Delist，**唔可以同時拆走入口**，落關站前先叫用戶匯出 JSON／QR 備份（SG11-a）。含個人資料／收費嘅 App **唔可以**靠「隱藏」做保護（SG11-b）。
       - 【SG10-a】如果該 App 會收 Push（例如圖書館），**必須維持 `open`**：唔可以 `iframe`、唔可以 `closed`、唔可以改 manifest `start_url`，否則已訂閱用戶收唔到通告。
       - 【SG8】四大入口自己永不被閘（`selfOrigin` 在 `portalIds` 內自動放行 `self-portal`）；直開網址**預設唔自動跳**（`autoRedirectSeconds: 0`），要自動就 3–5 秒並顯示目的地，或用 `autoRedirectPortalId` 指定。

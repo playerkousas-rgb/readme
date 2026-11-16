@@ -147,6 +147,9 @@ const COPY = {
     countdownSuffix: ' 秒後自動前往主站…',
     installHint: '想「加入主畫面」用 App 模式開啟？請先由上述入口進入本程式，再用瀏覽器選單「加入主畫面」（直接開網址安裝會得到打不開的圖示）。',
     autoRedirectHint: '唔想等？直接撳上面任何一個入口掣。',
+    supportText: '多謝你使用。如果覺得有用，去 APP STORE 按❤️收藏／Like 支持下，我下次就知要唔要繼續更新。',
+    supportCta: '去支持下',
+    supportDismiss: '唔使喇',
   },
   en: {
     whitelistBadge: 'Whitelist Only · Designated Portals',
@@ -484,12 +487,98 @@ function initStoreGate(options = {}, win = typeof window !== 'undefined' ? windo
       writeSessionPass(win, decision.passKey);
     }
     reportGateDecision(win, decision, options);
+    if (options.supportNudge && typeof doc !== 'undefined' && doc && doc.body) {
+      renderSupportNudge(doc, win, options);
+    } else if (options.supportNudge && typeof doc !== 'undefined' && doc && typeof doc.addEventListener === 'function') {
+      doc.addEventListener('DOMContentLoaded', () => renderSupportNudge(doc, win, options), { once: true });
+    }
     return decision;
   }
 
   renderGateOverlay(doc, win, decision, options);
   reportGateDecision(win, decision, options);
   return decision;
+}
+
+/**
+ * SG13：輕量「支持提示」（非阻塞、可關、每 N 日最多一次）
+ * 目的唔係防抄（技術上防唔到），而係令「用得着嘅人」有一個極低門檻嘅表態位置，
+ * 同時令創作者可以用 clicks／stars／hearts 判斷「值唔值得繼續更新」。
+ * 規則：① 只喺獲放行時顯示 ② 永遠唔遮住內容、唔阻擋操作 ③ 有「唔使喇」 ④ 每 N 日最多一次
+ */
+function readLocal(win, key) {
+  try {
+    return win && win.localStorage ? win.localStorage.getItem(key) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeLocal(win, key, value) {
+  try {
+    if (win && win.localStorage) win.localStorage.setItem(key, String(value));
+  } catch {
+    /* 私隱模式／封鎖 storage 時靜默 */
+  }
+}
+
+function renderSupportNudge(doc, win, options = {}) {
+  const cfg = options.supportNudge;
+  if (!cfg || !cfg.url || !doc || !doc.body) return null;
+  const key = `${String(options.appKey || 'scoutapp')}.support_nudge_at`;
+  const days = Number(cfg.days) > 0 ? Number(cfg.days) : 30;
+  const last = Number(readLocal(win, key) || 0);
+  if (last && Date.now() - last < days * 86400000) return null;
+
+  const lang = options.lang === 'en' ? 'en' : detectCopyLang(doc);
+  const c = COPY[lang] || COPY.zh;
+
+  if (!doc.getElementById('scoutSupportNudgeStyle')) {
+    const style = doc.createElement('style');
+    style.id = 'scoutSupportNudgeStyle';
+    style.textContent = [
+      '#scoutSupportNudge { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 2147483000; box-sizing: border-box; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 14px; border-radius: 14px; background: rgba(40, 47, 61, 0.97); border: 1px solid rgba(232, 200, 122, 0.35); color: #f5f2eb; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 13px; line-height: 1.5; box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4); }',
+      '#scoutSupportNudge p { margin: 0; flex: 1 1 220px; }',
+      '#scoutSupportNudge a { flex: 0 0 auto; padding: 7px 13px; border-radius: 9px; background: #e8c87a; color: #1f2430; font-weight: 700; text-decoration: none; }',
+      '#scoutSupportNudge button { flex: 0 0 auto; padding: 7px 11px; border-radius: 9px; background: transparent; color: #9aa3b5; border: 1px solid rgba(154, 163, 181, 0.45); font-size: 12px; cursor: pointer; }',
+      '#scoutSupportNudge a:focus-visible, #scoutSupportNudge button:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }',
+    ].join('\n');
+    (doc.head || doc.documentElement).appendChild(style);
+  }
+
+  const box = doc.createElement('div');
+  box.id = 'scoutSupportNudge';
+  box.setAttribute('role', 'complementary');
+
+  const p = doc.createElement('p');
+  p.textContent = cfg.textZh || c.supportText;
+  if (lang === 'en') p.textContent = cfg.textEn || c.supportText;
+
+  const a = doc.createElement('a');
+  a.href = cfg.url;
+  a.target = '_blank';
+  a.rel = 'noopener';
+  a.textContent = lang === 'en' ? c.supportCta : (cfg.ctaZh || c.supportCta);
+
+  const btn = doc.createElement('button');
+  btn.type = 'button';
+  btn.textContent = lang === 'en' ? c.supportDismiss : (cfg.dismissZh || c.supportDismiss);
+  btn.addEventListener = btn.addEventListener || function () {};
+  btn.onclick = () => {
+    writeLocal(win, key, Date.now());
+    if (box.parentNode && typeof box.parentNode.removeChild === 'function') box.parentNode.removeChild(box);
+  };
+
+  box.appendChild(p);
+  box.appendChild(a);
+  box.appendChild(btn);
+  doc.body.appendChild(box);
+  return box;
+}
+
+/** 由外部呼叫（例如 APP STORE 後台）也可以直接記錄已提示時間 */
+function markSupportNudgeSeen(win, appKey) {
+  writeLocal(win, `${String(appKey || 'scoutapp')}.support_nudge_at`, Date.now());
 }
 
 /**
@@ -551,6 +640,8 @@ if (typeof globalThis !== 'undefined') {
     portalsFromIds,
     buildTrackPayload,
     reportGateDecision,
+    renderSupportNudge,
+    markSupportNudgeSeen,
     parseAllowedOrigin,
     normalizePortals,
     isStandaloneApp,
@@ -571,6 +662,8 @@ if (typeof module !== 'undefined' && module.exports) {
     portalsFromIds,
     buildTrackPayload,
     reportGateDecision,
+    renderSupportNudge,
+    markSupportNudgeSeen,
     parseAllowedOrigin,
     normalizePortals,
     isStandaloneApp,

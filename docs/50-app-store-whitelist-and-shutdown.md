@@ -1,7 +1,7 @@
 # 50 — 關站與 App Store 白名單入口 SG1–SG6（經 website 進入・不適合白名單處理）
 
 > **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經指定入口（如 APP STORE `website` 或通告圖書館 `scout-circulars`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
-> **層級**：按需啟用嘅入口管制規則（預設 `open` 公開直連，唔強制鎖站；現有 repo 唔自動追溯）。支援**單一入口**或**多個指定入口並存**（例如同時容許由 **SCOUT APP STORE** 或 **通告圖書館** 進入，其餘直連一律攔截）。一旦開新 App 時揀咗白名單或日後要關站，必須按 **SG1–SG12** 處理，避免撞入 Safari 儲存隔離、PWA 主畫面踢人、`SameSite=Lax` Cookie 全滅、通告圖書館 `noreferrer` 清空 `Referer` 同 `308` 永久快取五大陷阱。
+> **層級**：按需啟用嘅入口管制規則（預設 `open` 公開直連，唔強制鎖站；現有 repo 唔自動追溯）。支援**單一入口**或**多個指定入口並存**（例如同時容許由 **SCOUT APP STORE** 或 **通告圖書館** 進入，其餘直連一律攔截）。一旦開新 App 時揀咗白名單或日後要關站，必須按 **SG1–SG13** 處理，避免撞入 Safari 儲存隔離、PWA 主畫面踢人、`SameSite=Lax` Cookie 全滅、通告圖書館 `noreferrer` 清空 `Referer` 同 `308` 永久快取五大陷阱。
 > **官方四大準入白名單入口（2026-11-15 用戶定案・真理倉唯一登記處）**：**1. APP STORE** · **2. 圖書館** · **3. 成員系統** · **4. 區管理系統**。四個入口嘅 repo、pinned commit、Origin、現時連結行為同 `<iframe>` 殼狀況全部實查列於 [§0.1](#01-官方四大準入白名單入口註冊表canonical-portal-registry)；程式碼層面嘅同一份表係 [`store_gate_v1.0.js`](../templates/vercel/store_gate_v1.0.js) 嘅 `PORTAL_REGISTRY`（子 App 只需寫 `portalIds: ['appstore','library','member','district']`）。日後加／改名／改網址，**只改呢兩處**。
 
 ---
@@ -54,7 +54,7 @@ initStoreGate({
 
 ---
 
-## 1. 規則總表 SG1–SG12（Store Gate）
+## 1. 規則總表 SG1–SG13（Store Gate）
 
 | ID | 規則 | 硬要求 / 一句驗收 |
 |---|---|---|
@@ -68,7 +68,8 @@ initStoreGate({
 | **SG8** | **入口網站自己永不被自己嘅閘擋** | 四大入口（APP STORE／圖書館／成員系統／區管理系統）**自己嘅 origin 一旦出現在 `portalIds` 就自動放行**（`reason: 'self-portal'`），因為「入口就係入口」，佢本身唔需要再經其他地方。**但**：① 入口自己**唔應該掛** `entry-gate`（佢唔係子 App）；② 入口若要軟關站，用 `mode: 'closed'`（`closed` 優先於 self 放行）；③ 子 App 記得**唔好**把入口 origin 當成自己 origin（判別靠 `location.origin`，唔靠 Referer） |
 | **SG9** | **入口角色分工：分享連結／QR 只准由 `main` 產生** | 入口**唔係等價互替**：`main`＝APP STORE（真正主站・全方位）、`feed`＝圖書館（每日通告＋新 APP 引流）、`internal`＝成員系統／區管理系統（自家副系統）。**對外分享連結、QR code、宣傳單張、WhatsApp 群發、IG bio 一律只放 `main`（APP STORE）**；`feed` 同 `internal` 只做「入場」，唔做「宣傳」。理由：用戶收到嘅必須係**一個**穩定入口，否則同一 App 有四個唔同網址流通，版本控管同統計即刻散 |
 | **SG10** | **統計按入口各司其職，唔好重複起爐灶** | ① **APP STORE（`main`）＝唯一權威統計來源**：已有 `apps.clicks／stars／hearts`（RPC `bump_clicks`／`bump_stars`／`bump_hearts`），後台睇逐個 App 點擊／收藏／Like，**唔需要**再加 `trackEndpoint`。② **圖書館（`feed`）現時唔統計**（用戶定案 2026-11-15：圖書館主責係睇通告＋Push 訂閱，推廣 APP STORE 係後期功能）——**唔准**為咗統計而改動圖書館核心流程。③ **子 App `trackEndpoint` 屬 opt-in 補充**（未設＝零請求），只補 APP STORE 睇唔到嘅嘢：`reason: 'standalone-pwa'`（主畫面開啟）同 `reason: 'missing-whitelist-entry'`（撞卡＝仲用舊連結） |
-| **SG12** | **防「偷用」按 App 價值分級，唔可以一刀切** | ① **純前端 App**（`drawtheroute` 類）：`entry-gate` 已經達到「要經入口」目的；**接受「原始碼可以被抄走」**（`Ctrl+S`／`curl` 冇得擋），因為抄走者冇你嘅持續更新。② **有 `/api`／領袖權限／第三方額度嘅 App**（`HM20C` 類）：必須 §4.3 簽票 ＋ VL1 後端驗票，**前端遮罩等於零保護**。③ **紀錄冊（`BOOK`）寬鬆**、**專業工具收緊**、**自家系統用後端登入**——見 §3.8 三類分級表 |
+| **SG12** | **防「偷用」唔係技術問題，係「表態」問題** | 用戶 2026-11-15 定案：「領袖權限**不用保**，我有空改一下功能變數就可以」「我很多 App 功能簡單，他們要抄也能自己寫；我只想擋那些**又不表態支持又想用**的人」。→ 所以：① **唔准**為咗「防抄」而過度工程（唔需要為每個 App 起後端驗票）；② **真正要做**嘅係「**經入口**（`entry-gate`）＋ **一個極低門檻嘅支持位置**（`supportNudge`，見 §3.8-B）」；③ 抄走代碼**唔當損失**（你自己講：佢抄得到都寫得到），損失係「用你嘅成果但唔表態」 |
+| **SG13** | **支持提示（`supportNudge`）必須係「邀請」而非「收費閘」** | 只在**已放行**時顯示（被攔截時唔顯示）；**永遠唔遮內容、唔阻擋操作**（`role="complementary"`，唔係 `dialog`）；一定要有「唔使喇」；每 N 日（預設 30）最多一次；儲存被封（Safari 私隱）靜默失敗；**唔准**用倒數／延時／遮罩迫人 Like |
 | **SG11** | **「收起」≠「用不到」——要分清四個下架齒輪** | ⚠️ **實查**：APP STORE 後台「隱藏」只係前端過濾（`store.js` L782 `sb.from("apps").select("*")` 拉晒全部，再用 `a.visible !== false` 喺瀏覽器篩走），**個 App 本身仍然 100% 開得**（舊 link／書籤／QR／搜尋照入）。要真正令人用唔到，必須用：① **Delist**（APP STORE 隱藏）＝冇人發現，但 URL 仍可入；② **Gate**（`entry-gate`）＝擋直開；③ **Soft close**（`mode: 'closed'`）＝見維護卡；④ **Hard close**（Vercel Pause）＝完全離線。四者係**齒輪唔係等號**，見 §3.7 |
 | **SG11-a** | **有本機儲存（`BOOK`）嘅 App 唔可以「一收起就當冇」** | `SCOUTBOOK`／`CUBSBOOK`／`ROVERBOOK`／`VSBOOK` 用戶手上有**真實紀錄**（成員進度、考章）。Delist 或 Hard close 會令佢哋**冇入口更新／冇得匯出**。所以 `BOOK` 類下架前必須：① 保留可達入口（APP STORE 或成員系統，`internal` 角色）＋ ② 開 `allowStandalone`（已裝用戶照用）＋ ③ **先叫用戶匯出 JSON／QR 備份**，之後才可以 Pause |
 | **SG11-b** | **敏感 App 唔可以靠「隱藏」做保護** | 既然隱藏只係前端過濾、`apps` 表匿名可 `select("*")`，**`visible=false` 唔係安全邊界**。含個人資料／收費／權限嘅 App 要落架，必須用 `entry-gate`（+ §4.3 簽票）或 Vercel Pause，**唔可以只喺 APP STORE 撳「隱藏」就當處理完** |
@@ -341,7 +342,7 @@ qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?...data=${encodeURIComp
 5. 要徹底停 → 先叫用戶備份，再 Vercel Pause        （④，最後手段）
 ```
 
-### 3.8 主要目的：封鎖「偷用」——HM20C／DrawTheRoute 類工具嘅三層防線
+### 3.8 真正目的：擋「唔表態都想用」——技術防線 vs 表態設計
 
 > **用戶 2026-11-15 定案**：「我最主要係封那些偷用 HM20C、DrawTheRoute 那類 App 的人。」
 > **實查現狀**：`HM20C`（`https://hm20c.vercel.app`，v1.2.2）＝領袖密碼模式（`LEADER_PASSWORD`＋`LEADER_SESSION_SECRET`＋HMAC session，`/api/leader-verify` ＋ Cloudflare Worker 驗票）；`drawtheroute`（`https://drawtheroute-yd8p.vercel.app`，ReliefForge Pro）＝**純前端 Vite/React，冇 `/api`、冇登入**。兩者今日都係「靠人唔好轉發網址」——呢個就係要封嘅洞。
@@ -355,13 +356,22 @@ qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?...data=${encodeURIComp
 | **C. 抄走整份前端** | 純靜態 app 可以 `Ctrl+S`／`curl` 拎走 HTML／JS，**自己另起一個站** | **最傷，但任何前端閘門都防唔到**（見下） |
 | **D. 逆用你的 API** | 呼叫 `/api/leader-verify` 或第三方 BRouter／地政總署 API 額度 | 免費額度被耗、可能被停權 |
 
-**三層防線（由淺入深，按你需要揀）**
+**兩條路線（用戶 2026-11-15 定案：走 A，唔走 B）**
+
+| 路線 | 內容 | 成本 | 用戶定案 |
+|---|---|:--:|---|
+| **A. 表態設計（採用）** | `entry-gate` 令所有使用都經入口 ＋ `supportNudge` 喺用家開 App 時邀請一次 ❤️（可關、每 30 日一次） | 零（改一行 + 一個選項） | ✅ **就係呢個** |
+| **B. 技術防線（唔採用）** | §4.3 簽票、VL1 後端驗票、領袖逐人帳號 | 高（每個 App 要後端） | ❌ **明確唔需要**：① 領袖權限「有空改一下功能變數就得」→ 唔值得為佢起基建；② 功能簡單嘅 App 抄得到都寫得到，防守無意義 |
+
+**技術參考（保留紀錄，唔係要做）**：以下三層只在**日後出現真正有價資產**（例如收費、大量第三方 API 額度）時才參考。
 
 | 層 | 做法 | 擋 A 轉發 | 擋 B 亂撞 | 擋 C 抄走 | 擋 D API 濫用 | 成本 | 對正常用戶影響 |
 |:--:|---|:--:|:--:|:--:|:--:|---|---|
 | **① 入口閘門**（本文件 SG5 `entry-gate`） | 子 App 掛 `store_gate_v1.0.js`，`portalIds` 收窄（可只留 `appstore`／`internal`） | ✅ | ✅ | ❌ | ❌ | 零（改一行） | 每次由入口入一次，之後 `sessionStorage` 通行；已裝主畫面照用 |
 | **② 伺服器簽票**（§4.3 `/api/enter` HMAC 60 秒票 ＋ `HttpOnly` Cookie） | 由入口 `/api/launch` 簽票 → 子站 `/api/enter` 驗票寫 Cookie → 前端／API 都要求有票 | ✅ | ✅ | ⚠️ 擋唔到抄走靜態檔，但**抄走都冇票 → 用唔到有票功能** | ✅ | 小（1 支 serverless function） | 無感（自動跳一次） |
 | **③ 真正嘅敏感功能留在後端**（[VL1 `/api/proxy`](06-vercel.md#vl1--apiproxy-係唯一出入口)） | 題庫活動、GPX 計算、地政總署／BRouter 代理全部經後端，**後端驗票先 inject key** | ✅ | ✅ | ✅ **抄走前端都冇用** | ✅ | 中 | 無感 |
+
+> **用戶立場（2026-11-15）**：「我很多 App 都是功能簡單的，他們能抄也能自己寫。我其實只想擋那些又不表達支持又想用的。」→ 所以本節**唔會**建議你花時間防抄，只列事實，實際採用路線見下面 **A. 表態設計**。
 
 **⚠️ 最重要嘅一句實話**：**純前端 App（DrawTheRoute 類）冇任何辦法阻止人抄走原始碼**——`Ctrl+S`、`curl`、DevTools 都拎得到。`entry-gate` 只係令「抄走嘅人**用唔到你嘅後端**」。所以：
 
@@ -373,6 +383,45 @@ qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?...data=${encodeURIComp
 1. `LEADER_PASSWORD` 係**部署者設定的單一密碼**：一旦外流／被截圖，全港同一個密碼，**冇得逐人撤銷**。
 2. `/api/leader-verify` 已經要求 `x-hm20c-worker-key`（好），但**任何知道網址嘅人仍然可以呼叫你嘅 `/api/activity`**（題庫活動）——需要加票。
 3. 建議演進（唔急，但方向要清）：`LEADER_PASSWORD` → **領袖登記碼／`badge` 系統帳號**（呼應你「BADGE 要登記」嘅方向），令每個領袖有獨立身份、可逐個撤銷、可審計。
+
+**B. 表態設計：`supportNudge` 實作（就係你要嘅「擋唔表態」）**
+
+與其用技術擋（擋唔到），不如**令「用得着」同「表態」綁埋一齊**。做法極輕：
+
+```js
+initStoreGate({
+  appKey: 'hm20c',
+  mode: 'entry-gate',                                  // ① 一定要經入口
+  portalIds: ['appstore'],                             //    收窄到只認 APP STORE
+  allowStandalone: true,                               //    ② 已裝主畫面照用（你已成功嘅人）
+  supportNudge: {                                      // ③ 邀一次支持（可關、30 日一次）
+    url: 'https://scoutappstore.vercel.app/?app=hm20c',
+    days: 30,
+  },
+});
+```
+
+出現時機同規則：
+
+| 規則 | 實作 |
+|---|---|
+| 只在**已放行**（成功入到 App）時出現 | 被攔截只見入口卡，唔會同時出支持提示 |
+| **唔遮內容、唔阻擋操作** | `role="complementary"`（唔係 `dialog`）、貼底部、可捲走 |
+| 一定要有**「唔使喇」** | 撳一次 → 記入 `localStorage`，**30 日內唔再騷擾** |
+| 唔可以迫人 Like | **禁止**倒數、延時解鎖、遮罩迫撳 |
+| 儲存被封（Safari 私隱） | `try/catch` 靜默，唔會令 App 開唔到 |
+| 文案 | 預設：「多謝你使用。如果覺得有用，去 APP STORE 按 ❤️ 收藏／Like 支持下，我下次就知要唔要繼續更新。」 |
+
+**心理上嘅分別（呢個先係重點）**：
+
+| 情況 | 用家感受 | 對你嘅價值 |
+|---|---|---|
+| 完全開放 | 「免費嘢，隨便用」 | 你唔知有冇人珍惜 |
+| 硬鎖（付費／登入／驗票） | 「麻煩／又要登記」 | 連支持者都趕走 |
+| **經入口 ＋ 一次輕提示（採用）** | 「原來要經個入口，順手支持下」 | **`clicks`／`stars`／`hearts` 會講真話**：邊個 App 有人珍惜、邊個可以唔更新 |
+
+> 你有一句講得好準：**「他曾經經入口、或把我的 APP 加進主畫面，其實我已經成功了。」** `entry-gate` 正正就係把「用你嘅嘢」變成「經你嘅門」——已經裝主畫面嘅人零感覺，而隨手轉發網址嘅人會見到你嘅門。呢個已經係最溫和而有效嘅篩選。
+> **而對於「用咗但唔表態、仲背後講你傻」嘅人**：技術上永遠擋唔盡（佢抄得到／自己寫得到），所以**唯一可持續嘅做法係「唔再靠佢」**——用 `clicks`／`stars`／`hearts` 決定資源放喺邊個 App、放幾多時間。呢個係止蝕，唔係報復。
 
 **這與你的 BADGE ／支部系統路線一致**
 
@@ -388,9 +437,9 @@ qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?...data=${encodeURIComp
 
 | App 類型 | 例子 | 管制建議 | 理由 |
 |---|---|---|---|
-| **紀錄冊（自願）** | `SCOUTBOOK`／`CUBSBOOK`／`ROVERBOOK`／`VSBOOK` | `entry-gate` ＋ `allowStandalone` **寬鬆**（`portalIds` 全部四個） | 要用得方便，目的係導向 BADGE 登記 |
-| **專業工具（有價值）** | `HM20C`、`drawtheroute`、`HKMAP`、`AvianDex` | **②＋③ 收緊**（`portalIds` 只留 `appstore`；有 `/api` 就要簽票） | 有 API 成本／知識產權／領袖權限 |
-| **自家系統（有身份）** | 成員系統、區管理系統、各 `badge` | 後端登入把關（SG11-b），入口只作導流 | 已有真實身份，唔靠前端 |
+| **紀錄冊（自願）** | `SCOUTBOOK`／`CUBSBOOK`／`ROVERBOOK`／`VSBOOK` | `entry-gate` ＋ `allowStandalone` **寬鬆**（`portalIds` 全部四個）；`supportNudge` **可選、建議關** | 要用得方便，目的係導向 BADGE 登記（唔好騷擾成員） |
+| **專業工具（有價值）** | `HM20C`、`drawtheroute`、`HKMAP`、`AvianDex` | **`portalIds` 只留 `appstore`** ＋ **`supportNudge`**（SG13） | 擋「唔表態都想用」；唔做後端驗票（用戶定案） |
+| **自家系統（有身份）** | 成員系統、區管理系統、各 `badge` | 後端登入把關（SG11-b），入口只作導流；**唔需要 `supportNudge`** | 已有真實身份同關係，唔需要再提 |
 
 ## 4. 實作範本與接線步驟
 

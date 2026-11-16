@@ -97,6 +97,16 @@ function makeMockEnv({
     matchMedia(q) {
       return { matches: q === '(display-mode: standalone)' && standalone };
     },
+    localStorage: {
+      getItem(k) {
+        if (storageThrows) throw new Error('SecurityError: storage disabled');
+        return store.has(k) ? store.get(k) : null;
+      },
+      setItem(k, v) {
+        if (storageThrows) throw new Error('SecurityError: storage disabled');
+        store.set(k, String(v));
+      },
+    },
     sessionStorage: {
       getItem(k) {
         if (storageThrows) throw new Error('SecurityError: storage disabled');
@@ -295,6 +305,55 @@ test('SG10：逐入口到訪統計 opt-in，預設零請求；payload 唔含任�
   broken.win.navigator.sendBeacon = () => { throw new Error('boom'); };
   const res = gate.initStoreGate({ appKey: 'safe', mode: 'entry-gate', trackEndpoint: '/api/x' }, broken.win);
   assert.equal(res.allowed, true, '統計壞咗都要照開');
+});
+
+test('SG13：支持提示非阻塞、可關、每 N 日最多一次；唔會遮住內容亦唔會阻擋操作', () => {
+  const cfg = { url: 'https://scoutappstore.vercel.app/?app=hm20c', days: 30 };
+
+  // 1) 放行時顯示，只係 complement（唔係 dialog、唔會遮內容）
+  const ok = makeMockEnv({ referrer: 'https://scoutappstore.vercel.app/' });
+  gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', portalIds: ['appstore'], supportNudge: cfg }, ok.win);
+  const nudge = ok.doc.getElementById('scoutSupportNudge');
+  assert.ok(nudge, '放行時應該顯示支持提示');
+  assert.equal(nudge.getAttribute('role'), 'complementary', '唔可以用 dialog（唔可以當成阻塞）');
+  assert.equal(ok.doc.documentElement.getAttribute('data-store-gated'), null, '唔應該遮住底層內容');
+  assert.equal(ok.doc.getElementById('scoutStoreGate'), null, '唔應該出閘卡');
+
+  // 2) 有 APP STORE 連結同「唔使喇」
+  const link = nudge.children.find((c) => c.tagName === 'A');
+  const btn = nudge.children.find((c) => c.tagName === 'BUTTON');
+  assert.equal(link.href, cfg.url);
+  assert.equal(link.rel, 'noopener');
+  assert.ok(btn && btn.onclick, '要有可關閉嘅掣');
+
+  // 3) 撳「唔使喇」→ 記錄時間，之後 N 日內唔再出
+  btn.onclick();
+  assert.ok(ok.store.get('hm20c.support_nudge_at'), '要記錄已提示時間');
+  const again = makeMockEnv({ referrer: 'https://scoutappstore.vercel.app/' });
+  again.store.set('hm20c.support_nudge_at', String(Date.now() - 86400000)); // 1 日前
+  gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', supportNudge: cfg }, again.win);
+  assert.equal(again.doc.getElementById('scoutSupportNudge'), null, '30 日內唔應該再騷擾');
+
+  // 4) 超過 N 日 → 再出一次
+  const later = makeMockEnv({ referrer: 'https://scoutappstore.vercel.app/' });
+  later.store.set('hm20c.support_nudge_at', String(Date.now() - 31 * 86400000));
+  gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', supportNudge: cfg }, later.win);
+  assert.ok(later.doc.getElementById('scoutSupportNudge'), '超過 30 日可以再提一次');
+
+  // 5) 被攔截（未經入口）唔應該出支持提示（先講清楚點入嚟）
+  const blocked = makeMockEnv({ referrer: '' });
+  gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', supportNudge: cfg }, blocked.win);
+  assert.equal(blocked.doc.getElementById('scoutSupportNudge'), null);
+
+  // 6) 冇設 supportNudge = 完全冇提示（預設行為不變）
+  const none = makeMockEnv({ referrer: 'https://scoutappstore.vercel.app/' });
+  gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate' }, none.win);
+  assert.equal(none.doc.getElementById('scoutSupportNudge'), null);
+
+  // 7) 儲存被封（Safari 私隱）都唔可以 throw
+  const blocked2 = makeMockEnv({ referrer: 'https://scoutappstore.vercel.app/', storageThrows: true });
+  const r = gate.initStoreGate({ appKey: 'hm20c', mode: 'entry-gate', supportNudge: cfg }, blocked2.win);
+  assert.equal(r.allowed, true, '儲存壞咗都要照開');
 });
 
 test('SG8：入口網站自己永遠唔會被閘（portalIds 含自身 origin 時 fail-closed 攔截，防自我鎖死）', () => {
@@ -543,7 +602,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   const dix = read('docs', 'README.md');
   const wf = read('.github', 'workflows', 'guard.yml');
 
-  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7', 'SG8', 'SG9', 'SG10', 'SG11', 'SG12']) {
+  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7', 'SG8', 'SG9', 'SG10', 'SG11', 'SG12', 'SG13']) {
     assert.ok(pb.includes(id) && doc.includes(id), `PLAYBOOK / docs/50 缺 ${id}`);
   }
   assert.ok(intake.includes('Q8') && intake.includes('entry-gate'), 'INTAKE 第 0 步要有 Q8 主動告知白名單與 entry-gate');
@@ -564,7 +623,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   }
   assert.ok(doc.includes('PORTAL_REGISTRY') && doc.includes('portalIds'), 'docs/50 要寫明 PORTAL_REGISTRY／portalIds 用法');
   // SG7：直開網址／404／加入主畫面 嘅情境表要喺 docs/50 §3.4 有紀錄
-  for (const kw of ['3.4', '404', '加入主畫面', '白名單真實代價', '3.6', 'push_subscriptions', '3.7', 'Delist', 'visible=false', '3.8', 'drawtheroute', 'LEADER_PASSWORD']) {
+  for (const kw of ['3.4', '404', '加入主畫面', '白名單真實代價', '3.6', 'push_subscriptions', '3.7', 'Delist', 'visible=false', '3.8', 'drawtheroute', 'LEADER_PASSWORD', 'supportNudge', 'SG13']) {
     assert.ok(doc.includes(kw), `docs/50 §3.4 要覆蓋「${kw}」`);
   }
   assert.ok(intake.includes('SG7'), 'INTAKE Q8 要提 SG7 加入主畫面流程');
