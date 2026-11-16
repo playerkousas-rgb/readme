@@ -385,6 +385,35 @@ test('SG13：經 APP STORE 正常入嘅已經睇得到 clicks，預設唔再出�
   assert.equal(skipMore.doc.getElementById('scoutSupportNudge'), null, '自訂 skipPortalIds 要生效');
 });
 
+test('SG16：GEMINI 係「方向相反」嘅第五個門口（inbound），唔會變成 entry-gate 放行來源', () => {
+  // 1) 註冊表有 gemini，但分開 kind
+  assert.ok(gate.PORTAL_REGISTRY.gemini);
+  assert.equal(gate.PORTAL_REGISTRY.gemini.kind, 'inbound');
+  assert.deepEqual([...gate.OUTBOUND_PORTAL_IDS], ['appstore', 'library', 'member', 'district']);
+  assert.deepEqual([...gate.INBOUND_PORTAL_IDS], ['gemini']);
+  for (const id of gate.OUTBOUND_PORTAL_IDS) {
+    assert.equal(gate.PORTAL_REGISTRY[id].kind, 'outbound', `${id} 應該係 outbound`);
+  }
+
+  // 2) 手誤把 gemini 放入 portalIds → 唔會被當成放行來源（亦唔會畫成入口掣）
+  assert.deepEqual([...gate.portalsFromIds(['gemini', 'appstore'])].map((p) => p.id), ['appstore']);
+  assert.deepEqual([...gate.normalizePortals({ portalIds: ['gemini'] })].map((p) => p.id), ['appstore'],
+    '只有 gemini 時要 fallback 去 APP STORE，唔可以畫一粒去唔到嘅掣');
+
+  // 3) 由 Gemini 嚟嘅 Referer 一律唔放行（Google 網域，跨站，冇我哋嘅入口身份）
+  for (const ref of ['https://gemini.google.com/app', 'https://aistudio.google.com/', 'https://gemini.google.com/']) {
+    const { win } = makeMockEnv({ referrer: ref });
+    const res = gate.initStoreGate({ appKey: 'gem', mode: 'entry-gate', portalIds: ['gemini', 'appstore'] }, win);
+    assert.equal(res.allowed, false, `Gemini 來源 ${ref} 唔應該放行`);
+    assert.equal(res.reason, 'missing-whitelist-entry');
+  }
+
+  // 4) 要畫「去 Gemini 創作」按鈕時，用 includeInbound
+  const withInbound = gate.portalsFromIds(['appstore', 'gemini'], {}, { includeInbound: true });
+  assert.deepEqual([...withInbound].map((p) => p.id), ['appstore', 'gemini']);
+  assert.equal(withInbound[1].origin, 'https://gemini.google.com');
+});
+
 test('SG8：入口網站自己永遠唔會被閘（portalIds 含自身 origin 時 fail-closed 攔截，防自我鎖死）', () => {
   const self = makeMockEnv({ referrer: '', selfOrigin: 'https://scoutappstore.vercel.app' });
   const res = gate.initStoreGate({
@@ -521,7 +550,8 @@ test('SG3/SG5：portals 多指定入口白名單（同時容許 SCOUT APP STORE 
 });
 
 test('SG1/SG5：PORTAL_REGISTRY 官方四大入口註冊表（1 APP STORE／2 圖書館／3 成員系統／4 區管理系統）', () => {
-  assert.deepEqual([...gate.PORTAL_IDS], ['appstore', 'library', 'member', 'district']);
+  assert.deepEqual([...gate.PORTAL_IDS], ['appstore', 'library', 'member', 'gemini', 'district']);
+  assert.deepEqual([...gate.OUTBOUND_PORTAL_IDS], ['appstore', 'library', 'member', 'district']);
   assert.deepEqual(
     [...gate.portalsFromIds(['appstore', 'library', 'member', 'district'])].map((p) => p.origin),
     [
@@ -547,6 +577,8 @@ test('SG1/SG5：PORTAL_REGISTRY 官方四大入口註冊表（1 APP STORE／2 �
     assert.equal(gate.parseAllowedOrigin(p.url), p.origin);
     assert.ok(gate.PORTAL_REGISTRY[id].repo.startsWith('playerkousas-rgb/'), `${id} 要記 repo`);
   }
+  // gemini 屬 inbound，唔會出現在 outbound 清單
+  assert.ok(!gate.OUTBOUND_PORTAL_IDS.includes('gemini'));
 });
 
 test('SG1/SG5：portalIds 直接引用四大入口即可放行／攔截（唔使逐個 app 抄網址）', () => {
@@ -631,7 +663,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   const dix = read('docs', 'README.md');
   const wf = read('.github', 'workflows', 'guard.yml');
 
-  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7', 'SG8', 'SG9', 'SG10', 'SG11', 'SG12', 'SG13', 'SG14', 'SG15']) {
+  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7', 'SG8', 'SG9', 'SG10', 'SG11', 'SG12', 'SG13', 'SG14', 'SG15', 'SG16']) {
     assert.ok(pb.includes(id) && doc.includes(id), `PLAYBOOK / docs/50 缺 ${id}`);
   }
   assert.ok(intake.includes('Q8') && intake.includes('entry-gate'), 'INTAKE 第 0 步要有 Q8 主動告知白名單與 entry-gate');
@@ -641,7 +673,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   assert.match(wf, /store_gate\.test\.mjs/, 'guard.yml 要跑 store_gate.test.mjs');
   assert.match(doc, /041f0742dbabeffa3405b5c0b208f4935f1a215c/, 'docs/50 要有 website pinned commit 實查連結');
   // 四大官方入口註冊表要同 PORTAL_REGISTRY 完全對齊（同一份真理）
-  for (const id of gate.PORTAL_IDS) {
+  for (const id of ['appstore', 'library', 'member', 'district']) {
     const p = gate.getPortal(id);
     assert.ok(doc.includes(p.origin), `docs/50 §0.1 缺 ${id} Origin（${p.origin}）`);
     assert.equal(gate.parseAllowedOrigin(p.url), p.origin, `${id} origin 要同 url 對齊`);
@@ -651,6 +683,10 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
     assert.ok(doc.includes(kw), `docs/50 要明寫四大入口「${kw}」`);
   }
   assert.ok(doc.includes('PORTAL_REGISTRY') && doc.includes('portalIds'), 'docs/50 要寫明 PORTAL_REGISTRY／portalIds 用法');
+  // SG16：Gemini 屬 inbound，docs 要講清楚兩個方向
+  assert.ok(doc.includes('inbound') && doc.includes('outbound'), 'docs/50 要分清 inbound／outbound');
+  assert.ok(doc.includes('gemini.google.com'), 'docs/50 要登記 Gemini origin');
+  assert.ok(!/portalIds: \['gemini'/.test(doc), 'docs/50 唔應該示範把 gemini 放入 portalIds');
   // SG7：直開網址／404／加入主畫面 嘅情境表要喺 docs/50 §3.4 有紀錄
   for (const kw of ['3.4', '404', '加入主畫面', '白名單真實代價', '3.6', 'push_subscriptions', '3.7', 'Delist', 'visible=false', '3.8', 'drawtheroute', 'LEADER_PASSWORD', 'supportNudge', 'SG13', 'SG14', '書架位置有限', 'skipPortalIds']) {
     assert.ok(doc.includes(kw), `docs/50 §3.4 要覆蓋「${kw}」`);

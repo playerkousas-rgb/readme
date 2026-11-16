@@ -51,12 +51,14 @@
    ➡️ 建議：請用戶填一句，AGENT 唔好代寫。
    → 寫入 README 第一句同 SCOPE.md 兩條 bar；「唔做乜」去 docs/out-of-scope/。
 
-❓ Q8 — 入口與白名單／關站模式（經四大官方入口任一進入）？
-   【AGENT 必須主動告知用戶本生態有 **4 個官方準入白名單入口**（真理倉 docs/50 §0.1 唯一登記：
+❓ Q8 — 入口與白名單／關站模式（經官方入口任一進入）？
+   【AGENT 必須主動告知用戶本生態有 **4 個派發入口（outbound）＋1 個創作入口（inbound，GEMINI）**（真理倉 docs/50 §0.1 唯一登記：
      1. APP STORE `https://scoutappstore.vercel.app`
      2. 圖書館 `https://scout-circulars.vercel.app`
      3. 成員系統 `https://member-portal-sigma-swart.vercel.app`
-     4. 區管理系統 `https://scout-district-portal.vercel.app`）
+     4. 區管理系統 `https://scout-district-portal.vercel.app`
+     ＋ 5. GEMINI `https://gemini.google.com`（**方向相反**：係「入嚟創作」，Google 網域跨站、冇我哋 Referer →
+        **唔准放入 portalIds** 做放行來源；生成嘅 app 部署後要另定 mode，見 SG16 / docs/09 C13））
    及暫時關站機制】
    open（公開直連，預設）· entry-gate（頂層跳板白名單，唔用 iframe，可揀四大入口任一或全部）·
    iframe-only（純 iframe 白名單，須該入口已有 iframe 殼）· closed（暫時關站／維護告示）

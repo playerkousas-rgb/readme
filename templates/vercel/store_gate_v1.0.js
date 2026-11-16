@@ -57,6 +57,7 @@ const DEFAULT_ALLOWED_ORIGINS = ['https://scoutappstore.vercel.app'];
 const PORTAL_REGISTRY = Object.freeze({
   appstore: Object.freeze({
     id: 'appstore',
+    kind: 'outbound', // 派發方向：由呢個門口撳出去開子 App（有 Referer，可做 entry-gate）
     role: 'main', // 1. 真正主站（全方位）：唯一應該帶分享連結／QR 嘅入口
     order: 1,
     labelZh: '1. 前往 APP STORE',
@@ -68,6 +69,7 @@ const PORTAL_REGISTRY = Object.freeze({
   }),
   library: Object.freeze({
     id: 'library',
+    kind: 'outbound', // 派發方向：由呢個門口撳出去開子 App（有 Referer，可做 entry-gate）
     role: 'feed', // 2. 每天更新通告嘅引流入口：新 APP 即時可入
     order: 2,
     labelZh: '2. 前往圖書館',
@@ -79,6 +81,7 @@ const PORTAL_REGISTRY = Object.freeze({
   }),
   member: Object.freeze({
     id: 'member',
+    kind: 'outbound', // 派發方向：由呢個門口撳出去開子 App（有 Referer，可做 entry-gate）
     role: 'internal', // 3. 自家出產副系統（成員系統）
     order: 3,
     labelZh: '3. 前往成員系統',
@@ -88,8 +91,24 @@ const PORTAL_REGISTRY = Object.freeze({
     origin: 'https://member-portal-sigma-swart.vercel.app',
     repo: 'playerkousas-rgb/member-portal',
   }),
+  // 5. GEMINI（2026-11-15 用戶補充）：方向相反——係「入嚟創作」嘅門口，唔係「派出去」嘅門口。
+  //    喺 Gemini Canvas 入面跑嘅 app 屬 Google 網域（跨站 iframe），冇我哋嘅 Referer，
+  //    所以**唔可以**放入 portalIds 做放行來源；只用作「創作入口」紀錄，見 docs/50 §3.9。
+  gemini: Object.freeze({
+    id: 'gemini',
+    kind: 'inbound', // 創作方向：人由 Gemini 入嚟用／生 app，唔會帶住我哋嘅 Referer
+    role: 'studio',
+    order: 5,
+    labelZh: '5. Gemini 創作',
+    labelEn: '5. Gemini Studio',
+    nameZh: 'GEMINI',
+    url: 'https://gemini.google.com/',
+    origin: 'https://gemini.google.com',
+    repo: 'playerkousas-rgb/readme', // 創作方向由真理倉 docs/09 C13 規範
+  }),
   district: Object.freeze({
     id: 'district',
+    kind: 'outbound', // 派發方向：由呢個門口撳出去開子 App（有 Referer，可做 entry-gate）
     role: 'internal', // 4. 自家出產副系統（區管理系統）
     order: 4,
     labelZh: '4. 前往區管理系統',
@@ -101,8 +120,18 @@ const PORTAL_REGISTRY = Object.freeze({
   }),
 });
 
-/** 官方入口順序：1 APP STORE → 2 圖書館 → 3 成員系統 → 4 區管理系統 */
+/** 官方入口順序：1 APP STORE → 2 圖書館 → 3 成員系統 → 4 區管理系統（＋5 Gemini 創作，方向相反） */
 const PORTAL_IDS = Object.freeze(Object.keys(PORTAL_REGISTRY));
+
+/** 派發方向（可做 entry-gate 放行來源）：四個 */
+const OUTBOUND_PORTAL_IDS = Object.freeze(
+  Object.keys(PORTAL_REGISTRY).filter((k) => PORTAL_REGISTRY[k].kind === 'outbound'),
+);
+
+/** 創作方向（唔可以做放行來源）：Gemini */
+const INBOUND_PORTAL_IDS = Object.freeze(
+  Object.keys(PORTAL_REGISTRY).filter((k) => PORTAL_REGISTRY[k].kind === 'inbound'),
+);
 
 /** 由 registry id 取入口資料；唔識嘅 id 回 null（由呼叫方 fail-safe 過濾） */
 function getPortal(id, overrides = {}) {
@@ -112,13 +141,17 @@ function getPortal(id, overrides = {}) {
 }
 
 /** 由 portalIds: ['appstore','library'] 展開成完整入口物件清單（未知 id 靜靜略過） */
-function portalsFromIds(ids, labelMap = {}) {
+function portalsFromIds(ids, labelMap = {}, options = {}) {
   if (!Array.isArray(ids)) return [];
+  const includeInbound = Boolean(options.includeInbound);
   const seen = new Set();
   const out = [];
   for (const raw of ids) {
     const hit = getPortal(raw);
     if (!hit || seen.has(hit.id)) continue;
+    // SG16：inbound 門口（Gemini）冇我哋嘅 Referer，放入白名單只會令所有請求都對唔上，
+    // 所以預設唔會變成放行來源；要畫「去 Gemini 創作」嘅按鈕先傳 { includeInbound: true }。
+    if (hit.kind === 'inbound' && !includeInbound) continue;
     seen.add(hit.id);
     const ov = labelMap[hit.id] || {};
     out.push({
@@ -640,6 +673,8 @@ if (typeof globalThis !== 'undefined') {
     DEFAULT_ALLOWED_ORIGINS,
     PORTAL_REGISTRY,
     PORTAL_IDS,
+    OUTBOUND_PORTAL_IDS,
+    INBOUND_PORTAL_IDS,
     getPortal,
     portalsFromIds,
     buildTrackPayload,
@@ -662,6 +697,8 @@ if (typeof module !== 'undefined' && module.exports) {
     DEFAULT_ALLOWED_ORIGINS,
     PORTAL_REGISTRY,
     PORTAL_IDS,
+    OUTBOUND_PORTAL_IDS,
+    INBOUND_PORTAL_IDS,
     getPortal,
     portalsFromIds,
     buildTrackPayload,
