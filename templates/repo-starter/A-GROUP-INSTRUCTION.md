@@ -56,7 +56,7 @@
 
 **唔准做**：
 - ❌ 唔准自己寫死入口網址（一律用 `portalIds`，網址由真理倉 `PORTAL_REGISTRY` 統一）
-- ❌ 唔准把 `gemini` 放入 `portalIds`（佢屬 Canvas 派發線，管唔到閘，見 SG16；程式亦會自動剔除）
+- ❌ 唔准把 `gemini` 放入 `portalIds`（第一批只認 APP STORE；`gemini` 本身係合法入口，但要我另外叫你加，見 SG16／SG17）
 - ❌ 唔准自行加 `library`／`member`／`district`（入口幾時入場由真理倉決定，見 SG17；你只寫 `['appstore']`）
 - ❌ 唔准改動 APP STORE／圖書館／任何入口 repo（你只改自己個 repo）
 - ❌ 唔准用 `iframe-only`（除非你肯定四類禁區全中）

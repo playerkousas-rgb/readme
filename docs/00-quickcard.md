@@ -71,7 +71,8 @@ L ：**未來新開**嘅唔太重 app 要有英文版 + 右上角一鍵切換掣
     豁免寫 EXCEPTION: L1 — 原因 — 補償；驗 node scripts/i18n_check_v1.0.mjs <path>
 SG：關站／經四大官方入口白名單進入（按需啟用 → docs/50 §0.1）：
     1.APP STORE（scoutappstore）2.圖書館（scout-circulars）3.成員系統（member-portal-sigma-swart）4.區管理系統（scout-district-portal）
-    5.GEMINI（gemini.google.com）＝Canvas 派發線（同樣整俾人用、有自己統計），但管唔到閘，唔准放入 portalIds（SG16）
+    5.GEMINI（gemini-woad-sigma.vercel.app）＝用戶自己 private repo GEMINI 部署嘅 Vercel app，
+      同 1-4 一樣可以放入 portalIds、可以放行（SG16 已修正；唔係 Google Gemini）
     開新 app 主動告知；有 localStorage／PWA／Push／登入 Cookie 禁入 iframe，改行頂層 entry-gate（portalIds 引用四大入口）
     SG7：加主畫面流程＝「先由入口進入 → 再按瀏覽器選單加入主畫面」；直開網址唔會 404（出白名單卡）
     SG8：入口自己永不被閘（self-portal）；直開網址預設唔自動跳，要跳就 autoRedirectSeconds 3–5
@@ -84,7 +85,7 @@ SG：關站／經四大官方入口白名單進入（按需啟用 → docs/50 §
     SG13：supportNudge 文案＝「書架位有限，長期冇人收藏/Like 會收起」；預設 skip appstore（你已睇得到 clicks）
     SG14：書架政策要公開＋可逆＋唔刪資料；唔准寫死日數／門檻（睇後台自行判斷）；BOOK／自家系統豁免
     SG17：唔使逐個入口「打招呼」！APP STORE＝永遠預設（分享／QR 由佢出）、圖書館＝改 L5662 noreferrer 後才加、
-          成員／區管理＝唔做 App 目錄（唔使理），GEMINI＝永遠唔會（放入 portalIds 都被剔除）
+          成員／區管理＝唔做 App 目錄（唔使理），GEMINI＝可加（自己 private repo，可放行）
 ```
 詳情：[PLAYBOOK §7.5–§7.7](../PLAYBOOK.md) · [44 雙語介面](44-bilingual-ui.md) · [50 白名單與關站](50-app-store-whitelist-and-shutdown.md)
 

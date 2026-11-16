@@ -2,7 +2,7 @@
 
 > **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經指定入口（如 APP STORE `website` 或通告圖書館 `scout-circulars`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
 > **層級**：按需啟用嘅入口管制規則（預設 `open` 公開直連，唔強制鎖站；現有 repo 唔自動追溯）。支援**單一入口**或**多個指定入口並存**（例如同時容許由 **SCOUT APP STORE** 或 **通告圖書館** 進入，其餘直連一律攔截）。一旦開新 App 時揀咗白名單或日後要關站，必須按 **SG1–SG17** 處理，避免撞入 Safari 儲存隔離、PWA 主畫面踢人、`SameSite=Lax` Cookie 全滅、通告圖書館 `noreferrer` 清空 `Referer` 同 `308` 永久快取五大陷阱。
-> **官方準入入口（2026-11-15 用戶定案・真理倉唯一登記處）**：**1. APP STORE** · **2. 圖書館** · **3. 成員系統** · **4. 區管理系統**（四者＝**Vercel 派發線**，我哋可以掛閘）＋ **5. GEMINI**（**Canvas 派發線**：同樣係整俾人用嘅入口，只係工具用 Canvas 寫、跑喺 Google 網域，**我哋管唔到閘但有自己完善統計**，見 [§3.9](#39-第五個門口-gemini同一條派發線只係canvas-類工具)）。四個入口嘅 repo、pinned commit、Origin、現時連結行為同 `<iframe>` 殼狀況全部實查列於 [§0.1](#01-官方四大準入白名單入口註冊表canonical-portal-registry)；程式碼層面嘅同一份表係 [`store_gate_v1.0.js`](../templates/vercel/store_gate_v1.0.js) 嘅 `PORTAL_REGISTRY`（子 App 只需寫 `portalIds: ['appstore','library','member','district']`）。日後加／改名／改網址，**只改呢兩處**。
+> **官方準入入口（2026-11-15 用戶定案・真理倉唯一登記處）**：**1. APP STORE** · **2. 圖書館** · **3. 成員系統** · **4. 區管理系統** · **5. GEMINI** —— **五個全部屬 Vercel 派發線**（都係我哋自己托管、都可以掛 `store_gate`／`entry-gate`）。**⚠️ 2026-11-15 第二次修正**：GEMINI **唔係** Google 嘅 Gemini／Canvas，而係用戶自己一個 **private repo [`playerkousas-rgb/GEMINI`](https://github.com/playerkousas-rgb/GEMINI)** 部署出嚟嘅 Vercel app（`https://gemini-woad-sigma.vercel.app/`）——同其他子 App 一樣係目錄入面一件貨，可以正常放行（見 [§3.9](#39-第五個門口-gemini係用戶自己嘅-private-repo--唔係-google-gemini)）。五個入口嘅 repo、pinned commit、Origin、現時連結行為同 `<iframe>` 殼狀況全部實查列於 [§0.1](#01-官方四大準入白名單入口註冊表canonical-portal-registry)；程式碼層面嘅同一份表係 [`store_gate_v1.0.js`](../templates/vercel/store_gate_v1.0.js) 嘅 `PORTAL_REGISTRY`。日後加／改名／改網址，**只改呢兩處**。
 
 ---
 
@@ -31,7 +31,7 @@
 | **2** | **圖書館**（通告圖書館 v5.11） | **派出去**（`outbound`） | **`feed` 通告推送主場**（**唔帶分享連結**）：主要目的係**睇通告**＋**加入主畫面收 Push**；**現時冇點擊統計**，推廣 APP STORE 屬後期功能（2026-11-15 用戶說明） | [`playerkousas-rgb/scout-circulars`](https://github.com/playerkousas-rgb/scout-circulars) | [`8808cd17`](https://github.com/playerkousas-rgb/scout-circulars/commit/8808cd1708981df61d9191e80282d8e58a840b89)（2026-11-16） | `https://scout-circulars.vercel.app` | `<a target="_blank" rel="noopener noreferrer">`（[`index.html` L5662](https://github.com/playerkousas-rgb/scout-circulars/blob/8808cd1708981df61d9191e80282d8e58a840b89/index.html#L5662)） | ❌ 未有（新分頁） | ⚠️ **要改**：`isTool` 分支改 `rel="noopener"` |
 | **3** | **成員系統**（公開服務平台） | **派出去**（`outbound`） | **`internal` 自家副系統入口**：自家出產系統由此直入（**唔帶分享連結**） | [`playerkousas-rgb/member-portal`](https://github.com/playerkousas-rgb/member-portal) | [`de879a49`](https://github.com/playerkousas-rgb/member-portal/commit/de879a495a3a12d15129fa8e101179a7c07be6e7)（2026-11-15） | `https://member-portal-sigma-swart.vercel.app` | `/books` 用 `<iframe>` 嵌 4 個 `BOOK`；另有 `<a target="_blank" rel="noopener noreferrer">開啟原網站 ↗</a>`（`components/BookSelector.tsx` L88） | ✅ 有（`/books`，`allow="camera; fullscreen"`）＋ 自身被 `https://www.skwscout.org.hk` 以 `frame-ancestors` 嵌入 | ⚠️ **要改**：`BookSelector.tsx` L88 改 `rel="noopener"` |
 | **4** | **區管理系統**（童軍區管理平台） | **派出去**（`outbound`） | **`internal` 自家副系統入口**：自家出產系統由此直入（**唔帶分享連結**） | [`playerkousas-rgb/scout-district-portal`](https://github.com/playerkousas-rgb/scout-district-portal) | [`70809bbc`](https://github.com/playerkousas-rgb/scout-district-portal/commit/70809bbc45a9f203c8279d5c105cb313de619fbd)（2026-11-15） | `https://scout-district-portal.vercel.app` | `/embed` 用 `<iframe>` 嵌工具（`?role=…&from=portal&embed=1&d=…`）；另有「↗ 在新分頁開啟」（`app/embed/page.tsx` L45）同 `/links`（`app/links/page.tsx` L138） | ✅ 有（`/embed`，`allow="clipboard-write"`） | ⚠️ **要改**：`embed/page.tsx` L45 同 `links/page.tsx` L138 改 `rel="noopener"` |
-| **5** | **GEMINI**（**Canvas 派發線**） | **派出去（Canvas 類）**（`canvas`） | **`canvas` 入口**：派發用 Canvas 寫嘅工具／App（單一 HTML、跑喺 Google 網域）。**同樣係整俾人用**，**Gemini 自己嗰邊有完善統計**；我哋改唔到 Google 嘅 header，所以**唔可以**做 `entry-gate` 放行來源（見 §3.9） | —（Google 網域；創作由真理倉 [09](09-gemini-canvas.md) C1–C13 規範） | — | `https://gemini.google.com` | 由 Gemini 派發／分享（唔經 Vercel） | ❌ 不適用（Google 控制） | ❌ 不適用 |
+| **5** | **GEMINI**（**自家 private repo**） | **派出去**（`outbound`） | **`subapp` 一般子 App 入口**：同 1–4 完全同級，可用 `portalIds` 引用、可做 `entry-gate` 放行來源；統計喺佢自己嗰邊（用戶：那邊我也有完善的統計） | [`playerkousas-rgb/GEMINI`](https://github.com/playerkousas-rgb/GEMINI)（**private**：agent API 可能回 `403`，讀唔到唔等於唔存在） | 未能 pin（private repo，`gh api` 回 403） | `https://gemini-woad-sigma.vercel.app` | 自己部署，可掛 `store_gate`／改 header | 自己控制（可以加，但 MVP 未做） | 自己控制 |
 
 **點用（子 App 側，一行搞掂）**：
 
@@ -51,7 +51,7 @@ initStoreGate({
 1. **只認 Origin**：`PORTAL_REGISTRY` 每個入口只登記 `https://host`（無尾斜線、無路徑、無 query）。子站比對一律用 `new URL(referrer).origin` 精確等同（防 `https://scoutappstore.vercel.app.evil.com` 前綴偽造，A9）。
 2. **順序＝1/2/3/4**：`portalsFromIds()` 會按 `order` 排序，攔截卡第一粒掣永遠係 APP STORE，符合「主入口」慣性；用家仍可揀其餘三個。
 3. **入口唔等價（SG9）**：四個入口角色唔同——`main`（APP STORE）／`feed`（圖書館，每日引流）／`internal`（成員系統、區管理系統，自家副系統）。**分享連結同 QR code 只可以由 `main` 產生**；`feed` 同 `internal` 只做「入場」，唔做「對外宣傳」。
-4. **兩條派發線唔可以混淆（SG16）**：`outbound`（1–4）＝**Vercel 派發線**，我哋可以掛閘、帶 `Referer`，可做 `entry-gate` 放行來源；`canvas`（5 Gemini）＝**Canvas 派發線**，同樣係入口、同樣有人用、同樣有統計，但**我哋管唔到 Google 嘅 header／iframe**，所以**放入 `portalIds` 會被自動略過**（程式已強制，避免畫出撞唔中嘅掣）。
+4. **五個入口全部同等（SG16 已修正）**：全部屬 `outbound`＝**Vercel 派發線**——都係我哋自己托管、都掛得閘、都帶 `Referer`、都可做 `entry-gate` 放行來源。GEMINI 亦係其中之一（private repo，但部署喺 Vercel 就同其他子 App 一樣可以管）。**冇任何入口屬「管唔到閘」**，所以 `CANVAS_PORTAL_IDS`／`INBOUND_PORTAL_IDS` 已固定為空陣列（只為兼容舊 caller 保留）。
 5. **登記 ≠ 已通**：`member-portal` 自身被 `www.skwscout.org.hk` 嵌入、`/books` 同 `/embed` 已經有 `<iframe>` 殼，但**末端連結仲帶 `noreferrer`**；未按 §4.4 改之前，由第 2／3／4 號入口撳入嘅子 App 會因空 `Referer` 被 `entry-gate` 擋。註冊表如實反映呢個狀態，唔會假裝已通。
 
 ---
@@ -77,7 +77,7 @@ initStoreGate({
 | **SG13** | **支持提示要講真話：「書架位置有限，冇人用會收起」——而且只對「你睇唔到嘅人」講** | 文案**必須**老實講後果（長期 0 收藏／Like → 收起騰位），唔好講「多謝支持」呢類客氣話。**預設 `skipPortalIds: ['appstore']`**：經 APP STORE 正常入嘅人，你 `clicks`／`stars`／`hearts` 已經睇得到，**唔需要再騷擾佢**；只有「主畫面直開」同「由其他入口入」嘅人（你睇唔到）才提一次。其餘硬規則：只在**已放行**時顯示、`role="complementary"`（唔遮內容唔阻擋）、一定有「唔使喇」、每 30 日最多一次、Safari 封 storage 靜默、**嚴禁**倒數／延時／遮罩迫 Like |
 | **SG14** | **書架政策：唔寫死門檻，但「公開、可逆、唔刪資料」三條要守** | 幾時收起由**你睇後台**（`clicks`／`stars`／`hearts`）自行判斷——**唔准**寫任何固定日數／數字門檻入代碼或文件（用戶 2026-11-15 定案：「唔需要特登寫死規則，其實個後台我成日都睇」）。要守嘅只有三條：① **公開前置**（收起政策寫喺 APP STORE 說明，唔可以臨時通知）；② **收起＝只 Delist**，代碼／網址／用戶資料一律保留、隨時復活；③ **豁免**：`BOOK` 類（有人存真實紀錄）同自家系統。**Like 數 ≠ 使用人數**，所以決定權喺你，唔喺數字 || **SG11** | **「收起」≠「用不到」——要分清四個下架齒輪** | ⚠️ **實查**：APP STORE 後台「隱藏」只係前端過濾（`store.js` L782 `sb.from("apps").select("*")` 拉晒全部，再用 `a.visible !== false` 喺瀏覽器篩走），**個 App 本身仍然 100% 開得**（舊 link／書籤／QR／搜尋照入）。要真正令人用唔到，必須用：① **Delist**（APP STORE 隱藏）＝冇人發現，但 URL 仍可入；② **Gate**（`entry-gate`）＝擋直開；③ **Soft close**（`mode: 'closed'`）＝見維護卡；④ **Hard close**（Vercel Pause）＝完全離線。四者係**齒輪唔係等號**，見 §3.7 |
 | **SG15** | **逐個 App 由該 App 嘅 AGENT 決定，真理倉只派清單** | 用戶 2026-11-15 定案：「你做好你呢邊未來要定嘅規則就 OK，之後再比唔同嘅對話我，我一個個同個 App 嘅 AGENT 講，佢對自己個 App 熟 D 會再諗多 D。」→ 真理倉**唔替**個別 App 決定 `mode`／`portalIds`／`supportNudge`；一律派 [`templates/repo-starter/WHITELIST-HANDOFF.md`](../templates/repo-starter/WHITELIST-HANDOFF.md)（6 條問題 → 按類型落實 → 真機三項驗收 → 回報格式）。AGENT **唔准**估，唔識要答「唔識」 |
-| **SG16** | **五個入口＝兩條派發線，唔可以混淆** | **1–4 ＝ Vercel 派發線（`outbound`）**：我哋托管、可掛 `store_gate`／`CSP`、帶 `Referer`、可做 `entry-gate` 放行來源。**5 GEMINI ＝ Canvas 派發線（`canvas`）**：同樣係整俾人用嘅入口、**Gemini 自己嗰邊有完善統計**，但跑喺 Google 網域、我哋改唔到佢 header → **`gemini` 唔准放入 `portalIds` 做放行來源**（`portalsFromIds` 預設剔除；要畫按鈕用 `includeCanvas`）。Canvas app 要連受管制嘅 Vercel App → **一律經 APP STORE 轉接**；Vercel App 想嵌 Canvas app → **唔可以 `<iframe>`**（Google `frame-ancestors` 會封），改另開分頁或 API（C13 三軌注入） |
+| **SG16** | **五個入口全部同等（2026-11-15 第二次修正）** | 用戶原文：「我岩岩用無痕 https://gemini-woad-sigma.vercel.app/ 呢個係岩既 LINK 尼 WOR，我覺得你誤會了我說的 GEMINI 和真的 GEMINI，我說的是我的 REPO "GEMINI"」＋「因為果個係私人 REPO」。→ **1–5 全部屬 `outbound`（Vercel 派發線）**：我哋托管、可掛 `store_gate`／`CSP`、帶 `Referer`、可做 `entry-gate` 放行來源。**`gemini` 可以正常放入 `portalIds`**（`portalsFromIds(['gemini','appstore'])` → 兩個都保留；由 `https://gemini-woad-sigma.vercel.app` 嚟嘅 `Referer` 照放行）。`CANVAS_PORTAL_IDS`／`INBOUND_PORTAL_IDS` **固定為空陣列**（舊版錯誤分類已撤銷，個名只為兼容而留）。⚠️ **唯一保留**：GEMINI 係 **private repo**，agent 用 GitHub API 讀原始碼可能回 `403 Resource not accessible by integration` —— **讀唔到唔等於唔存在、更加唔可以寫成「死連」**。⚠️ 唔好同 **Google 嘅 Gemini／Canvas** 混淆：後者（`gemini.google.com`）**唔係**我哋任何入口，亦唔可以 `<iframe>` 嵌（C13 三軌注入另計） |
 | **SG17** | **要唔要先逐個入口打招呼？→ 唔使（五個入口唔同待遇）** | 用戶 2026-11-15 定案：「我洗唔洗先同左 2 大入口圖書館同 APP STORE 講先？GEMINI 是另一系統佢同其他 APP 完全無関係當然唔洗。成員系統區管理系統其實都唔會直入 APP，佢地係連 APP STORE 同圖書館的，最多成員連埋 BOOK。」→ 結論：**開閘之前只有兩件事要 CHECK，冇「逐個入口通知」呢個步驟**。<br>① **APP STORE ＝永遠預設入口**（`admit: 'always'`，`DEFAULT_PORTAL_IDS`）：分享連結／QR 只由佢產生（SG9），所以任何一隻子 App 一律先認佢；**唔使問**。<br>② **圖書館 ＝條件式**（`admit: 'conditional'`）：納入 `portalIds` 之前，**只**要改 [`index.html` L5662](https://github.com/playerkousas-rgb/scout-circulars/blob/8808cd1708981df61d9191e80282d8e58a840b89/index.html#L5662) 嘅 `noreferrer`（§4.4-1）；**冇統計、冇 Push、冇通告流程要改**（SG10-a）。未改就唔好加，加咗只會撞卡。<br>③ **成員系統／區管理系統 ＝可選**（`admit: 'optional'`）：實查兩邊都**唔做 App 目錄** —— `member-portal` `app/page.tsx` 只連 `/books`（4 本 BOOK）、通告圖書館、`districtbadgesystem30`、`scoutappstore`（＋一個已失效網址，見 §4.4-9）；`scout-district-portal` 卡片／`/embed`／`/links` 只連自家系統。所以**唔會直入 A／B 組 App**，唔關佢哋事。例外：`member` 連 **4 本 BOOK** → 只有 `CUBSBOOK`／`SCOUTBOOK`／`VSBOOK`／`ROVERBOOK` 可考慮加 `member`；但 BOOK 屬「管制宜寬鬆」嗰類（SG2／SG11-a），維持 `portalIds: ['appstore']` ＋ `allowStandalone: true` 已經足夠，**冇必要**加。<br>④ **GEMINI ＝永遠唔會**（`admit: 'never'`）：佢係另一套系統、同 Vercel 子 App 完全無關，亦唔會做佢哋嘅入口 → 唔使講、唔使問、放入 `portalIds` 都會被程式剔除（SG16）。<br>**程式層面**：`PORTAL_REGISTRY` 每個入口多一個 `admit` 欄；`DEFAULT_PORTAL_IDS = ['appstore']`、`CONDITIONAL_PORTAL_IDS = ['library']`、`OPTIONAL_PORTAL_IDS = ['member','district']`、`NEVER_ADMIT_PORTAL_IDS = ['gemini']`；新子 App 寫 `portalIds: DEFAULT_PORTAL_IDS`（或 `portalIdsAdmit: 'all'` 一次過開 1–4，永遠唔會誤包 Gemini） |
 ---
 
@@ -466,69 +466,57 @@ initStoreGate({
 | **專業工具（有價值）** | `HM20C`、`drawtheroute`、`HKMAP`、`AvianDex` | **`portalIds` 只留 `appstore`** ＋ **`supportNudge`**（SG13） | 擋「唔表態都想用」；唔做後端驗票（用戶定案） |
 | **自家系統（有身份）** | 成員系統、區管理系統、各 `badge` | 後端登入把關（SG11-b），入口只作導流；**唔需要 `supportNudge`** | 已有真實身份同關係，唔需要再提 |
 
-### 3.9 第五個門口 GEMINI：同一條派發線，只係「Canvas 類」工具
+### 3.9 第五個門口 GEMINI：係用戶自己嘅 private repo —— 唔係 Google Gemini
 
-> **用戶 2026-11-15 澄清（重要修正）**：「你誤會了。GEMINI 也是我整來給人用的，只是那邊都是用 CANVAS 寫的工具，和 APP STORE 這邊是不同類而已。那邊我也有完善的統計，所以也是一個入口。」
+> **2026-11-15 用戶修正（必讀，我上一版錯咗兩次）**：
+> ① 「我岩岩用無痕 https://gemini-woad-sigma.vercel.app/ 呢個係岩既 LINK 尼 WOR」
+> ② 「我覺得你誤會了我說的 GEMINI 和真的 GEMINI，我說的是我的 REPO "GEMINI"」
+> ③ 「因為果個係私人 REPO」
 
-**所以五個門口係咁分（唔係「方向相反」，係「類型唔同」）**
+**即係話**：第 5 個入口 **GEMINI ＝ [`playerkousas-rgb/GEMINI`](https://github.com/playerkousas-rgb/GEMINI)（private repo）部署出嚟嘅 Vercel app**，網址 `https://gemini-woad-sigma.vercel.app/`。佢係**目錄入面一件貨**（你 APP STORE 嘅 `Gemini 輔助工具`，`apps.id = 080a07e8-79ba-4db4-a159-e8cdf703f73f`，`visible = true`，`clicks = 20`／`hearts = 1`），同其他子 App **完全同級**。
 
-| # | 入口 | 派發乜 | 用家由邊入 | 統計喺邊 | 我哋可唔可以掛閘 |
-|:--:|---|---|---|---|:--:|
-| 1 | **APP STORE** | Vercel 上嘅 App（全方位目錄） | `scoutappstore.vercel.app` | ✅ APP STORE 後台（`clicks`／`stars`／`hearts`） | ✅ 可以 |
-| 2 | **圖書館** | 通告＋新 App 引流 | `scout-circulars.vercel.app` | 自有（Push 訂閱；點擊統計後期） | ✅ 可以（但**必須維持 `open`**，SG10-a） |
-| 3 | **成員系統** | 自家副系統 | `member-portal-sigma-swart.vercel.app` | 自有登入紀錄 | ✅ 可以 |
-| 4 | **區管理系統** | 自家副系統 | `scout-district-portal.vercel.app` | 自有登入紀錄 | ✅ 可以 |
-| 5 | **GEMINI** | **Canvas 類工具／App**（單一 HTML，跑喺 Google 網域） | `gemini.google.com`（Gem Canvas／分享連結） | ✅ **Gemini 自己嗰邊有完善統計**（用戶） | ❌ **管唔到**（Google 網域，我哋改唔到佢 header／iframe） |
+**唔係** Google 嘅 Gemini／Canvas（`gemini.google.com`）。兩者要分清楚：
 
-**一句話**：1–4 係「**Vercel 派發線**」，5 係「**Canvas 派發線**」。**五個都係入口，兩條線並行**，只係技術形態唔同。
-
-**兩條線嘅技術分別（決定「可唔可以管」）**
-
-| 項目 | Vercel 派發線（1–4 → 子 App） | Canvas 派發線（5 → Canvas app） |
+| | 你嘅 GEMINI（第 5 個入口） | Google Gemini／Canvas |
 |---|---|---|
-| 托管 | Vercel（`*.vercel.app`） | Google（Gemini Canvas，單一 HTML） |
-| 我哋可唔可以放 `store_gate_v1.0.js` | ✅ 可以（自己部署） | ❌ 唔可以（唔係我哋托管） |
-| 可唔可以設 `CSP frame-ancestors` | ✅ 可以（`vercel.json`） | ❌ 唔可以（Google 控制） |
-| `entry-gate` 放行來源 | ✅ 可以（有 `Referer`） | ❌ 唔可以（跨站、無我哋 `Referer`） |
-| 體積規則 | S7（`dist < 5MB`） | **C13-g 單一 HTML ≤ 5MB，唔強制瘦身**（[09](09-gemini-canvas.md)） |
-| 體積／資產規範 | [06](06-vercel.md) VL1–VL12 | [09](09-gemini-canvas.md) C1–C13 |
-| 統計 | APP STORE `clicks`／`stars`／`hearts`（或子 App `trackEndpoint`） | **Gemini 自己嗰邊**（唔需要重複做） |
+| 係咩 | 你自己寫、自己 repo、自己部署嘅 Vercel app | Google 嘅產品／沙盒 |
+| 網址 | `https://gemini-woad-sigma.vercel.app/` | `https://gemini.google.com` |
+| 我哋管唔管到 | ✅ 管到（可以掛 `store_gate`、改 header、做放行來源） | ❌ 管唔到（Google 控制） |
+| 可唔可以放入 `portalIds` | ✅ 可以，同 1–4 一樣 | ❌ 唔可以（亦冇需要） |
+| 統計喺邊 | 佢自己嗰邊（用戶：那邊我也有完善的統計） | Google 自己 |
 
-**所以 `gemini` 喺 `portalIds` 嘅正確用法**
+**五個入口一律同級**
 
-`gemini` **仍然係登記入口**（第 5 個），但因為我哋管唔到佢嗰邊嘅閘，所以：
-
-```js
-// ✅ 正常情況：只列可控閘嘅入口（1–4）做放行來源
-portalIds: ['appstore', 'library', 'member', 'district']
-
-// ✅ 若個別 App 想喺攔截卡多一粒「去 Gemini 用 Canvas 版」
-portalIds: ['appstore', 'gemini']  // ← 程式預設會自動略過 gemini
-// 要真係畫出嚟：另外傳 includeCanvas（見下）
-```
+| # | 入口 | 托管 | 可掛閘 | 可做放行來源 | `admit`（SG17） |
+|:--:|---|---|:--:|:--:|---|
+| 1 | APP STORE | Vercel（`website`） | ✅ | ✅ | `always`（分享／QR 只由佢產生） |
+| 2 | 圖書館 | Vercel（`scout-circulars`） | ✅ | ✅ | `conditional`（要先改 `noreferrer`） |
+| 3 | 成員系統 | Vercel（`member-portal`） | ✅ | ✅ | `optional`（唔做 App 目錄） |
+| 4 | 區管理系統 | Vercel（`scout-district-portal`） | ✅ | ✅ | `optional`（唔做 App 目錄） |
+| 5 | **GEMINI** | **Vercel（`GEMINI`，private repo）** | ✅ | ✅ | `optional`（可以加，預設唔加） |
 
 程式層面（`store_gate_v1.0.js`）：
 
 ```js
-PORTAL_REGISTRY.gemini.kind    = 'canvas';
-PORTAL_REGISTRY.gemini.gateable = false;      // 我哋管唔到閘
-PORTAL_REGISTRY.gemini.stats    = 'gemini-side'; // 統計喺 Gemini 自己嗰邊
-CANVAS_PORTAL_IDS;   // ['gemini']
-OUTBOUND_PORTAL_IDS; // ['appstore','library','member','district']
-portalsFromIds(['gemini','appstore']);                      // → ['appstore']
-portalsFromIds(['appstore','gemini'], {}, { includeCanvas: true }); // → 兩個都保留
+PORTAL_REGISTRY.gemini.kind          = 'outbound';  // 同 1–4 一樣
+PORTAL_REGISTRY.gemini.gateable      = true;        // 自己部署 → header 改得到
+PORTAL_REGISTRY.gemini.admit         = 'optional';  // SG17
+PORTAL_REGISTRY.gemini.repoVisibility = 'private';  // 原始碼 agent 可能讀唔到（403）
+OUTBOUND_PORTAL_IDS;  // ['appstore','library','member','district','gemini']
+CANVAS_PORTAL_IDS;    // [] —— 舊版錯誤分類已撤銷（空陣列，只為兼容而留）
+portalsFromIds(['gemini','appstore']);  // → ['appstore','gemini']（兩個都保留）
 ```
 
-**實務上你要注意嘅 4 點**
+**實務 4 點**
 
 | 情境 | 正確做法 |
 |---|---|
-| **同一個工具有 Vercel 版 ＋ Canvas 版** | 兩個係**唔同嘅入口選擇**，各自統計（Vercel 版睇 APP STORE、Canvas 版睇 Gemini 後台）。**唔需要**把兩邊數字合併，亦**唔可以**把 Canvas 版放入 `portalIds` 做放行 |
-| **Canvas 版想連去受管制嘅 Vercel App** | 一律**經 APP STORE 轉接**（Canvas 內開 `scoutappstore.vercel.app` 連結），咁子 App 就收到正確入口 `Referer` |
-| **Vercel App 想嵌 Canvas app** | ❌ 唔可以 `<iframe>` 嵌 Gemini（Google `frame-ancestors` 會封）→ 改為**另開分頁連結**，或把功能用 API 做入自己 App（C13 三軌注入） |
-| **API key（Canvas app 要 call Gemini）** | 唔准入 Git／唔准入前端 → 用 `C13` 三軌注入 或 `/api/proxy`（A1） |
+| 想子 App 認 GEMINI 做入口 | 直接 `portalIds: ['appstore', 'gemini']`；GEMINI 自己亦可以照掛 `store_gate`（同其他子 App 一樣） |
+| GEMINI 原始碼（private repo） | agent 用 GitHub API 可能回 `403 Resource not accessible by integration` → **唔准**因此斷定「repo 唔存在／死連／已刪除」。要判斷就問用戶，或者睇 Vercel 部署 |
+| 用 Canvas 寫嘅工具（Google 嗰邊） | 同呢個入口**無關**；Canvas 出品照舊跟 [09](09-gemini-canvas.md) C1–C13（含 API key 唔准入 Git／前端） |
+| Vercel app 想嵌 Google Canvas | ❌ 唔可以 `<iframe>`（Google `frame-ancestors` 會封）→ 另開分頁或 API／C13 三軌注入 |
 
-**一句話總結**：**1–4 係「我可以掛閘嘅派發線」，5 係「我唔可以掛閘、但有自己統計嘅派發線」。五個都係正式入口，唔可以互相代替，亦唔可以因為管唔到就當佢唔存在。**
+**一句話**：**五個入口，全部係你自己 Vercel 上面嘅 app，全部可以管閘、全部可以放行。** GEMINI 冇任何特殊待遇，唯一分別係佢個 repo 係 private，所以 agent 讀唔到原始碼——呢點唔影響佢做入口。
 
 ### 3.10 入場準備度：五個入口幾時才寫入 `portalIds`（SG17）
 
@@ -542,13 +530,13 @@ portalsFromIds(['appstore','gemini'], {}, { includeCanvas: true }); // → 兩�
 | 2 | **圖書館** | ⚠️ **改一行就通**：`index.html` L5662 小工具掣帶 `rel="noopener noreferrer"`（會清空 `Referer`）。**統計、Push、通告流程完全唔使掂**（SG10-a 要求維持 `open`） | 改完 `noreferrer` 之後，逐隻 App 自己決定加唔加 | ⚠️ **要，但只需一次**：改 L5662 一行；唔使問「圖書館你制唔制」——機器改得，數據唔受影響 |
 | 3 | **成員系統** | ⛔ **唔會直入 App**：`app/page.tsx` 只連 `/books`（4 本 BOOK）、`scout-circulars`、`districtbadgesystem30`、`scoutappstore` | **預設唔加**；例外＝4 本 BOOK（但 BOOK 管制宜寬鬆，見 SG2／SG11-a，加咗冇壞、唔加亦夠） | ❌ **唔使** —— 佢只係「連去入口」，唔係「派 App」 |
 | 4 | **區管理系統** | ⛔ **唔會直入 App**：卡片／`/embed`／`/links` 全部連自家系統（`builtin` 卡） | **預設唔加** | ❌ **唔使** —— 同上 |
-| 5 | **GEMINI** | ⛔ **完全另一套系統**：唔托管、唔改到 header、同 Vercel 子 App 零關係 | **永遠唔加**（程式剔除） | ❌ **唔使** —— 佢唔會做任何 Vercel App 嘅入口 |
+| 5 | **GEMINI**（你個 private repo） | ✅ **今日就通**：同 1–4 一樣係自己部署嘅 Vercel app，可以掛閘、可以放行 | **可加**（`admit: 'optional'`）—— 逐隻 App 自己決定 | ❌ **唔使問** —— 你話「佢同其他 App 完全冇關係」，即係冇嘢要協調；想加就加 id |
 
 **一句話**：**「先講」呢一步唔存在**；真正嘅次序係「① APP STORE 加 `?app=<slug>`（docs/51 第 0 步）→ ② 子 App 開 `entry-gate` 只認 APP STORE → ③ 想連圖書館先改 L5662 一行 → ④ 成員／區管理／Gemini 唔使理」。
 
 **點解 APP STORE 一定要先做 `?app=<slug>`？** 唔係為咗白名單，係為咗**分享**：現時 `website/app.js` L723 `urlEl.value = app.url`、L727 QR code、L739 複製連結、L753–L760 五個平台分享、`index.html` L2319 `shareApp()` 全部直接分享**子站網址**。子站一開閘，呢啲分享出去嘅連結就會撞卡（SG9／SG9-a）。所以**分享／QR 改指 `?app=<slug>` 要早過開閘**，唔係開完閘再補。
 
-**成員系統有一個要修嘅位（唔關白名單事）**：`member-portal` 同 `ScoutSystemCredit.tsx` 嘅「GEMINI 輔助系統」連去 `gemini-woad-sigma.vercel.app`，但 `playerkousas-rgb` 底下**冇呢個 repo**（`gh repo list` 95 個 repo 全部對過），應屬已刪除／改咗名嘅舊部署 → 見 §4.4-9。
+**⚠️ 上一版錯咗兩件事（已修正）**：① 我把 `gemini-woad-sigma.vercel.app` 當咗係**死連**，理由係「95 個 repo 冇佢」——錯，因為佢係 **private repo**，`gh api` 回 `403 Resource not accessible by integration`，即係**我讀唔到，唔等於唔存在**；② 我把你個 GEMINI 當咗係 **Google 嘅 Gemini／Canvas**——錯，你講嘅係你**自己 repo `GEMINI`**。`member-portal` 同 `ScoutSystemCredit.tsx` 嗰兩個 `gemini-woad-sigma` 連結**冇問題，唔需要改**。
 
 ## 4. 實作範本與接線步驟
 
@@ -621,7 +609,7 @@ initStoreGate({
 6. **分享連結／QR 只准由 APP STORE 產生（SG9）**：`website/app.js` L723 `urlEl.value = app.url` 同 L727 QR code 要改成 `https://scoutappstore.vercel.app/?app=<slug>`；**唔好**再用子站 `*.vercel.app` 直連做分享。前提係 APP STORE 要先支援讀 `?app=<slug>`（現時未支援）。
 7. **掛統計（SG10）**：子 App 加 `trackEndpoint: '/api/store-hit'`（唔想統計就唔加，完全零請求），只回報 `{appKey, mode, reason, portal, v}`，唔送個人資料。
 8. **落地次序（唔可以調亂）**：① APP STORE 支援 `?app=<slug>` → ② 分享掣／QR 改指深層連結 → ③ 子 App 開 `entry-gate`。次序錯，分享出去嘅連結會即刻撞卡。
-9. **成員系統有條死連（唔關白名單，但順手要修）**：`member-portal` `app/page.tsx` L79 同 `components/ScoutSystemCredit.tsx` L18 嘅「GEMINI 輔助系統」連去 `https://gemini-woad-sigma.vercel.app/`，但 `playerkousas-rgb` 95 個 repo **冇**呢個項目（`gh repo list` 逐一對過），屬已刪除／改名嘅舊部署。建議：改成 `https://gemini.google.com/`（Gem 主頁）或先移除，唔好留住個死連。**注意**：呢個係成員系統自己嘅外連清單，改佢**唔會**影響任何子 App 嘅白名單。
+9. **（已撤回）成員系統嘅 GEMINI 連結唔係死連**：上一版寫「`gemini-woad-sigma.vercel.app` 係死連、建議改走」——**錯**。用戶澄清「因為果個係私人 REPO」，`playerkousas-rgb/GEMINI` 係 **private repo**，`gh api` 回 `403 Resource not accessible by integration` 只代表 **agent 讀唔到**，唔代表個部署唔存在；用戶亦實測過 `https://gemini-woad-sigma.vercel.app/` 開得到。**所以 `member-portal` 嗰兩個連結維持原狀，唔需要改。**
 10. **成員系統／區管理系統唔需要「為白名單而改」**（SG17）：實查兩邊都唔做 App 目錄（`member-portal` 只連 4 本 BOOK／通告圖書館／`districtbadgesystem30`／`scoutappstore`；`scout-district-portal` 只連自家 `builtin` 卡）。所以 §4.4-4／-5 嗰兩個 `noreferrer` 改動**只有喺你決定**把某隻 App 嘅 `portalIds` 加上 `member`／`district` 時才需要做；A／B 組批次（只認 APP STORE）完全唔關佢哋事。
 
 ---
@@ -632,4 +620,5 @@ initStoreGate({
 - **App 內置瀏覽器與嚴格私隱設定對 `Referer` 嘅影響**：如果用家喺極嚴格私隱瀏覽器或個別 In-App WebView 開母站，跨站跳轉有機會被剝走 `Referer` 令輕量級 `entry-gate` 誤攔；遇到呢類情況可改用 §4.3 `/api/enter` URL 簽名票據（唔依賴瀏覽器送 `Referer`）。
 - **已驗證 vs 未做（誠實列明）**：
   - ✅ `templates/vercel/store_gate_v1.0.js` 四種模式、`F4` fail-closed、`new URL().origin` 防前綴偽造（如 `https://scoutappstore.vercel.app.evil.com`）、Safari 私隱模式 `sessionStorage` 拋錯兜底、`standalone` PWA 放行，以及 `PORTAL_REGISTRY` 四大入口註冊表（id／Origin／排序／未知 id 靜靜略過）同 `templates/vercel/vercel.iframe-whitelist.json` 結構，均已由 `scripts/store_gate.test.mjs` 單元測試自動守住（`node --test`）。
+  - ⚠️ **private repo 陷阱（2026-11-15 實測）**：`gh api repos/playerkousas-rgb/GEMINI` 回 `403 Resource not accessible by integration`；`gh repo list --limit 200` 只數到 90 個 repo（account 實際更多）。**讀唔到 ≠ 唔存在**，任何時候都唔可以憑 API 失敗就寫「repo 已刪除／死連」。
   - ⚠️ 本輪只喺真理倉 `readme` 建立規範、四大入口註冊表、第 0 步 `INTAKE.md` 問項同可抄範本；**未改動 `playerkousas-rgb/website`、`scout-circulars`、`member-portal`、`scout-district-portal` 或任何現有子 App**（四個入口仍然全部係 `open`／無閘），亦未喺 iPhone Safari／Android Chrome 真機實測跨站跳轉（日後首次落到真 App 時須按 [17 §4](17-final-check-and-tutorial.md#4--最終人手實測7-條機器代唔到) 真機跑一次）。

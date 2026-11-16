@@ -24,6 +24,8 @@
  *   2. library   2. 圖書館         https://scout-circulars.vercel.app/      （playerkousas-rgb/scout-circulars）
  *   3. member    3. 成員系統       https://member-portal-sigma-swart.vercel.app/（playerkousas-rgb/member-portal）
  *   4. district  4. 區管理系統     https://scout-district-portal.vercel.app/（playerkousas-rgb/scout-district-portal）
+ *   5. gemini    5. GEMINI         https://gemini-woad-sigma.vercel.app/  （playerkousas-rgb/GEMINI，**private repo**）
+ *      ⚠️ 2026-11-15 修正：GEMINI 係用戶自己嘅 Vercel app，唔係 Google Gemini；可以正常放行。
  *   ⚠️ 註冊表只係「邊個入口有資格放行」，唔等於全部入口都改好：library／member／district 現時連結帶
  *      rel="noopener noreferrer"（會清空 Referer），要先改 rel="noopener" 先放行得到（docs/50 §4.4）。
  *
@@ -31,7 +33,7 @@
  *   admit: 'always'      → DEFAULT_PORTAL_IDS（appstore：分享／QR 都由佢產生，所以一定係入口）
  *   admit: 'conditional' → CONDITIONAL_PORTAL_IDS（library：要先改好 noreferrer 先生效）
  *   admit: 'optional'    → OPTIONAL_PORTAL_IDS（member／district：唔做 App 目錄，逐個 App 決定）
- *   admit: 'never'       → NEVER_ADMIT_PORTAL_IDS（gemini：Canvas 派發線，管唔到閘，放入嚟都冇用）
+ *   admit: 'never'       → NEVER_ADMIT_PORTAL_IDS（現時**冇任何入口**用此級；GEMINI 已改回可放行）
  *   所以新子 App 最省事嘅寫法係 portalIds: DEFAULT_PORTAL_IDS（＝只認 APP STORE）；
  *   要「1–4 全開」就寫 { portalIdsAdmit: 'all' }（唔會誤包 Gemini）。
  *
@@ -102,25 +104,32 @@ const PORTAL_REGISTRY = Object.freeze({
     origin: 'https://member-portal-sigma-swart.vercel.app',
     repo: 'playerkousas-rgb/member-portal',
   }),
-  // 5. GEMINI（2026-11-15 用戶補充）：**同樣係派發入口**，只係派發「Canvas 類」工具／App
-  //    （唔經 Vercel、跑喺 Google 網域）。佢自己有完善統計。
-  //    限制：Canvas app 喺 Google 沙盒內執行，我哋**冇辦法**喺嗰邊掛 store_gate，
-  //    所以呢個入口「唔可以用 entry-gate 放行」，亦唔會做 Referer 白名單來源；
-  //    Canvas app 要連去受管制嘅 App，一律**經 APP STORE 轉接**（見 docs/50 §3.9）。
+  // 5. GEMINI（2026-11-15 用戶第二次澄清 —— 重要修正）
+  //    用戶原文：「我岩岩用無痕 https://gemini-woad-sigma.vercel.app/ 呢個係岩既 LINK 尼 WOR，
+  //    我覺得你誤會了我說的 GEMINI 和真的 GEMINI，我說的是我的 REPO "GEMINI"」＋「因為果個係私人 REPO」。
+  //    → 呢個 GEMINI **唔係** Google 嘅 Gemini／Canvas，而係用戶自己一個 **private repo**
+  //      部署出嚟嘅 Vercel app（同其他子 App 一樣，係目錄入面一件貨）。所以：
+  //      · 佢屬 **Vercel 派發線（`outbound`）**、我哋托管、改得到 header；
+  //      · 可以掛 `store_gate_v1.0.js`，亦**可以**做 `entry-gate` 放行來源；
+  //      · 用 `portalIds` 引用同 1–4 完全一樣，冇任何特殊待遇。
+  //    ⚠️ 唯一保留：private repo → agent 用 GitHub API 可能讀唔到原始碼
+  //      （`403 Resource not accessible by integration`）。讀唔到**唔等於**唔存在，
+  //      更唔可以推論成「死連」。
   gemini: Object.freeze({
     id: 'gemini',
-    kind: 'canvas', // Canvas 類派發入口：可派發，但唔可被閘、唔做放行來源
-    gateable: false, // 我哋管唔到 Google 網域嘅 header／frame
-    admit: 'never', // SG17：唔係「唔使問」，係「問都冇用」——放入 portalIds 永遠唔會成為放行來源
-    stats: 'gemini-side', // 統計喺 Gemini 自己嗰邊（用戶：那邊我也有完善的統計）
-    role: 'canvas',
+    kind: 'outbound', // 同 1–4 一樣：由呢個門口撳出去開子 App（有 Referer，可做 entry-gate）
+    gateable: true, // 自己 repo／自己部署 → header 改得到
+    admit: 'optional', // SG17：可以納入 portalIds，但要先確認該 GEMINI app 改好連結（預設唔加）
+    stats: 'gemini-side', // 統計喺佢自己嗰邊（用戶：那邊我也有完善的統計）
+    repoVisibility: 'private', // 原始碼 agent 可能讀唔到（403），唔影響放行能力
+    role: 'subapp',
     order: 5,
-    labelZh: '5. Gemini 創作',
-    labelEn: '5. Gemini Studio',
+    labelZh: '5. 前往 GEMINI',
+    labelEn: '5. Go to GEMINI',
     nameZh: 'GEMINI',
-    url: 'https://gemini.google.com/',
-    origin: 'https://gemini.google.com',
-    repo: 'playerkousas-rgb/readme', // 創作方向由真理倉 docs/09 C13 規範
+    url: 'https://gemini-woad-sigma.vercel.app/',
+    origin: 'https://gemini-woad-sigma.vercel.app',
+    repo: 'playerkousas-rgb/GEMINI', // private repo；agent 可能讀唔到，唔准當佢唔存在
   }),
   district: Object.freeze({
     id: 'district',
@@ -138,19 +147,29 @@ const PORTAL_REGISTRY = Object.freeze({
 });
 
 /** 官方入口順序：1 APP STORE → 2 圖書館 → 3 成員系統 → 4 區管理系統（＋5 Gemini 創作，方向相反） */
-const PORTAL_IDS = Object.freeze(Object.keys(PORTAL_REGISTRY));
+const PORTAL_IDS = Object.freeze(
+  Object.keys(PORTAL_REGISTRY).sort((a, b) => PORTAL_REGISTRY[a].order - PORTAL_REGISTRY[b].order),
+);
 
-/** 可直接管閘嘅派發入口（可做 entry-gate 放行來源）：1–4 */
+/**
+ * 可直接管閘嘅派發入口（可做 entry-gate 放行來源）
+ * 五個入口**全部**屬此類 —— 都係我哋自己托管嘅 Vercel 子站（GEMINI 係 private repo，一樣托管喺 Vercel）。
+ */
 const OUTBOUND_PORTAL_IDS = Object.freeze(
-  Object.keys(PORTAL_REGISTRY).filter((k) => PORTAL_REGISTRY[k].kind === 'outbound'),
+  Object.keys(PORTAL_REGISTRY)
+    .filter((k) => PORTAL_REGISTRY[k].kind === 'outbound')
+    .sort((a, b) => PORTAL_REGISTRY[a].order - PORTAL_REGISTRY[b].order),
 );
 
-/** Canvas 類派發入口（Gemini）：都係入口，但管唔到閘、唔做放行來源 */
-const CANVAS_PORTAL_IDS = Object.freeze(
-  Object.keys(PORTAL_REGISTRY).filter((k) => PORTAL_REGISTRY[k].kind === 'canvas'),
-);
+/**
+ * @deprecated 2026-11-15 修正後**永遠係空陣列**。
+ * 舊版錯誤咁把 `gemini` 當成「Canvas 派發線（Google 網域、管唔到閘）」；
+ * 用戶澄清佢個 GEMINI 係自己 private repo 部署嘅 Vercel app，可以正常管閘。
+ * 保留個名只為唔整爛舊 caller，唔好再用。
+ */
+const CANVAS_PORTAL_IDS = Object.freeze([]);
 
-/** @deprecated 舊名，等於 CANVAS_PORTAL_IDS */
+/** @deprecated 舊名，等於 CANVAS_PORTAL_IDS（永遠空） */
 const INBOUND_PORTAL_IDS = CANVAS_PORTAL_IDS;
 
 /**
@@ -161,23 +180,27 @@ const INBOUND_PORTAL_IDS = CANVAS_PORTAL_IDS;
  * 所以「五個入口係唔係要先逐個講」＝**唔使**：子 App 一律寫 `portalIds: DEFAULT_PORTAL_IDS` 就係
  * 「經 APP STORE 入」，之後任何一個入口要加入，都只係本 repo 改一行 + 該 App 加一個 id。
  */
+const PORTAL_ORDER = Object.freeze(
+  Object.keys(PORTAL_REGISTRY).sort((a, b) => PORTAL_REGISTRY[a].order - PORTAL_REGISTRY[b].order),
+);
+
 const DEFAULT_PORTAL_IDS = Object.freeze(
-  Object.keys(PORTAL_REGISTRY).filter((k) => PORTAL_REGISTRY[k].admit === 'always'),
+  PORTAL_ORDER.filter((k) => PORTAL_REGISTRY[k].admit === 'always'),
 );
 
 /** 要先行動／先確認之後才可加入 `portalIds` 嘅入口（SG17）：library → 改 `noreferrer` */
 const CONDITIONAL_PORTAL_IDS = Object.freeze(
-  Object.keys(PORTAL_REGISTRY).filter((k) => PORTAL_REGISTRY[k].admit === 'conditional'),
+  PORTAL_ORDER.filter((k) => PORTAL_REGISTRY[k].admit === 'conditional'),
 );
 
 /** 逐個 App 自行決定要唔要加嘅入口（SG17）：member／district（自家副系統，唔做 App 目錄） */
 const OPTIONAL_PORTAL_IDS = Object.freeze(
-  Object.keys(PORTAL_REGISTRY).filter((k) => PORTAL_REGISTRY[k].admit === 'optional'),
+  PORTAL_ORDER.filter((k) => PORTAL_REGISTRY[k].admit === 'optional'),
 );
 
 /** 永遠唔可以放入 `portalIds` 做放行來源（SG17）：gemini */
 const NEVER_ADMIT_PORTAL_IDS = Object.freeze(
-  Object.keys(PORTAL_REGISTRY).filter((k) => PORTAL_REGISTRY[k].admit === 'never'),
+  PORTAL_ORDER.filter((k) => PORTAL_REGISTRY[k].admit === 'never'),
 );
 
 /**
@@ -204,16 +227,13 @@ function getPortal(id, overrides = {}) {
 /** 由 portalIds: ['appstore','library'] 展開成完整入口物件清單（未知 id 靜靜略過） */
 function portalsFromIds(ids, labelMap = {}, options = {}) {
   if (!Array.isArray(ids)) return [];
-  const includeCanvas = Boolean(options.includeCanvas || options.includeInbound);
   const seen = new Set();
   const out = [];
   for (const raw of ids) {
     const hit = getPortal(raw);
     if (!hit || seen.has(hit.id)) continue;
-    // SG16：Canvas 類入口（Gemini）管唔到閘、亦唔做 Referer 白名單來源，
-    // 放入 portalIds 只會多一粒撞唔中嘅掣，所以預設略過；要畫「去 Gemini 用 Canvas App」按鈕
-    // 才傳 { includeCanvas: true }（舊名 includeInbound 仍接受）。
-    if (hit.kind === 'canvas' && !includeCanvas) continue;
+    // 2026-11-15 修正：五個入口全部可以放入 portalIds（GEMINI 都係我哋自己托管、管得到閘）。
+    // 舊版呢度有個 `kind === 'canvas'` 過濾，已移除；`options.includeCanvas` 仍然收貨但無作用。
     seen.add(hit.id);
     const ov = labelMap[hit.id] || {};
     out.push({
@@ -741,6 +761,7 @@ if (typeof globalThis !== 'undefined') {
     DEFAULT_ALLOWED_ORIGINS,
     PORTAL_REGISTRY,
     PORTAL_IDS,
+    PORTAL_ORDER,
     OUTBOUND_PORTAL_IDS,
     CANVAS_PORTAL_IDS,
     INBOUND_PORTAL_IDS,
@@ -771,6 +792,7 @@ if (typeof module !== 'undefined' && module.exports) {
     DEFAULT_ALLOWED_ORIGINS,
     PORTAL_REGISTRY,
     PORTAL_IDS,
+    PORTAL_ORDER,
     OUTBOUND_PORTAL_IDS,
     CANVAS_PORTAL_IDS,
     INBOUND_PORTAL_IDS,

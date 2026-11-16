@@ -107,5 +107,5 @@ Repo：playerkousas-rgb/website
 
 ## 貼之前要知嘅兩件事（唔使貼落去）
 
-1. **`Gemini 輔助工具` 已經喺你 APP STORE 入面**（`apps.id = 080a07e8-79ba-4db4-a159-e8cdf703f73f`，`url = https://gemini-woad-sigma.vercel.app/`，`visible = true`，`clicks = 20`／`hearts = 1`）。加 `slug` 時記得幫佢填一個，例如 `gemini`。**我冇權讀 `playerkousas-rgb/GEMINI` 呢個 repo**（`gh api` 回 `403 Resource not accessible by integration`），所以佢嘅內容我未實查過 —— 唔好靠我假設。
+1. **`Gemini 輔助工具` 已經喺你 APP STORE 入面**（`apps.id = 080a07e8-79ba-4db4-a159-e8cdf703f73f`，`url = https://gemini-woad-sigma.vercel.app/`，`visible = true`，`clicks = 20`／`hearts = 1`）。加 `slug` 時記得幫佢填一個，例如 `gemini`。佢係你嘅 **private repo `GEMINI`** 部署出嚟（我 agent 冇權讀 403，唔係死連 —— 你已實測開得到），亦係五個正式入口之一（docs/50 SG16）。
 2. 呢一步**唔會**令任何子站即刻變白名單；佢淨係令「分享出去嘅連結」指返 APP STORE。子站開閘係下一批（`docs/51` §8 第 1 批之後），次序錯就會一開閘全撞卡（SG9-a）。

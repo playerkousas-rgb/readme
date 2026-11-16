@@ -57,9 +57,9 @@
      2. 圖書館 `https://scout-circulars.vercel.app`
      3. 成員系統 `https://member-portal-sigma-swart.vercel.app`
      4. 區管理系統 `https://scout-district-portal.vercel.app`
-     ＋ 5. GEMINI `https://gemini.google.com`（**Canvas 派發線**：同樣係整俾人用嘅入口，工具用 Canvas 寫、跑喺
-        Google 網域、Gemini 自己嗰邊有完善統計；但**我哋管唔到佢嘅閘**，所以**唔准放入 portalIds** 做放行來源。
-        Canvas app 要連受管制 App → 一律經 APP STORE 轉接，見 SG16 / docs/09 C13））
+     ＋ 5. GEMINI `https://gemini-woad-sigma.vercel.app`（**用戶自己 private repo `GEMINI` 部署嘅 Vercel app**，
+        同 1–4 一樣可以掛閘、可以放入 portalIds、可以做放行來源；統計喺佢自己嗰邊。
+        ⚠️ 唔好同 **Google 嘅 Gemini／Canvas**（gemini.google.com）混淆，見 SG16））
    及暫時關站機制】
    open（公開直連，預設）· entry-gate（頂層跳板白名單，唔用 iframe，可揀四大入口任一或全部）·
    iframe-only（純 iframe 白名單，須該入口已有 iframe 殼）· closed（暫時關站／維護告示）
@@ -80,7 +80,7 @@
       - 【SG11】要主動講清「收起 ≠ 用不到」：APP STORE 撳「隱藏」只係前端過濾（API 照回傳、App 網址照開得）。真正令人用唔到要按四級齒輪：Delist（隱藏）→ Gate（`entry-gate`）→ Soft close（`closed`）→ Hard close（Vercel Pause）。有本機儲存嘅 App（如 `BOOK`）只可以 Delist，**唔可以同時拆走入口**，落關站前先叫用戶匯出 JSON／QR 備份（SG11-a）。含個人資料／收費嘅 App **唔可以**靠「隱藏」做保護（SG11-b）。
       - 【SG10-a】如果該 App 會收 Push（例如圖書館），**必須維持 `open`**：唔可以 `iframe`、唔可以 `closed`、唔可以改 manifest `start_url`，否則已訂閱用戶收唔到通告。
       - 【SG8】四大入口自己永不被閘（`selfOrigin` 在 `portalIds` 內自動放行 `self-portal`）；直開網址**預設唔自動跳**（`autoRedirectSeconds: 0`），要自動就 3–5 秒並顯示目的地，或用 `autoRedirectPortalId` 指定。
-      - 【SG17】**唔使逐個入口「打招呼」**（用戶 2026-11-15 定案）：`portalIds` 預設值就係 `DEFAULT_PORTAL_IDS` ＝ `['appstore']`。`appstore`＝`always`（分享／QR 只由佢產生 → 每隻子 App 都寫，唔使問）；`library`＝`conditional`（要**先**改 `scout-circulars/index.html` L5662 一個 `noreferrer`，未改唔好加、加咗只會撞卡；**Push／統計／通告流程一律唔准動**）；`member`／`district`＝`optional`（實查兩邊唔做 App 目錄，只連入口＋自家系統 → 預設唔加；例外＝4 本 `BOOK`，但 BOOK 管制宜寬鬆，加咗冇壞、唔加亦足夠）；`gemini`＝`never`（放入 `portalIds` 都會被程式剔除）。要一次過開 1–4 就寫 `portalIdsAdmit: 'all'`（永遠唔會誤包 Gemini）。
+      - 【SG17】**唔使逐個入口「打招呼」**（用戶 2026-11-15 定案）：`portalIds` 預設值就係 `DEFAULT_PORTAL_IDS` ＝ `['appstore']`。`appstore`＝`always`（分享／QR 只由佢產生 → 每隻子 App 都寫，唔使問）；`library`＝`conditional`（要**先**改 `scout-circulars/index.html` L5662 一個 `noreferrer`，未改唔好加、加咗只會撞卡；**Push／統計／通告流程一律唔准動**）；`member`／`district`＝`optional`（實查兩邊唔做 App 目錄，只連入口＋自家系統 → 預設唔加；例外＝4 本 `BOOK`，但 BOOK 管制宜寬鬆，加咗冇壞、唔加亦足夠）；`gemini`＝`optional`（自己 private repo 嘅 Vercel app，可以加；但唔好加錯做 Google 網域）。要一次過開 1–4 就寫 `portalIdsAdmit: 'all'`（永遠唔會誤包 Gemini）。
       - 【SG7】要主動講清「加入主畫面」正確流程：**先由入口進入 → 再按瀏覽器選單加入主畫面**。直開網址唔會 404（會出白名單卡），但在入口母站裝／在 iframe 內裝只會裝到母站；真 404 沒有 manifest 裝唔到；已退役 app 嘅舊 icon 撳落去只會白屏。
       - 只有純無狀態計算機／圖卡／簡報，且確認母站已起 iframe 殼後，先可揀 `iframe-only`。
    → 見真理倉 [docs/50](https://github.com/playerkousas-rgb/readme/blob/main/docs/50-app-store-whitelist-and-shutdown.md)（SG1–SG15）。

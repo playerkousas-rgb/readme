@@ -121,7 +121,7 @@
 | `scout-circulars` | 2. 圖書館（`feed`） | **載住 Push 訂閱**，必須維持 `open`（SG10-a） |
 | `member-portal` | 3. 成員系統（`internal`） | 自己就係入口 |
 | `scout-district-portal` | 4. 區管理系統（`internal`） | 自己就係入口 |
-| GEMINI | 5. Canvas 派發線 | 托管喺 Google，我哋改唔到 header（SG16）＋同 Vercel 子 App 零關係，唔會做佢哋入口（SG17） |
+| GEMINI | 5. 自家 private repo | **自己部署嘅 Vercel app**（`gemini-woad-sigma.vercel.app`），同 1–4 同級、可放行；但佢自己就係入口，所以**唔會**幫佢加閘（SG16 已修正） |
 
 ## 5. 未列入：非網站 repo（約 26 個）
 

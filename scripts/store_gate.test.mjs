@@ -385,38 +385,43 @@ test('SG13：經 APP STORE 正常入嘅已經睇得到 clicks，預設唔再出�
   assert.equal(skipMore.doc.getElementById('scoutSupportNudge'), null, '自訂 skipPortalIds 要生效');
 });
 
-test('SG16：GEMINI 係第五個派發入口（Canvas 類），可派發但唔可管閘、唔做放行來源', () => {
-  // 1) 註冊表有 gemini，屬 canvas 類（都係入口，只係類型唔同）
+test('SG16：GEMINI 係第五個入口，屬我哋自己托管嘅 Vercel app（private repo）→ 可以正常放行', () => {
+  // 1) 註冊表：同 1–4 一樣屬 outbound（可管閘），唔再當佢係 Google Canvas
   assert.ok(gate.PORTAL_REGISTRY.gemini);
-  assert.equal(gate.PORTAL_REGISTRY.gemini.kind, 'canvas');
-  assert.equal(gate.PORTAL_REGISTRY.gemini.gateable, false, 'Google 網域管唔到 header');
-  assert.equal(gate.PORTAL_REGISTRY.gemini.stats, 'gemini-side', '統計喺 Gemini 自己嗰邊');
-  assert.deepEqual([...gate.CANVAS_PORTAL_IDS], ['gemini']);
-  assert.deepEqual([...gate.OUTBOUND_PORTAL_IDS], ['appstore', 'library', 'member', 'district']);
-  // 兩者合起來＝五個門口，一個都冇少
+  assert.equal(gate.PORTAL_REGISTRY.gemini.kind, 'outbound', 'GEMINI 係我哋自己部署，同 1–4 一樣');
+  assert.equal(gate.PORTAL_REGISTRY.gemini.gateable, true, '自己 repo／自己部署 → header 改得到');
+  assert.equal(gate.PORTAL_REGISTRY.gemini.origin, 'https://gemini-woad-sigma.vercel.app');
+  assert.equal(gate.PORTAL_REGISTRY.gemini.repoVisibility, 'private', 'private repo：agent 可能讀唔到原始碼');
+  assert.equal(gate.PORTAL_REGISTRY.gemini.admit, 'optional', 'SG17：可以加，但預設唔加');
+  // 冇任何入口再屬 canvas 線；五個入口全部可放行
+  assert.deepEqual([...gate.CANVAS_PORTAL_IDS], [], 'canvas 線已取消（唔好再有入口被排除）');
+  assert.deepEqual([...gate.OUTBOUND_PORTAL_IDS], ['appstore', 'library', 'member', 'district', 'gemini']);
   assert.equal(gate.PORTAL_IDS.length, 5);
 
-  // 2) 手誤把 gemini 放入 portalIds → 唔會變成放行來源（亦唔會畫成入口掣）
-  assert.deepEqual([...gate.portalsFromIds(['gemini', 'appstore'])].map((p) => p.id), ['appstore']);
-  assert.deepEqual([...gate.normalizePortals({ portalIds: ['gemini'] })].map((p) => p.id), ['appstore'],
-    '只有 gemini 時要 fallback 去 APP STORE');
+  // 2) portalsFromIds 唔再靜靜剔除 gemini
+  assert.deepEqual([...gate.portalsFromIds(['gemini', 'appstore'])].map((p) => p.id), ['appstore', 'gemini']);
+  assert.deepEqual([...gate.normalizePortals({ portalIds: ['gemini'] })].map((p) => p.id), ['gemini'],
+    '只有 gemini 時就係 gemini（唔會 fallback 去 APP STORE）');
 
-  // 3) 由 Gemini 嚟嘅 Referer 一律唔放行（跨站、唔係我哋控制嘅入口）
-  for (const ref of ['https://gemini.google.com/app', 'https://aistudio.google.com/', 'https://gemini.google.com/']) {
+  // 3) 由 GEMINI 嚟嘅 Referer 要放行（佢係自家入口，可以放行）
+  {
+    const { win } = makeMockEnv({ referrer: 'https://gemini-woad-sigma.vercel.app/' });
+    const res = gate.initStoreGate({ appKey: 'gem', mode: 'entry-gate', portalIds: ['gemini', 'appstore'] }, win);
+    assert.equal(res.allowed, true, 'GEMINI 係自家入口，應該放行');
+    assert.equal(res.reason, 'referrer-whitelist');
+    assert.equal(res.matchedPortalId, 'gemini');
+  }
+  // 4) 真 Google Gemini 網域**唔**會放行（唔可以混淆兩樣嘢）
+  for (const ref of ['https://gemini.google.com/app', 'https://aistudio.google.com/']) {
     const { win } = makeMockEnv({ referrer: ref });
     const res = gate.initStoreGate({ appKey: 'gem', mode: 'entry-gate', portalIds: ['gemini', 'appstore'] }, win);
-    assert.equal(res.allowed, false, `Gemini 來源 ${ref} 唔應該放行`);
+    assert.equal(res.allowed, false, `Google 網域 ${ref} 唔屬於我哋任何入口`);
     assert.equal(res.reason, 'missing-whitelist-entry');
   }
-
-  // 4) 要畫「去 Gemini 用 Canvas App」按鈕時，用 includeCanvas（舊名 includeInbound 仍接受）
-  const withCanvas = gate.portalsFromIds(['appstore', 'gemini'], {}, { includeCanvas: true });
-  assert.deepEqual([...withCanvas].map((p) => p.id), ['appstore', 'gemini']);
-  assert.equal(withCanvas[1].origin, 'https://gemini.google.com');
+  // 5) 舊 option 名仍然收貨（唔會 throw、亦唔會再過濾）
   assert.deepEqual(
-    [...gate.portalsFromIds(['appstore', 'gemini'], {}, { includeInbound: true })].map((p) => p.id),
+    [...gate.portalsFromIds(['appstore', 'gemini'], {}, { includeCanvas: true })].map((p) => p.id),
     ['appstore', 'gemini'],
-    '舊名要繼續 work',
   );
 });
 
@@ -426,13 +431,13 @@ test('SG17：五個入口入場準備度唔同 —— 唔使逐個「打招呼�
   assert.equal(gate.PORTAL_REGISTRY.library.admit, 'conditional', '圖書館要先改 noreferrer');
   assert.equal(gate.PORTAL_REGISTRY.member.admit, 'optional', '成員系統逐個 App 決定');
   assert.equal(gate.PORTAL_REGISTRY.district.admit, 'optional', '區管理系統逐個 App 決定');
-  assert.equal(gate.PORTAL_REGISTRY.gemini.admit, 'never', 'Gemini 永遠唔做放行來源');
+  assert.equal(gate.PORTAL_REGISTRY.gemini.admit, 'optional', 'GEMINI 可以加（自家 Vercel app）');
 
   // 2) 由 admit 推導出嚟嘅四組，同註冊表完全對齊
   assert.deepEqual([...gate.DEFAULT_PORTAL_IDS], ['appstore']);
   assert.deepEqual([...gate.CONDITIONAL_PORTAL_IDS], ['library']);
-  assert.deepEqual([...gate.OPTIONAL_PORTAL_IDS], ['member', 'district']);
-  assert.deepEqual([...gate.NEVER_ADMIT_PORTAL_IDS], ['gemini']);
+  assert.deepEqual([...gate.OPTIONAL_PORTAL_IDS], ['member', 'district', 'gemini'], '按 order：member／district／GEMINI');
+  assert.deepEqual([...gate.NEVER_ADMIT_PORTAL_IDS], [], '冇入口再屬「永遠唔准入」');
   // 四組加起來 = 五個入口，一個都冇漏、冇重複
   const all = [
     ...gate.DEFAULT_PORTAL_IDS,
@@ -444,9 +449,8 @@ test('SG17：五個入口入場準備度唔同 —— 唔使逐個「打招呼�
 
   // 3) resolvePortalIds：唔寫死 portalIds 時嘅安全預設
   assert.deepEqual([...gate.resolvePortalIds()], ['appstore'], '咩都唔傳 → 只認 APP STORE');
-  assert.deepEqual([...gate.resolvePortalIds([], 'all')], ['appstore', 'library', 'member', 'district'],
-    "portalIdsAdmit: 'all' → 1–4 全開");
-  assert.ok(!gate.resolvePortalIds([], 'all').includes('gemini'), "portalIdsAdmit: 'all' 永遠唔會包 gemini");
+  assert.deepEqual([...gate.resolvePortalIds([], 'all')], ['appstore', 'library', 'member', 'district', 'gemini'],
+    "portalIdsAdmit: 'all' → 五個入口全開（順序跟 PORTAL_REGISTRY）");
   assert.deepEqual([...gate.resolvePortalIds(['library'], 'all')], ['library'], '明寫 portalIds 就照用（唔會被覆蓋）');
   assert.deepEqual([...gate.resolvePortalIds(null, ['member'])], ['member'], 'admit 可以係陣列');
 
@@ -463,16 +467,16 @@ test('SG17：五個入口入場準備度唔同 —— 唔使逐個「打招呼�
     assert.equal(res.reason, 'referrer-whitelist');
   }
   {
-    const { win } = makeMockEnv({ referrer: 'https://gemini.google.com/app' });
+    const { win } = makeMockEnv({ referrer: 'https://gemini-woad-sigma.vercel.app/' });
     const res = gate.initStoreGate({ appKey: 'sg17', mode: 'entry-gate', portalIdsAdmit: 'all' }, win);
-    assert.equal(res.allowed, false, "portalIdsAdmit: 'all' 都唔可以放行 Gemini（Canvas 派發線管唔到閘）");
-    assert.equal(res.reason, 'missing-whitelist-entry');
+    assert.equal(res.allowed, true, "portalIdsAdmit: 'all' 亦要放行 GEMINI（自家 Vercel app）");
+    assert.equal(res.matchedPortalId, 'gemini');
   }
 
   // 5) 卡上嘅入口掣：'all' 出四個，預設只出一個（唔會靜靜地加咗圖書館）
   assert.deepEqual(
     [...gate.normalizePortals({ portalIdsAdmit: 'all' })].map((p) => p.id),
-    ['appstore', 'library', 'member', 'district'],
+    ['appstore', 'library', 'member', 'district', 'gemini'],
   );
   assert.deepEqual(
     [...gate.normalizePortals({ portalIds: gate.resolvePortalIds() })].map((p) => p.id),
@@ -616,8 +620,8 @@ test('SG3/SG5：portals 多指定入口白名單（同時容許 SCOUT APP STORE 
 });
 
 test('SG1/SG5：PORTAL_REGISTRY 官方四大入口註冊表（1 APP STORE／2 圖書館／3 成員系統／4 區管理系統）', () => {
-  assert.deepEqual([...gate.PORTAL_IDS], ['appstore', 'library', 'member', 'gemini', 'district']);
-  assert.deepEqual([...gate.OUTBOUND_PORTAL_IDS], ['appstore', 'library', 'member', 'district']);
+  assert.deepEqual([...gate.PORTAL_IDS], ['appstore', 'library', 'member', 'district', 'gemini']);
+  assert.deepEqual([...gate.OUTBOUND_PORTAL_IDS], ['appstore', 'library', 'member', 'district', 'gemini']);
   assert.deepEqual(
     [...gate.portalsFromIds(['appstore', 'library', 'member', 'district'])].map((p) => p.origin),
     [
@@ -643,8 +647,8 @@ test('SG1/SG5：PORTAL_REGISTRY 官方四大入口註冊表（1 APP STORE／2 �
     assert.equal(gate.parseAllowedOrigin(p.url), p.origin);
     assert.ok(gate.PORTAL_REGISTRY[id].repo.startsWith('playerkousas-rgb/'), `${id} 要記 repo`);
   }
-  // gemini 屬 inbound，唔會出現在 outbound 清單
-  assert.ok(!gate.OUTBOUND_PORTAL_IDS.includes('gemini'));
+  // GEMINI 係自家 private repo 部署嘅 Vercel app → 屬 outbound，可放行（2026-11-15 修正）
+  assert.ok(gate.OUTBOUND_PORTAL_IDS.includes('gemini'));
 });
 
 test('SG1/SG5：portalIds 直接引用四大入口即可放行／攔截（唔使逐個 app 抄網址）', () => {
@@ -750,12 +754,14 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   }
   assert.ok(doc.includes('PORTAL_REGISTRY') && doc.includes('portalIds'), 'docs/50 要寫明 PORTAL_REGISTRY／portalIds 用法');
   // SG16：Gemini 屬 inbound，docs 要講清楚兩個方向
-  assert.ok(doc.includes('canvas') && doc.includes('outbound'), 'docs/50 要分清兩條派發線（outbound／canvas）');
-  assert.ok(/Canvas 派發線/.test(doc), 'docs/50 要寫明 Gemini 屬 Canvas 派發線');
-  assert.ok(doc.includes('gemini.google.com'), 'docs/50 要登記 Gemini origin');
-  assert.ok(!/portalIds: \['gemini'/.test(doc), 'docs/50 唔應該示範把 gemini 放入 portalIds');
+  assert.ok(doc.includes('gemini-woad-sigma.vercel.app'), 'docs/50 要登記 GEMINI 正確 origin');
+  // 唔可以再把 GEMINI 當 Google 網域做入口（只可以喺「兩者要分清楚」對照表出現）
+  assert.ok(!/gemini\.google\.com/.test(gate.PORTAL_REGISTRY.gemini.origin), 'registry 唔可以指 Google 網域');
+  assert.ok(doc.includes('Google 嘅 Gemini'), 'docs/50 要明寫 GEMINI 唔係 Google Gemini');
+  assert.ok(/private repo/.test(doc), 'docs/50 要寫明 GEMINI 係 private repo');
+  assert.ok(doc.includes('403'), 'docs/50 要寫明 private repo 會回 403（讀唔到 ≠ 唔存在）');
   // SG7：直開網址／404／加入主畫面 嘅情境表要喺 docs/50 §3.4 有紀錄
-  for (const kw of ['3.4', '404', '加入主畫面', '白名單真實代價', '3.6', 'push_subscriptions', '3.7', 'Delist', 'visible=false', '3.8', 'drawtheroute', 'LEADER_PASSWORD', 'supportNudge', 'SG13', 'SG14', '書架位置有限', 'skipPortalIds', '3.10', 'SG17', 'DEFAULT_PORTAL_IDS', 'admit', 'noreferrer', 'gemini-woad-sigma']) {
+  for (const kw of ['3.4', '404', '加入主畫面', '白名單真實代價', '3.6', 'push_subscriptions', '3.7', 'Delist', 'visible=false', '3.8', 'drawtheroute', 'LEADER_PASSWORD', 'supportNudge', 'SG13', 'SG14', '書架位置有限', 'skipPortalIds', '3.10', 'SG17', 'DEFAULT_PORTAL_IDS', 'admit', 'noreferrer', 'gemini-woad-sigma', 'private repo']) {
     assert.ok(doc.includes(kw), `docs/50 §3.4 要覆蓋「${kw}」`);
   }
   assert.ok(intake.includes('SG7'), 'INTAKE Q8 要提 SG7 加入主畫面流程');
