@@ -1,7 +1,7 @@
 # 50 — 關站與 App Store 白名單入口 SG1–SG6（經 website 進入・不適合白名單處理）
 
 > **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經指定入口（如 APP STORE `website` 或通告圖書館 `scout-circulars`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
-> **層級**：按需啟用嘅入口管制規則（預設 `open` 公開直連，唔強制鎖站；現有 repo 唔自動追溯）。支援**單一入口**或**多個指定入口並存**（例如同時容許由 **SCOUT APP STORE** 或 **通告圖書館** 進入，其餘直連一律攔截）。一旦開新 App 時揀咗白名單或日後要關站，必須按 **SG1–SG10** 處理，避免撞入 Safari 儲存隔離、PWA 主畫面踢人、`SameSite=Lax` Cookie 全滅、通告圖書館 `noreferrer` 清空 `Referer` 同 `308` 永久快取五大陷阱。
+> **層級**：按需啟用嘅入口管制規則（預設 `open` 公開直連，唔強制鎖站；現有 repo 唔自動追溯）。支援**單一入口**或**多個指定入口並存**（例如同時容許由 **SCOUT APP STORE** 或 **通告圖書館** 進入，其餘直連一律攔截）。一旦開新 App 時揀咗白名單或日後要關站，必須按 **SG1–SG11** 處理，避免撞入 Safari 儲存隔離、PWA 主畫面踢人、`SameSite=Lax` Cookie 全滅、通告圖書館 `noreferrer` 清空 `Referer` 同 `308` 永久快取五大陷阱。
 > **官方四大準入白名單入口（2026-11-15 用戶定案・真理倉唯一登記處）**：**1. APP STORE** · **2. 圖書館** · **3. 成員系統** · **4. 區管理系統**。四個入口嘅 repo、pinned commit、Origin、現時連結行為同 `<iframe>` 殼狀況全部實查列於 [§0.1](#01-官方四大準入白名單入口註冊表canonical-portal-registry)；程式碼層面嘅同一份表係 [`store_gate_v1.0.js`](../templates/vercel/store_gate_v1.0.js) 嘅 `PORTAL_REGISTRY`（子 App 只需寫 `portalIds: ['appstore','library','member','district']`）。日後加／改名／改網址，**只改呢兩處**。
 
 ---
@@ -54,7 +54,7 @@ initStoreGate({
 
 ---
 
-## 1. 規則總表 SG1–SG10（Store Gate）
+## 1. 規則總表 SG1–SG11（Store Gate）
 
 | ID | 規則 | 硬要求 / 一句驗收 |
 |---|---|---|
@@ -68,6 +68,9 @@ initStoreGate({
 | **SG8** | **入口網站自己永不被自己嘅閘擋** | 四大入口（APP STORE／圖書館／成員系統／區管理系統）**自己嘅 origin 一旦出現在 `portalIds` 就自動放行**（`reason: 'self-portal'`），因為「入口就係入口」，佢本身唔需要再經其他地方。**但**：① 入口自己**唔應該掛** `entry-gate`（佢唔係子 App）；② 入口若要軟關站，用 `mode: 'closed'`（`closed` 優先於 self 放行）；③ 子 App 記得**唔好**把入口 origin 當成自己 origin（判別靠 `location.origin`，唔靠 Referer） |
 | **SG9** | **入口角色分工：分享連結／QR 只准由 `main` 產生** | 入口**唔係等價互替**：`main`＝APP STORE（真正主站・全方位）、`feed`＝圖書館（每日通告＋新 APP 引流）、`internal`＝成員系統／區管理系統（自家副系統）。**對外分享連結、QR code、宣傳單張、WhatsApp 群發、IG bio 一律只放 `main`（APP STORE）**；`feed` 同 `internal` 只做「入場」，唔做「宣傳」。理由：用戶收到嘅必須係**一個**穩定入口，否則同一 App 有四個唔同網址流通，版本控管同統計即刻散 |
 | **SG10** | **統計按入口各司其職，唔好重複起爐灶** | ① **APP STORE（`main`）＝唯一權威統計來源**：已有 `apps.clicks／stars／hearts`（RPC `bump_clicks`／`bump_stars`／`bump_hearts`），後台睇逐個 App 點擊／收藏／Like，**唔需要**再加 `trackEndpoint`。② **圖書館（`feed`）現時唔統計**（用戶定案 2026-11-15：圖書館主責係睇通告＋Push 訂閱，推廣 APP STORE 係後期功能）——**唔准**為咗統計而改動圖書館核心流程。③ **子 App `trackEndpoint` 屬 opt-in 補充**（未設＝零請求），只補 APP STORE 睇唔到嘅嘢：`reason: 'standalone-pwa'`（主畫面開啟）同 `reason: 'missing-whitelist-entry'`（撞卡＝仲用舊連結） |
+| **SG11** | **「收起」≠「用不到」——要分清四個下架齒輪** | ⚠️ **實查**：APP STORE 後台「隱藏」只係前端過濾（`store.js` L782 `sb.from("apps").select("*")` 拉晒全部，再用 `a.visible !== false` 喺瀏覽器篩走），**個 App 本身仍然 100% 開得**（舊 link／書籤／QR／搜尋照入）。要真正令人用唔到，必須用：① **Delist**（APP STORE 隱藏）＝冇人發現，但 URL 仍可入；② **Gate**（`entry-gate`）＝擋直開；③ **Soft close**（`mode: 'closed'`）＝見維護卡；④ **Hard close**（Vercel Pause）＝完全離線。四者係**齒輪唔係等號**，見 §3.7 |
+| **SG11-a** | **有本機儲存（`BOOK`）嘅 App 唔可以「一收起就當冇」** | `SCOUTBOOK`／`CUBSBOOK`／`ROVERBOOK`／`VSBOOK` 用戶手上有**真實紀錄**（成員進度、考章）。Delist 或 Hard close 會令佢哋**冇入口更新／冇得匯出**。所以 `BOOK` 類下架前必須：① 保留可達入口（APP STORE 或成員系統，`internal` 角色）＋ ② 開 `allowStandalone`（已裝用戶照用）＋ ③ **先叫用戶匯出 JSON／QR 備份**，之後才可以 Pause |
+| **SG11-b** | **敏感 App 唔可以靠「隱藏」做保護** | 既然隱藏只係前端過濾、`apps` 表匿名可 `select("*")`，**`visible=false` 唔係安全邊界**。含個人資料／收費／權限嘅 App 要落架，必須用 `entry-gate`（+ §4.3 簽票）或 Vercel Pause，**唔可以只喺 APP STORE 撳「隱藏」就當處理完** |
 
 ---
 
@@ -282,6 +285,60 @@ qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?...data=${encodeURIComp
 | **`rel` 屬性** | `index.html` L5662 現時 `rel="noopener noreferrer"` | 改 `rel="noopener"` **只改小工具（`isTool`）分支**；**通告下載／PDF 對外連結保持 `noreferrer`**（唔需要送 Referer，亦唔應該洩漏） |
 
 > **一句話**：圖書館係四個入口中**唯一唔可以隨便動**嘅一個——因為佢載住 Push 訂閱。任何改動都要先問「會唔會令已訂閱用戶收唔到通告」。
+
+### 3.7 「入站管制」真正嘅價值：四個下架齒輪（Delist → Gate → Soft → Hard）
+
+> **用戶 2026-11-15 提問**：「入站點擊更重要嘅係咩？就係除咗要本機儲存嘅 `BOOK`，我可以在 APP STORE 把他收起，其他人就用不到。」
+> **答案**：方向完全正確——**「我可以隨時收回」就係入站管制最大價值**。但**「收起」同「用不到」係兩件事**，要分四級齒輪，唔可以一步跳到最盡。
+
+**四個齒輪（實查你現有系統）**
+
+| 齒輪 | 做乜 | 實作 | 直開 URL | 舊書籤／分享連結 | 已裝主畫面 | 用戶資料 | 可逆性 |
+|:--:|---|---|:--:|:--:|:--:|:--:|---|
+| **① Delist（收起）** | APP STORE 唔顯示卡片 | 後台撳「隱藏」（`apps.visible = false`） | ✅ **仍然入得** | ✅ 仍然入得 | ✅ 照用 | 100% 保留 | 一秒復原 |
+| **② Gate（落閘）** | 直開子 App 見白名單卡 | 子 App 掛 `store_gate_v1.0.js` `entry-gate` | ❌ 見卡 | ❌ 見卡 | ✅ **照用**（`allowStandalone`） | 100% 保留 | 改一行 |
+| **③ Soft close（軟關站）** | 見「暫時關閉」告示 | `mode: 'closed'` | ❌ 告示卡 | ❌ 告示卡 | ❌ 告示卡（連 PWA 都停） | 100% 保留 | 改一行 |
+| **④ Hard close（硬關站）** | Vercel `Pause Project` | Dashboard 撳 Pause | ❌ 完全離線 | ❌ 完全離線 | ❌ 完全離線 | 保留但**開唔到** | 要重新 Deploy |
+
+⚠️ **關鍵事實（實查）**：**① Delist 完全唔會阻止任何人開個 App**。原因：`store.js` 用 `sb.from("apps").select("*")` 拉晒全部記錄（包括隱藏），只喺瀏覽器用 `a.visible !== false` 篩走顯示。所以：
+- 個 App 網址仍然 online，任何人手上有 link 都入得；
+- 舊分享連結、WhatsApp 群組、QR 海報、Google 索引全部照舊有效；
+- 連 APP STORE 嘅公開 API 回應都仍然含住該筆記錄。
+
+**正確用法：四個齒輪按意圖揀，唔係按「幾快」**
+
+| 你想達到 | 用邊個齒輪 | 點解 |
+|---|---|---|
+| 「唔想再有人**發現**呢個 App，但舊用戶照用得」 | **① Delist** | 唔破壞任何人 |
+| 「唔想人**直開**，但由入口入／已裝主畫面就用得」 | **①＋②** | 最常用組合；**唔會整爛任何用戶資料** |
+| 「暫停維護，全世界都見到告示」 | **③ Soft close** | 保留資料、清楚交代、隨時復原 |
+| 「即刻停止一切（刪錯資料／嚴重漏洞／要收費停用）」 | **④ Hard close** | 最快但最傷；**要做之前先叫用戶備份** |
+
+**`BOOK` 類（有本機儲存）特別規則（SG11-a）**
+
+你講「除咗要本機儲存嘅 `BOOK`」——正解係：**`BOOK` 唔可以行到 ③④ 而冇預告**，因為用戶手上係**真實紀錄**（成員進度、考章、服務時數）：
+
+1. 下架前**一定要先保留一條可達入口**（APP STORE，或成員系統 `internal` 角色）——即係**只可以 Delist，唔可以同時拆走入口**。
+2. 一定要開 `allowStandalone: true`，令**已加入主畫面**嘅用戶繼續用得到自己嘅紀錄。
+3. 落 ③ 或 ④ 之前，**先出通告叫用戶匯出 JSON／QR 備份**（`BOOK` 本身已有備份／還原功能）。
+4. iOS 主畫面同 Safari 儲存分家（§3.3-B）→ 用戶備份係**唯一**跨環境搬資料方法，更加唔可以冇預警就關站。
+
+**敏感 App 特別規則（SG11-b）**
+
+`visible = false` **唔係安全機制**（前端過濾、API 照樣回傳）。含個人資料／收費／權限嘅 App 要真正落架：
+- 用 **② `entry-gate`**（要再加 §4.3 `/api/enter` HMAC 簽票）擋直開，**並且**
+- 敏感資料／收費 API 由**後端**擋（[VL1 `/api/proxy`](06-vercel.md#vl1--apiproxy-係唯一出入口) 驗 session 先 inject key），**唔可以**靠前端遮罩；
+- 要完全停 → **④ Vercel Pause**（連 `/api` 一齊停）。
+
+**「由 APP STORE 收起」實務流程（建議照抄）**
+
+```
+1. APP STORE 後台 → 該 App → 撳「隱藏」            （① Delist，即時、可逆）
+2. 觀察 2–4 週：clicks 走勢、有冇用戶查詢           （用 clicks/stars/hearts 判斷）
+3. 仍要收緊 → 子 App 開 entry-gate（portalIds 只留 internal 或 appstore）
+4. 要暫停 → mode: 'closed'（出中文告示，保留資料）
+5. 要徹底停 → 先叫用戶備份，再 Vercel Pause        （④，最後手段）
+```
 
 ## 4. 實作範本與接線步驟
 

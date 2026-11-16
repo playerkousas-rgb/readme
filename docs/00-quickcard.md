@@ -77,6 +77,8 @@ SG：關站／經四大官方入口白名單進入（按需啟用 → docs/50 §
     SG9：入口分工＝APP STORE 主站（唯一分享／QR）· 圖書館每日引流 · 成員／區管理自家副系統
     SG10：APP STORE 已有 clicks/stars/hearts＝主要統計；圖書館冇統計（主責通告＋Push）；子 App trackEndpoint 只作 opt-in 補充
     SG10-a：圖書館維持 open（載住 Push 訂閱），唔可以 iframe／closed／改 start_url
+    SG11：收起≠用不到！APP STORE「隱藏」只係前端過濾，URL 照開；四齒輪＝Delist→Gate→Soft→Hard
+          BOOK 類只可 Delist（保留入口＋allowStandalone），落關站前叫用戶匯出備份
 ```
 詳情：[PLAYBOOK §7.5–§7.7](../PLAYBOOK.md) · [44 雙語介面](44-bilingual-ui.md) · [50 白名單與關站](50-app-store-whitelist-and-shutdown.md)
 

@@ -218,7 +218,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 
 ---
 
-## 7.7 關站與準入白名單入口 SG1–SG10（**按需啟用**，詳情 [docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+## 7.7 關站與準入白名單入口 SG1–SG11（**按需啟用**，詳情 [docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
 
 > **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經 APP STORE（repo `website`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
 > **2026-11-15 用戶第二次定案（四大官方入口）**：準入白名單入口一共 **4 個**，登記於真理倉 [docs/50 §0.1](docs/50-app-store-whitelist-and-shutdown.md) ＋ 程式碼嘅 `PORTAL_REGISTRY`。子 App 一律用 `portalIds` 引用，唔准自己另抄一堆網址。
@@ -249,7 +249,9 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | **SG9-a** | 落地次序 | ① APP STORE 支援 `?app=<slug>` → ② 分享掣／QR 改深層連結 → ③ 子 App 開 `entry-gate`；次序錯＝分享連結即刻失效 |
 | **SG10** | 統計按入口分工，唔好重複起爐灶 | **APP STORE 已有** `apps.clicks／stars／hearts`（`bump_clicks`／`bump_stars`／`bump_hearts`）＝逐 App 點擊／收藏／Like，**唯一權威來源**；**圖書館現時唔統計**（主責通告＋Push，推廣 APP STORE 屬後期）；子 App `trackEndpoint` 只作 opt-in 補充（主畫面開啟 `standalone-pwa`／撞卡 `missing-whitelist-entry`）；無數據 ≠ 無人用 |
 | **SG10-a** | 圖書館要維持 `open` | `scout-circulars` 載住 Push 訂閱（`push_subscriptions`）→ **唔可以 `iframe`、唔可以 `closed`、唔可以改 `start_url`**；要限經入口只可以局部限非通告頁 |
-## 8. 技術棧契約（快表）
+| **SG11** | 「收起」≠「用不到」：四個下架齒輪 | **實查**：APP STORE「隱藏」只係前端過濾（`store.js` L782 `select("*")` 拉晒再 `a.visible !== false` 篩走），**App 本身照開得**。四齒輪＝① Delist（隱藏，URL 仍可入）② Gate（`entry-gate`，擋直開但主畫面照用）③ Soft close（`closed`，見告示）④ Hard close（Vercel Pause，完全離線）。按意圖揀，唔係按「幾快」 |
+| **SG11-a** | `BOOK` 類下架要先保入口＋備份 | 有真實紀錄（成員進度／考章）→ 只可以 Delist，**唔可以同時拆走入口**；必須 `allowStandalone: true`；落 ③④ 前先出通告叫用戶匯出 JSON／QR |
+| **SG11-b** | 敏感 App 唔可以靠「隱藏」做保護 | `visible=false` 唔係安全邊界（API 照回傳）→ 要 `entry-gate` ＋ §4.3 簽票 ＋ 後端 `VL1 /api/proxy` 驗 session；要全停就 Vercel Pause |## 8. 技術棧契約（快表）
 
 | 棧 | 必做 ID | 詳細 |
 |----|---------|------|
@@ -322,7 +324,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 - [ ] W1 版權標示 + W2 水印（如出圖）+ W6 交付檔無真 key
 - [ ] V1 檔名＋內文版號一致 + V4 部署拷貝已 sync（Type C）
 - [ ] L1–L6：雙閘達標嘅 app 有英文 + 右上角切換掣（`i18n_check` 無 FAIL + 人手撳實測）；唔做有寫 `EXCEPTION: L1`（[docs/44](docs/44-bilingual-ui.md)）
-- [ ] SG1–SG10（如有啟用四大入口白名單或軟關站；圖書館維持 `open`）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`；「加入主畫面」引導係「先入口、後安裝」；分享／QR 只由 APP STORE 產生、子 App 有掛 `trackEndpoint`（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+- [ ] SG1–SG11（如有啟用四大入口白名單或軟關站；圖書館維持 `open`；下架按四齒輪逐級落）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`；「加入主畫面」引導係「先入口、後安裝」；分享／QR 只由 APP STORE 產生、下架按「Delist→Gate→Soft→Hard」逐級落、`BOOK` 類落 ③④ 前已通知用戶備份（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
 - [ ] README 寫作紀律（[docs/47](docs/47-readme-discipline.md)）：每句「已修」有檢查或實測、每句「未做」寫限制、冇「理論上應該 work」字樣
 - [ ] `docs/` 同 `PLAYBOOK.md` 已更新（規則改動時）
 - [ ] PR 描述寫明：身份錨點有冇改、registry 有冇加、key 有冇 rotate
