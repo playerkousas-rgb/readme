@@ -1,7 +1,7 @@
 # 50 — 關站與 App Store 白名單入口 SG1–SG6（經 website 進入・不適合白名單處理）
 
 > **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經指定入口（如 APP STORE `website` 或通告圖書館 `scout-circulars`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
-> **層級**：按需啟用嘅入口管制規則（預設 `open` 公開直連，唔強制鎖站；現有 repo 唔自動追溯）。支援**單一入口**或**多個指定入口並存**（例如同時容許由 **SCOUT APP STORE** 或 **通告圖書館** 進入，其餘直連一律攔截）。一旦開新 App 時揀咗白名單或日後要關站，必須按 **SG1–SG8** 處理，避免撞入 Safari 儲存隔離、PWA 主畫面踢人、`SameSite=Lax` Cookie 全滅、通告圖書館 `noreferrer` 清空 `Referer` 同 `308` 永久快取五大陷阱。
+> **層級**：按需啟用嘅入口管制規則（預設 `open` 公開直連，唔強制鎖站；現有 repo 唔自動追溯）。支援**單一入口**或**多個指定入口並存**（例如同時容許由 **SCOUT APP STORE** 或 **通告圖書館** 進入，其餘直連一律攔截）。一旦開新 App 時揀咗白名單或日後要關站，必須按 **SG1–SG10** 處理，避免撞入 Safari 儲存隔離、PWA 主畫面踢人、`SameSite=Lax` Cookie 全滅、通告圖書館 `noreferrer` 清空 `Referer` 同 `308` 永久快取五大陷阱。
 > **官方四大準入白名單入口（2026-11-15 用戶定案・真理倉唯一登記處）**：**1. APP STORE** · **2. 圖書館** · **3. 成員系統** · **4. 區管理系統**。四個入口嘅 repo、pinned commit、Origin、現時連結行為同 `<iframe>` 殼狀況全部實查列於 [§0.1](#01-官方四大準入白名單入口註冊表canonical-portal-registry)；程式碼層面嘅同一份表係 [`store_gate_v1.0.js`](../templates/vercel/store_gate_v1.0.js) 嘅 `PORTAL_REGISTRY`（子 App 只需寫 `portalIds: ['appstore','library','member','district']`）。日後加／改名／改網址，**只改呢兩處**。
 
 ---
@@ -25,12 +25,12 @@
 > **用戶 2026-11-15 定案原文**：「我未來會有準入白名單，會標記在你這，因為你這是真理倉，所有 APP 都會看的 —— 1. APP STORE／2. 圖書館／3. 成員系統／4. 區管理系統。」
 > 以下四行就係**唯一權威名單**。子 App 唔可以自己另外寫死一堆網址；一律用 `portalIds` 引用呢個表（或喺 `portals` 補自訂入口，官方四個照樣以 id 引用）。
 
-| # | 入口（名稱） | Repo | Pinned commit（實查） | Origin（公開網址） | 現時撳入行為 | `<iframe>` 殼 | `noreferrer` 要改嘅位 |
-|:--:|---|---|---|---|---|---|---|
-| **1** | **APP STORE** | [`playerkousas-rgb/website`](https://github.com/playerkousas-rgb/website) | [`041f0742`](https://github.com/playerkousas-rgb/website/commit/041f0742dbabeffa3405b5c0b208f4935f1a215c)（2026-11-13） | `https://scoutappstore.vercel.app` | 頂層 `window.location.href = app.url`（[`app.js` L50–53](https://github.com/playerkousas-rgb/website/blob/041f0742dbabeffa3405b5c0b208f4935f1a215c/app.js#L50-L53)） | ❌ 未有（頂層跳轉） | ✅ 無（本身送出 `Referer`） |
-| **2** | **圖書館**（通告圖書館 v5.11） | [`playerkousas-rgb/scout-circulars`](https://github.com/playerkousas-rgb/scout-circulars) | [`8808cd17`](https://github.com/playerkousas-rgb/scout-circulars/commit/8808cd1708981df61d9191e80282d8e58a840b89)（2026-11-16） | `https://scout-circulars.vercel.app` | `<a target="_blank" rel="noopener noreferrer">`（[`index.html` L5662](https://github.com/playerkousas-rgb/scout-circulars/blob/8808cd1708981df61d9191e80282d8e58a840b89/index.html#L5662)） | ❌ 未有（新分頁） | ⚠️ **要改**：`isTool` 分支改 `rel="noopener"` |
-| **3** | **成員系統**（公開服務平台） | [`playerkousas-rgb/member-portal`](https://github.com/playerkousas-rgb/member-portal) | [`de879a49`](https://github.com/playerkousas-rgb/member-portal/commit/de879a495a3a12d15129fa8e101179a7c07be6e7)（2026-11-15） | `https://member-portal-sigma-swart.vercel.app` | `/books` 用 `<iframe>` 嵌 4 個 `BOOK`；另有 `<a target="_blank" rel="noopener noreferrer">開啟原網站 ↗</a>`（`components/BookSelector.tsx` L88） | ✅ 有（`/books`，`allow="camera; fullscreen"`）＋ 自身被 `https://www.skwscout.org.hk` 以 `frame-ancestors` 嵌入 | ⚠️ **要改**：`BookSelector.tsx` L88 改 `rel="noopener"` |
-| **4** | **區管理系統**（童軍區管理平台） | [`playerkousas-rgb/scout-district-portal`](https://github.com/playerkousas-rgb/scout-district-portal) | [`70809bbc`](https://github.com/playerkousas-rgb/scout-district-portal/commit/70809bbc45a9f203c8279d5c105cb313de619fbd)（2026-11-15） | `https://scout-district-portal.vercel.app` | `/embed` 用 `<iframe>` 嵌工具（`?role=…&from=portal&embed=1&d=…`）；另有「↗ 在新分頁開啟」（`app/embed/page.tsx` L45）同 `/links`（`app/links/page.tsx` L138） | ✅ 有（`/embed`，`allow="clipboard-write"`） | ⚠️ **要改**：`embed/page.tsx` L45 同 `links/page.tsx` L138 改 `rel="noopener"` |
+| # | 入口（名稱） | **角色（SG9）** | Repo | Pinned commit（實查） | Origin（公開網址） | 現時撳入行為 | `<iframe>` 殼 | `noreferrer` 要改嘅位 |
+|:--:|---|---|---|---|---|---|---|---|
+| **1** | **APP STORE** | **`main` 真正主站（全方位）**：唯一應該帶**分享連結／QR code** 嘅入口 | [`playerkousas-rgb/website`](https://github.com/playerkousas-rgb/website) | [`041f0742`](https://github.com/playerkousas-rgb/website/commit/041f0742dbabeffa3405b5c0b208f4935f1a215c)（2026-11-13） | `https://scoutappstore.vercel.app` | 頂層 `window.location.href = app.url`（[`app.js` L50–53](https://github.com/playerkousas-rgb/website/blob/041f0742dbabeffa3405b5c0b208f4935f1a215c/app.js#L50-L53)） | ❌ 未有（頂層跳轉） | ✅ 無（本身送出 `Referer`） |
+| **2** | **圖書館**（通告圖書館 v5.11） | **`feed` 每日引流入口**：每日更新通告＋新 APP，用戶見到即入（**唔帶分享連結**） | [`playerkousas-rgb/scout-circulars`](https://github.com/playerkousas-rgb/scout-circulars) | [`8808cd17`](https://github.com/playerkousas-rgb/scout-circulars/commit/8808cd1708981df61d9191e80282d8e58a840b89)（2026-11-16） | `https://scout-circulars.vercel.app` | `<a target="_blank" rel="noopener noreferrer">`（[`index.html` L5662](https://github.com/playerkousas-rgb/scout-circulars/blob/8808cd1708981df61d9191e80282d8e58a840b89/index.html#L5662)） | ❌ 未有（新分頁） | ⚠️ **要改**：`isTool` 分支改 `rel="noopener"` |
+| **3** | **成員系統**（公開服務平台） | **`internal` 自家副系統入口**：自家出產系統由此直入（**唔帶分享連結**） | [`playerkousas-rgb/member-portal`](https://github.com/playerkousas-rgb/member-portal) | [`de879a49`](https://github.com/playerkousas-rgb/member-portal/commit/de879a495a3a12d15129fa8e101179a7c07be6e7)（2026-11-15） | `https://member-portal-sigma-swart.vercel.app` | `/books` 用 `<iframe>` 嵌 4 個 `BOOK`；另有 `<a target="_blank" rel="noopener noreferrer">開啟原網站 ↗</a>`（`components/BookSelector.tsx` L88） | ✅ 有（`/books`，`allow="camera; fullscreen"`）＋ 自身被 `https://www.skwscout.org.hk` 以 `frame-ancestors` 嵌入 | ⚠️ **要改**：`BookSelector.tsx` L88 改 `rel="noopener"` |
+| **4** | **區管理系統**（童軍區管理平台） | **`internal` 自家副系統入口**：自家出產系統由此直入（**唔帶分享連結**） | [`playerkousas-rgb/scout-district-portal`](https://github.com/playerkousas-rgb/scout-district-portal) | [`70809bbc`](https://github.com/playerkousas-rgb/scout-district-portal/commit/70809bbc45a9f203c8279d5c105cb313de619fbd)（2026-11-15） | `https://scout-district-portal.vercel.app` | `/embed` 用 `<iframe>` 嵌工具（`?role=…&from=portal&embed=1&d=…`）；另有「↗ 在新分頁開啟」（`app/embed/page.tsx` L45）同 `/links`（`app/links/page.tsx` L138） | ✅ 有（`/embed`，`allow="clipboard-write"`） | ⚠️ **要改**：`embed/page.tsx` L45 同 `links/page.tsx` L138 改 `rel="noopener"` |
 
 **點用（子 App 側，一行搞掂）**：
 
@@ -49,11 +49,12 @@ initStoreGate({
 
 1. **只認 Origin**：`PORTAL_REGISTRY` 每個入口只登記 `https://host`（無尾斜線、無路徑、無 query）。子站比對一律用 `new URL(referrer).origin` 精確等同（防 `https://scoutappstore.vercel.app.evil.com` 前綴偽造，A9）。
 2. **順序＝1/2/3/4**：`portalsFromIds()` 會按 `order` 排序，攔截卡第一粒掣永遠係 APP STORE，符合「主入口」慣性；用家仍可揀其餘三個。
-3. **登記 ≠ 已通**：`member-portal` 自身被 `www.skwscout.org.hk` 嵌入、`/books` 同 `/embed` 已經有 `<iframe>` 殼，但**末端連結仲帶 `noreferrer`**；未按 §4.4 改之前，由第 2／3／4 號入口撳入嘅子 App 會因空 `Referer` 被 `entry-gate` 擋。註冊表如實反映呢個狀態，唔會假裝已通。
+3. **入口唔等價（SG9）**：四個入口角色唔同——`main`（APP STORE）／`feed`（圖書館，每日引流）／`internal`（成員系統、區管理系統，自家副系統）。**分享連結同 QR code 只可以由 `main` 產生**；`feed` 同 `internal` 只做「入場」，唔做「對外宣傳」。
+4. **登記 ≠ 已通**：`member-portal` 自身被 `www.skwscout.org.hk` 嵌入、`/books` 同 `/embed` 已經有 `<iframe>` 殼，但**末端連結仲帶 `noreferrer`**；未按 §4.4 改之前，由第 2／3／4 號入口撳入嘅子 App 會因空 `Referer` 被 `entry-gate` 擋。註冊表如實反映呢個狀態，唔會假裝已通。
 
 ---
 
-## 1. 規則總表 SG1–SG8（Store Gate）
+## 1. 規則總表 SG1–SG10（Store Gate）
 
 | ID | 規則 | 硬要求 / 一句驗收 |
 |---|---|---|
@@ -65,6 +66,8 @@ initStoreGate({
 | **SG6** | **暫時關站分硬關站（Pause）與軟關站（告示頁）** | 硬關站：Vercel Dashboard → `Settings → General → Pause Project`（連 `/api` 即停、零額度，但出英文預設頁）；軟關站：`store_gate_v1.0.js` 設 `mode: 'closed'` 出中文維護卡，或 `vercel.json` `redirects` 設 **`"permanent": false`（302，嚴禁 `true`/308 永久快取）** 導回 `scoutappstore.vercel.app` |
 | **SG7** | **「加入主畫面」只准由指定入口第一次進入** | 直開網址嘅用家**唔會** 404（`store_gate_v1.0.js` 會出白名單卡），但**唔准教用家直接開網址然後「加入主畫面」**：① 在入口母站（例如 APP STORE）「加入主畫面」會裝到**母站**而唔係個 App；② 真 404／未部署路徑根本冇 `manifest`，瀏覽器唔會提供「加入主畫面」；③ 已退役 app 嘅舊主畫面圖示撳落去只會白屏／「找不到網頁」。標準話術一律係「**先由入口進入 → 再按瀏覽器選單加入主畫面**」，並靠 `allowStandalone: true` 令裝好之後撳 icon 直開 |
 | **SG8** | **入口網站自己永不被自己嘅閘擋** | 四大入口（APP STORE／圖書館／成員系統／區管理系統）**自己嘅 origin 一旦出現在 `portalIds` 就自動放行**（`reason: 'self-portal'`），因為「入口就係入口」，佢本身唔需要再經其他地方。**但**：① 入口自己**唔應該掛** `entry-gate`（佢唔係子 App）；② 入口若要軟關站，用 `mode: 'closed'`（`closed` 優先於 self 放行）；③ 子 App 記得**唔好**把入口 origin 當成自己 origin（判別靠 `location.origin`，唔靠 Referer） |
+| **SG9** | **入口角色分工：分享連結／QR 只准由 `main` 產生** | 入口**唔係等價互替**：`main`＝APP STORE（真正主站・全方位）、`feed`＝圖書館（每日通告＋新 APP 引流）、`internal`＝成員系統／區管理系統（自家副系統）。**對外分享連結、QR code、宣傳單張、WhatsApp 群發、IG bio 一律只放 `main`（APP STORE）**；`feed` 同 `internal` 只做「入場」，唔做「宣傳」。理由：用戶收到嘅必須係**一個**穩定入口，否則同一 App 有四個唔同網址流通，版本控管同統計即刻散 |
+| **SG10** | **要有「邊個入口帶人入、有冇人用」嘅數據，先知值唔值得更新** | 每個子 App 掛 `trackEndpoint: '/api/store-hit'`（**opt-in，未設＝零請求**），`store_gate_v1.0.js` 只回報 `{appKey, mode, reason, portal, v}` 五個欄位（**唔送 IP／UA／Referer 全文／任何個人資料**，用 `sendBeacon`，失敗靜默）。統計必須同時計「**放行**（`referrer-whitelist`／`standalone-pwa`）同**攔截**（`missing-whitelist-entry`）」，先睇得出「幾多人係由入口入、幾多人係直開撞卡」 |
 
 ---
 
@@ -200,6 +203,67 @@ initStoreGate({
 
 **誠實邊界**：Vercel 平台層 404 頁**無法**注入我哋嘅提示卡（唔經我哋部署嘅檔案），只能靠上面 rewrite 或入口頁文案避免用家行到呢一步。
 
+### 3.5 四個入口各有角色：對原有用戶同「分享出去幫手宣傳」有咩影響？
+
+> **用戶 2026-11-15 定案**：① APP STORE＝真正主站（全方位）；② 圖書館＝每日更新通告／新 APP 嘅**引流**入口，用戶見到即入；③ 成員系統／區管理系統＝**自家出產**副系統，用戶直接由此入最合理。**痛點：唔知有冇人用、值唔值得花時間更新。**（APP STORE 同圖書館有人數統計，成員／區管理系統係自家產品，少人用都要繼續完善。）
+
+**A. 入口角色同「帶唔帶分享」嘅硬規則（SG9）**
+
+| 入口 | 角色 | 應唔應該帶分享連結／QR？ | 原因 |
+|---|---|:--:|---|
+| **1. APP STORE** | `main` 真正主站 | ✅ **唯一應該帶** | 全方位目錄＋分享對話框＋QR；對外只需記住**一個**網址 |
+| **2. 圖書館** | `feed` 每日引流 | ❌ 唔帶 | 佢係「今日有新通告／新 APP」嘅**推送**角色，帶分享會令同一 App 出現第二個對外網址 |
+| **3. 成員系統** | `internal` 自家副系統 | ❌ 唔帶 | 對內（成員／領袖）入口；對外宣傳會令人以為要登入先用得 |
+| **4. 區管理系統** | `internal` 自家副系統 | ❌ 唔帶 | 同上，而且含權限角色，唔應該成為公開連結 |
+
+**B. 對「原有用戶」有咩影響（逐項講清楚，唔靠估）**
+
+| 原有習慣 | 白名單後會點 | 是否需要補救 |
+|---|---|---|
+| 由 APP STORE 撳入 App | **完全一樣**（APP STORE 係 `main`，永遠放行） | ❌ 唔需要 |
+| 由圖書館通告撳入新 App | 一樣，但**要先將 `noreferrer` 改成 `noopener`**，否則被擋 | ⚠️ 改一行（§4.4-1） |
+| 由成員系統／區管理系統撳入自家副系統 | 一樣，同樣先改 `noreferrer`（§4.4-4、4.5） | ⚠️ 改三行 |
+| 用**舊書籤／舊 QR／舊 WhatsApp 轉發**開子 App | 見到白名單卡（唔會 404），要再撳一次入口 | ✅ 已由 SG3 卡引導；分享一律改指 APP STORE 後會慢慢自然消失 |
+| **已加入主畫面**嘅用戶 | `allowStandalone: true` → 撳 icon 直接開，**完全唔受影響** | ❌ 唔需要（iOS 儲存分家見 §3.3） |
+| 直接打網址嘅重度用戶 | 每次多一步 | 可接受（白名單本身目的） |
+
+> **結論**：對**已經由入口用開**嘅用戶，白名單實際上**零感覺**；真正有感覺嘅只有「手上攞住子站直連網址」嘅人，而呢批人正好就係要靠 SG9 慢慢收斂去 APP STORE。**唔會**因為白名單而流失現有用戶嘅資料（`entry-gate` 頂層跳轉，`localStorage` 完全保留）。
+
+**C. 對「用戶幫手分享宣傳」有咩影響（呢個係最易出錯嘅位，已實查你現有程式碼）**
+
+⚠️ **實查發現**：`website/app.js` L723–727 嘅分享對話框同 QR code 現時係**直接複製子站網址**：
+
+```js
+if (urlEl) urlEl.value = app.url;                                   // L723
+qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?...data=${encodeURIComponent(app.url)}`; // L727
+```
+
+一旦子 App 開白名單，**所有經分享掣／QR code 傳出去嘅連結都會即刻撞卡**——分享得越多，撞卡越多，睇落好似「宣傳失效」。
+
+**SG9 嘅正確做法**：
+
+| 分享途徑 | 應該指向 | 實作 |
+|---|---|---|
+| APP STORE 分享對話框（文字連結） | `https://scoutappstore.vercel.app/?app=<slug>` | 改 `app.js` L723：`urlEl.value = 'https://scoutappstore.vercel.app/?app=' + app.slug` |
+| APP STORE QR code | 同上（**唔好**用 `app.url`） | 改 L727：`encodeURIComponent(shareUrl)` |
+| APP STORE「分享網站連結」 | 主站首頁 | 保持 `https://scoutappstore.vercel.app/` |
+| 圖書館／成員系統／區管理系統 | **唔提供對外分享掣**（或分享時自動改指 APP STORE） | 內部工具維持「只做入場」 |
+| WhatsApp／IG 群發 | 一律 APP STORE 深層連結 | 靠 `?app=<slug>` 自動打開詳情 |
+
+**但要有配套先成立**：APP STORE **必須支援 `?app=<slug>` 深層連結**（現時 `app.js` 冇讀 `location.search`，即係**未有**）。落地次序：① APP STORE 加 `?app=` 支援 → ② 分享掣／QR 改指深層連結 → ③ 子 App 開 `entry-gate`。**次序錯就會令分享連結失效**，所以要按呢個次序做。
+
+**D. 「唔知有冇人用」→ 要點量度（SG10）**
+
+| 你想知 | 點量度 | 誠實限制 |
+|---|---|---|
+| 每日有幾多人由**圖書館**引流入某個 App | 子 App `trackEndpoint` ＋ `portal: 'library'` | 只計「開啟」，唔計停留時間（唔加追蹤腳本就唔會知） |
+| 由**APP STORE**入 vs 直開 | 同一個 endpoint，`portal: 'appstore'` vs `''` | 直開者無入口身份，`portal` 會係空字串 |
+| 有幾多人**撞卡**（＝仲用舊連結） | `reason: 'missing-whitelist-entry'` 嘅次數 | 撞卡數會隨分享連結改好而下跌，可作為「宣傳是否已收斂」指標 |
+| 成員系統／區管理系統有冇人用 | 入口母站自己已有登入紀錄，唔需要靠子 App 統計 | 自家產品少人用照樣維護（用戶明示） |
+| 值唔值得繼續更新某 App | 連續 4 週 `portal` 開啟數＝0 且撞卡亦＝0 → 可考慮軟關站（`closed`）或退役 | **唔可以**用「無統計」當「無人用」——未掛 `trackEndpoint` 前根本無數據 |
+
+**隱私邊界（必須守住）**：payload 只有 5 個欄位、唔含 IP／UA／Referer 全文／姓名／班別；母站現有 `record_site_visit` 已經係「隨機 `visitor_id` ＋ 香港日期去重、唔收 IP／UA」嘅做法，子 App 統計要跟同一標準（[08](08-supabase.md) U9、[03](03-security.md)）。若要更準，可加「每日去重」而**唔可以**加指紋識別。
+
 ## 4. 實作範本與接線步驟
 
 ### 4.1 開 APP 時告知有白名單／關站（通用前端閘門 `store_gate_v1.0.js`，支援單一或多個指定入口）
@@ -268,7 +332,9 @@ initStoreGate({
 3. **`iframe` 模式先起檢視器殼**：只有 `accessMode === 'iframe'` 先用全屏 `<iframe src="...">`（加返頂部返回列）；`open` 同 `entry-gate` 維持頂層開啟（唔加 `noreferrer`）。
 4. **`member-portal`（成員系統）清走 `noreferrer`**：`components/BookSelector.tsx` L88 嘅「開啟原網站 ↗」改成 `rel="noopener"`，否則由成員系統撳入 `BOOK` 會無 `Referer` 被擋。
 5. **`scout-district-portal`（區管理系統）清走 `noreferrer`**：`app/embed/page.tsx` L45「↗ 在新分頁開啟」同 `app/links/page.tsx` L138 兩處改成 `rel="noopener"`。另外 `/embed` 個 `<iframe>` 殼若要嵌有儲存嘅 App，記住 §3.2：**`iframe` 會令儲存分家**，寧願用 `/embed` 嘅「在新分頁開啟」走頂層。
-6. **分享連結改指入口**：白名單項目嘅分享網址改指回四大入口之一（`https://scoutappstore.vercel.app/`、`https://scout-circulars.vercel.app/`、`https://member-portal-sigma-swart.vercel.app/`、`https://scout-district-portal.vercel.app/`），唔好直接將子站 `*.vercel.app` 獨立網址傳出去撞閘。
+6. **分享連結／QR 只准由 APP STORE 產生（SG9）**：`website/app.js` L723 `urlEl.value = app.url` 同 L727 QR code 要改成 `https://scoutappstore.vercel.app/?app=<slug>`；**唔好**再用子站 `*.vercel.app` 直連做分享。前提係 APP STORE 要先支援讀 `?app=<slug>`（現時未支援）。
+7. **掛統計（SG10）**：子 App 加 `trackEndpoint: '/api/store-hit'`（唔想統計就唔加，完全零請求），只回報 `{appKey, mode, reason, portal, v}`，唔送個人資料。
+8. **落地次序（唔可以調亂）**：① APP STORE 支援 `?app=<slug>` → ② 分享掣／QR 改指深層連結 → ③ 子 App 開 `entry-gate`。次序錯，分享出去嘅連結會即刻撞卡。
 
 ---
 

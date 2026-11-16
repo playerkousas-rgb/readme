@@ -74,6 +74,8 @@ SG：關站／經四大官方入口白名單進入（按需啟用 → docs/50 §
     開新 app 主動告知；有 localStorage／PWA／Push／登入 Cookie 禁入 iframe，改行頂層 entry-gate（portalIds 引用四大入口）
     SG7：加主畫面流程＝「先由入口進入 → 再按瀏覽器選單加入主畫面」；直開網址唔會 404（出白名單卡）
     SG8：入口自己永不被閘（self-portal）；直開網址預設唔自動跳，要跳就 autoRedirectSeconds 3–5
+    SG9：入口分工＝APP STORE 主站（唯一分享／QR）· 圖書館每日引流 · 成員／區管理自家副系統
+    SG10：逐入口統計 trackEndpoint（opt-in、無個人資料）；同時計「放行」同「撞卡」
 ```
 詳情：[PLAYBOOK §7.5–§7.7](../PLAYBOOK.md) · [44 雙語介面](44-bilingual-ui.md) · [50 白名單與關站](50-app-store-whitelist-and-shutdown.md)
 

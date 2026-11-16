@@ -57,6 +57,7 @@ const DEFAULT_ALLOWED_ORIGINS = ['https://scoutappstore.vercel.app'];
 const PORTAL_REGISTRY = Object.freeze({
   appstore: Object.freeze({
     id: 'appstore',
+    role: 'main', // 1. 真正主站（全方位）：唯一應該帶分享連結／QR 嘅入口
     order: 1,
     labelZh: '1. 前往 APP STORE',
     labelEn: '1. Go to APP STORE',
@@ -67,6 +68,7 @@ const PORTAL_REGISTRY = Object.freeze({
   }),
   library: Object.freeze({
     id: 'library',
+    role: 'feed', // 2. 每天更新通告嘅引流入口：新 APP 即時可入
     order: 2,
     labelZh: '2. 前往圖書館',
     labelEn: '2. Go to Library',
@@ -77,6 +79,7 @@ const PORTAL_REGISTRY = Object.freeze({
   }),
   member: Object.freeze({
     id: 'member',
+    role: 'internal', // 3. 自家出產副系統（成員系統）
     order: 3,
     labelZh: '3. 前往成員系統',
     labelEn: '3. Go to Member Portal',
@@ -87,6 +90,7 @@ const PORTAL_REGISTRY = Object.freeze({
   }),
   district: Object.freeze({
     id: 'district',
+    role: 'internal', // 4. 自家出產副系統（區管理系統）
     order: 4,
     labelZh: '4. 前往區管理系統',
     labelEn: '4. Go to District Portal',
@@ -303,7 +307,16 @@ function evaluateStoreGate(options = {}, env = {}) {
     }
     const refOrigin = parseAllowedOrigin(env.referrer || '', allowLocalhost);
     if (refOrigin && allowedSet.has(refOrigin)) {
-      return { allowed: true, reason: 'referrer-whitelist', mode, matchedOrigin: refOrigin, grantSessionPass: true, passKey };
+      const hit = portals.find((p) => p.origin === refOrigin);
+      return {
+        allowed: true,
+        reason: 'referrer-whitelist',
+        mode,
+        matchedOrigin: refOrigin,
+        matchedPortalId: hit ? hit.id : '',
+        grantSessionPass: true,
+        passKey,
+      };
     }
     return { allowed: false, reason: 'missing-whitelist-entry', mode };
   }
@@ -470,11 +483,59 @@ function initStoreGate(options = {}, win = typeof window !== 'undefined' ? windo
     if (decision.grantSessionPass) {
       writeSessionPass(win, decision.passKey);
     }
+    reportGateDecision(win, decision, options);
     return decision;
   }
 
   renderGateOverlay(doc, win, decision, options);
+  reportGateDecision(win, decision, options);
   return decision;
+}
+
+/**
+ * SG10：逐入口到訪統計（opt-in，預設完全唔發任何請求）
+ * 只有設咗 options.trackEndpoint 先會回報，而且只送最小欄位：
+ * appKey / mode / reason / matchedPortalId —— 唔送 IP、唔送 UA、唔送 Referer 全文、唔送任何個人資料。
+ * 用 sendBeacon（失敗 fallback 去 fetch keepalive），離場／快速跳轉都報得到。
+ */
+function buildTrackPayload(decision, options = {}) {
+  return {
+    appKey: String(options.appKey || 'scoutapp'),
+    mode: String(decision.mode || ''),
+    reason: String(decision.reason || ''),
+    portal: String(decision.matchedPortalId || ''), // '' = 非入口進入（直開／PWA／session pass）
+    v: VERSION,
+  };
+}
+
+function reportGateDecision(win, decision, options = {}) {
+  if (!win || !options.trackEndpoint) return null;
+  const payload = buildTrackPayload(decision, options);
+  if (typeof options.onGateDecision === 'function') {
+    try {
+      options.onGateDecision(payload);
+    } catch {
+      /* 回報失敗唔可以影響用家開 App */
+    }
+  }
+  try {
+    const body = JSON.stringify(payload);
+    if (win.navigator && typeof win.navigator.sendBeacon === 'function') {
+      win.navigator.sendBeacon(options.trackEndpoint, body);
+      return payload;
+    }
+    if (typeof win.fetch === 'function') {
+      win.fetch(options.trackEndpoint, {
+        method: 'POST',
+        keepalive: true,
+        headers: { 'Content-Type': 'application/json' },
+        body,
+      });
+    }
+  } catch {
+    /* 統計永遠唔可以阻住開 App（SG3） */
+  }
+  return payload;
 }
 
 if (typeof globalThis !== 'undefined') {
@@ -488,6 +549,8 @@ if (typeof globalThis !== 'undefined') {
     PORTAL_IDS,
     getPortal,
     portalsFromIds,
+    buildTrackPayload,
+    reportGateDecision,
     parseAllowedOrigin,
     normalizePortals,
     isStandaloneApp,
@@ -506,6 +569,8 @@ if (typeof module !== 'undefined' && module.exports) {
     PORTAL_IDS,
     getPortal,
     portalsFromIds,
+    buildTrackPayload,
+    reportGateDecision,
     parseAllowedOrigin,
     normalizePortals,
     isStandaloneApp,

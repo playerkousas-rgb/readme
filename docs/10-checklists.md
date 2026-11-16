@@ -21,7 +21,7 @@
 [ ] 多單位系統先需要：定職責邊界／「唔做清單」／功能 registry（**可選做法**，案例見 [19](19-ecportal-troop-case.md)；唔係通用底線）
 [ ] 技術棧揀好：Git / Vercel / GAS / Supabase / Gemini Canvas（邊幾個）
 [ ] Gemini 結構揀好：A 全開放 / B 隱藏水印 / C 腦殼分離（見 [09-gemini-canvas C1](09-gemini-canvas.md#c1--決策表揀錯結構--之後要拆)）
-[ ] SG1/SG2 入口與關站白名單判定（已主動告知用戶四大官方入口 APP STORE／圖書館／成員系統／區管理系統，[50 §0.1](50-app-store-whitelist-and-shutdown.md)）：公開直連 `open`（預設）／頂層跳板白名單 `entry-gate`（`portalIds` 引用）／純 `iframe-only`／暫時關站 `closed`；凡有 `localStorage`（含紀錄冊／C13 BYOK）、PWA 加入主畫面、Web Push、`SameSite=Lax` Cookie 或相機／GPS 嚴禁用 `iframe-only`，改用 `entry-gate`；並已向用戶講清 SG7「先由入口進入，再按瀏覽器選單加入主畫面」；SG8 入口自己永不被閘、直開網址預設唔自動跳（[50](50-app-store-whitelist-and-shutdown.md)）
+[ ] SG1/SG2 入口與關站白名單判定（已主動告知用戶四大官方入口 APP STORE／圖書館／成員系統／區管理系統，[50 §0.1](50-app-store-whitelist-and-shutdown.md)）：公開直連 `open`（預設）／頂層跳板白名單 `entry-gate`（`portalIds` 引用）／純 `iframe-only`／暫時關站 `closed`；凡有 `localStorage`（含紀錄冊／C13 BYOK）、PWA 加入主畫面、Web Push、`SameSite=Lax` Cookie 或相機／GPS 嚴禁用 `iframe-only`，改用 `entry-gate`；並已向用戶講清 SG7「先由入口進入，再按瀏覽器選單加入主畫面」；SG8 入口自己永不被閘、直開網址預設唔自動跳；SG9 分享／QR 只由 APP STORE 產生；SG10 已掛 `trackEndpoint` 或明示唔統計（[50](50-app-store-whitelist-and-shutdown.md)）
 ```
 
 ### 1.2 Repo 骨架
