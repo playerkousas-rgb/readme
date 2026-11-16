@@ -218,7 +218,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 
 ---
 
-## 7.7 關站與準入白名單入口 SG1–SG11（**按需啟用**，詳情 [docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+## 7.7 關站與準入白名單入口 SG1–SG12（**按需啟用**，詳情 [docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
 
 > **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經 APP STORE（repo `website`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
 > **2026-11-15 用戶第二次定案（四大官方入口）**：準入白名單入口一共 **4 個**，登記於真理倉 [docs/50 §0.1](docs/50-app-store-whitelist-and-shutdown.md) ＋ 程式碼嘅 `PORTAL_REGISTRY`。子 App 一律用 `portalIds` 引用，唔准自己另抄一堆網址。
@@ -252,7 +252,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | **SG11** | 「收起」≠「用不到」：四個下架齒輪 | **實查**：APP STORE「隱藏」只係前端過濾（`store.js` L782 `select("*")` 拉晒再 `a.visible !== false` 篩走），**App 本身照開得**。四齒輪＝① Delist（隱藏，URL 仍可入）② Gate（`entry-gate`，擋直開但主畫面照用）③ Soft close（`closed`，見告示）④ Hard close（Vercel Pause，完全離線）。按意圖揀，唔係按「幾快」 |
 | **SG11-a** | `BOOK` 類下架要先保入口＋備份 | 有真實紀錄（成員進度／考章）→ 只可以 Delist，**唔可以同時拆走入口**；必須 `allowStandalone: true`；落 ③④ 前先出通告叫用戶匯出 JSON／QR |
 | **SG11-b** | 敏感 App 唔可以靠「隱藏」做保護 | `visible=false` 唔係安全邊界（API 照回傳）→ 要 `entry-gate` ＋ §4.3 簽票 ＋ 後端 `VL1 /api/proxy` 驗 session；要全停就 Vercel Pause |## 8. 技術棧契約（快表）
-
+| **SG12** | 防偷用按價值分級 | **純前端**（`drawtheroute`）：`entry-gate` 已足夠，接受原始碼可被抄走（擋唔到 `Ctrl+S`／`curl`），抄走者無你嘅持續更新；**有 `/api`／領袖權限／第三方額度**（`HM20C` 有 `LEADER_PASSWORD`＋`/api/leader-verify`）：必須 §4.3 簽票＋VL1 後端驗票；**`BOOK` 寬鬆**（導向 BADGE 登記）／**專業工具收緊**／**自家系統靠後端登入** |
 | 棧 | 必做 ID | 詳細 |
 |----|---------|------|
 | **Git** | G1–G10：main 保護、feature branch → PR、Conventional Commits、tag、lockfile、Actions pin SHA、CODEOWNERS、secret scanning、唔 commit binary、docs 跟版本 | [docs/05-git.md](docs/05-git.md) |
@@ -324,7 +324,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 - [ ] W1 版權標示 + W2 水印（如出圖）+ W6 交付檔無真 key
 - [ ] V1 檔名＋內文版號一致 + V4 部署拷貝已 sync（Type C）
 - [ ] L1–L6：雙閘達標嘅 app 有英文 + 右上角切換掣（`i18n_check` 無 FAIL + 人手撳實測）；唔做有寫 `EXCEPTION: L1`（[docs/44](docs/44-bilingual-ui.md)）
-- [ ] SG1–SG11（如有啟用四大入口白名單或軟關站；圖書館維持 `open`；下架按四齒輪逐級落）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`；「加入主畫面」引導係「先入口、後安裝」；分享／QR 只由 APP STORE 產生、下架按「Delist→Gate→Soft→Hard」逐級落、`BOOK` 類落 ③④ 前已通知用戶備份（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+- [ ] SG1–SG12（圖書館維持 `open`；下架按四齒輪逐級落；防偷用按 App 價值分級）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`；「加入主畫面」引導係「先入口、後安裝」；分享／QR 只由 APP STORE 產生、下架按「Delist→Gate→Soft→Hard」逐級落、`BOOK` 類落 ③④ 前已通知用戶備份（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
 - [ ] README 寫作紀律（[docs/47](docs/47-readme-discipline.md)）：每句「已修」有檢查或實測、每句「未做」寫限制、冇「理論上應該 work」字樣
 - [ ] `docs/` 同 `PLAYBOOK.md` 已更新（規則改動時）
 - [ ] PR 描述寫明：身份錨點有冇改、registry 有冇加、key 有冇 rotate
