@@ -564,7 +564,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   }
   assert.ok(doc.includes('PORTAL_REGISTRY') && doc.includes('portalIds'), 'docs/50 要寫明 PORTAL_REGISTRY／portalIds 用法');
   // SG7：直開網址／404／加入主畫面 嘅情境表要喺 docs/50 §3.4 有紀錄
-  for (const kw of ['3.4', '404', '加入主畫面', '白名單真實代價']) {
+  for (const kw of ['3.4', '404', '加入主畫面', '白名單真實代價', '3.6', 'push_subscriptions']) {
     assert.ok(doc.includes(kw), `docs/50 §3.4 要覆蓋「${kw}」`);
   }
   assert.ok(intake.includes('SG7'), 'INTAKE Q8 要提 SG7 加入主畫面流程');

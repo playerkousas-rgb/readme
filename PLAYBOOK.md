@@ -247,7 +247,8 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | **SG8-a** | 直開網址預設唔自動跳 | `autoRedirectSeconds: 0` 為預設（停低顯示入口卡，避免用家以為壞咗、亦避免其餘三個入口變裝飾）；要自動就 3–5 秒＋顯示目的地，或用 `autoRedirectPortalId` 指定入口 |---
 | **SG9** | 入口角色分工，分享只由 `main` | `main`＝APP STORE（主站，**唯一**帶分享連結／QR）／`feed`＝圖書館（每日引流）／`internal`＝成員系統、區管理系統（自家副系統）。`website/app.js` L723／L727 現時直接分享 `app.url`（子站），開閘後會全部撞卡，要改指 `?app=<slug>` |
 | **SG9-a** | 落地次序 | ① APP STORE 支援 `?app=<slug>` → ② 分享掣／QR 改深層連結 → ③ 子 App 開 `entry-gate`；次序錯＝分享連結即刻失效 |
-| **SG10** | 逐入口統計（opt-in） | `trackEndpoint` 未設＝零請求；只送 `{appKey, mode, reason, portal, v}`（無 IP／UA／Referer）；**必須同時計放行同撞卡**，先睇得出「邊個入口帶人入、幾多人仲用舊連結」；無數據 ≠ 無人用 |
+| **SG10** | 統計按入口分工，唔好重複起爐灶 | **APP STORE 已有** `apps.clicks／stars／hearts`（`bump_clicks`／`bump_stars`／`bump_hearts`）＝逐 App 點擊／收藏／Like，**唯一權威來源**；**圖書館現時唔統計**（主責通告＋Push，推廣 APP STORE 屬後期）；子 App `trackEndpoint` 只作 opt-in 補充（主畫面開啟 `standalone-pwa`／撞卡 `missing-whitelist-entry`）；無數據 ≠ 無人用 |
+| **SG10-a** | 圖書館要維持 `open` | `scout-circulars` 載住 Push 訂閱（`push_subscriptions`）→ **唔可以 `iframe`、唔可以 `closed`、唔可以改 `start_url`**；要限經入口只可以局部限非通告頁 |
 ## 8. 技術棧契約（快表）
 
 | 棧 | 必做 ID | 詳細 |
@@ -321,7 +322,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 - [ ] W1 版權標示 + W2 水印（如出圖）+ W6 交付檔無真 key
 - [ ] V1 檔名＋內文版號一致 + V4 部署拷貝已 sync（Type C）
 - [ ] L1–L6：雙閘達標嘅 app 有英文 + 右上角切換掣（`i18n_check` 無 FAIL + 人手撳實測）；唔做有寫 `EXCEPTION: L1`（[docs/44](docs/44-bilingual-ui.md)）
-- [ ] SG1–SG10（如有啟用四大入口白名單或軟關站）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`；「加入主畫面」引導係「先入口、後安裝」；分享／QR 只由 APP STORE 產生、子 App 有掛 `trackEndpoint`（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+- [ ] SG1–SG10（如有啟用四大入口白名單或軟關站；圖書館維持 `open`）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`；「加入主畫面」引導係「先入口、後安裝」；分享／QR 只由 APP STORE 產生、子 App 有掛 `trackEndpoint`（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
 - [ ] README 寫作紀律（[docs/47](docs/47-readme-discipline.md)）：每句「已修」有檢查或實測、每句「未做」寫限制、冇「理論上應該 work」字樣
 - [ ] `docs/` 同 `PLAYBOOK.md` 已更新（規則改動時）
 - [ ] PR 描述寫明：身份錨點有冇改、registry 有冇加、key 有冇 rotate

@@ -27,8 +27,8 @@
 
 | # | 入口（名稱） | **角色（SG9）** | Repo | Pinned commit（實查） | Origin（公開網址） | 現時撳入行為 | `<iframe>` 殼 | `noreferrer` 要改嘅位 |
 |:--:|---|---|---|---|---|---|---|---|
-| **1** | **APP STORE** | **`main` 真正主站（全方位）**：唯一應該帶**分享連結／QR code** 嘅入口 | [`playerkousas-rgb/website`](https://github.com/playerkousas-rgb/website) | [`041f0742`](https://github.com/playerkousas-rgb/website/commit/041f0742dbabeffa3405b5c0b208f4935f1a215c)（2026-11-13） | `https://scoutappstore.vercel.app` | 頂層 `window.location.href = app.url`（[`app.js` L50–53](https://github.com/playerkousas-rgb/website/blob/041f0742dbabeffa3405b5c0b208f4935f1a215c/app.js#L50-L53)） | ❌ 未有（頂層跳轉） | ✅ 無（本身送出 `Referer`） |
-| **2** | **圖書館**（通告圖書館 v5.11） | **`feed` 每日引流入口**：每日更新通告＋新 APP，用戶見到即入（**唔帶分享連結**） | [`playerkousas-rgb/scout-circulars`](https://github.com/playerkousas-rgb/scout-circulars) | [`8808cd17`](https://github.com/playerkousas-rgb/scout-circulars/commit/8808cd1708981df61d9191e80282d8e58a840b89)（2026-11-16） | `https://scout-circulars.vercel.app` | `<a target="_blank" rel="noopener noreferrer">`（[`index.html` L5662](https://github.com/playerkousas-rgb/scout-circulars/blob/8808cd1708981df61d9191e80282d8e58a840b89/index.html#L5662)） | ❌ 未有（新分頁） | ⚠️ **要改**：`isTool` 分支改 `rel="noopener"` |
+| **1** | **APP STORE** | **`main` 真正主站（全方位）＋統計基地**：唯一應該帶**分享連結／QR code**；已有 `apps.clicks／stars／hearts`（RPC `bump_clicks`／`bump_stars`／`bump_hearts`），後台睇得到逐個 App 點擊／收藏／Like | [`playerkousas-rgb/website`](https://github.com/playerkousas-rgb/website) | [`041f0742`](https://github.com/playerkousas-rgb/website/commit/041f0742dbabeffa3405b5c0b208f4935f1a215c)（2026-11-13） | `https://scoutappstore.vercel.app` | 頂層 `window.location.href = app.url`（[`app.js` L50–53](https://github.com/playerkousas-rgb/website/blob/041f0742dbabeffa3405b5c0b208f4935f1a215c/app.js#L50-L53)） | ❌ 未有（頂層跳轉） | ✅ 無（本身送出 `Referer`） |
+| **2** | **圖書館**（通告圖書館 v5.11） | **`feed` 通告推送主場**（**唔帶分享連結**）：主要目的係**睇通告**＋**加入主畫面收 Push**；**現時冇點擊統計**，推廣 APP STORE 屬後期功能（2026-11-15 用戶說明） | [`playerkousas-rgb/scout-circulars`](https://github.com/playerkousas-rgb/scout-circulars) | [`8808cd17`](https://github.com/playerkousas-rgb/scout-circulars/commit/8808cd1708981df61d9191e80282d8e58a840b89)（2026-11-16） | `https://scout-circulars.vercel.app` | `<a target="_blank" rel="noopener noreferrer">`（[`index.html` L5662](https://github.com/playerkousas-rgb/scout-circulars/blob/8808cd1708981df61d9191e80282d8e58a840b89/index.html#L5662)） | ❌ 未有（新分頁） | ⚠️ **要改**：`isTool` 分支改 `rel="noopener"` |
 | **3** | **成員系統**（公開服務平台） | **`internal` 自家副系統入口**：自家出產系統由此直入（**唔帶分享連結**） | [`playerkousas-rgb/member-portal`](https://github.com/playerkousas-rgb/member-portal) | [`de879a49`](https://github.com/playerkousas-rgb/member-portal/commit/de879a495a3a12d15129fa8e101179a7c07be6e7)（2026-11-15） | `https://member-portal-sigma-swart.vercel.app` | `/books` 用 `<iframe>` 嵌 4 個 `BOOK`；另有 `<a target="_blank" rel="noopener noreferrer">開啟原網站 ↗</a>`（`components/BookSelector.tsx` L88） | ✅ 有（`/books`，`allow="camera; fullscreen"`）＋ 自身被 `https://www.skwscout.org.hk` 以 `frame-ancestors` 嵌入 | ⚠️ **要改**：`BookSelector.tsx` L88 改 `rel="noopener"` |
 | **4** | **區管理系統**（童軍區管理平台） | **`internal` 自家副系統入口**：自家出產系統由此直入（**唔帶分享連結**） | [`playerkousas-rgb/scout-district-portal`](https://github.com/playerkousas-rgb/scout-district-portal) | [`70809bbc`](https://github.com/playerkousas-rgb/scout-district-portal/commit/70809bbc45a9f203c8279d5c105cb313de619fbd)（2026-11-15） | `https://scout-district-portal.vercel.app` | `/embed` 用 `<iframe>` 嵌工具（`?role=…&from=portal&embed=1&d=…`）；另有「↗ 在新分頁開啟」（`app/embed/page.tsx` L45）同 `/links`（`app/links/page.tsx` L138） | ✅ 有（`/embed`，`allow="clipboard-write"`） | ⚠️ **要改**：`embed/page.tsx` L45 同 `links/page.tsx` L138 改 `rel="noopener"` |
 
@@ -67,7 +67,7 @@ initStoreGate({
 | **SG7** | **「加入主畫面」只准由指定入口第一次進入** | 直開網址嘅用家**唔會** 404（`store_gate_v1.0.js` 會出白名單卡），但**唔准教用家直接開網址然後「加入主畫面」**：① 在入口母站（例如 APP STORE）「加入主畫面」會裝到**母站**而唔係個 App；② 真 404／未部署路徑根本冇 `manifest`，瀏覽器唔會提供「加入主畫面」；③ 已退役 app 嘅舊主畫面圖示撳落去只會白屏／「找不到網頁」。標準話術一律係「**先由入口進入 → 再按瀏覽器選單加入主畫面**」，並靠 `allowStandalone: true` 令裝好之後撳 icon 直開 |
 | **SG8** | **入口網站自己永不被自己嘅閘擋** | 四大入口（APP STORE／圖書館／成員系統／區管理系統）**自己嘅 origin 一旦出現在 `portalIds` 就自動放行**（`reason: 'self-portal'`），因為「入口就係入口」，佢本身唔需要再經其他地方。**但**：① 入口自己**唔應該掛** `entry-gate`（佢唔係子 App）；② 入口若要軟關站，用 `mode: 'closed'`（`closed` 優先於 self 放行）；③ 子 App 記得**唔好**把入口 origin 當成自己 origin（判別靠 `location.origin`，唔靠 Referer） |
 | **SG9** | **入口角色分工：分享連結／QR 只准由 `main` 產生** | 入口**唔係等價互替**：`main`＝APP STORE（真正主站・全方位）、`feed`＝圖書館（每日通告＋新 APP 引流）、`internal`＝成員系統／區管理系統（自家副系統）。**對外分享連結、QR code、宣傳單張、WhatsApp 群發、IG bio 一律只放 `main`（APP STORE）**；`feed` 同 `internal` 只做「入場」，唔做「宣傳」。理由：用戶收到嘅必須係**一個**穩定入口，否則同一 App 有四個唔同網址流通，版本控管同統計即刻散 |
-| **SG10** | **要有「邊個入口帶人入、有冇人用」嘅數據，先知值唔值得更新** | 每個子 App 掛 `trackEndpoint: '/api/store-hit'`（**opt-in，未設＝零請求**），`store_gate_v1.0.js` 只回報 `{appKey, mode, reason, portal, v}` 五個欄位（**唔送 IP／UA／Referer 全文／任何個人資料**，用 `sendBeacon`，失敗靜默）。統計必須同時計「**放行**（`referrer-whitelist`／`standalone-pwa`）同**攔截**（`missing-whitelist-entry`）」，先睇得出「幾多人係由入口入、幾多人係直開撞卡」 |
+| **SG10** | **統計按入口各司其職，唔好重複起爐灶** | ① **APP STORE（`main`）＝唯一權威統計來源**：已有 `apps.clicks／stars／hearts`（RPC `bump_clicks`／`bump_stars`／`bump_hearts`），後台睇逐個 App 點擊／收藏／Like，**唔需要**再加 `trackEndpoint`。② **圖書館（`feed`）現時唔統計**（用戶定案 2026-11-15：圖書館主責係睇通告＋Push 訂閱，推廣 APP STORE 係後期功能）——**唔准**為咗統計而改動圖書館核心流程。③ **子 App `trackEndpoint` 屬 opt-in 補充**（未設＝零請求），只補 APP STORE 睇唔到嘅嘢：`reason: 'standalone-pwa'`（主畫面開啟）同 `reason: 'missing-whitelist-entry'`（撞卡＝仲用舊連結） |
 
 ---
 
@@ -205,14 +205,14 @@ initStoreGate({
 
 ### 3.5 四個入口各有角色：對原有用戶同「分享出去幫手宣傳」有咩影響？
 
-> **用戶 2026-11-15 定案**：① APP STORE＝真正主站（全方位）；② 圖書館＝每日更新通告／新 APP 嘅**引流**入口，用戶見到即入；③ 成員系統／區管理系統＝**自家出產**副系統，用戶直接由此入最合理。**痛點：唔知有冇人用、值唔值得花時間更新。**（APP STORE 同圖書館有人數統計，成員／區管理系統係自家產品，少人用都要繼續完善。）
+> **用戶 2026-11-15 定案（第二次修正）**：① **APP STORE＝真正主站（全方位）**，**後台 Supabase 已有統計**：每個 App 嘅**點擊**、**收藏（stars）**、**Like（hearts）**；② **圖書館＝主要係睇通告**＋**等人加入主畫面收 Push**；**現時冇統計**，**推廣 APP STORE 屬後期先加**；③ 成員系統／區管理系統＝**自家出產**副系統，用戶直接由此入最合理，**少人用都要繼續完善**。**痛點：唔知有冇人用、值唔值得花時間更新。**
 
 **A. 入口角色同「帶唔帶分享」嘅硬規則（SG9）**
 
 | 入口 | 角色 | 應唔應該帶分享連結／QR？ | 原因 |
 |---|---|:--:|---|
 | **1. APP STORE** | `main` 真正主站 | ✅ **唯一應該帶** | 全方位目錄＋分享對話框＋QR；對外只需記住**一個**網址 |
-| **2. 圖書館** | `feed` 每日引流 | ❌ 唔帶 | 佢係「今日有新通告／新 APP」嘅**推送**角色，帶分享會令同一 App 出現第二個對外網址 |
+| **2. 圖書館** | `feed` 通告＋Push 主場 | ❌ 唔帶 | 主責係**通告內容**同**主畫面 Push 訂閱**；引入 App 推廣係**後期功能**，現階段連點擊統計都未有 |
 | **3. 成員系統** | `internal` 自家副系統 | ❌ 唔帶 | 對內（成員／領袖）入口；對外宣傳會令人以為要登入先用得 |
 | **4. 區管理系統** | `internal` 自家副系統 | ❌ 唔帶 | 同上，而且含權限角色，唔應該成為公開連結 |
 
@@ -252,17 +252,36 @@ qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?...data=${encodeURIComp
 
 **但要有配套先成立**：APP STORE **必須支援 `?app=<slug>` 深層連結**（現時 `app.js` 冇讀 `location.search`，即係**未有**）。落地次序：① APP STORE 加 `?app=` 支援 → ② 分享掣／QR 改指深層連結 → ③ 子 App 開 `entry-gate`。**次序錯就會令分享連結失效**，所以要按呢個次序做。
 
-**D. 「唔知有冇人用」→ 要點量度（SG10）**
+**D. 「唔知有冇人用」→ 各入口分工量度（SG10 已按你實況修正）**
 
-| 你想知 | 點量度 | 誠實限制 |
+| 你想知 | 數據喺邊 | 要唔要新做嘢？ |
 |---|---|---|
-| 每日有幾多人由**圖書館**引流入某個 App | 子 App `trackEndpoint` ＋ `portal: 'library'` | 只計「開啟」，唔計停留時間（唔加追蹤腳本就唔會知） |
-| 由**APP STORE**入 vs 直開 | 同一個 endpoint，`portal: 'appstore'` vs `''` | 直開者無入口身份，`portal` 會係空字串 |
-| 有幾多人**撞卡**（＝仲用舊連結） | `reason: 'missing-whitelist-entry'` 嘅次數 | 撞卡數會隨分享連結改好而下跌，可作為「宣傳是否已收斂」指標 |
-| 成員系統／區管理系統有冇人用 | 入口母站自己已有登入紀錄，唔需要靠子 App 統計 | 自家產品少人用照樣維護（用戶明示） |
-| 值唔值得繼續更新某 App | 連續 4 週 `portal` 開啟數＝0 且撞卡亦＝0 → 可考慮軟關站（`closed`）或退役 | **唔可以**用「無統計」當「無人用」——未掛 `trackEndpoint` 前根本無數據 |
+| **每個 App 有幾多人撳入** | ✅ **APP STORE 已有**：`apps.clicks`（RPC `bump_clicks`） | ❌ 唔需要（後台 Supabase 睇得到） |
+| **有幾多人收藏／Like** | ✅ **APP STORE 已有**：`apps.stars`／`apps.hearts`（`bump_stars`／`bump_hearts`，帶 `p_delta` 可加可減） | ❌ 唔需要 |
+| **有幾多人由圖書館引流入 App** | ⚠️ **現時無**（你明示圖書館冇統計，主責係通告＋Push） | **後期先做**；要做時 **唔可以**為統計改動通告／Push 核心流程 |
+| **有幾多人係「加入主畫面」開 App**（唔經任何入口） | ❌ APP STORE 睇唔到（`clicks` 只計 store 內撳掣） | 子 App 加 `trackEndpoint`（opt-in）→ `reason: 'standalone-pwa'` |
+| **仲有幾多人用舊子站直連（撞卡）** | ❌ APP STORE 睇唔到 | 子 App 加 `trackEndpoint` → `reason: 'missing-whitelist-entry'` |
+| **成員系統／區管理系統有冇人用** | ✅ 你自己後台登入紀錄 | ❌ 唔需要子 App 統計 |
+| **值唔值得繼續更新某 App** | **clicks ＋ stars ＋ hearts 趨勢**（APP STORE）＋ 主畫面開啟數（可選） | 連續 4 週 clicks／stars 都 0 → 軟關站或退役；**無數據 ≠ 無人用**（未掛統計前根本冇數據） |
+
+> **關鍵結論**：**你已經有嘅 `clicks／stars／hearts` 就係「值唔值得更新」嘅主要答案**，唔需要為咗呢個問題喺圖書館加統計、亦唔需要即刻喺所有子 App 加 `trackEndpoint`。`trackEndpoint` 只在你想知「主畫面用戶」同「撞卡人數」時才加。
+> **圖書館日後加推廣時嘅順序建議**：① 先確保圖書館自己嘅 Push／通告零影響 → ② 再喺通告列表加「SCOUT APP STORE」單一入口（帶 UTM 或 `?from=library`）→ ③ 最後才考慮圖書館端統計（可直接用 APP STORE 嘅 `clicks` 反推，唔使喺圖書館加 analytics）。
 
 **隱私邊界（必須守住）**：payload 只有 5 個欄位、唔含 IP／UA／Referer 全文／姓名／班別；母站現有 `record_site_visit` 已經係「隨機 `visitor_id` ＋ 香港日期去重、唔收 IP／UA」嘅做法，子 App 統計要跟同一標準（[08](08-supabase.md) U9、[03](03-security.md)）。若要更準，可加「每日去重」而**唔可以**加指紋識別。
+
+### 3.6 圖書館（Push 主場）特別保護規則：佢一定要維持 `open`
+
+既然圖書館主責係**睇通告**同**等人加入主畫面收 Push**，佢嘅白名單處理同其他 App **唔同**，必須最保守：
+
+| 項目 | 圖書館（`scout-circulars`）現況 | 硬規則 |
+|---|---|---|
+| **推送訂閱** | `push_subscriptions` 存 Supabase（同 APP STORE 同一個 project）；`notify.py` 每日推送 | **絕對唔可以入 `<iframe>`**、**絕對唔可以 `closed`**（會令所有已訂閱用戶收唔到通告） |
+| **主畫面 PWA** | `manifest.webmanifest`：`"display": "standalone"`、`start_url: /`、`scope: /` | 保留；**唔准**改 `start_url` 令已裝用戶嘅 icon 失效 |
+| **白名單模式** | **維持 `open`** | 若要「限經入口」，只可以**局部**（例如只有「推廣 APP STORE」頁面），**通告主頁永遠 `open`** |
+| **App 推廣（後期）** | 現時無統計、無推廣模組 | 日後加入時：**單一入口**指向 APP STORE（帶 `?from=library`），**唔加第三方 analytics**，用 APP STORE `clicks` 反推效果 |
+| **`rel` 屬性** | `index.html` L5662 現時 `rel="noopener noreferrer"` | 改 `rel="noopener"` **只改小工具（`isTool`）分支**；**通告下載／PDF 對外連結保持 `noreferrer`**（唔需要送 Referer，亦唔應該洩漏） |
+
+> **一句話**：圖書館係四個入口中**唯一唔可以隨便動**嘅一個——因為佢載住 Push 訂閱。任何改動都要先問「會唔會令已訂閱用戶收唔到通告」。
 
 ## 4. 實作範本與接線步驟
 
