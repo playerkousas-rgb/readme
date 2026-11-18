@@ -22,50 +22,93 @@
 
 ---
 
-## 1. A 組：第一批可以即做（無 `/api`、無明顯本機儲存）— 35 個
+## 1. A 組：第一批可以即做（無 `/api`；本機儲存只限介面偏好／小遊戲分數）— 35 個
 
-條件：`api=0` 且 `本機儲存痕跡=0`。用 `mode: 'entry-gate'` ＋ `portalIds: ['appstore']`（或四入口）即可，**風險最低**。
+條件：`api=0`。用 `mode: 'entry-gate'` ＋ `portalIds: ['appstore']` ＋ **`silentPortalIds: ['library']`**（SG19，攔截卡只出一粒掣）即可，**風險最低**。
 
-| Repo | 網址 | `/api` | manifest | SW | 本機儲存痕跡 |
-|---|:--:|:--:|:--:|:--:|:--:|
-| `Aircraft-Encyclopedia` | https://aircraft-encyclopedia-web.vercel.app | 0 | 1 | 0 | 0 |
-| `AYP` | https://ayp-eight.vercel.app | 0 | 1 | 1 | 0 |
-| `BP` | https://bp-nine-beryl.vercel.app | 0 | 1 | 0 | 0 |
-| `card` | https://card-git-arena-01a0f5ad-card-playerkousas-rgbs-projects.vercel.app | 0 | 0 | 0 | 0 |
-| `course` | https://course-six-coral.vercel.app | 0 | 0 | 0 | 0 |
-| `CUBSGAME` | https://cubsgame.vercel.app | 0 | 1 | 1 | 0 |
-| `cubsmeeting` | https://cubsmeeting.vercel.app | 0 | 1 | 1 | 0 |
-| `dbs` | https://dbs-teal-iota.vercel.app | 0 | 0 | 0 | 0 |
-| `doll` | https://doll-ivory.vercel.app | 0 | 0 | 0 | 0 |
-| `drawtheroute` | https://drawtheroute-yd8p.vercel.app | 0 | 0 | 0 | 1 |
-| `forward` | https://forward-black.vercel.app | 0 | 0 | 0 | 0 |
-| `GAME` | https://game-blond-nu.vercel.app | 0 | 1 | 1 | 0 |
-| `ghmeeting` | https://ghmeeting.vercel.app | 0 | 1 | 1 | 0 |
-| `hkcamping` | https://hkcamping.vercel.app | 0 | 1 | 0 | 1 |
-| `HKMAP` | https://hkmap.vercel.app | 0 | 0 | 1 | 0 |
-| `Icon-Maker` | https://icon-maker-tau.vercel.app | 0 | 0 | 0 | 0 |
-| `knotmaster` | https://knotmaster.vercel.app | 0 | 0 | 0 | 1 |
-| `map3d` | https://map3d-chi.vercel.app | 0 | 1 | 0 | 0 |
-| `MCScript` | https://mc-script.vercel.app | 0 | 0 | 0 | 0 |
-| `minigame` | https://minigame-one-red.vercel.app | 0 | 1 | 1 | 1 |
-| `mirror` | https://mirror-ten-sand.vercel.app | 0 | 0 | 0 | 0 |
-| `photo-edit` | https://photo-edit-vert.vercel.app | 0 | 0 | 0 | 0 |
-| `Photo-Prep` | https://photo-prep-eight.vercel.app | 0 | 0 | 0 | 0 |
-| `pioneer` | https://pioneer-ecru.vercel.app | 0 | 0 | 0 | 0 |
-| `router` | https://router-gold.vercel.app | 0 | 0 | 0 | 0 |
-| `scoutdesign` | https://scoutdesign.vercel.app | 0 | 0 | 0 | 1 |
-| `scoutmeeting` | https://scoutmeeting.vercel.app | 0 | 1 | 1 | 0 |
-| `skw-radar-hunt2` | https://skw-radar-hunt2.vercel.app | 0 | 1 | 0 | 1 |
-| `skw-score` | https://skw-score.vercel.app | 0 | 0 | 0 | 1 |
-| `skw-tracking-signs` | https://skw-tracking-signs-8r55.vercel.app | 0 | 1 | 0 | 0 |
-| `troop-router` | https://troop-router.vercel.app | 0 | 0 | 0 | 0 |
-| `upgrade` | https://upgrade-ashen.vercel.app | 0 | 1 | 0 | 0 |
-| `Veritas` | https://veritas-delta-seven.vercel.app | 0 | 0 | 0 | 0 |
-| `voice_slide_web` | https://voice-slide-web.vercel.app | 0 | 0 | 0 | 0 |
-| `vsmeeting` | https://vsmeeting.vercel.app | 0 | 1 | 1 | 0 |
+> **2026-11-17 修正**：本節舊標題寫「無明顯本機儲存」，但**表內有 7 行 `本機儲存痕跡=1`**（`drawtheroute`／`hkcamping`／`knotmaster`／`scoutdesign`／`skw-radar-hunt2`／`skw-score`／`minigame`）—— 標題同表格前後唔一致。已改為「本機儲存只限介面偏好／小遊戲分數」：呢 7 隻用 `entry-gate` ＋ `allowStandalone: true` 一樣安全（唔用 `iframe` 就唔會令儲存分家），但**要按 WHITELIST-HANDOFF Q1 停機規則逐隻問**（若涉及用家自建重要紀錄而冇備份 → 停手）。
 
-> **直接可用嘅指令**：[`templates/repo-starter/A-GROUP-INSTRUCTION.md`](../templates/repo-starter/A-GROUP-INSTRUCTION.md)（複製即貼去該 App 對話，只需改 `<APPKEY>`）。
-> 建議第一批先揀 3–5 個試（例如 `Aircraft-Encyclopedia`、`Icon-Maker`、`Photo-Prep`、`router`、`voice_slide_web`），真機驗一次再批次做。**有 `SW=1` 嘅**（`AYP`／`CUBSGAME`／`GAME`／`cubsmeeting`／`ghmeeting`／`scoutmeeting`／`vsmeeting`／`HKMAP`）要先確認個 Service Worker 係做離線快取定 Push 訂閱。
+| Repo | 網址 | `/api` | manifest | SW | 本機儲存痕跡 | 狀態 |
+|---|:--:|:--:|:--:|:--:|:--:|:--:|
+| `Aircraft-Encyclopedia` | https://aircraft-encyclopedia-web.vercel.app | 0 | 1 | 0 | 0 | ✅ **已完成** |
+| `AYP` | https://ayp-eight.vercel.app | 0 | 1 | 1 | 0 | ⬜ 待做 |
+| `BP` | https://bp-nine-beryl.vercel.app | 0 | 1 | 0 | 0 | ⬜ 待做 |
+| `card` | https://card-git-arena-01a0f5ad-card-playerkousas-rgbs-projects.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `course` | https://course-six-coral.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `CUBSGAME` | https://cubsgame.vercel.app | 0 | 1 | 1 | 0 | ⬜ 待做 |
+| `cubsmeeting` | https://cubsmeeting.vercel.app | 0 | 1 | 1 | 0 | ⬜ 待做 |
+| `dbs` | https://dbs-teal-iota.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `doll` | https://doll-ivory.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `drawtheroute` | https://drawtheroute-yd8p.vercel.app | 0 | 0 | 0 | 1 | ⬜ 待做 |
+| `forward` | https://forward-black.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `GAME` | https://game-blond-nu.vercel.app | 0 | 1 | 1 | 0 | ⬜ 待做 |
+| `ghmeeting` | https://ghmeeting.vercel.app | 0 | 1 | 1 | 0 | ⬜ 待做 |
+| `hkcamping` | https://hkcamping.vercel.app | 0 | 1 | 0 | 1 | ⬜ 待做 |
+| `HKMAP` | https://hkmap.vercel.app | 0 | 0 | 1 | 0 | ⬜ 待做 |
+| `Icon-Maker` | https://icon-maker-tau.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `knotmaster` | https://knotmaster.vercel.app | 0 | 0 | 0 | 1 | ⬜ 待做 |
+| `map3d` | https://map3d-chi.vercel.app | 0 | 1 | 0 | 0 | ⬜ 待做 |
+| `MCScript` | https://mc-script.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `minigame` | https://minigame-one-red.vercel.app | 0 | 1 | 1 | 1 | ⬜ 待做 |
+| `mirror` | https://mirror-ten-sand.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `photo-edit` | https://photo-edit-vert.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `Photo-Prep` | https://photo-prep-eight.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `pioneer` | https://pioneer-ecru.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `router` | https://router-gold.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `scoutdesign` | https://scoutdesign.vercel.app | 0 | 0 | 0 | 1 | ⬜ 待做 |
+| `scoutmeeting` | https://scoutmeeting.vercel.app | 0 | 1 | 1 | 0 | ⬜ 待做 |
+| `skw-radar-hunt2` | https://skw-radar-hunt2.vercel.app | 0 | 1 | 0 | 1 | ⬜ 待做 |
+| `skw-score` | https://skw-score.vercel.app | 0 | 0 | 0 | 1 | ⬜ 待做 |
+| `skw-tracking-signs` | https://skw-tracking-signs-8r55.vercel.app | 0 | 1 | 0 | 0 | ⬜ 待做 |
+| `troop-router` | https://troop-router.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `upgrade` | https://upgrade-ashen.vercel.app | 0 | 1 | 0 | 0 | ⬜ 待做 |
+| `Veritas` | https://veritas-delta-seven.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `voice_slide_web` | https://voice-slide-web.vercel.app | 0 | 0 | 0 | 0 | ⬜ 待做 |
+| `vsmeeting` | https://vsmeeting.vercel.app | 0 | 1 | 1 | 0 | ⬜ 待做 |
+
+> **直接可用嘅指令**：[`templates/repo-starter/A-GROUP-INSTRUCTION.md`](../templates/repo-starter/A-GROUP-INSTRUCTION.md)（複製即貼去該 App 對話，只需改 `<APPKEY>`、`<SLUG>`、`<REPO名>`）。
+> **✅ 已完成示範倉（2026-11-17）：`Aircraft-Encyclopedia`** —— `v0.36.0` 接入白名單（`mode: 'entry-gate'`、`portalIds: ['appstore']`、`allowStandalone: true`，HEAD `050951f5`）；`v0.37.0` 加 SG18 一鍵返回 APP STORE 讚好／收藏（頂欄 `#storeSupportTop` ＋ 頁尾 `#storeSupportBar`，零 Supabase 請求、零寫死網址、中英同步、列印自動隱藏）。**其餘 34 隻照抄佢嘅結構即可。**
+> 建議第一批先揀 3–5 個試（例如 `Icon-Maker`、`Photo-Prep`、`router`、`voice_slide_web`），真機驗一次再批次做。**有 `SW=1` 嘅**（`AYP`／`CUBSGAME`／`GAME`／`cubsmeeting`／`ghmeeting`／`scoutmeeting`／`vsmeeting`／`HKMAP`）要先確認個 Service Worker 係做離線快取定 Push 訂閱。
+
+### 1.1 A 組 slug 對照（**落閘前必須核實**，SG18 靠佢）
+
+`<slug>` 唯一真源＝`playerkousas-rgb/website` 嘅 [`migrations/20261116-app-slug-seed.sql`](https://github.com/playerkousas-rgb/website/blob/main/migrations/20261116-app-slug-seed.sql)（或主站 `apps.slug`）。**嚴禁靠 repo 名猜。**
+
+| Repo | 正式 host | `slug` |
+|---|---|---|
+| `Aircraft-Encyclopedia` | aircraft-encyclopedia-web.vercel.app | `aircraft-encyclopedia` |
+| `AYP` | ayp-eight.vercel.app | `ayp` |
+| `BP` | bp-nine-beryl.vercel.app | `bp` |
+| `course` | course-six-coral.vercel.app | `course` |
+| `CUBSGAME` | cubsgame.vercel.app | `cubsgame` |
+| `cubsmeeting` | cubsmeeting.vercel.app | `cubsmeeting` |
+| `dbs` | dbs-teal-iota.vercel.app | `dbs` |
+| `doll` | doll-ivory.vercel.app | `doll` |
+| `drawtheroute` | drawtheroute-yd8p.vercel.app | `drawtheroute` |
+| `forward` | forward-black.vercel.app | `forward` |
+| `GAME` | game-blond-nu.vercel.app | `game` |
+| `ghmeeting` | ghmeeting.vercel.app | `ghmeeting` |
+| `hkcamping` | hkcamping.vercel.app | `hkcamping` |
+| `HKMAP` | hkmap.vercel.app | `hkmap` |
+| `Icon-Maker` | icon-maker-tau.vercel.app | `icon-maker` |
+| `knotmaster` | knotmaster.vercel.app | `knotmaster` |
+| `map3d` | map3d-chi.vercel.app | `map3d` |
+| `MCScript` | mc-script.vercel.app | `mcscript` |
+| `minigame` | minigame-one-red.vercel.app | `minigame` |
+| `mirror` | mirror-ten-sand.vercel.app | `mirror` |
+| `photo-edit` | photo-edit-vert.vercel.app | `photo-edit` |
+| `Photo-Prep` | photo-prep-eight.vercel.app | `photo-prep` |
+| `pioneer` | pioneer-ecru.vercel.app | `pioneer` |
+| `router` | router-gold.vercel.app | `router` |
+| `scoutmeeting` | scoutmeeting.vercel.app | `scoutmeeting` |
+| `skw-tracking-signs` | skw-tracking-signs-8r55.vercel.app | `skw-tracking-signs` |
+| `troop-router` | troop-router.vercel.app | `troop-router` |
+| `upgrade` | upgrade-ashen.vercel.app | `upgrade` |
+| `voice_slide_web` | voice-slide-web.vercel.app | `voice-slide-web` |
+| `vsmeeting` | vsmeeting.vercel.app | `vsmeeting` |
+
+> ⚠️ **5 隻未填 slug（落閘前要先補）**：`card`（網址係 git branch 預覽 `card-git-arena-…`，**要先換正式 production 網域**）、`scoutdesign`、`skw-radar-hunt2`、`skw-score`、`Veritas`。
+> 原因：`appDeepLink()` 見唔到 slug 只會退回 `https://scoutappstore.vercel.app/` 首頁 → 用戶撳分享只會攞到首頁，去唔到佢嗰隻 App（SG18 個掣亦會去錯）。**先喺 APP STORE 後台補 slug（或跑多一條 migration），再落閘。**
 
 ## 2. B 組：可以加，但要 `allowStandalone` 先做（本機儲存明顯）— 6 個
 
@@ -73,12 +116,12 @@
 
 | Repo | 網址 | `/api` | manifest | SW | 本機儲存痕跡 |
 |---|:--:|:--:|:--:|:--:|:--:|
-| `CERT` | https://cert-tan.vercel.app | 0 | 0 | 0 | 5 |
-| `decode` | https://decode-sandy-eight.vercel.app | 0 | 0 | 0 | 4 |
-| `morse-beacon-app` | https://morse-beacon-app.vercel.app | 0 | 1 | 1 | 16 |
-| `Orienteering` | https://orienteering-tan.vercel.app | 0 | 0 | 1 | 11 |
-| `scoutworld` | https://scoutworld.vercel.app | 0 | 1 | 1 | 14 |
-| `Zentangle-Pattern-Generator` | https://zentangle-pattern-generator.vercel.app | 0 | 1 | 0 | 8 |
+| `CERT` | https://cert-tan.vercel.app | 0 | 0 | 0 | 5 | ⬜ 待做 |
+| `decode` | https://decode-sandy-eight.vercel.app | 0 | 0 | 0 | 4 | ⬜ 待做 |
+| `morse-beacon-app` | https://morse-beacon-app.vercel.app | 0 | 1 | 1 | 16 | ⬜ 待做 |
+| `Orienteering` | https://orienteering-tan.vercel.app | 0 | 0 | 1 | 11 | ⬜ 待做 |
+| `scoutworld` | https://scoutworld.vercel.app | 0 | 1 | 1 | 14 | ⬜ 待做 |
+| `Zentangle-Pattern-Generator` | https://zentangle-pattern-generator.vercel.app | 0 | 1 | 0 | 8 | ⬜ 待做 |
 
 ## 3. C 組：有 `/api` 或屬 4 本紀錄冊 — 最後做，要逐個判斷 — 24 個
 
@@ -88,30 +131,30 @@
 
 | Repo | 網址 | `/api` | manifest | SW | 本機儲存痕跡 |
 |---|:--:|:--:|:--:|:--:|:--:|
-| `AvianDex` | https://avian-dex.vercel.app | 3 | 2 | 1 | 3 |
-| `birddex3` | https://birddex3.vercel.app | 1 | 1 | 0 | 0 |
-| `cardmaster` | https://cardmaster-pi.vercel.app | 2 | 0 | 0 | 0 |
-| `code` | https://code-zeta-beryl.vercel.app | 8 | 0 | 1 | 0 |
-| `cubsbadge` | https://cubsbadge.vercel.app | 14 | 0 | 0 | 28 |
-| `CUBSBOOK` | https://cubsbook.vercel.app | 2 | 1 | 1 | 0 |
-| `dbs3.0` | https://districtbadgesystem30.vercel.app | 2 | 0 | 0 | 0 |
-| `DGA` | https://dga-five.vercel.app | 1 | 0 | 0 | 4 |
-| `event` | https://event-zeta-sage.vercel.app | 1 | 0 | 0 | 2 |
-| `HM20C` | https://hm20c.vercel.app | 7 | 1 | 0 | 1 |
-| `roverbadge` | https://roverbadge.vercel.app | 8 | 1 | 0 | 27 |
-| `ROVERBOOK` | https://roverbook.vercel.app | 5 | 1 | 1 | 0 |
-| `scout-admin` | https://scout-admin-blue.vercel.app | 2 | 0 | 0 | 11 |
-| `SCOUT3D` | https://scout3d-gamma.vercel.app | 2 | 1 | 0 | 2 |
-| `scoutapp` | https://scoutapp-vico.vercel.app | 1 | 1 | 0 | 0 |
-| `scoutbadge` | https://scoutbadge.vercel.app | 3 | 0 | 0 | 28 |
-| `SCOUTBOOK` | https://scoutbook-five.vercel.app | 2 | 1 | 1 | 0 |
-| `skw-birdex2` | https://skw-birdex2.vercel.app | 1 | 1 | 0 | 0 |
-| `troop-attendance` | https://troop-attendance.vercel.app | 3 | 0 | 0 | 4 |
-| `troop-camera` | https://troop-camera.vercel.app | 14 | 1 | 1 | 0 |
-| `troop-portal` | https://troop-portal.vercel.app | 4 | 0 | 0 | 3 |
-| `vs_portal` | https://vs-portal-pi.vercel.app | 10 | 1 | 0 | 0 |
-| `vsbadge` | https://vsbadge.vercel.app | 6 | 0 | 0 | 30 |
-| `VSBOOK` | https://vsbook-sand.vercel.app | 2 | 1 | 1 | 0 |
+| `AvianDex` | https://avian-dex.vercel.app | 3 | 2 | 1 | 3 | ⬜ 待做 |
+| `birddex3` | https://birddex3.vercel.app | 1 | 1 | 0 | 0 | ⬜ 待做 |
+| `cardmaster` | https://cardmaster-pi.vercel.app | 2 | 0 | 0 | 0 | ⬜ 待做 |
+| `code` | https://code-zeta-beryl.vercel.app | 8 | 0 | 1 | 0 | ⬜ 待做 |
+| `cubsbadge` | https://cubsbadge.vercel.app | 14 | 0 | 0 | 28 | ⬜ 待做 |
+| `CUBSBOOK` | https://cubsbook.vercel.app | 2 | 1 | 1 | 0 | ⬜ 待做 |
+| `dbs3.0` | https://districtbadgesystem30.vercel.app | 2 | 0 | 0 | 0 | ⬜ 待做 |
+| `DGA` | https://dga-five.vercel.app | 1 | 0 | 0 | 4 | ⬜ 待做 |
+| `event` | https://event-zeta-sage.vercel.app | 1 | 0 | 0 | 2 | ⬜ 待做 |
+| `HM20C` | https://hm20c.vercel.app | 7 | 1 | 0 | 1 | ⬜ 待做 |
+| `roverbadge` | https://roverbadge.vercel.app | 8 | 1 | 0 | 27 | ⬜ 待做 |
+| `ROVERBOOK` | https://roverbook.vercel.app | 5 | 1 | 1 | 0 | ⬜ 待做 |
+| `scout-admin` | https://scout-admin-blue.vercel.app | 2 | 0 | 0 | 11 | ⬜ 待做 |
+| `SCOUT3D` | https://scout3d-gamma.vercel.app | 2 | 1 | 0 | 2 | ⬜ 待做 |
+| `scoutapp` | https://scoutapp-vico.vercel.app | 1 | 1 | 0 | 0 | ⬜ 待做 |
+| `scoutbadge` | https://scoutbadge.vercel.app | 3 | 0 | 0 | 28 | ⬜ 待做 |
+| `SCOUTBOOK` | https://scoutbook-five.vercel.app | 2 | 1 | 1 | 0 | ⬜ 待做 |
+| `skw-birdex2` | https://skw-birdex2.vercel.app | 1 | 1 | 0 | 0 | ⬜ 待做 |
+| `troop-attendance` | https://troop-attendance.vercel.app | 3 | 0 | 0 | 4 | ⬜ 待做 |
+| `troop-camera` | https://troop-camera.vercel.app | 14 | 1 | 1 | 0 | ⬜ 待做 |
+| `troop-portal` | https://troop-portal.vercel.app | 4 | 0 | 0 | 3 | ⬜ 待做 |
+| `vs_portal` | https://vs-portal-pi.vercel.app | 10 | 1 | 0 | 0 | ⬜ 待做 |
+| `vsbadge` | https://vsbadge.vercel.app | 6 | 0 | 0 | 30 | ⬜ 待做 |
+| `VSBOOK` | https://vsbook-sand.vercel.app | 2 | 1 | 1 | 0 | ⬜ 待做 |
 
 ## 4. D 組：入口本體，**唔可以**加閘（SG8）
 
