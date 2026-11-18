@@ -218,7 +218,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 
 ---
 
-## 7.7 關站與準入白名單入口 SG1–SG17（**按需啟用**，詳情 [docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+## 7.7 關站與準入白名單入口 SG1–SG19（**按需啟用**，詳情 [docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
 
 > **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經 APP STORE（repo `website`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
 > **2026-11-15 用戶第二次定案（四大官方入口）**：準入白名單入口一共 **4 個**，登記於真理倉 [docs/50 §0.1](docs/50-app-store-whitelist-and-shutdown.md) ＋ 程式碼嘅 `PORTAL_REGISTRY`。子 App 一律用 `portalIds` 引用，唔准自己另抄一堆網址。
@@ -259,6 +259,8 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | **SG15** | 逐個 App 由該 App 嘅 AGENT 決定 | 真理倉唔替個別 App 決定細節 → 一律派 [`WHITELIST-HANDOFF.md`](templates/repo-starter/WHITELIST-HANDOFF.md)：6 條問題 → 按類型落實 → 真機三項驗收 → 回報格式 |
 | **SG16** | 五個入口全部同等（**2026-11-15 第二次修正**） | 用戶：「我說的是我的 REPO "GEMINI"」＋「因為果個係私人 REPO」→ 第 5 個入口係**用戶自己 private repo 部署嘅 Vercel app**（`gemini-woad-sigma.vercel.app`），**唔係** Google 的 Gemini／Canvas。所以 **1–5 全部屬 `outbound`**：可掛 `store_gate`、帶 `Referer`、可做 `entry-gate` 放行來源；`portalIds: ['appstore','gemini']` 正常生效；`CANVAS_PORTAL_IDS`／`INBOUND_PORTAL_IDS` 固定為**空陣列**（舊錯分類已撤銷）。⚠️ private repo → agent 用 GitHub API 可能回 `403`，**讀唔到唔等於唔存在、唔准寫成死連** |
 | **SG17** | 要唔要先逐個入口「打招呼」？ → **唔使** | 用戶 2026-11-15：「GEMINI 是另一系統佢同其他 App 完全無關係當然唔洗；成員系統區管理系統其實都唔會直入 APP，佢地係連 APP STORE 同圖書館的，最多成員連埋 BOOK。」→ 每個入口登記 `admit`：`appstore`=`always`（分享／QR 只由佢產生，所有子 App 預設寫入）、`library`=`conditional`（**只需**改 `index.html` L5662 一個 `noreferrer`，Push／統計／通告流程一律唔准動）、`member`／`district`=`optional`（實查兩邊唔做 App 目錄，只連入口＋自家系統；例外＝4 本 BOOK，但 BOOK 管制宜寬鬆）、`gemini`=`optional`（自己 private repo 嘅 Vercel app，可以加）。程式：`DEFAULT_PORTAL_IDS = ['appstore']`、`portalIdsAdmit: 'all'` ＝ 1–4 全開、永遠唔會誤包 Gemini |
+| **SG18** | 子 App「讚好／收藏」一鍵回跳主站詳情卡 | **嚴禁**子 App 直連主站 Supabase／複製 anon key／呼叫 `bump_hearts`／`bump_stars`（收藏清單存喺主站同源 `localStorage`，子 App 寫 DB 都唔會入到用家收藏夾）；唯一做法＝常駐非阻塞 `<a target="_blank" rel="noopener">` 開 `ScoutStoreGate.getAppStoreUrl(slug)`；`<slug>` 必須對 `website/migrations/20261116-app-slug-seed.sql` 核實（**唔准靠 repo 名猜**）；`ScoutStoreGate` 未載入要 `hidden`（CSS 要有 `[hidden]{display:none}`）；列印隱藏、雙語同步、觸控 ≥40px；**A 組預設唔開 `supportNudge`**（避免同一用家被騷擾兩次） |
+| **SG19** | 攔截卡按鈕 ≠ 放行來源 | 預設同時放行 `appstore`＋`library`，但攔截卡**只出 appstore 一粒掣**（`silentPortalIds`）；`allowedOrigins` 只係**額外**放行來源，同 `portals` **聯集唔可以蓋過**（舊寫法令 `matchedPortalId` 變空）；單掣自動去 `1.` 編號；預設文案＝簡短人話（「需經由 SCOUT APP STORE 開啟」），**舊字串保留做 alias 唔准刪**；`COPY.en` 要補齊 `supportText`／`supportCta`／`supportDismiss` |
 
 ---
 
@@ -335,7 +337,8 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 - [ ] W1 版權標示 + W2 水印（如出圖）+ W6 交付檔無真 key
 - [ ] V1 檔名＋內文版號一致 + V4 部署拷貝已 sync（Type C）
 - [ ] L1–L6：雙閘達標嘅 app 有英文 + 右上角切換掣（`i18n_check` 無 FAIL + 人手撳實測）；唔做有寫 `EXCEPTION: L1`（[docs/44](docs/44-bilingual-ui.md)）
-- [ ] SG1–SG17（圖書館維持 `open`；下架按四齒輪逐級落；`supportNudge` 文案已寫明書架政策、預設 skip appstore；書架政策已公開、`BOOK`／自家系統豁免）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`；「加入主畫面」引導係「先入口、後安裝」；分享／QR 只由 APP STORE 產生、下架按「Delist→Gate→Soft→Hard」逐級落、`BOOK` 類落 ③④ 前已通知用戶備份（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+- [ ] SG1–SG19（圖書館維持 `open`；下架按四齒輪逐級落；`supportNudge` 文案已寫明書架政策、預設 skip appstore；書架政策已公開、`BOOK`／自家系統豁免）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`；「加入主畫面」引導係「先入口、後安裝」；分享／QR 只由 APP STORE 產生、下架按「Delist→Gate→Soft→Hard」逐級落、`BOOK` 類落 ③④ 前已通知用戶備份（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+- [ ] SG18／SG19（子 App 回跳主站用 `getAppStoreUrl(slug)`，冇直連主站 Supabase；`<slug>` 對 `20261116-app-slug-seed.sql` 核實；`silentPortalIds` 之後攔截卡只出一粒掣；`[hidden]{display:none}` 有寫實)
 - [ ] README 寫作紀律（[docs/47](docs/47-readme-discipline.md)）：每句「已修」有檢查或實測、每句「未做」寫限制、冇「理論上應該 work」字樣
 - [ ] `docs/` 同 `PLAYBOOK.md` 已更新（規則改動時）
 - [ ] PR 描述寫明：身份錨點有冇改、registry 有冇加、key 有冇 rotate

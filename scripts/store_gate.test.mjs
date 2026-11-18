@@ -733,7 +733,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   const dix = read('docs', 'README.md');
   const wf = read('.github', 'workflows', 'guard.yml');
 
-  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7', 'SG8', 'SG9', 'SG10', 'SG11', 'SG12', 'SG13', 'SG14', 'SG15', 'SG16', 'SG17']) {
+  for (const id of ['SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6', 'SG7', 'SG8', 'SG9', 'SG10', 'SG11', 'SG12', 'SG13', 'SG14', 'SG15', 'SG16', 'SG17', 'SG18', 'SG19']) {
     assert.ok(pb.includes(id) && doc.includes(id), `PLAYBOOK / docs/50 缺 ${id}`);
   }
   assert.ok(intake.includes('Q8') && intake.includes('entry-gate'), 'INTAKE 第 0 步要有 Q8 主動告知白名單與 entry-gate');
@@ -768,7 +768,9 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   assert.ok(pb.includes('PORTAL_REGISTRY') || pb.includes('portalIds'), 'PLAYBOOK 要提註冊表／portalIds');
   // SG15：逐個 App 交接清單要存在且可貼去該 App 對話
   const handoff = read('templates', 'repo-starter', 'WHITELIST-HANDOFF.md');
-  for (const kw of ['portalIds', 'allowStandalone', 'supportNudge', '真機', '本機資料']) {
+  for (const kw of ['portalIds', 'silentPortalIds', 'allowStandalone', 'supportNudge', '真機', '本機資料',
+                    'SG18', 'SG19', 'getAppStoreUrl', 'SLUG', '20261116-app-slug-seed.sql',
+                    'bump_hearts', '發佈根目錄', '本機模擬', '真機實測']) {
     assert.ok(handoff.includes(kw), `WHITELIST-HANDOFF 要覆蓋「${kw}」`);
   }
   assert.ok(doc.includes('WHITELIST-HANDOFF.md'), 'docs/50 要指向交接清單');
@@ -780,7 +782,9 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   assert.ok(list.includes('website') && list.includes('scout-circulars'), 'D 組要列出入口本體');
   // A 組可直接貼嘅指令檔
   const instr = read('templates', 'repo-starter', 'A-GROUP-INSTRUCTION.md');
-  for (const kw of ['portalIds', 'allowStandalone', 'entry-gate', '真機', '回報', 'APPKEY', 'SG17', 'DEFAULT_PORTAL_IDS']) {
+  for (const kw of ['portalIds', 'silentPortalIds', 'allowStandalone', 'entry-gate', '真機', '回報',
+                    'APPKEY', 'SLUG', 'SG17', 'SG18', 'SG19', 'getAppStoreUrl',
+                    '20261116-app-slug-seed.sql', '發佈根目錄', '本機模擬', '真機實測']) {
     assert.ok(instr.includes(kw), `A-GROUP-INSTRUCTION 要覆蓋「${kw}」`);
   }
   assert.ok(list.includes('A-GROUP-INSTRUCTION.md'), 'docs/51 要指向 A 組指令檔');
@@ -799,4 +803,186 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   assert.ok(read('templates', 'README.md').includes('APP-STORE-INSTRUCTION.md'), 'templates/README 要登記 APP STORE 指令');
 
   assert.ok(rd.includes('51-whitelist-rollout-list.md'), '根 README 要指向 docs/51');
+});
+
+/* ────────────────────────────────────────────────────────────────
+ * SG19（2026-11-17 定案）：攔截卡按鈕 與 靜默放行入口 分離
+ * 子 App 預設同時放行 appstore + library，但攔截卡只出 APP STORE 一粒掣。
+ * ──────────────────────────────────────────────────────────────── */
+
+test('SG19：silentPortalIds 照放行（matchedPortalId 正常）但唔畫成攔截卡按鈕', () => {
+  // 由圖書館入 → 放行，而且認得出係 library（SG10 統計靠呢個）
+  const fromLib = makeMockEnv({ referrer: 'https://scout-circulars.vercel.app/' });
+  const r = gate.initStoreGate({
+    appKey: 'silent1',
+    mode: 'entry-gate',
+    portalIds: ['appstore'],
+    silentPortalIds: ['library'],
+  }, fromLib.win);
+  assert.equal(r.allowed, true, '沉默入口一樣要放行，否則圖書館引流會被擋');
+  assert.equal(r.matchedPortalId, 'library', 'matchedPortalId 要認得出 library（唔可以變空）');
+
+  // 由 APP STORE 入 → 照舊放行
+  const fromStore = makeMockEnv({ referrer: 'https://scoutappstore.vercel.app/' });
+  const r2 = gate.initStoreGate({
+    appKey: 'silent2',
+    mode: 'entry-gate',
+    portalIds: ['appstore'],
+    silentPortalIds: ['library'],
+  }, fromStore.win);
+  assert.equal(r2.allowed, true);
+  assert.equal(r2.matchedPortalId, 'appstore');
+
+  // 直打網址 → 攔截，而且**只**畫一粒掣（APP STORE）
+  const direct = makeMockEnv({ referrer: '' });
+  gate.initStoreGate({
+    appKey: 'silent3',
+    mode: 'entry-gate',
+    portalIds: ['appstore'],
+    silentPortalIds: ['library'],
+  }, direct.win);
+  const dialog = direct.doc.getElementById('scoutStoreGate');
+  assert.ok(dialog, '直打網址要出攔截卡');
+  const actions = dialog.children.find((c) => c.className === 'sg-actions');
+  assert.equal(actions.children.length, 1, '沉默 library 之後只應剩 APP STORE 一粒掣');
+  assert.equal(actions.children[0].href, 'https://scoutappstore.vercel.app/');
+  // 單一粒掣 → 去掉「1. 」編號前綴
+  assert.equal(actions.children[0].textContent, '前往 APP STORE', '單一粒掣唔應該有編號');
+});
+
+test('SG19：portalIds 同時列出 appstore+library 再用 silentPortalIds 沉默 library，效果一致', () => {
+  const options = { mode: 'entry-gate', portalIds: ['appstore', 'library'], silentPortalIds: ['library'] };
+  const fromLib = makeMockEnv({ referrer: 'https://scout-circulars.vercel.app/' });
+  const r = gate.initStoreGate({ ...options, appKey: 'silentA' }, fromLib.win);
+  assert.equal(r.allowed, true);
+  assert.equal(r.matchedPortalId, 'library');
+
+  const direct = makeMockEnv({ referrer: '' });
+  gate.initStoreGate({ ...options, appKey: 'silentB' }, direct.win);
+  const actions = direct.doc.getElementById('scoutStoreGate').children.find((c) => c.className === 'sg-actions');
+  assert.equal(actions.children.length, 1);
+  assert.equal(actions.children[0].href, 'https://scoutappstore.vercel.app/');
+});
+
+test('SG19：allowedOrigins 唔再蓋過 portals（舊寫法會令 matchedPortalId 變空）', () => {
+  // 呢個就係 Aircraft-Encyclopedia 之前嘅寫法：portalIds 只寫 appstore，
+  // 但 allowedOrigins 用 portalsFromIds(['appstore','library']) 展開。
+  const allowedOrigins = gate.portalsFromIds(['appstore', 'library']).map((p) => p.origin);
+  const fromLib = makeMockEnv({ referrer: 'https://scout-circulars.vercel.app/' });
+  const r = gate.initStoreGate({
+    appKey: 'union1',
+    mode: 'entry-gate',
+    portalIds: ['appstore'],
+    allowedOrigins,
+  }, fromLib.win);
+  assert.equal(r.allowed, true, 'allowedOrigins 有 library → 要放行');
+  assert.equal(r.matchedPortalId, 'library', '而且 matchedPortalId 唔可以係空（SG10 統計要靠佢認入口）');
+
+  // 反方向：portals 有 library、allowedOrigins 只有 appstore → library 仍然要放行（聯集，唔係取代）
+  const fromLib2 = makeMockEnv({ referrer: 'https://scout-circulars.vercel.app/' });
+  const r2 = gate.initStoreGate({
+    appKey: 'union2',
+    mode: 'entry-gate',
+    portalIds: ['appstore', 'library'],
+    allowedOrigins: ['https://scoutappstore.vercel.app'],
+  }, fromLib2.win);
+  assert.equal(r2.allowed, true, 'portals 嘅入口唔可以被 allowedOrigins 蓋走');
+  assert.equal(r2.matchedPortalId, 'library');
+});
+
+test('SG19：多過一粒掣時保留編號前綴（portalIds 同時畫 appstore+library）', () => {
+  const direct = makeMockEnv({ referrer: '' });
+  gate.initStoreGate({
+    appKey: 'num1',
+    mode: 'entry-gate',
+    portalIds: ['appstore', 'library'],
+  }, direct.win);
+  const actions = direct.doc.getElementById('scoutStoreGate').children.find((c) => c.className === 'sg-actions');
+  assert.equal(actions.children.length, 2);
+  assert.equal(actions.children[0].textContent, '1. 前往 APP STORE', '多於一粒掣時編號要保留');
+  assert.equal(actions.children[1].textContent, '2. 前往圖書館');
+});
+
+test('SG19：預設文案係簡短人話（零技術術語），舊字串保留做 alias 唔可以被刪', () => {
+  const direct = makeMockEnv({ referrer: '' });
+  gate.initStoreGate({
+    appKey: 'copy1',
+    mode: 'entry-gate',
+    portalIds: ['appstore'],
+    silentPortalIds: ['library'],
+  }, direct.win);
+  const dialog = direct.doc.getElementById('scoutStoreGate');
+  const h1 = dialog.children.find((c) => c.tagName === 'H1');
+  const p = dialog.children.find((c) => c.tagName === 'P');
+  assert.equal(h1.textContent, '需經由 SCOUT APP STORE 開啟');
+  assert.equal(p.textContent, '請按下方按鈕前往 APP STORE 開啟。');
+  assert.ok(!/白名單/.test(h1.textContent + p.textContent), '預設文案唔准再講「白名單」');
+  assert.ok(!/統一入口及版本管理/.test(h1.textContent + p.textContent), '預設文案唔准再講技術理由');
+
+  // 舊字串要仍然存在（alias，向下相容 + 想講清楚嘅 App 仍然可以用）
+  const src = read('templates', 'vercel', 'store_gate_v1.0.js');
+  assert.ok(src.includes("whitelistBodySingle: '為統一入口及版本管理"), '舊 whitelistBodySingle 要保留做 alias');
+  assert.ok(src.includes("whitelistTitleSingle: '此程式需經 SCOUT APP STORE 開啟'"), '舊 whitelistTitleSingle 要保留');
+
+  // customTitle／customMessage 依然優先（Aircraft 舊寫法唔會壞）
+  const custom = makeMockEnv({ referrer: '' });
+  gate.initStoreGate({
+    appKey: 'copy2',
+    mode: 'entry-gate',
+    portalIds: ['appstore'],
+    customTitle: '自訂標題',
+    customMessage: '自訂內文',
+  }, custom.win);
+  const d2 = custom.doc.getElementById('scoutStoreGate');
+  assert.equal(d2.children.find((c) => c.tagName === 'H1').textContent, '自訂標題');
+  assert.equal(d2.children.find((c) => c.tagName === 'P').textContent, '自訂內文');
+});
+
+test('SG19：COPY.en 補齊 support* 三個字串（否則英文模式會出 undefined）', () => {
+  const src = read('templates', 'vercel', 'store_gate_v1.0.js');
+  // 由 COPY 定義抽出 en 區塊，逐個 key 驗
+  const enBlock = src.slice(src.indexOf('  en: {'), src.indexOf('};\n\n/** 嚴格解析 Origin'));
+  for (const key of ['supportText', 'supportCta', 'supportDismiss']) {
+    assert.ok(enBlock.includes(`${key}:`), `COPY.en 要補回 ${key}`);
+  }
+  assert.ok(enBlock.includes('whitelistTitleShort:'), 'COPY.en 要有簡短版標題');
+  assert.ok(enBlock.includes('whitelistBodyShort:'), 'COPY.en 要有簡短版內文');
+});
+
+/* ────────────────────────────────────────────────────────────────
+ * SG18（2026-11-17 定案）：子 App 一鍵回跳主站詳情卡
+ * ──────────────────────────────────────────────────────────────── */
+
+test('SG18：getAppStoreUrl(slug) 組出主站深層連結，未傳 slug 回主站首頁', () => {
+  assert.equal(typeof gate.getAppStoreUrl, 'function', '要 export getAppStoreUrl');
+  assert.equal(
+    gate.getAppStoreUrl('aircraft-encyclopedia'),
+    'https://scoutappstore.vercel.app/?app=aircraft-encyclopedia',
+  );
+  assert.equal(gate.getAppStoreUrl(''), 'https://scoutappstore.vercel.app/');
+  assert.equal(gate.getAppStoreUrl(null), 'https://scoutappstore.vercel.app/');
+  assert.equal(gate.getAppStoreUrl(undefined), 'https://scoutappstore.vercel.app/');
+  // 特殊字元要 encode，唔准直接串落 query
+  assert.equal(
+    gate.getAppStoreUrl('a b&c=d'),
+    'https://scoutappstore.vercel.app/?app=a%20b%26c%3Dd',
+  );
+  // 唔准出 `//?app=`
+  assert.ok(!gate.getAppStoreUrl('x').includes('//?app='), '唔可以出雙斜線（registry url 尾斜線要處理）');
+  // 前後空白要 trim
+  assert.equal(
+    gate.getAppStoreUrl('  icon-maker  '),
+    'https://scoutappstore.vercel.app/?app=icon-maker',
+  );
+});
+
+test('SG18：getAppStoreUrl 掛齊瀏覽器 globalThis 同 CommonJS 兩邊', () => {
+  const src = read('templates', 'vercel', 'store_gate_v1.0.js');
+  const gStart = src.indexOf('globalThis.ScoutStoreGate = {');
+  const gBlock = src.slice(gStart, src.indexOf('};', gStart));
+  assert.ok(gBlock.includes('getAppStoreUrl'), 'globalThis.ScoutStoreGate 要有 getAppStoreUrl');
+  assert.ok(gBlock.includes('getPortal'), '向下相容：getPortal 要保留（Aircraft 現時用呢條）');
+  const mStart = src.indexOf('module.exports = {');
+  const mBlock = src.slice(mStart, src.indexOf('};', mStart));
+  assert.ok(mBlock.includes('getAppStoreUrl'), 'module.exports 要有 getAppStoreUrl');
 });
