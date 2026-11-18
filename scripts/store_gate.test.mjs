@@ -741,7 +741,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   assert.ok(rd.includes('docs/50-app-store-whitelist-and-shutdown.md'), '根 README 要有導覽');
   assert.ok(dix.includes('50-app-store-whitelist-and-shutdown.md'), 'docs/README 要有索引');
   assert.match(wf, /store_gate\.test\.mjs/, 'guard.yml 要跑 store_gate.test.mjs');
-  assert.match(doc, /041f0742dbabeffa3405b5c0b208f4935f1a215c/, 'docs/50 要有 website pinned commit 實查連結');
+  assert.match(doc, /bd721421/, 'docs/50 要有 website 最新 pinned commit 實查連結（2026-11-18 起）');
   // 四大官方入口註冊表要同 PORTAL_REGISTRY 完全對齊（同一份真理）
   for (const id of ['appstore', 'library', 'member', 'district']) {
     const p = gate.getPortal(id);
@@ -1062,4 +1062,40 @@ test('consistency：stale-phrase 指紋封住三個已知錯講法（有 unless 
   assert.ok(res.length >= 3, 'STALE 的 regex 必須有 /g flag');
   // unless 逃生門：引用舊講法做證據時唔應該報
   assert.ok(src.includes('unless'), '要有 unless 逃生門，否則「已撤回」嘅引用會被誤判');
+});
+
+/* ────────────────────────────────────────────────────────────────
+ * SG9-a 落地已完成（2026-11-18 實查 website bd721421）
+ * 之前 docs 仲寫「現時未支援 ?app」「分享仍派子站網址」—— 已過時，會誤導 AGENT 重做。
+ * ──────────────────────────────────────────────────────────────── */
+
+test('SG9-a：docs 要標明 APP STORE ?app=<slug> 同分享改指已完成（bd721421）', () => {
+  const doc = read('docs', '50-app-store-whitelist-and-shutdown.md');
+  const list = read('docs', '51-whitelist-rollout-list.md');
+  const pb = read('PLAYBOOK.md');
+  for (const [name, txt] of [['docs/50', doc], ['docs/51', list], ['PLAYBOOK', pb]]) {
+    assert.ok(txt.includes('bd721421'), `${name} 要記錄 APP STORE 已完成 commit bd721421`);
+  }
+  assert.ok(!doc.includes('現時未支援'), 'docs/50 唔可以再寫「現時未支援 ?app」');
+  assert.ok(!doc.includes('041f0742'), 'docs/50 唔可以再 pin 舊 commit 041f0742');
+  assert.ok(!doc.includes('8808cd17'), 'docs/50 唔可以再 pin 圖書館舊 commit 8808cd17');
+  // 新行號（實查 bd721421）
+  for (const kw of ['L838', 'L842', 'L854', 'L861', 'L2453']) {
+    assert.ok(doc.includes(kw), `docs/50 要列新行號 ${kw}`);
+  }
+  // 唔可以再叫 AGENT 去改已改好嘅位
+  assert.ok(!/改\s*`?app\.js`?\s*L723/.test(doc), 'docs/50 唔可以再寫「改 app.js L723」（已改）');
+  assert.ok(pb.includes('SG9-a'), 'PLAYBOOK 要有 SG9-a');
+  assert.ok(/SG9-a[^\n]{0,200}已完成/.test(pb), 'PLAYBOOK SG9-a 要標已完成');
+});
+
+test('SG9／SG18：appSlug() 實查有 _id fallback —— 缺 slug 唔會令分享去首頁', () => {
+  const list = read('docs', '51-whitelist-rollout-list.md');
+  assert.ok(list.includes('appSlug()'), 'docs/51 §1.1 要記錄 appSlug() 行為');
+  assert.ok(/app\.slug \|\| app\._id/.test(list), '要引用實際程式碼 app.slug || app._id');
+  assert.ok(list.includes('L73-76') || list.includes('L73–76'), '要標實查行號');
+  assert.ok(!/缺\s*slug[^\n]{0,30}只會退回\s*`?https:\/\/scoutappstore/.test(list),
+    '唔可以再寫「缺 slug 只會退回首頁」（已證實錯）');
+  // 但 card 嘅 branch 預覽網址問題要保留（另一個更嚴重問題）
+  assert.ok(list.includes('branch 預覽'), 'card 嘅 branch 預覽網址警告要保留');
 });

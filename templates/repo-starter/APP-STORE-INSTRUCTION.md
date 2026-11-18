@@ -1,6 +1,10 @@
 # APP STORE 指令（可直接複製貼去 `playerkousas-rgb/website` 對話）
 
-> 用途：白名單落地嘅**第 0 步**。你逐個子 App 開閘之前，APP STORE 要先識得「每一隻 App 有自己一條深層連結」。
+> ✅ **已完成（2026-11-17，`website` `bd721421`）—— 本檔留作歷史記錄，唔需要再貼。**
+> 實際落地：`app.js` L838（分享面板）／L842（QR）／L854（複製）／L861（五個平台）／`index.html` L2453（`shareApp()`）全部改指 `appDeepLink()`；`openApp()` L50–54 同 sheet「開啟」L227 保持真 url。
+> 仲要 APP STORE 做嘅只有「補 slug ＋ 確認 `apps.url` 冇 branch 預覽網址」→ 見 [`APP-STORE-SLUG-INSTRUCTION.md`](APP-STORE-SLUG-INSTRUCTION.md)。
+>
+> 用途（原文）：白名單落地嘅**第 0 步**。你逐個子 App 開閘之前，APP STORE 要先識得「每一隻 App 有自己一條深層連結」。
 > **只改一個 repo**：`playerkousas-rgb/website`（SCOUT APP STORE）。**唔使改任何子 App、唔使改圖書館。**
 > 貼之前唔需要改任何嘢（下面已寫實查行號）。
 
@@ -18,7 +22,7 @@
 
 APP STORE 係唯一主站，所有分享連結同 QR code 將來都要指返 APP STORE，而**唔係**子站網址。原因：子站一開「準入白名單」（只准由指定入口進入），任何人收到一條子站直連（WhatsApp／舊 QR／書籤）都會撞到白名單卡。所以要有一條「APP STORE 內部深層連結」，指去某一個 App 嘅詳情。
 
-## 我實查你今日嘅源碼（`041f0742`，2026-11-13），以下 11 個位係直接分享／開子站網址
+## 我實查你**當時**嘅源碼（`041f0742`，2026-11-13），以下 11 個位係直接分享／開子站網址（**全部已於 `bd721421` 改好，本節只作歷史記錄**）
 
 | # | 位置 | 今日行為 | 要改成 |
 |:--:|---|---|---|
