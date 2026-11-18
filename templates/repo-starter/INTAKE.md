@@ -72,7 +72,7 @@
         圖書館已改好（`89ef3cf1`，現 L5812）；仍未改：`member-portal/components/BookSelector.tsx` L88、`scout-district-portal/app/embed/page.tsx` L45 同 `app/links/page.tsx` L138（呢三處只有你決定把 App 加 `member`／`district` 才需要動）。
       - 靠本機儲存嘅 App（含 4 個 `BOOK`）：經入口**頂層跳轉**零影響（`localStorage` 只認子站 origin，用咩入口都係同一個倉）；但**唔可以入 `iframe`**（會分區／睇唔返舊紀錄）。
       - 已加主畫面 PWA：`allowStandalone: true` ＋ manifest `"display": "standalone"` → 撳 icon 直開自動放行；提醒 **iOS 主畫面容器同 Safari 分頁儲存分家**（Android Chrome 共用），要靠 JSON／QR 備份還原搬資料。
-      - 【SG9】四個入口角色唔同（APP STORE＝主站、圖書館＝每日引流、成員系統／區管理系統＝自家副系統）：**對外分享連結同 QR code 只准指 APP STORE**，唔好傳子站直連；並提醒 APP STORE 要先支援 `?app=<slug>` 深層連結，次序係「APP STORE 支援 → 分享改指 → 子 App 開閘」。
+      - 【SG9】四個入口角色唔同（APP STORE＝主站、圖書館＝每日引流、成員系統／區管理系統＝自家副系統）：**對外分享連結同 QR code 只准指 APP STORE**，唔好傳子站直連；APP STORE 已於 2026-11-17 支援 `?app=<slug>` 深層連結（`website` `bd721421`）；歷史次序係「APP STORE 支援 → 分享改指 → 子 App 開閘」。
       - 【SG10】統計分工：**APP STORE 已有** `clicks／stars／hearts`（後台 Supabase 睇逐個 App 點擊／收藏／Like）＝主要答案；**圖書館現時唔統計**（主責通告＋Push，推廣 APP STORE 屬後期）；子 App 只喺想知「主畫面開啟」同「撞卡人數」時才加 `trackEndpoint`。
       - 【SG12】防「偷用」**唔係技術問題，係「表態」問題**（用戶定案）：領袖權限唔需要保、功能簡單嘅 App「佢抄得到都寫得到」。所以**唔准**建議為每個 App 起後端驗票／簽票基建；正解＝**`entry-gate` 令使用經入口** ＋ **`supportNudge` 邀一次 ❤️**。老實講清「原始碼擋唔到被抄走（`Ctrl+S`／`curl`）」，抄走代碼唔當損失，損失係「用你嘅成果但唔表態」。
       - 【SG13】`supportNudge` 文案要**講真話**：「書架位置有限：長期冇人收藏／Like 會收起，騰位俾新 App」。**預設 `skipPortalIds: ['appstore']`**——經 APP STORE 入嘅你後台已睇得到 `clicks/stars/hearts`，唔需要再提；只對「主畫面直開」「其他入口入」嘅人提一次。其餘：只在已放行時顯示、唔遮內容、有「唔使喇」、30 日一次、**嚴禁**迫 Like；`BOOK` 類建議關閉。

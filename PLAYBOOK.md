@@ -247,7 +247,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | **SG8** | 入口自己永不被閘 | 五個入口自己嘅 origin 在 `portalIds` 內即自動放行（`reason: 'self-portal'`）——入口就係入口，唔需要再經其他地方；`closed` 優先蓋過 self 放行；入口自己唔應該掛 `entry-gate` |
 | **SG8-a** | 直開網址預設唔自動跳 | `autoRedirectSeconds: 0` 為預設（停低顯示入口卡，避免用家以為壞咗、亦避免其餘三個入口變裝飾）；要自動就 3–5 秒＋顯示目的地，或用 `autoRedirectPortalId` 指定入口 |
 | **SG9** | 入口角色分工，分享只由 `main` | `main`＝APP STORE（主站，**唯一**帶分享連結／QR）／`feed`＝圖書館（每日引流）／`internal`＝成員系統、區管理系統（自家副系統）。`website/app.js` L723／L727 現時直接分享 `app.url`（子站），開閘後會全部撞卡，要改指 `?app=<slug>` |
-| **SG9-a** | 落地次序 | ① APP STORE 支援 `?app=<slug>` → ② 分享掣／QR 改深層連結 → ③ 子 App 開 `entry-gate`；次序錯＝分享連結即刻失效 |
+| **SG9-a** | 落地次序 | ① APP STORE 支援 `?app=<slug>` **✅ 已完成（`website` `bd721421`）** → ② 分享掣／QR 改深層連結 **✅ 已完成（`app.js` L838／L842／L854／L861、`index.html` L2453）** → ③ 子 App 開 `entry-gate`（**進行中：A 組**）；次序錯＝分享連結即刻失效 |
 | **SG10** | 統計按入口分工，唔好重複起爐灶 | **APP STORE 已有** `apps.clicks／stars／hearts`（`bump_clicks`／`bump_stars`／`bump_hearts`）＝逐 App 點擊／收藏／Like，**唯一權威來源**；**圖書館現時唔統計**（主責通告＋Push，推廣 APP STORE 屬後期）；子 App `trackEndpoint` 只作 opt-in 補充（主畫面開啟 `standalone-pwa`／撞卡 `missing-whitelist-entry`）；無數據 ≠ 無人用 |
 | **SG10-a** | 圖書館要維持 `open` | `scout-circulars` 載住 Push 訂閱（`push_subscriptions`）→ **唔可以 `iframe`、唔可以 `closed`、唔可以改 `start_url`**；要限經入口只可以局部限非通告頁 |
 | **SG11** | 「收起」≠「用不到」：四個下架齒輪 | **實查**：APP STORE「隱藏」只係前端過濾（`store.js` L782 `select("*")` 拉晒再 `a.visible !== false` 篩走），**App 本身照開得**。四齒輪＝① Delist（隱藏，URL 仍可入）② Gate（`entry-gate`，擋直開但主畫面照用）③ Soft close（`closed`，見告示）④ Hard close（Vercel Pause，完全離線）。按意圖揀，唔係按「幾快」 |

@@ -10,12 +10,12 @@
 
 未寫規則前先讀母站源碼，確認今日實際行為（唔靠估）：
 
-| 檢查點 | `website`（`041f074`）同 `scout-circulars`（`8808cd17`）實際源碼 | 對多入口白名單設計嘅直接影響 |
+| 檢查點 | `website`（`041f074`）同 `scout-circulars`（`89ef3cf1`）實際源碼 | 對多入口白名單設計嘅直接影響 |
 |---|---|---|
-| **公開網址（Origin）** | ① `website` [`index.html` L23](https://github.com/playerkousas-rgb/website/blob/041f0742dbabeffa3405b5c0b208f4935f1a215c/index.html#L23)：`https://scoutappstore.vercel.app`<br>② `scout-circulars` [`notify.py` `DEFAULT_SITE_URL`](https://github.com/playerkousas-rgb/scout-circulars/blob/8808cd1708981df61d9191e80282d8e58a840b89/notify.py)：`https://scout-circulars.vercel.app` | 多入口白名單可同時放入呢兩個 Origin（或按個別 App 增減，例如旅團門戶），任一指定入口撳入都放行 |
-| **撳「開啟／進入系統」做乜** | ① `website` [`app.js` L50–53](https://github.com/playerkousas-rgb/website/blob/041f0742dbabeffa3405b5c0b208f4935f1a215c/app.js#L50-L53)：`window.location.href = app.url`<br>② `scout-circulars` [`index.html` L5662](https://github.com/playerkousas-rgb/scout-circulars/blob/8808cd1708981df61d9191e80282d8e58a840b89/index.html#L5662)：`<a target="_blank" ...>進入系統 ↗</a>` | **兩個母站現時都係頂層導覽／開新分頁，未有 `<iframe>` 檢視器**。因此想規定「必須經圖書館或 App Store 入」，**現階段用頂層跳板 `entry-gate` 最順**；`iframe-only` 須等母站加 `<iframe>` 殼先開得 |
-| **⚠️ 通告圖書館 `noreferrer` 陷阱（必睇）** | `website` 無設 `noreferrer`，預設送出 `Referer: https://scoutappstore.vercel.app/`；**但 `scout-circulars` [`index.html` L5662](https://github.com/playerkousas-rgb/scout-circulars/blob/8808cd1708981df61d9191e80282d8e58a840b89/index.html#L5662) 寫咗 `rel="noopener noreferrer"`**！ | `noreferrer` 會強制令瀏覽器**清空 `document.referrer` 為 `""`**！若唔改呢行，就算子 App 白名單加咗 `https://scout-circulars.vercel.app`，由圖書館撳「進入系統 ↗」仍會因無 `Referer` 被誤擋。<br>**一行修復**：喺 `scout-circulars/index.html` L5662 將小工具（`isTool`）嘅 `rel` 改為 `${isTool ? 'noopener' : 'noopener noreferrer'}`（保留 `noopener` 防新分頁反控母頁，同時讓瀏覽器按預設 `strict-origin-when-cross-origin` 送出純網域 `Referer: https://scout-circulars.vercel.app/`，唔洩漏路徑） |
-| **分享按鈕行為** | `website` [`app.js` L747–764](https://github.com/playerkousas-rgb/website/blob/041f0742dbabeffa3405b5c0b208f4935f1a215c/app.js#L747-L764) 同 `scout-circulars` `shareUrlFor(item)` 直接分享子站 URL | 若某個子站開啟白名單限制，分享連結應指回母站入口（否則朋友撳 WhatsApp 條子站 link 會見到白名單提示卡，需再撳一次掣入母站） |
+| **公開網址（Origin）** | ① `website` [`index.html` L23](https://github.com/playerkousas-rgb/website/blob/bd721421/index.html#L23)：`https://scoutappstore.vercel.app`<br>② `scout-circulars` [`notify.py` `DEFAULT_SITE_URL`](https://github.com/playerkousas-rgb/scout-circulars/blob/89ef3cf108981df61d9191e80282d8e58a840b89/notify.py)：`https://scout-circulars.vercel.app` | 多入口白名單可同時放入呢兩個 Origin（或按個別 App 增減，例如旅團門戶），任一指定入口撳入都放行 |
+| **撳「開啟／進入系統」做乜** | ① `website` [`app.js` L50–53](https://github.com/playerkousas-rgb/website/blob/bd721421/app.js#L50-L53)：`window.location.href = app.url`<br>② `scout-circulars` [`index.html` L5662](https://github.com/playerkousas-rgb/scout-circulars/blob/89ef3cf1/index.html#L5812)：`<a target="_blank" ...>進入系統 ↗</a>` | **兩個母站現時都係頂層導覽／開新分頁，未有 `<iframe>` 檢視器**。因此想規定「必須經圖書館或 App Store 入」，**現階段用頂層跳板 `entry-gate` 最順**；`iframe-only` 須等母站加 `<iframe>` 殼先開得 |
+| **⚠️ 通告圖書館 `noreferrer` 陷阱（必睇）** | `website` 無設 `noreferrer`，預設送出 `Referer: https://scoutappstore.vercel.app/`；**但 `scout-circulars` [`index.html` L5662](https://github.com/playerkousas-rgb/scout-circulars/blob/89ef3cf1/index.html#L5812) 寫咗 `rel="noopener noreferrer"`**！ | `noreferrer` 會強制令瀏覽器**清空 `document.referrer` 為 `""`**！若唔改呢行，就算子 App 白名單加咗 `https://scout-circulars.vercel.app`，由圖書館撳「進入系統 ↗」仍會因無 `Referer` 被誤擋。<br>**一行修復**：喺 `scout-circulars/index.html` L5662 將小工具（`isTool`）嘅 `rel` 改為 `${isTool ? 'noopener' : 'noopener noreferrer'}`（保留 `noopener` 防新分頁反控母頁，同時讓瀏覽器按預設 `strict-origin-when-cross-origin` 送出純網域 `Referer: https://scout-circulars.vercel.app/`，唔洩漏路徑） |
+| **分享按鈕行為** | `website` [`app.js` L747–764](https://github.com/playerkousas-rgb/website/blob/bd721421/app.js#L861) 同 `scout-circulars` `shareUrlFor(item)` 直接分享子站 URL | 若某個子站開啟白名單限制，分享連結應指回母站入口（否則朋友撳 WhatsApp 條子站 link 會見到白名單提示卡，需再撳一次掣入母站） |
 | **Vercel 連接器權限** | 本輪實測 `vercel` connector `list_projects` 回報 `Access denied`（token 未授權 projects 讀寫範圍） | Pause／Resume Project 現階段喺 Vercel Dashboard 手動撳最快；日後重新授權 token 先可由 Agent 代撳 |
 
 ---
@@ -27,8 +27,8 @@
 
 | # | 入口（名稱） | **方向（SG16）** | **角色（SG9）** | Repo | Pinned commit（實查） | Origin（公開網址） | 現時撳入行為 | `<iframe>` 殼 | `noreferrer` 要改嘅位 |
 |:--:|---|---|---|---|---|---|---|---|---|
-| **1** | **APP STORE** | **`main` 真正主站（全方位）＋統計基地**：唯一應該帶**分享連結／QR code**；已有 `apps.clicks／stars／hearts`（RPC `bump_clicks`／`bump_stars`／`bump_hearts`），後台睇得到逐個 App 點擊／收藏／Like | **派出去**（`outbound`） | [`playerkousas-rgb/website`](https://github.com/playerkousas-rgb/website) | [`041f0742`](https://github.com/playerkousas-rgb/website/commit/041f0742dbabeffa3405b5c0b208f4935f1a215c)（2026-11-13） | `https://scoutappstore.vercel.app` | 頂層 `window.location.href = app.url`（[`app.js` L50–53](https://github.com/playerkousas-rgb/website/blob/041f0742dbabeffa3405b5c0b208f4935f1a215c/app.js#L50-L53)） | ❌ 未有（頂層跳轉） | ✅ 無（本身送出 `Referer`） |
-| **2** | **圖書館**（通告圖書館 v5.11） | **派出去**（`outbound`） | **`feed` 通告推送主場**（**唔帶分享連結**）：主要目的係**睇通告**＋**加入主畫面收 Push**；**現時冇點擊統計**，推廣 APP STORE 屬後期功能（2026-11-15 用戶說明） | [`playerkousas-rgb/scout-circulars`](https://github.com/playerkousas-rgb/scout-circulars) | [`8808cd17`](https://github.com/playerkousas-rgb/scout-circulars/commit/8808cd1708981df61d9191e80282d8e58a840b89)（2026-11-16） | `https://scout-circulars.vercel.app` | `<a target="_blank" rel="noopener noreferrer">`（[`index.html` L5662](https://github.com/playerkousas-rgb/scout-circulars/blob/8808cd1708981df61d9191e80282d8e58a840b89/index.html#L5662)） | ❌ 未有（新分頁） | ⚠️ **要改**：`isTool` 分支改 `rel="noopener"` |
+| **1** | **APP STORE** | **`main` 真正主站（全方位）＋統計基地**：唯一應該帶**分享連結／QR code**；已有 `apps.clicks／stars／hearts`（RPC `bump_clicks`／`bump_stars`／`bump_hearts`），後台睇得到逐個 App 點擊／收藏／Like | **派出去**（`outbound`） | [`playerkousas-rgb/website`](https://github.com/playerkousas-rgb/website) | [`bd721421`](https://github.com/playerkousas-rgb/website/commit/bd721421)（2026-11-13） | `https://scoutappstore.vercel.app` | 頂層 `window.location.href = app.url`（[`app.js` L50–53](https://github.com/playerkousas-rgb/website/blob/bd721421/app.js#L50-L53)） | ❌ 未有（頂層跳轉） | ✅ 無（本身送出 `Referer`） |
+| **2** | **圖書館**（通告圖書館 v5.11） | **派出去**（`outbound`） | **`feed` 通告推送主場**（**唔帶分享連結**）：主要目的係**睇通告**＋**加入主畫面收 Push**；**現時冇點擊統計**，推廣 APP STORE 屬後期功能（2026-11-15 用戶說明） | [`playerkousas-rgb/scout-circulars`](https://github.com/playerkousas-rgb/scout-circulars) | [`89ef3cf1`](https://github.com/playerkousas-rgb/scout-circulars/commit/89ef3cf108981df61d9191e80282d8e58a840b89)（2026-11-17） | `https://scout-circulars.vercel.app` | `<a target="_blank" rel="noopener noreferrer">`（[`index.html` L5662](https://github.com/playerkousas-rgb/scout-circulars/blob/89ef3cf1/index.html#L5812)） | ❌ 未有（新分頁） | ⚠️ **要改**：`isTool` 分支改 `rel="noopener"` |
 | **3** | **成員系統**（公開服務平台） | **派出去**（`outbound`） | **`internal` 自家副系統入口**：自家出產系統由此直入（**唔帶分享連結**） | [`playerkousas-rgb/member-portal`](https://github.com/playerkousas-rgb/member-portal) | [`de879a49`](https://github.com/playerkousas-rgb/member-portal/commit/de879a495a3a12d15129fa8e101179a7c07be6e7)（2026-11-15） | `https://member-portal-sigma-swart.vercel.app` | `/books` 用 `<iframe>` 嵌 4 個 `BOOK`；另有 `<a target="_blank" rel="noopener noreferrer">開啟原網站 ↗</a>`（`components/BookSelector.tsx` L88） | ✅ 有（`/books`，`allow="camera; fullscreen"`）＋ 自身被 `https://www.skwscout.org.hk` 以 `frame-ancestors` 嵌入 | ⚠️ **要改**：`BookSelector.tsx` L88 改 `rel="noopener"` |
 | **4** | **區管理系統**（童軍區管理平台） | **派出去**（`outbound`） | **`internal` 自家副系統入口**：自家出產系統由此直入（**唔帶分享連結**） | [`playerkousas-rgb/scout-district-portal`](https://github.com/playerkousas-rgb/scout-district-portal) | [`70809bbc`](https://github.com/playerkousas-rgb/scout-district-portal/commit/70809bbc45a9f203c8279d5c105cb313de619fbd)（2026-11-15） | `https://scout-district-portal.vercel.app` | `/embed` 用 `<iframe>` 嵌工具（`?role=…&from=portal&embed=1&d=…`）；另有「↗ 在新分頁開啟」（`app/embed/page.tsx` L45）同 `/links`（`app/links/page.tsx` L138） | ✅ 有（`/embed`，`allow="clipboard-write"`） | ⚠️ **要改**：`embed/page.tsx` L45 同 `links/page.tsx` L138 改 `rel="noopener"` |
 | **5** | **GEMINI**（**自家 private repo**） | **派出去**（`outbound`） | **`subapp` 一般子 App 入口**：同 1–4 完全同級，可用 `portalIds` 引用、可做 `entry-gate` 放行來源；統計喺佢自己嗰邊（用戶：那邊我也有完善的統計） | [`playerkousas-rgb/GEMINI`](https://github.com/playerkousas-rgb/GEMINI)（**private**：agent API 可能回 `403`，讀唔到唔等於唔存在） | 未能 pin（private repo，`gh api` 回 403） | `https://gemini-woad-sigma.vercel.app` | 自己部署，可掛 `store_gate`／改 header | 自己控制（可以加，但 MVP 未做） | 自己控制 |
@@ -243,21 +243,25 @@ initStoreGate({
 
 **C. 對「用戶幫手分享宣傳」有咩影響（呢個係最易出錯嘅位，已實查你現有程式碼）**
 
-⚠️ **實查發現**：`website/app.js` L723–727 嘅分享對話框同 QR code 現時係**直接複製子站網址**：
+✅ **已於 2026-11-17 完成**（`website` `bd721421`）：所有分享出口已改指 `appDeepLink(app)` → `https://scoutappstore.vercel.app/?app=<key>`，**唔會**再派子站直連。
 
 ```js
-if (urlEl) urlEl.value = app.url;                                   // L723
-qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?...data=${encodeURIComponent(app.url)}`; // L727
+// app.js L838　分享面板文字連結
+if (urlEl) urlEl.value = appDeepLink(app);
+// app.js L842　QR code
+qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?...data=${encodeURIComponent(appDeepLink(app))}`;
+// app.js L854　複製連結　／　app.js L861 五個平台 shareTo()
+// index.html L2453 shareApp()（Web Share API）
 ```
 
-一旦子 App 開白名單，**所有經分享掣／QR code 傳出去嘅連結都會即刻撞卡**——分享得越多，撞卡越多，睇落好似「宣傳失效」。
+**未做之前嘅後果**（留作記錄）：一旦子 App 開白名單，所有經分享掣／QR code 傳出去嘅連結都會即刻撞卡——分享得越多，撞卡越多，睇落好似「宣傳失效」。
 
 **SG9 嘅正確做法**：
 
 | 分享途徑 | 應該指向 | 實作 |
 |---|---|---|
-| APP STORE 分享對話框（文字連結） | `https://scoutappstore.vercel.app/?app=<slug>` | 改 `app.js` L723：`urlEl.value = 'https://scoutappstore.vercel.app/?app=' + app.slug` |
-| APP STORE QR code | 同上（**唔好**用 `app.url`） | 改 L727：`encodeURIComponent(shareUrl)` |
+| APP STORE 分享對話框（文字連結） | `https://scoutappstore.vercel.app/?app=<key>` | ✅ 已做：`app.js` **L838** `urlEl.value = appDeepLink(app)` |
+| APP STORE QR code | 同上（**唔好**用 `app.url`） | ✅ 已做：`app.js` **L842** `encodeURIComponent(appDeepLink(app))` |
 | APP STORE「分享網站連結」 | 主站首頁 | 保持 `https://scoutappstore.vercel.app/` |
 | 圖書館／成員系統／區管理系統 | **唔提供對外分享掣**（或分享時自動改指 APP STORE） | 內部工具維持「只做入場」 |
 | WhatsApp／IG 群發 | 一律 APP STORE 深層連結 | 靠 `?app=<slug>` 自動打開詳情 |
@@ -536,7 +540,7 @@ portalsFromIds(['gemini','appstore']);  // → ['appstore','gemini']（兩個都
 
 **一句話**：**「先講」呢一步唔存在**；真正嘅次序係「① APP STORE 加 `?app=<slug>`（docs/51 第 0 步）→ ② 子 App 開 `entry-gate` 只認 APP STORE → ③ 想連圖書館先改 L5662 一行 → ④ 成員／區管理／Gemini 唔使理」。
 
-**點解 APP STORE 一定要先做 `?app=<slug>`？** 唔係為咗白名單，係為咗**分享**：現時 `website/app.js` L723 `urlEl.value = app.url`、L727 QR code、L739 複製連結、L753–L760 五個平台分享、`index.html` L2319 `shareApp()` 全部直接分享**子站網址**。子站一開閘，呢啲分享出去嘅連結就會撞卡（SG9／SG9-a）。所以**分享／QR 改指 `?app=<slug>` 要早過開閘**，唔係開完閘再補。
+**點解 APP STORE 一定要先做 `?app=<slug>`？** 唔係為咗白名單，係為咗**分享**：**（✅ 2026-11-17 已完成，`bd721421`）** 舊版 `website/app.js` L723／L727／L739／L753–L760 同 `index.html` L2319 全部直接分享**子站網址**，現已全部改指 `appDeepLink(app)`（新行號：`app.js` L838／L842／L854／L861、`index.html` L2453）。子站一開閘，呢啲分享出去嘅連結就會撞卡（SG9／SG9-a）。所以**分享／QR 改指 `?app=<slug>` 要早過開閘**，唔係開完閘再補。
 
 **⚠️ 上一版錯咗兩件事（已修正）**：① 我把 `gemini-woad-sigma.vercel.app` 當咗係**死連**，理由係「95 個 repo 冇佢」——錯，因為佢係 **private repo**，`gh api` 回 `403 Resource not accessible by integration`，即係**我讀唔到，唔等於唔存在**；② 我把你個 GEMINI 當咗係 **Google 嘅 Gemini／Canvas**——錯，你講嘅係你**自己 repo `GEMINI`**。`member-portal` 同 `ScoutSystemCredit.tsx` 嗰兩個 `gemini-woad-sigma` 連結**冇問題，唔需要改**。
 
@@ -645,9 +649,9 @@ initStoreGate({
 3. **`iframe` 模式先起檢視器殼**：只有 `accessMode === 'iframe'` 先用全屏 `<iframe src="...">`（加返頂部返回列）；`open` 同 `entry-gate` 維持頂層開啟（唔加 `noreferrer`）。
 4. **`member-portal`（成員系統）清走 `noreferrer`**：`components/BookSelector.tsx` L88 嘅「開啟原網站 ↗」改成 `rel="noopener"`，否則由成員系統撳入 `BOOK` 會無 `Referer` 被擋。
 5. **`scout-district-portal`（區管理系統）清走 `noreferrer`**：`app/embed/page.tsx` L45「↗ 在新分頁開啟」同 `app/links/page.tsx` L138 兩處改成 `rel="noopener"`。另外 `/embed` 個 `<iframe>` 殼若要嵌有儲存嘅 App，記住 §3.2：**`iframe` 會令儲存分家**，寧願用 `/embed` 嘅「在新分頁開啟」走頂層。
-6. **分享連結／QR 只准由 APP STORE 產生（SG9）**：`website/app.js` L723 `urlEl.value = app.url` 同 L727 QR code 要改成 `https://scoutappstore.vercel.app/?app=<slug>`；**唔好**再用子站 `*.vercel.app` 直連做分享。前提係 APP STORE 要先支援讀 `?app=<slug>`（現時未支援）。
+6. **分享連結／QR 只准由 APP STORE 產生（SG9）—— ✅ 已於 2026-11-17 完成（`website` `bd721421`）**：`app.js` L838（分享面板）／L842（QR）／L854（複製）／L861（五個平台）同 `index.html` L2453（`shareApp()`）全部已改指 `appDeepLink(app)` → `https://scoutappstore.vercel.app/?app=<key>`；`openApp()` L50–54 同 sheet「開啟」L227 **保持真 url**（唔可以加 `noreferrer`）。**唔好**再用子站 `*.vercel.app` 直連做分享（SG9）。
 7. **掛統計（SG10）**：子 App 加 `trackEndpoint: '/api/store-hit'`（唔想統計就唔加，完全零請求），只回報 `{appKey, mode, reason, portal, v}`，唔送個人資料。
-8. **落地次序（唔可以調亂）**：① APP STORE 支援 `?app=<slug>` → ② 分享掣／QR 改指深層連結 → ③ 子 App 開 `entry-gate`。次序錯，分享出去嘅連結會即刻撞卡。
+8. **落地次序（唔可以調亂）**：① APP STORE 支援 `?app=<slug>` **✅ 已完成（`bd721421`）** → ② 分享掣／QR 改指深層連結 **✅ 已完成** → ③ 子 App 開 `entry-gate`（**進行中：A 組**）。次序錯，分享出去嘅連結會即刻撞卡。
 9. **（已撤回）成員系統嘅 GEMINI 連結唔係死連**：上一版寫「`gemini-woad-sigma.vercel.app` 係死連、建議改走」——**錯**。用戶澄清「因為果個係私人 REPO」，`playerkousas-rgb/GEMINI` 係 **private repo**，`gh api` 回 `403 Resource not accessible by integration` 只代表 **agent 讀唔到**，唔代表個部署唔存在；用戶亦實測過 `https://gemini-woad-sigma.vercel.app/` 開得到。**所以 `member-portal` 嗰兩個連結維持原狀，唔需要改。**
 10. **`scout-circulars` 通告獨立彈窗仲有一處 `noreferrer`（待修，SG19 跟進）**：`index.html` 卡片小工具連結已改好（L5812），但 **`openNoticePage()` 獨立通告彈窗**（`?n=`／Push 入口）嘅 `.np-primary` 按鈕仍然寫死 `rel="noopener noreferrer"`（**實查 `89ef3cf1` L5914**），會清空 `Referer`。要喺 `scout-circulars` 倉改為 `rel="${isScoutSystemItem(item) ? 'noopener' : 'noopener noreferrer'}"`（通告 PDF 掣保持 `noreferrer`）。⚠️ 改之前要確認 `isScoutSystemItem` 喺 `openNoticePage()` scope 內可用（`index.html` 係單檔 IIFE，預期可以，但要 AGENT 實測一次）。**只准喺 `scout-circulars` 倉改，唔准喺真理倉改。**
 11. **成員系統／區管理系統唔需要「為白名單而改」**（SG17）：實查兩邊都唔做 App 目錄（`member-portal` 只連 4 本 BOOK／通告圖書館／`districtbadgesystem30`／`scoutappstore`；`scout-district-portal` 只連自家 `builtin` 卡）。所以 §4.4-4／-5 嗰兩個 `noreferrer` 改動**只有喺你決定**把某隻 App 嘅 `portalIds` 加上 `member`／`district` 時才需要做；A／B 組批次（只認 APP STORE）完全唔關佢哋事。

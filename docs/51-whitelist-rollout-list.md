@@ -107,8 +107,38 @@
 | `voice_slide_web` | voice-slide-web.vercel.app | `voice-slide-web` |
 | `vsmeeting` | vsmeeting.vercel.app | `vsmeeting` |
 
-> ⚠️ **5 隻未填 slug（落閘前要先補）**：`card`（網址係 git branch 預覽 `card-git-arena-…`，**要先換正式 production 網域**）、`scoutdesign`、`skw-radar-hunt2`、`skw-score`、`Veritas`。
-> 原因：`appDeepLink()` 見唔到 slug 只會退回 `https://scoutappstore.vercel.app/` 首頁 → 用戶撳分享只會攞到首頁，去唔到佢嗰隻 App（SG18 個掣亦會去錯）。**先喺 APP STORE 後台補 slug（或跑多一條 migration），再落閘。**
+#### ✅ 已證實：`appSlug()` **有 `_id` fallback**（2026-11-18 實查 `website` `bd721421`）
+
+```js
+// app.js L73-76
+function appSlug(app) {
+  if (!app) return "";
+  return String(app.slug || app._id || "").trim();   // ← 冇 slug 就用 _id
+}
+```
+
+**結論改寫**（之前寫「缺 slug 只會去首頁」係**未證實嘅推測**，實查後**唔成立**）：
+
+| 情況 | 實際結果 |
+|---|---|
+| 有 `slug` | `?app=<slug>`（短、穩定、可讀） |
+| **冇 `slug`，有 `_id`** | `?app=<uuid>` —— **照樣開得到該 App 詳情卡**，唔會去首頁 |
+| 冇 slug 又冇 `_id` | 才退回首頁（`appDeepLink()` L81 嘅 `: STORE_ORIGIN + '/'`） |
+
+所以缺 slug 嘅嚴重程度由「舊版以為嘅功能失效」降為「連結難睇／不穩定」：
+- ✅ **唔會**阻住落閘
+- ⚠️ 但 `?app=<uuid>` 係 Supabase 內部 id，如果日後換 DB／重建 record 就會斷；而且 SG18 個 ❤️ 掣會攞到一條 36 字元 UUID 嘅網址
+- 📌 **建議**（唔急）：照樣補齊，但**唔係落閘嘅前置條件**
+
+| Repo | 正式 host | 建議 slug |
+|---|---|---|
+| `card` | ⚠️ 現時 homepage 係 git branch 預覽 `card-git-arena-…`，**要另外確認 production 網域** | `card` |
+| `scoutdesign` | scoutdesign.vercel.app | `scoutdesign` |
+| `skw-radar-hunt2` | skw-radar-hunt2.vercel.app | `skw-radar-hunt2` |
+| `skw-score` | skw-score.vercel.app | `skw-score` |
+| `Veritas` | veritas-delta-seven.vercel.app | `veritas` |
+
+> ⚠️ `card` 仲有一個獨立問題：`apps.url` 如果真係指向 branch 預覽網址，**白名單會認錯 origin**（預覽網址每次 push 都變）。落閘前必須確認 `apps.url` 係穩定 production 網域 —— 呢個同 slug **無關**，係更嚴重嘅問題。
 
 ## 2. B 組：可以加，但要 `allowStandalone` 先做（本機儲存明顯）— 6 個
 
@@ -207,7 +237,7 @@
 | **4. 區管理系統** | ❌ **唔使** —— 卡片／`/embed`／`/links` 只連自家 `builtin` 系統 | 預設唔加 |
 | **5. GEMINI** | ❌ **唔使** —— 你話「佢同其他 App 完全冇關係」，所以冇嘢要協調 | **可以**加（`admit: 'optional'`），但預設唔加。⚠️ 舊版寫「永遠唔會放入 `portalIds`（程式剔除）」係**錯**，已撤回（SG16）：`NEVER_ADMIT_PORTAL_IDS` 現時係**空陣列**，`portalsFromIds(['gemini','appstore'])` 會正常回兩個 |
 
-**所以「打招呼」呢一步唔存在**；真正要做嘅只有兩件：① **APP STORE 加 `?app=<slug>`**（下面第 0 步，為咗分享／QR，唔係為白名單）② **圖書館改 L5662 一行**（如果你要放圖書館入場）。兩件都係**機器層面**，唔需要同「入口嘅 AGENT」開會；成員系統／區管理系統／Gemini 更加唔關事。
+**所以「打招呼」呢一步唔存在**；真正要做嘅兩件都**已經完成**：① ✅ **APP STORE 已加 `?app=<slug>`**（`bd721421`，為咗分享／QR，唔係為白名單）② ✅ **圖書館已改 L5812 一行**（如果你要放圖書館入場）。兩件都係**機器層面**，唔需要同「入口嘅 AGENT」開會；成員系統／區管理系統／Gemini 更加唔關事。
 
 ---
 
@@ -215,11 +245,12 @@
 
 | 批次 | 內容 | 為咩 |
 |:--:|---|---|
-| **第 0 步** | 喺 APP STORE 加 `?app=<slug>` 深層連結，並把分享／QR／卡片 href 由 `app.url` 改指 APP STORE（[50 §4.4-6](50-app-store-whitelist-and-shutdown.md)）。**可直接貼嘅指令：[`templates/repo-starter/APP-STORE-INSTRUCTION.md`](../templates/repo-starter/APP-STORE-INSTRUCTION.md)**（已列明 11 個實查位置） | **唔做呢步，一開閘分享連結就全部撞卡**（SG9-a）。**唔需要問任何入口**——APP STORE 本來就係預設入口（SG17） |
+| **第 0 步** ✅ **已完成（2026-11-17，`website` `bd721421`）** | 喺 APP STORE 加 `?app=<slug>` 深層連結，並把分享／QR／卡片 href 由 `app.url` 改指 APP STORE（[50 §4.4-6](50-app-store-whitelist-and-shutdown.md)）：`app.js` L838／L842／L854／L861、`index.html` L2453 全部改指 `appDeepLink()`；`openApp()` L50–54 同 sheet「開啟」L227 保持真 url。（歷史記錄：[`APP-STORE-INSTRUCTION.md`](../templates/repo-starter/APP-STORE-INSTRUCTION.md)；**仲要貼嘅係 [`APP-STORE-SLUG-INSTRUCTION.md`](../templates/repo-starter/APP-STORE-SLUG-INSTRUCTION.md)**） | **唔做呢步，一開閘分享連結就全部撞卡**（SG9-a）。**唔需要問任何入口**——APP STORE 本來就係預設入口（SG17） |
 | **第 1 批** | A 組揀 3–5 個 | 驗證流程，風險最低 |
 | **第 2 批** | A 組其餘全部 | 批量複製。圖書館 `noreferrer` **✅ 已於 2026-11-17 完成**（`scout-circulars` `89ef3cf1`，現 L5812）—— 唔使再做，直接寫 `silentPortalIds: ['library']` 即可（⚠️ 仍有一處待修：`openNoticePage()` 彈窗 `.np-primary` L5914，見 `docs/50` §4.4-10） |
 | **第 3 批** | B 組（確認備份功能後） | 有儲存，要小心 |
 | **第 4 批** | C 組逐個判斷 | 有 `/api`，要睇後端 |
 | **永遠唔做** | D 組入口本體 | 會鎖死自己（SG8） |
 
-> **第 0 步要貼嘅訊息**：[`APP-STORE-INSTRUCTION.md`](../templates/repo-starter/APP-STORE-INSTRUCTION.md)（APP STORE 對話用）；第 1／2 批（A 組）用 [`A-GROUP-INSTRUCTION.md`](../templates/repo-starter/A-GROUP-INSTRUCTION.md)。
+> **第 0 步已完成**，唔使再貼 [`APP-STORE-INSTRUCTION.md`](../templates/repo-starter/APP-STORE-INSTRUCTION.md)（留作歷史記錄）；改貼 [`APP-STORE-SLUG-INSTRUCTION.md`](../templates/repo-starter/APP-STORE-SLUG-INSTRUCTION.md)。**仲要 APP STORE 做嘅只有兩件**：① 補 §1.1 嗰 5 隻缺 slug ② 確認 `apps.url` 冇 branch 預覽網址（見下）。
+> 第 1／2 批（A 組）用 [`A-GROUP-INSTRUCTION.md`](../templates/repo-starter/A-GROUP-INSTRUCTION.md)。
