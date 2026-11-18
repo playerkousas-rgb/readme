@@ -55,7 +55,7 @@
 
 完整範本：[templates/vercel/vercel.json](../templates/vercel/vercel.json)。
 CSP 按 app 需要加（Canvas 單檔 app 要用 nonce 或 `'unsafe-inline'`，要寫明原因）。
-若該小工具要鎖定只准經四大官方入口（[docs/50 §0.1](50-app-store-whitelist-and-shutdown.md)：APP STORE／圖書館／成員系統／區管理系統）以 `<iframe>` 白名單開啟（[SG4](50-app-store-whitelist-and-shutdown.md)），改抄 [`templates/vercel/vercel.iframe-whitelist.json`](../templates/vercel/vercel.iframe-whitelist.json)（**必須移除 `X-Frame-Options: SAMEORIGIN`**，改用 `CSP frame-ancestors`）；唔適合 `<iframe>` 嘅 App（有 `localStorage`／PWA／Push／`SameSite=Lax` Cookie）一律唔改 header，改行頂層跳板 `store_gate_v1.0.js`。
+若該小工具要鎖定只准經五個官方入口（[docs/50 §0.1](50-app-store-whitelist-and-shutdown.md)：APP STORE／圖書館／成員系統／區管理系統／GEMINI）以 `<iframe>` 白名單開啟（[SG4](50-app-store-whitelist-and-shutdown.md)），改抄 [`templates/vercel/vercel.iframe-whitelist.json`](../templates/vercel/vercel.iframe-whitelist.json)（**必須移除 `X-Frame-Options: SAMEORIGIN`**，改用 `CSP frame-ancestors`）；唔適合 `<iframe>` 嘅 App（有 `localStorage`／PWA／Push／`SameSite=Lax` Cookie）一律唔改 header，改行頂層跳板 `store_gate_v1.0.js`。
 
 ---
 

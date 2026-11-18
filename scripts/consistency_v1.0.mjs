@@ -147,12 +147,34 @@ const STALE = [
   [/\[28\]\([^)]*\)\s*見到嘅 80 個無 LICENSE/g, '80 個無 LICENSE 喺 docs/27 §1'],
   [/可選第 13 項|可選 13d/g, '13d PREFLIGHT 係必跑，唔可以寫「可選」'],
   [/當中 8 個係空殼/g, '空殼／預留係 12 個（docs/28 §3），唔好硬湊 8'],
+  // 2026-11-18：SG 規則狀態指紋（唔做「交叉檢查」—— 語意判斷掃唔到，只會誤報；
+  // 改為封住「已知嘅錯講法」，任何人重用舊句即 FAIL）
+  // 第三個元素 = 「unless」：match 前後 160 字出現呢個 pattern 就當係引用舊講法做證據，唔報。
+  [/永遠唔會放入\s*`?portalIds`?|放入\s*`?portalIds`?\s*都會被程式剔除|NEVER_ADMIT_PORTAL_IDS\s*=\s*\['gemini'\]|GEMINI[^|\n]{0,20}永遠唔會/g,
+   'GEMINI 已改為可放行（SG16）：NEVER_ADMIT_PORTAL_IDS 現時係空陣列，唔會剔除',
+   /舊版|已撤回|係\*\*錯\*\*|錯誤|舊講法|上一版/],
+  [/四大官方入口|四大準入|四大指定入口|入口一共\s*\*{0,2}4\s*個/g,
+   '官方入口已經係五個（SG16）：APP STORE／圖書館／成員系統／區管理系統／GEMINI',
+   /舊版|已撤回|係\*\*錯\*\*|舊講法|上一版/],
+  [/改一行就通|L5662[^|\n]{0,30}現時\s*`?rel="noopener noreferrer|同時間可選做|改完\s*`?noreferrer`?\s*之後[^|\n]{0,10}才可加/g,
+   '圖書館 noreferrer 已於 89ef3cf1 完成（現 L5812），唔可以再寫「未改／可選做」',
+   /舊版|已撤回|係\*\*錯\*\*|舊講法|上一版/],
 ];
 const isAuditReport = (p) => rel(p) === 'docs/32-consistency-audit.md';
 for (const p of mdFiles) {
   if (isAuditReport(p)) continue;   // 報告要引用已修正嘅舊講法做證據，唔當矛盾
   const t = textOf(p);
-  for (const [re, why] of STALE) for (const m of t.matchAll(re)) add('FAIL', 'Standards', 'stale-phrase', rel(p), lineOf(t, m.index), why);
+  for (const [re, why, unless] of STALE) {
+    for (const m of t.matchAll(re)) {
+      // unless：附近有「呢個係舊講法／已撤回」之類標記 → 係引用做證據，唔當矛盾
+      if (unless) {
+        const from = Math.max(0, m.index - 160);
+        const near = t.slice(from, m.index + m[0].length + 160);
+        if (unless.test(near)) continue;
+      }
+      add('FAIL', 'Standards', 'stale-phrase', rel(p), lineOf(t, m.index), why);
+    }
+  }
 }
 
 /* ============ 3. SPEC（code-review 兩軸：忠於用戶原意） ============ */

@@ -69,11 +69,11 @@ P1：研發前先上網查相近產品，記來源同決策（人工檢查）
 L ：**未來新開**嘅唔太重 app 要有英文版 + 右上角一鍵切換掣（跟 4 個 BOOK；舊 app 唔追溯）
     雙閘 = 體積（S7 <5MB / C13-g ≤5MB）＋ UI 字串 ≤300 條，兩項達標就要做
     豁免寫 EXCEPTION: L1 — 原因 — 補償；驗 node scripts/i18n_check_v1.0.mjs <path>
-SG：關站／經四大官方入口白名單進入（按需啟用 → docs/50 §0.1）：
+SG：關站／經五個官方入口白名單進入（按需啟用 → docs/50 §0.1）：
     1.APP STORE（scoutappstore）2.圖書館（scout-circulars）3.成員系統（member-portal-sigma-swart）4.區管理系統（scout-district-portal）
     5.GEMINI（gemini-woad-sigma.vercel.app）＝用戶自己 private repo GEMINI 部署嘅 Vercel app，
       同 1-4 一樣可以放入 portalIds、可以放行（SG16 已修正；唔係 Google Gemini）
-    開新 app 主動告知；有 localStorage／PWA／Push／登入 Cookie 禁入 iframe，改行頂層 entry-gate（portalIds 引用四大入口）
+    開新 app 主動告知；有 localStorage／PWA／Push／登入 Cookie 禁入 iframe，改行頂層 entry-gate（portalIds 引用五個入口）
     SG7：加主畫面流程＝「先由入口進入 → 再按瀏覽器選單加入主畫面」；直開網址唔會 404（出白名單卡）
     SG8：入口自己永不被閘（self-portal）；直開網址預設唔自動跳，要跳就 autoRedirectSeconds 3–5
     SG9：入口分工＝APP STORE 主站（唯一分享／QR）· 圖書館每日引流 · 成員／區管理自家副系統
@@ -84,7 +84,7 @@ SG：關站／經四大官方入口白名單進入（按需啟用 → docs/50 §
     SG12：防偷用唔係技術問題，係表態問題 → entry-gate（經入口）＋ supportNudge（邀一次❤️），唔起後端驗票
     SG13：supportNudge 文案＝「書架位有限，長期冇人收藏/Like 會收起」；預設 skip appstore（你已睇得到 clicks）
     SG14：書架政策要公開＋可逆＋唔刪資料；唔准寫死日數／門檻（睇後台自行判斷）；BOOK／自家系統豁免
-    SG17：唔使逐個入口「打招呼」！APP STORE＝永遠預設（分享／QR 由佢出）、圖書館＝改 L5662 noreferrer 後才加、
+    SG17：唔使逐個入口「打招呼」！APP STORE＝永遠預設（分享／QR 由佢出）、圖書館＝✅ 已改好（89ef3cf1，L5812）可直接放入 silentPortalIds、
     SG18：子 App「讚好／收藏」一鍵回跳主站（getAppStoreUrl(slug) 開新分頁 → /?app=<slug>）；嚴禁直連主站 Supabase／copy anon key／call bump_hearts（收藏清單喺主站同源 localStorage）；slug 對 website/migrations/20261116-app-slug-seed.sql 核實，唔准靠 repo 名猜；A 組預設唔開 supportNudge
     SG19：攔截卡「按鈕」≠「放行來源」→ portalIds:['appstore'] + silentPortalIds:['library'] （library 照放行但唔畫掣）；allowedOrigins 只係額外放行來源，同 portals 聯集唔可以蓋過；單一粒掣自動去「1.」編號；預設文案＝「需經由 SCOUT APP STORE 開啟」（舊字串保留做 alias）
           成員／區管理＝唔做 App 目錄（唔使理），GEMINI＝可加（自己 private repo，可放行）

@@ -182,13 +182,18 @@
   initStoreGate({
     appKey: '<repo-name-lowercase>',   // 每個 app 獨立前綴
     mode: 'entry-gate',
-    portalIds: ['appstore'],           // ＝DEFAULT_PORTAL_IDS（SG17）。第一批只認 APP STORE，
-                                       //   唔使問任何人；library 要等入口改好 noreferrer 才可加，
-                                       //   member／district 唔做 App 目錄、gemini 永遠唔入
-    allowStandalone: true,             // B 組必開；A 組亦建議開（免費保險）
+    portalIds: ['appstore'],           // ＝DEFAULT_PORTAL_IDS（SG17）：主站，攔截卡只畫呢一粒掣
+    silentPortalIds: ['library'],       // SG19：圖書館照放行（matchedPortalId: 'library'）但唔畫掣。
+                                        //   圖書館 noreferrer 已於 89ef3cf1 改好，條件已滿足。
+                                        //   ⚠️ member／district 唔做 App 目錄；gemini 屬 optional（SG16）
+                                        //      可以加但預設唔加 —— 三個都唔准自己加，等真理倉叫你先加
+    allowStandalone: true,             // B 組必開；A 組亦建議開（已加主畫面＝品牌已入屋，唔好攔）
+    autoRedirectSeconds: 0             // 0 = 停低顯示提示卡，唔好秒彈走
   });
 </script>
 ```
+
+> **SG18**（子 App 一鍵回跳主站讚好／收藏）另見 [50 §4.1](50-app-store-whitelist-and-shutdown.md)；`<slug>` 對照見上面 §1.1。
 
 ## 7. 要唔要「先同兩個大入口講」？→ 只有一件事要動（SG17）
 
@@ -200,7 +205,7 @@
 | **2. 圖書館** | ⚠️ **要，但只需一次**：`scout-circulars/index.html` L5662 小工具掣 `rel="noopener noreferrer"` → `rel="${isTool ? 'noopener' : 'noopener noreferrer'}"`。**Push／統計／通告流程一律唔准動**（SG10-a） | 改完之後，逐隻 App 自己決定加唔加 `library`；**A 組第一批唔加**（只認 APP STORE），所以第 1 批完全唔受影響 |
 | **3. 成員系統** | ❌ **唔使** —— 實查 `app/page.tsx` 只連 `/books`（4 本 BOOK）、通告圖書館、`districtbadgesystem30`、`scoutappstore`；**唔做 App 目錄** | 預設唔加。唯一例外＝4 本 `BOOK`（本身喺 C 組，BOOK 管制宜寬鬆，維持 `['appstore']` 已夠） |
 | **4. 區管理系統** | ❌ **唔使** —— 卡片／`/embed`／`/links` 只連自家 `builtin` 系統 | 預設唔加 |
-| **5. GEMINI** | ❌ **唔使，亦唔可以** —— 另一套系統、同 Vercel 子 App 零關係 | 永遠唔會放入 `portalIds`（程式剔除） |
+| **5. GEMINI** | ❌ **唔使** —— 你話「佢同其他 App 完全冇關係」，所以冇嘢要協調 | **可以**加（`admit: 'optional'`），但預設唔加。⚠️ 舊版寫「永遠唔會放入 `portalIds`（程式剔除）」係**錯**，已撤回（SG16）：`NEVER_ADMIT_PORTAL_IDS` 現時係**空陣列**，`portalsFromIds(['gemini','appstore'])` 會正常回兩個 |
 
 **所以「打招呼」呢一步唔存在**；真正要做嘅只有兩件：① **APP STORE 加 `?app=<slug>`**（下面第 0 步，為咗分享／QR，唔係為白名單）② **圖書館改 L5662 一行**（如果你要放圖書館入場）。兩件都係**機器層面**，唔需要同「入口嘅 AGENT」開會；成員系統／區管理系統／Gemini 更加唔關事。
 
@@ -212,7 +217,7 @@
 |:--:|---|---|
 | **第 0 步** | 喺 APP STORE 加 `?app=<slug>` 深層連結，並把分享／QR／卡片 href 由 `app.url` 改指 APP STORE（[50 §4.4-6](50-app-store-whitelist-and-shutdown.md)）。**可直接貼嘅指令：[`templates/repo-starter/APP-STORE-INSTRUCTION.md`](../templates/repo-starter/APP-STORE-INSTRUCTION.md)**（已列明 11 個實查位置） | **唔做呢步，一開閘分享連結就全部撞卡**（SG9-a）。**唔需要問任何入口**——APP STORE 本來就係預設入口（SG17） |
 | **第 1 批** | A 組揀 3–5 個 | 驗證流程，風險最低 |
-| **第 2 批** | A 組其餘全部 | 批量複製。**同時間可選做**：圖書館改 L5662 一行（`noreferrer`），之後仍要逐隻 App 自己決定加唔加 `library` |
+| **第 2 批** | A 組其餘全部 | 批量複製。圖書館 `noreferrer` **✅ 已於 2026-11-17 完成**（`scout-circulars` `89ef3cf1`，現 L5812）—— 唔使再做，直接寫 `silentPortalIds: ['library']` 即可（⚠️ 仍有一處待修：`openNoticePage()` 彈窗 `.np-primary` L5914，見 `docs/50` §4.4-10） |
 | **第 3 批** | B 組（確認備份功能後） | 有儲存，要小心 |
 | **第 4 批** | C 組逐個判斷 | 有 `/api`，要睇後端 |
 | **永遠唔做** | D 組入口本體 | 會鎖死自己（SG8） |
