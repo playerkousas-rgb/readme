@@ -61,7 +61,7 @@
         同 1–4 一樣可以掛閘、可以放入 portalIds、可以做放行來源；統計喺佢自己嗰邊。
         ⚠️ 唔好同 **Google 嘅 Gemini／Canvas**（gemini.google.com）混淆，見 SG16））
    及暫時關站機制】
-   open（公開直連，預設）· entry-gate（頂層跳板白名單，唔用 iframe，可揀四大入口任一或全部）·
+   open（公開直連，預設）· entry-gate（頂層跳板白名單，唔用 iframe，可揀五個入口任一或全部）·
    iframe-only（純 iframe 白名單，須該入口已有 iframe 殼）· closed（暫時關站／維護告示）
    ➡️ 建議：預設 `open`；若想規定經指定入口進入：
       - 寫法 `portalIds: ['appstore','library','member','district']`（可只揀子集；自訂入口用 `portals`，優先於 portalIds）。
@@ -69,7 +69,7 @@
         登入 Session Cookie（SameSite=Lax）或相機／GPS 權限 → **唔適合 iframe 白名單**，
         必須提醒用戶改揀 `entry-gate`（頂層跳板白名單）或維持 `open`（SG2）。
       - 若白名單包埋圖書館／成員系統／區管理系統，提醒該三處連結現時帶 `rel="noopener noreferrer"`（會清空 `Referer`），要先改 `rel="noopener"` 先放行得到：
-        `scout-circulars/index.html` L5662、`member-portal/components/BookSelector.tsx` L88、`scout-district-portal/app/embed/page.tsx` L45 同 `app/links/page.tsx` L138。
+        圖書館已改好（`89ef3cf1`，現 L5812）；仍未改：`member-portal/components/BookSelector.tsx` L88、`scout-district-portal/app/embed/page.tsx` L45 同 `app/links/page.tsx` L138（呢三處只有你決定把 App 加 `member`／`district` 才需要動）。
       - 靠本機儲存嘅 App（含 4 個 `BOOK`）：經入口**頂層跳轉**零影響（`localStorage` 只認子站 origin，用咩入口都係同一個倉）；但**唔可以入 `iframe`**（會分區／睇唔返舊紀錄）。
       - 已加主畫面 PWA：`allowStandalone: true` ＋ manifest `"display": "standalone"` → 撳 icon 直開自動放行；提醒 **iOS 主畫面容器同 Safari 分頁儲存分家**（Android Chrome 共用），要靠 JSON／QR 備份還原搬資料。
       - 【SG9】四個入口角色唔同（APP STORE＝主站、圖書館＝每日引流、成員系統／區管理系統＝自家副系統）：**對外分享連結同 QR code 只准指 APP STORE**，唔好傳子站直連；並提醒 APP STORE 要先支援 `?app=<slug>` 深層連結，次序係「APP STORE 支援 → 分享改指 → 子 App 開閘」。
@@ -79,7 +79,7 @@
       - 【SG14】書架政策要**公開前置寫明**、**唔准寫任何固定日數／數字門檻**（幾時收起由用戶睇後台自行判斷，AGENT 唔准代定）、收起＝只 Delist 唔刪資料（代碼／網址／用戶資料保留、隨時復活）、**`BOOK` 類同自家系統豁免**；並提醒「Like 數 ≠ 使用人數」。
       - 【SG11】要主動講清「收起 ≠ 用不到」：APP STORE 撳「隱藏」只係前端過濾（API 照回傳、App 網址照開得）。真正令人用唔到要按四級齒輪：Delist（隱藏）→ Gate（`entry-gate`）→ Soft close（`closed`）→ Hard close（Vercel Pause）。有本機儲存嘅 App（如 `BOOK`）只可以 Delist，**唔可以同時拆走入口**，落關站前先叫用戶匯出 JSON／QR 備份（SG11-a）。含個人資料／收費嘅 App **唔可以**靠「隱藏」做保護（SG11-b）。
       - 【SG10-a】如果該 App 會收 Push（例如圖書館），**必須維持 `open`**：唔可以 `iframe`、唔可以 `closed`、唔可以改 manifest `start_url`，否則已訂閱用戶收唔到通告。
-      - 【SG8】四大入口自己永不被閘（`selfOrigin` 在 `portalIds` 內自動放行 `self-portal`）；直開網址**預設唔自動跳**（`autoRedirectSeconds: 0`），要自動就 3–5 秒並顯示目的地，或用 `autoRedirectPortalId` 指定。
+      - 【SG8】五個入口自己永不被閘（`selfOrigin` 在 `portalIds` 內自動放行 `self-portal`）；直開網址**預設唔自動跳**（`autoRedirectSeconds: 0`），要自動就 3–5 秒並顯示目的地，或用 `autoRedirectPortalId` 指定。
       - 【SG17】**唔使逐個入口「打招呼」**（用戶 2026-11-15 定案）：`portalIds` 預設值就係 `DEFAULT_PORTAL_IDS` ＝ `['appstore']`。`appstore`＝`always`（分享／QR 只由佢產生 → 每隻子 App 都寫，唔使問）；`library`＝`conditional`（要**先**改 `scout-circulars/index.html` L5662 一個 `noreferrer`，未改唔好加、加咗只會撞卡；**Push／統計／通告流程一律唔准動**）；`member`／`district`＝`optional`（實查兩邊唔做 App 目錄，只連入口＋自家系統 → 預設唔加；例外＝4 本 `BOOK`，但 BOOK 管制宜寬鬆，加咗冇壞、唔加亦足夠）；`gemini`＝`optional`（自己 private repo 嘅 Vercel app，可以加；但唔好加錯做 Google 網域）。要一次過開 1–4 就寫 `portalIdsAdmit: 'all'`（永遠唔會誤包 Gemini）。
       - 【SG18】**子 App 一律內置「讚好／收藏」一鍵回跳主站**（用戶 2026-11-17 定案）：常駐非阻塞 `<a target="_blank" rel="noopener">`，網址由 `ScoutStoreGate.getAppStoreUrl(slug)` 組出（零寫死）。**嚴禁**直連主站 Supabase／複製 anon key／自行呼叫 `bump_hearts`／`bump_stars` —— 用家個人收藏清單存喺 `scoutappstore.vercel.app` 同源 `localStorage`，子 App 寫 DB 都唔會入到用家收藏夾。`<slug>` 要對 `website/migrations/20261116-app-slug-seed.sql` 按正式 host 核實，**唔准靠 repo 名猜**；`ScoutStoreGate` 未載入要 `hidden`（CSS 要有 `[hidden]{display:none}`）。
       - 【SG19】**攔截卡按鈕 ≠ 放行來源**（用戶 2026-11-17 定案）：預設 `portalIds: ['appstore']` ＋ `silentPortalIds: ['library']` —— 圖書館照放行（有 Referer 就入得），但用家直開網址撞卡時**只出 APP STORE 一粒掣**。預設文案係簡短人話「需經由 SCOUT APP STORE 開啟」／「請按下方按鈕前往 APP STORE 開啟。」；`allowedOrigins` 只係**額外**放行來源，同 `portals` 聯集，**唔可以蓋過**。

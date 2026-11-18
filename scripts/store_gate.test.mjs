@@ -986,3 +986,80 @@ test('SG18：getAppStoreUrl 掛齊瀏覽器 globalThis 同 CommonJS 兩邊', () 
   const mBlock = src.slice(mStart, src.indexOf('};', mStart));
   assert.ok(mBlock.includes('getAppStoreUrl'), 'module.exports 要有 getAppStoreUrl');
 });
+
+/* ────────────────────────────────────────────────────────────────
+ * SG16／SG17／SG19 文件一致性（2026-11-18）：封住「已知錯講法」回頭
+ * 呢組測試係回應外部 AGENT 審核提出嘅 docs/50 ↔ docs/51 ↔ 範本脫節。
+ * ──────────────────────────────────────────────────────────────── */
+
+test('SG16：GEMINI 唔可以再被寫成「永遠唔會／程式剔除」（docs/50 SG17 ④ 已改為 optional）', () => {
+  const doc = read('docs', '50-app-store-whitelist-and-shutdown.md');
+  const list = read('docs', '51-whitelist-rollout-list.md');
+  // registry 事實：冇任何入口被永久排除，gemini 可以被放行
+  assert.deepEqual([...gate.NEVER_ADMIT_PORTAL_IDS], [], 'NEVER_ADMIT_PORTAL_IDS 要係空陣列');
+  assert.equal(gate.PORTAL_REGISTRY.gemini.admit, 'optional');
+  assert.deepEqual(
+    [...gate.portalsFromIds(['gemini', 'appstore'])].map((p) => p.id).sort(),
+    ['appstore', 'gemini'],
+    'gemini 要可以放入 portalIds，唔會被剔除',
+  );
+  // 兩份文件都要明確寫「可以」＋ 撤回舊講法
+  assert.ok(/GEMINI[^\n]{0,80}optional/.test(doc), 'docs/50 SG17 ④ 要寫 gemini 係 optional');
+  assert.ok(doc.includes('NEVER_ADMIT_PORTAL_IDS = []'), 'docs/50 要寫明 NEVER_ADMIT 係空陣列');
+  assert.ok(list.includes('已撤回（SG16）'), 'docs/51 §7 要標明舊講法已撤回');
+});
+
+test('SG17：圖書館 noreferrer 已於 89ef3cf1 完成，文件唔可以再寫「未改／可選做」', () => {
+  const doc = read('docs', '50-app-store-whitelist-and-shutdown.md');
+  const list = read('docs', '51-whitelist-rollout-list.md');
+  const qc = read('docs', '00-quickcard.md');
+  for (const [name, txt] of [['docs/50', doc], ['docs/51', list], ['quickcard', qc]]) {
+    assert.ok(txt.includes('89ef3cf1'), `${name} 要記錄完成 commit 89ef3cf1`);
+    assert.ok(!/圖書館[^\n]{0,40}(?:仲未改|仍未改|尚未改)|改一行就通/.test(txt), `${name} 唔可以再寫圖書館未改`);
+  }
+  assert.ok(list.includes('L5812'), 'docs/51 要指新行號 L5812');
+});
+
+test('SG19：docs/51 §6 範本同 A 組指令都要有 silentPortalIds 同 Q1 停機規則', () => {
+  const list = read('docs', '51-whitelist-rollout-list.md');
+  const instr = read('templates', 'repo-starter', 'A-GROUP-INSTRUCTION.md');
+  assert.ok(list.includes("silentPortalIds: ['library']"), 'docs/51 §6 範本要有 silentPortalIds');
+  assert.ok(!/library 要等入口改好 noreferrer/.test(list), 'docs/51 §6 唔可以再寫「要等 noreferrer」');
+  assert.ok(instr.includes('Q1 停機規則'), 'A 組指令要有 Q1 停機規則表');
+  assert.ok(instr.includes('單機小遊戲最高分'), 'Q1 要講明小遊戲分數可以繼續');
+  assert.ok(!instr.includes('唔准自行加 `library`'), '舊嘅「唔准自行加 library」句要刪（同 silentPortalIds 矛盾）');
+  assert.ok(instr.includes('唔准將 `library` 放入 `portalIds` 渲染成掣'), '要改成精準措辭');
+});
+
+test('SG16：官方入口係五個，全倉唔可以再寫「四大」', () => {
+  const files = [
+    ['PLAYBOOK.md'], ['README.md'],
+    ['docs', '00-quickcard.md'], ['docs', '06-vercel.md'],
+    ['docs', '10-checklists.md'], ['docs', 'README.md'],
+    ['docs', '50-app-store-whitelist-and-shutdown.md'],
+    ['templates', 'README.md'], ['templates', 'repo-starter', 'INTAKE.md'],
+  ];
+  for (const f of files) {
+    const txt = read(...f);
+    assert.ok(!txt.includes('四大'), `${f.join('/')} 仍然有「四大」，應該係「五個」`);
+  }
+  // docs/50 §0.1 標題同錨點要一致（改標題必同步改錨點）
+  const doc = read('docs', '50-app-store-whitelist-and-shutdown.md');
+  assert.ok(doc.includes('## 0.1 官方五個準入白名單入口註冊表'), '§0.1 標題要係「五個」');
+  assert.ok(!doc.includes('#01-官方四大'), '錨點唔可以仲係「四大」');
+  assert.ok(doc.includes('#01-官方五個準入白名單入口註冊表canonical-portal-registry'), '錨點要同步改');
+});
+
+test('consistency：stale-phrase 指紋封住三個已知錯講法（有 unless 逃生門）', () => {
+  const src = read('scripts', 'consistency_v1.0.mjs');
+  assert.ok(src.includes("永遠唔會放入"), '要封「GEMINI 永遠唔會放入 portalIds」');
+  assert.ok(src.includes('NEVER_ADMIT_PORTAL_IDS'), '要封「NEVER_ADMIT_PORTAL_IDS = [gemini]」');
+  assert.ok(src.includes('四大官方入口'), '要封「四大官方入口」');
+  assert.ok(src.includes('改一行就通'), '要封「圖書館改一行就通」');
+  // 一定係 global regex，否則 matchAll 會 throw
+  const staleBlock = src.slice(src.indexOf('const STALE = ['), src.indexOf('];', src.indexOf('const STALE = [')));
+  const res = staleBlock.match(/\[\/.*?\/g,/gs) || [];
+  assert.ok(res.length >= 3, 'STALE 的 regex 必須有 /g flag');
+  // unless 逃生門：引用舊講法做證據時唔應該報
+  assert.ok(src.includes('unless'), '要有 unless 逃生門，否則「已撤回」嘅引用會被誤判');
+});
