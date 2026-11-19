@@ -131,7 +131,7 @@ MCP [`server-instructions.ts`](https://github.com/colbymchenry/codegraph/blob/f7
 | 負向測試、CI 強制 browser、packed artifact smoke | 本倉現有 gates 之外的逐 app 驗收 | 負向測試文化本倉已有；browser／packed smoke 屬各 app 驗收，未加 |
 | Actions 釘 commit SHA（[A16](03-security.md#a16--供應鏈) 本來就有條文，但本倉 CI 未跟） | `.github/workflows/guard.yml`＋`templates/github/guard.yml` | **已落實（2026-11-08）**：兩個 action 釘 v4.4.0 SHA（GitHub API 核實）；`guard.mjs` 新增 A16 檢查（本機 `./` 豁免、docker 要 digest），`scripts/actions_pin.test.mjs` 7 項測試守 |
 
-**工具本體判級不變**：API Anything 只可作本機一次性 read-only 偵察，事前先查官方 API／ToS（[25 §5](25-reverse-api-reuse.md)／[15](15-resource-index.md)），用 local-only、唔學寫入／登入頁、唔入 app 依賴。CodeGraph 只喺某個 React／Next 倉真係有「開幾十個 file 先答到」嘅痛先試，唔全倉安裝；`.codegraph/` 係可再生產物，唔 commit（[20](20-repo-health-audit.md)／[21](21-fix-plans.md)）。單一 HTML／Canvas 唔需要為此加 runtime。
+**工具本體判級不變**：API Anything 只可作本機一次性 read-only 偵察，事前先查官方 API／ToS（[25 §5](25-reverse-api-reuse.md)／[15](15-resource-index.md)），用 local-only、唔學寫入／登入頁、唔入 app 依賴。CodeGraph 只喺某個 React／Next 倉真係有「開幾十個 file 先答到」嘅痛先試，唔全倉安裝；`.codegraph/` 係可再生產物，唔 commit（[20](20-repo-health-audit.md)／[21](57-ecportal-to-vsportal-migration.md)）。單一 HTML／Canvas 唔需要為此加 runtime。
 
 ## 6. 查證限制／維護
 

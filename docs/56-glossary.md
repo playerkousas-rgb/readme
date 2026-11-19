@@ -10,7 +10,7 @@
 |---|---|---|
 | **真理倉** | 即係呢個 repo（`playerkousas-rgb/readme`）。所有子 App 共用嘅規則、模板、檢查都喺呢度 | [README](../README.md) |
 | **子 App** | 由真理倉派規則去管嘅 app repo（約 69 個有公開網址） | [docs/51](51-whitelist-rollout-list.md) |
-| **專案案例** | 只適用某一個專案、**唔係通用底線**嘅設定（例如 ecportal 旅團／進度追蹤）。出現「案例」字樣就要當隔離 | [docs/19](19-ecportal-troop-case.md) |
+| **專案案例** | 只適用某一個專案、**唔係通用底線**嘅設定（例如 ecportal 旅團／進度追蹤）。出現「案例」字樣就要當隔離 | [docs/58](58-multilevel-system-patterns.md) |
 | **起手包** | `templates/repo-starter/`，一抄即用嘅新 repo 骨架 | [START](../templates/repo-starter/START.md) |
 | **12 樣核心／13a–13e／第 14 項** | 起手包分三層：12 樣必加；13 係按形式加（13a 設計 review／13b skills／13c skill 模板／**13d PREFLIGHT 必跑**／**13e 金魚審留低**）；14 係有身份系統先加 | [START](../templates/repo-starter/START.md) |
 | **六角度** | `final_check` 嘅六個檢查角度：Vercel／Git／程序員／系統架構師／AI Agent／一般用戶 | [docs/17 §1](17-final-check-and-tutorial.md) |

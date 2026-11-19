@@ -106,12 +106,12 @@ def search_products(q: str) -> list[dict]:
 | 回傳空殼但 HTTP 200 | `core.process_source` 抽到 0 筆保留舊指紋 + `error_sources`（案例 A 嘅教訓） |
 | 憑證寫入 Git | [A1](03-security.md)／[W6](12-copyright-scout-system.md)；[25](25-reverse-api-reuse.md) §6 有個真實 P0 例子 |
 | 部署包被 Playwright 撐爆 | [S](01-slim.md)；`scout-circulars` 實測 driver 137MB，只放 CI runner |
-| 每日 commit 可再生 JSON | [docs/20](20-repo-health-audit.md)／[21](21-fix-plans.md)：改 `data` 分支單一快照／30 日 artifact |
+| 每日 commit 可再生 JSON | [docs/20](20-repo-health-audit.md)：改 `data` 分支單一快照／30 日 artifact |
 
 ## 6. 對應返你哋嘅規矩
 
 - **P1**：動手前先查 `api` + 寫「冇官方 API 實錄」（[`api/docs/wosm.md`](https://github.com/playerkousas-rgb/api/blob/main/docs/wosm.md)）＋可行性表（[`hkcamping/TRANSPORT-API-FEASIBILITY.md`](https://github.com/playerkousas-rgb/hkcamping/blob/main/TRANSPORT-API-FEASIBILITY.md)）。
-- **A／VL7**：`authorization`／`x-client-id` 一律 server-side；[EXTERNAL](../EXTERNAL.md)「外部系統零特權」。
+- **A／VL7**：`authorization`／`x-client-id` 一律 server-side；[A18 零特權](03-security.md)「外部系統零特權」。
 - **F**：fail closed、白名單、零筆即失敗、dry-run。
 - **V／W**：交付檔要雙版號 + © SCOUT SYSTEM；第三方素材標來源（W8）。
 - **S**：client 用 stdlib／內建 `fetch`，唔好為咗一支 endpoint 加一套 SDK。

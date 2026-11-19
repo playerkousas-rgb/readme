@@ -1,12 +1,12 @@
 # 17 — 最終檢查實測 ＋ STEP BY STEP 用戶教學
 
 > **案例隔離**：本檔係通用規則。檔內 `UNIT_*`／`DOWNSTREAM_*`／`ALLOW_LOCAL_LOGIN` 等只係**中性示例名**；
-> ecportal 旅團／進度追蹤嘅具體專案設定全部喺 [19 專案案例](19-ecportal-troop-case.md)（**唔係通用規則，新 app 唔使跟名**）；repo 健康 → [20](20-repo-health-audit.md)。
+> **ecportal 已退役（2026-11-19；新系統 = VSPORTAL）**：舊案例已刪，退場見 [57](57-ecportal-to-vsportal-migration.md)；想參考多層系統嘅可選模式 R1–R8 → [58](58-multilevel-system-patterns.md)（**唔係通用規則，新 app 唔使跟**）；repo 健康 → [20](20-repo-health-audit.md)。
 
 
 > **一句話**：`node scripts/final_check_v1.0.mjs` = 一條命令跑**六角度自動檢查** + 印**人手實測清單**。
 > 同一條命令喺真理倉同新 app repo 都用得（自動偵測 mode）。
-> 全綠 ≠ 完成，下面 7 條人手實測一定要做（第 7 條嚟自 [19 專案案例](19-ecportal-troop-case.md)：新部署要真機跑一次）。對應要求：寫完 app 要用唔同角度實測一次；教學要短、STEP BY STEP、一般用戶睇得明。
+> 全綠 ≠ 完成，下面 7 條人手實測一定要做（第 7 條嚟自 [58 可選模式](58-multilevel-system-patterns.md)：新部署要真機跑一次）。對應要求：寫完 app 要用唔同角度實測一次；教學要短、STEP BY STEP、一般用戶睇得明。
 
 ```bash
 node scripts/final_check_v1.0.mjs                          # 六角度報告
@@ -25,7 +25,7 @@ node scripts/final_check_v1.0.mjs --json                  # AI agent 用
 | **① Vercel 官方** | build 到、env 唔漏、region 啱 | `vercel.json` 用 `--include=dev`（唔好 `--omit=dev`）、`dist`、`hkg1`；`.env.example` 只有 key 名 | Preview + Production 各開一次；F12 無 error |
 | **② Git 官方** | 無 secret、無大檔、CI 會跑 | `.gitignore` 擋 `.env*`／`node_modules`／`dist`；CI workflow 存在 | PR 頁 CI 全綠先 merge |
 | **③ 程序員** | code 真係行到 | `guard --ci` + `node --test` 全綠 | 改一行 code 再跑，確認測試捉到 |
-| **④ 系統架構師** | 單一真理，冇兩份唔同步 | 部署拷貝 sync **兩次結果一樣**；contract `fileVersion` + 版權；**as-built 4 份案例 + README 引用 + docs/18／19／20** | 新舊檔對一次版號四處一致；新部署真機跑一次 |
+| **④ 系統架構師** | 單一真理，冇兩份唔同步 | 部署拷貝 sync **兩次結果一樣**；contract `fileVersion` + 版權；**案例／審計檔齊（57 退場、58 可選模式、20 健康、22 handoff）+ README 引用 + 6 份舊案例已確認刪除** | 新舊檔對一次版號四處一致；新部署真機跑一次 |
 | **⑤ AI Agent** | 文件可解析、無矛盾 | 入口檔齊；PLAYBOOK 規則 ID + 5MB 上限齊；**通用規則同 19 專案案例已分離** | 叫 Agent 由頭做 STEP 3–7 |
 | **⑥ 一般用戶** | 開到、無 key、版權版號見到 | 所有交付 HTML 審計 → 0 FAIL | `file://`、手機、斷網、解碼器各試一次 |
 
@@ -44,7 +44,7 @@ node scripts/final_check_v1.0.mjs --json                  # AI agent 用
 > ④ **金魚審**（文件要交畀其他人／其他 AGENT 執行）→ [docs/52](52-fresh-eyes-review.md)
 
 **STEP 0 — 定邊界（1 分鐘，多單位系統先需要）**：答三句 —— ① 邊個准改邊層？② 呢個元件嘅「唔做清單」係乜？③ 新功能入咗功能 registry 未？
-呢三句係**可選做法**，具體案例喺 [19 專案案例](19-ecportal-troop-case.md)（**唔係通用底線**）；[PLAYBOOK §8.1](../PLAYBOOK.md) 係案例隔離指針。
+呢三句係**可選做法**，具體案例喺 [58 可選模式](58-multilevel-system-patterns.md)（**唔係通用底線**）；[PLAYBOOK §8.1](../PLAYBOOK.md) 係案例隔離指針。
 
 **STEP 1 — 揀類型（30 秒）**：工具（無資料）→ 只要 S/A/W/V；App（有資料）→ 全套 + 設定層 + 備份；**系統**（多單位／有身份）→ 再加**設定層 + 隱藏超管 + registry + 審計鏈**。你講「系統」= 自動第三類。
 
@@ -126,7 +126,7 @@ node scripts/final_check_v1.0.mjs --html myapp_v1.0.html
 4. 一般用戶：成品圖放入解碼器，應該讀到水印 payload。
 5. Vercel：Preview + Production 各開一次；F12 Console 無 error。
 6. Git：PR 頁 CI 全綠先 merge；merge 後睇 deployment log。
-7. 系統架構師（[19 案例教訓](19-ecportal-troop-case.md)，**本地回歸綠唔算完成**）：新部署真機跑一次 —— GAS 302 轉址、Drive 權限、Script Properties 配額、`onOpen` 選單授權、中央登入回打驗票，逐項喺真 URL／真 Sheet 試。
+7. 系統架構師（[58 可選模式](58-multilevel-system-patterns.md)，**本地回歸綠唔算完成**）：新部署真機跑一次 —— GAS 302 轉址、Drive 權限、Script Properties 配額、`onOpen` 選單授權、中央登入回打驗票，逐項喺真 URL／真 Sheet 試。
 
 ---
 
@@ -153,10 +153,10 @@ node scripts/final_check_v1.0.mjs --html myapp_v1.0.html
 | **5 分鐘** | [00-quickcard](00-quickcard.md) + 本檔 §2 |
 | **20 分鐘** | [README](../README.md) + [PLAYBOOK](../PLAYBOOK.md) |
 | 撞到問題 | README §1 導覽 → 對應 `docs/` |
-| 想知原檔有乜我漏咗 | [18 對照審計](18-as-built-gap-audit.md) |
-| 睇旅團專案設定（唔係通用） | [19 專案案例](19-ecportal-troop-case.md) |
+| 想知原檔有乜我漏咗 | [57 退場](57-ecportal-to-vsportal-migration.md) |
+| 睇旅團專案設定（唔係通用） | [58 可選模式](58-multilevel-system-patterns.md) |
 | 邊個 repo 有問題／API 同 PROMPT 留唔留 | [20 repo 健康審計](20-repo-health-audit.md) |
-| 實際點修 | [21 修復方案](21-fix-plans.md) |
+| 實際點修 | [57 退場](57-ecportal-to-vsportal-migration.md) |
 | 改規則 | PLAYBOOK + 對應 doc + `guard.mjs` + `templates/`（[F16](02-foolproof.md#f16--三處同步-checklist最常出事)） |
 | AI Agent | `AGENTS.md` 頭 12 行 → README → PLAYBOOK → `final_check --json` |
 

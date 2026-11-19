@@ -1,7 +1,7 @@
 # 36 — 懶人工程／免費 Coding Agent／Blender 城市／9 個開源平替核實
 
 > 呢份管用戶提供嘅**第 3 份爆紅清單**（Ponytail「教 AI 偷懶」／Concept Studio Blender 倒城市／FreeBuff 免費 Coding Agent／9 個收費軟件開源平替，共 4 條片 12 個位）：逐項用 **GitHub API（2026-11-06 快照）**核實 repo／星數／授權，並按「我哋 SCOUT SYSTEM 棧（Git＋Vercel＋GAS＋Supabase＋Gemini Canvas／單一 HTML）」評估邊個啱用。
-> 收錄方式同 [34](34-ai-workflow-tools.md)／[35](35-viral-ai-tools.md) 一致：保留上游連結、授權、限制，唔搬成套 repo 入本倉；**本頁唔新增規則 ID，亦唔代表已安裝或試跑任何外部工具**。語音見 [34 §5](34-ai-workflow-tools.md#5-voxcpm2本機-tts聲音設計克隆同意同-ai-標記係前置條件)／[35 §4](35-viral-ai-tools.md#4-維持原判本輪只更新星數快照)；Skill 治理見 [29](29-reading-map.md)；外部系統接入見 [EXTERNAL.md](../EXTERNAL.md)。
+> 收錄方式同 [34](34-ai-workflow-tools.md)／[35](35-viral-ai-tools.md) 一致：保留上游連結、授權、限制，唔搬成套 repo 入本倉；**本頁唔新增規則 ID，亦唔代表已安裝或試跑任何外部工具**。語音見 [34 §5](34-ai-workflow-tools.md#5-voxcpm2本機-tts聲音設計克隆同意同-ai-標記係前置條件)／[35 §4](35-viral-ai-tools.md#4-維持原判本輪只更新星數快照)；Skill 治理見 [29](29-reading-map.md)；外部系統接入見 [A18](03-security.md)。
 >
 > **一句結論先講**：真正值得即刻吸收嘅只有 Ponytail 條**「寫 code 前七級梯」**（§2，已改寫成我哋可直接用嘅 checklist，唔使裝佢成套 plugin）；其餘 11 個位全部係「端用家自己試／有場景先試／暫不採用」，冇一個應該入現有 app 嘅依賴。FreeBuff 更加**唔好用嚟開真 repo**（§3，佢自己 README 寫明數據可攞去訓練兼可分享／出售畀第三方）。
 
@@ -91,8 +91,8 @@
 | OpenSEO（替 SEMrush） | **唔採用（身份未確認）** | 同名 repo 至少 4 個，冇一個功能／活躍度對得上片講嘅全套 SEO 工具；喺身份未確認前裝任何一個都係亂裝。我哋站 SEO 暫時人手＋Google Search Console 已夠；真有排名追蹤需求嗰陣，重新按 P1 流程揀（寫明揀邊個 repo／邊個 commit） |
 | AppFlowy（替 Notion） | **唔採用** | AGPL-3.0（自用唔受 copyleft 影響，但分發改版要小心）；決定性理由係重複：我哋嘅文件真理已經係 Git Markdown＋本倉，團隊筆記再開一套 workspace 只會多一個真理源（犯 F1）。個人自己鍾意用嚟做私人筆記係個人選擇，唔入本倉登記 |
 | OpenWhispr（替 Flow） | **端用家可試** | MIT、本地 Parakeet／Whisper 離線聽寫＋BYOK；同我哋 app 無關，純粹打字／寫文件嘅個人生產力工具。試嗰陣留意：雲端模式（BYOK）音訊會出機、咪高峰權限畀邊個 app；會議／成員對話唔好喺未確認模式下用雲端聽寫（A12） |
-| OpenProject（替 Asana） | **暫不採用** | GPL-3.0 老牌穩，但自架重；我哋項目管理已有 Git＋ecportal 旅團系統（[19 案例](19-ecportal-troop-case.md)）。真係要跨團隊甘特／工時嗰種規模，先按系統類（PLAYBOOK §0 第三類）正式評估，唔好順手開個 server 就當用咗 |
-| Cal.diy／Cal.com（替 Calendly） | **有場景先試（託管優先）** | 真有「畀家長／領袖自己揀時間」嗰類預約場景先有價值；姿勢係 [EXTERNAL.md](../EXTERNAL.md) 模式 A 連結去託管版，零 infra。自架版要養 Next.js＋DB，唔值得為一條預約連結做；要用先核實託管版收費／私隱條款 |
+| OpenProject（替 Asana） | **暫不採用** | GPL-3.0 老牌穩，但自架重；我哋項目管理已有 Git＋ecportal 旅團系統（[19 案例](58-multilevel-system-patterns.md)）。真係要跨團隊甘特／工時嗰種規模，先按系統類（PLAYBOOK §0 第三類）正式評估，唔好順手開個 server 就當用咗 |
+| Cal.diy／Cal.com（替 Calendly） | **有場景先試（託管優先）** | 真有「畀家長／領袖自己揀時間」嗰類預約場景先有價值；姿勢係 [A18](03-security.md) 模式 A 連結去託管版，零 infra。自架版要養 Next.js＋DB，唔值得為一條預約連結做；要用先核實託管版收費／私隱條款 |
 | Chatwoot（替 Intercom） | **暫不採用** | 核心 MIT、enterprise 部分另授權（NOASSERTION 就係呢個意思，採用前要分清用到邊部分）；自架重 infra。我哋「用戶搵管理員」嘅需求已有 [31 ADMIN 回報系統](31-system-basics.md) 內建路線；真係要全渠道客服 inbox（網站 live chat＋email 同一收件匣）嗰陣先重估 |
 | Cap（替 Loom） | **端用家可試** | 桌面錄屏＋分享連結，錄教學片（呼應 [17 用戶教學](17-final-check-and-tutorial.md)）係啱用場景；主體 AGPL-3.0（cap-camera／scap 部分 MIT）——自己錄自己用冇授權問題，改版分發先要理。錄到成員樣貌／畫面有個人資料嗰陣，跟 A12 處理分享範圍。託管分享版條款未核實，先試本地錄製 |
 

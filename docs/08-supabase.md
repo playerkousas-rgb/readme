@@ -1,7 +1,7 @@
 # 08 — Supabase（U1–U12）
 
 > **案例隔離**：本檔係通用規則。檔內 `UNIT_*`／`DOWNSTREAM_*`／`ALLOW_LOCAL_LOGIN` 等只係**中性示例名**；
-> ecportal 旅團／進度追蹤嘅具體專案設定全部喺 [19 專案案例](19-ecportal-troop-case.md)（**唔係通用規則，新 app 唔使跟名**）；repo 健康 → [20](20-repo-health-audit.md)。
+> **ecportal 已退役（2026-11-19；新系統 = VSPORTAL）**：舊案例已刪，退場見 [57](57-ecportal-to-vsportal-migration.md)；想參考多層系統嘅可選模式 R1–R8 → [58](58-multilevel-system-patterns.md)（**唔係通用規則，新 app 唔使跟**）；repo 健康 → [20](20-repo-health-audit.md)。
 
 
 > 定位：**跨平台共用數據**（Push 訂閱、通告 cache、統計、Auth、Storage）。
@@ -21,7 +21,7 @@ supabase/
 ```
 
 - `supabase db push` / CI 跑 migration；**Dashboard 手改 schema = 冇得重現**。
-- `seed.sql` 只放 non-sensitive 假資料；MOCK 數據要標 `_exportedFrom:'mock'`（[BUILD.md §9](../BUILD.md)）。
+- `seed.sql` 只放 non-sensitive 假資料；MOCK 數據要標 `_exportedFrom:'mock'`（[58](58-multilevel-system-patterns.md)）。
 
 ---
 
@@ -69,7 +69,7 @@ create policy "service_select" on public.push_subscriptions
 
 - 訂閱表只存 `endpoint_hash` / `client_token_hash` / `branch_ids` / `topic_ids` / `source`。
 - **唔存** 會員 ID、email、姓名、電話、身份證。
-- 統計（`subscription_stats.py`）出到「幾多人訂、訂咩」，但**唔知邊個**（[BUILD.md §4](../BUILD.md)）。
+- 統計（`subscription_stats.py`）出到「幾多人訂、訂咩」，但**唔知邊個**（[58](58-multilevel-system-patterns.md)）。
 - `source` 欄分開 library / system / mock，統計唔會撈亂。
 
 ---
@@ -132,7 +132,7 @@ Deno.serve(async (req) => {
 ```
 
 - 系統做嘅嘢 = **訂閱設定前端**：用戶揀單位 × 分類 → service worker（用圖書館 VAPID public key）→ 寫入同一張表。
-- 設定存用戶本機 LocalStorage（**非敏感偏好**），server 唔存身份（[EXTERNAL.md §3](../EXTERNAL.md)）。
+- 設定存用戶本機 LocalStorage（**非敏感偏好**），server 唔存身份（[A18](03-security.md)）。
 - 圖書館要改：`require_same_origin` 加 origin allowlist，認住各單位系統網址（A9）。
 - 同一通告只推一次（F6 冪等）。
 - 統計照舊出到訂閱數增長、單位／項目分佈、30 日活躍。

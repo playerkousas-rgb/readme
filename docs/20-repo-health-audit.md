@@ -3,17 +3,17 @@
 > 日期 **2026-10-27**。檢查方法：`gh api` metadata + recursive tree、**shallow clone 11 個 repo 去 `/tmp` 實際睇碼**、
 > secret pattern scan（current tree）、`git log -S` 查歷史私鑰、`npm audit --package-lock-only`、逐個 workflow 睇。
 > **只係審計，冇改過你任何一個 repo、冇 commit／push。**
-> 相關：[15 資源索引](15-resource-index.md)（查找入口）、[19 旅團案例](19-ecportal-troop-case.md)（專案嘢）、[18 對照審計](18-as-built-gap-audit.md)。
-> **➡️ 點修（已實測）：[21 修復方案](21-fix-plans.md)**；想交畀 `scout-circulars` AGENT 做 → [22 handoff](22-scout-circulars-agent-handoff.md)。 —— prompt 升級指令、scout-circulars 保留 JSON 嘅 workflow 改法、兩個 badge repo 嘅零停機雙軌修法。
+> 相關：[15 資源索引](15-resource-index.md)（查找入口）、[58 可選模式](58-multilevel-system-patterns.md)（專案嘢）、[57 退場](57-ecportal-to-vsportal-migration.md)。
+> **➡️ 點修（已實測）：[57 退場](57-ecportal-to-vsportal-migration.md)**；想交畀 `scout-circulars` AGENT 做 → [22 handoff](22-scout-circulars-agent-handoff.md)。 —— prompt 升級指令、scout-circulars 保留 JSON 嘅 workflow 改法、兩個 badge repo 嘅零停機雙軌修法。
 
 ---
 
 ## 0. 先答你兩條問題
 
 **①「你已經查找完並寫入好東西了對吧？」— 係，已完成。**
-- 逐行讀完 4 份原檔（596 行），寫咗 [18 對照審計](18-as-built-gap-audit.md)：我漏咗乜、佢哋有乜好系統。
-- 由案例抽出嘅教訓 + 你嘅指示，已搬去 [19 專案案例](19-ecportal-troop-case.md)（**同通用規則分開**）。
-- guard 加咗 `checkAsBuilt()`（[18](18-as-built-gap-audit.md)）、final_check 六角度加 as-built 留存 + MANUAL 第 7 條、docs/15 加五 repo 索引。
+- 逐行讀完 4 份原檔（596 行），寫咗 [57 退場](57-ecportal-to-vsportal-migration.md)：我漏咗乜、佢哋有乜好系統。
+- 由案例抽出嘅教訓 + 你嘅指示，已搬去 [58 可選模式](58-multilevel-system-patterns.md)（**同通用規則分開**）。
+- guard 加咗 `checkAsBuilt()`（原 docs/18 落差審計，已隨 ecportal 案例刪除 → 見 [57](57-ecportal-to-vsportal-migration.md)）、final_check 六角度加 as-built 留存 + MANUAL 第 7 條、docs/15 加五 repo 索引。
 - 今次再實際查咗 **11 個 repo** 嘅碼（唔只係 README），下面係結果。
 
 **②「API 同 PROMPT 兩個 GIT 要保留嗎？」— 兩個都保留，但 `prompt` 要即刻修。**
@@ -91,7 +91,7 @@
 
 | 優先 | Repo | 問題 | 證據 |
 |------|------|------|------|
-| 中（**可推遲**） | `cubsbadge`／`scoutbadge` | **兩套 sig 並存，舊嗰套可重放（只喺三層樹狀接入模式先中）** | 兩個 repo 已经有 `verifyLinkSig` + `LINK_SIG_WINDOW_MS`（±5min + nonce，部分對齊 VS／RS），但**舊路徑仍然 callable**：`cubsbadge` `action==='ecSigLogin'` → `ecSigLogin()` 用 `childId\|sub\|role\|children\|target\|exp\|jti` + `EC_SIG_MAX_TTL=30*60`，**冇 nonce／冇 ts**；`scoutbadge` `verifyPortalSig()` 用 `childId\|sub\|scope\|exp`，同樣得 TTL。即係舊登入飛喺 30–60 分鐘內可以重放。**但呢個係「旅→團→進度」三層接入先會出現嘅路徑；單位獨立使用時冇上游簽 sig，實際攻擊面不存在** → 用戶可以繼續獨立用、之後先一併接入。對應 [19 §6.1](19-ecportal-troop-case.md) 同 [21 §3.5](21-fix-plans.md)。 |
+| 中（**可推遲**） | `cubsbadge`／`scoutbadge` | **兩套 sig 並存，舊嗰套可重放（只喺三層樹狀接入模式先中）** | 兩個 repo 已经有 `verifyLinkSig` + `LINK_SIG_WINDOW_MS`（±5min + nonce，部分對齊 VS／RS），但**舊路徑仍然 callable**：`cubsbadge` `action==='ecSigLogin'` → `ecSigLogin()` 用 `childId\|sub\|role\|children\|target\|exp\|jti` + `EC_SIG_MAX_TTL=30*60`，**冇 nonce／冇 ts**；`scoutbadge` `verifyPortalSig()` 用 `childId\|sub\|scope\|exp`，同樣得 TTL。即係舊登入飛喺 30–60 分鐘內可以重放。**但呢個係「旅→團→進度」三層接入先會出現嘅路徑；單位獨立使用時冇上游簽 sig，實際攻擊面不存在** → 用戶可以繼續獨立用、之後先一併接入。對應 [58](58-multilevel-system-patterns.md) 同 [21 §3.5](57-ecportal-to-vsportal-migration.md)。 |
 | 中 | 10/11 個 repo | **有測試但冇 CI** | `vsbadge`(11)／`roverbadge`(30)／`cubsbadge`(12)／`scoutbadge`(16) 測試檔全部存在，但 `.github/workflows` = **0** → 測試只會喺人手 `npm test` 時跑；`GEMINI`(4)／`decode`(3) 同理。只有 `scout-circulars` 有 CI。 |
 | 中 | `prompt` | 見 §2 | critical advisories + 無 CI + `.gitignore` 漏 `.env.production` |
 | 低 | `api` | 無 `.gitignore`、無 CI、無 LICENSE、`verified=2026-09-29` 已一個月 | 30 個檔／0.1 MiB 純 docs + CSV；`docs/15` 靠佢生表，建議季度重驗 API 可用性（香港免費 API 好易失效）。 |
@@ -120,7 +120,7 @@ npm run build                   # 確認 build 過到
 3. 歷史清理先**唔好急住做**：要 `git filter-repo` + force push + 通知所有 clone 過嘅人；先停止每日寫入，等新 history 唔再膨脹，再揀時間做大手術。
 
 **P2 — 跟手做**
-- `cubsbadge`／`scoutbadge`：將 `ecSigLogin`／`verifyPortalSig` 舊路徑加 nonce + ts（照 [19 §5](19-ecportal-troop-case.md) 嘅雙通道做法），或直接停用舊 action，只留 `verifyLinkSig`。
+- `cubsbadge`／`scoutbadge`：將 `ecSigLogin`／`verifyPortalSig` 舊路徑加 nonce + ts（照 [58](58-multilevel-system-patterns.md) 嘅雙通道做法），或直接停用舊 action，只留 `verifyLinkSig`。
 - 四個 badge repo + `GEMINI` + `decode`：各加一條 CI 跑現成測試（`node --test`／`npm test`），唔使改碼。
 - `api`：加 `.gitignore`（最少 `.env*`）+ 一個季度重驗 workflow（probe CSV 啲 URL，標 `hk_status`）；補 LICENSE。
 - 全部 repo：揀一個 LICENSE（例如 MIT／CC-BY 畀 `api` 數據），並喺 GitHub Settings 開 main branch protection（我呢邊 token 無權讀，要你手動確認）。

@@ -1,7 +1,7 @@
 # PLAYBOOK — 核心規範總綱（唯一規則編號表）
 
 > **點用**：呢份係「必看」嘅濃縮版。每條規則有一個 ID（S/F/A/W/V/G/VL/X/U/C/P/L/I/UP/SG）。
-> **案例隔離**：由 ecportal 案例抽出嘅「可選模式」R1–R8 已移去 [docs/19](docs/19-ecportal-troop-case.md)，**唔係通用底線**；新 app 守 S/F/A/W/V、P1 ＋ 技術棧契約。checklist、CI、PR template 全部用 ID 引用，唔好改 ID。
+> **案例隔離（2026-11-19 更新）**：ecportal 案例已退役刪除（[docs/57](docs/57-ecportal-to-vsportal-migration.md)）；由佢抽出嘅「可選模式」R1–R8 已通用化去 [docs/58](docs/58-multilevel-system-patterns.md)，**唔係通用底線**；新 app 守 S/F/A/W/V、P1 ＋ 技術棧契約。checklist、CI、PR template 全部用 ID 引用，唔好改 ID。
 > **層級**：呢份 = 所有 app 嘅**最低要求**。個別 app 可以加嚴，唔可以減；要減就喺 PR 寫例外原因 + 補償措施。
 > 深挖：每個章節尾有對應 `docs/` 連結。
 
@@ -26,7 +26,7 @@
 |------|------|----------|
 | **工具（stateless）** | 密碼產生器、日期計算機、Canvas 小工具 | 純前端、無後端無儲存 → 只需 S6/S7、A11、C 系列；**唔需要設定層同超管** |
 | **App（有資料）** | 表單、記錄冊、通告頁 | 全套 S/F/A ＋ 設定層 ＋ 備份；超管視乎有冇帳號 |
-| **系統（多層／多單位／有身份）** | ecportal 旅團系統、管理平台 | **全套 ＋ 設定層 ＋ 隱藏超管 ＋ registry ＋ 審計鏈，一個都唔少** |
+| **系統（多層／多單位／有身份）** | VSPORTAL 支部系統、多層管理平台 | **全套 ＋ 設定層 ＋ 隱藏超管 ＋ registry ＋ 審計鏈，一個都唔少** |
 
 > 用戶講「系統」兩個字 = 自動當第三類，**設定層同隱藏超管係硬性交付物**，唔係 nice-to-have。
 > 無論邊一類，**S 瘦身／F 防呆／A 安全／W COPYRIGHT SCOUT SYSTEM／V 雙版號** 五套通用規則全部適用。
@@ -288,19 +288,18 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | **資源查找** | 上游 `f/prompts.chat` → 自己 `prompt` Prompt Studio → `api` 香港 API 天書 → 呢個 repo 嘅 W/V 規則；索引只放連結，唔複製內容（F1） | [docs/15-resource-index.md](docs/15-resource-index.md) |
 | **設計資源** | 開新 repo 揀設計：素材（`bradtraversy`）→ 靈感＋UX（`awesome-design`）→ design language `DESIGN.md`（`awesome-design-md`）→ 系統設計（`system-design-primer`）→ UI 組件（`ant-design`／`astryx` 只做 **CSS 變數 theme + 互動慣例**參考，見 [23 §2.6](docs/23-design-resources.md#26-metaastryxreact-19--stylexbetamit-只抄-token-概念)）；落 repo 要留 `CREDITS.md`（W8）＋ 圖標跟 G11 | [docs/23-design-resources.md](docs/23-design-resources.md) |
 | **實戰案例** | `童軍漫畫生成器 v4.2.1`（2.04MB 單一 HTML）：V1 雙版號腐爛、`?key=`、水印 v1、C13 請求代理實證；升級路線 + 審計器 | [docs/16-canvas-case-scout-comic.md](docs/16-canvas-case-scout-comic.md) |
-| **對照審計** | 原有 4 份 as-built 檔 vs 新系統：漏咗乜、佢哋有乜好系統我冇 | [docs/18-as-built-gap-audit.md](docs/18-as-built-gap-audit.md) |
-| **專案案例（唔係通用）** | ecportal 旅團／進度追蹤：五級階梯、`UNIT_*`／`DOWNSTREAM_*`、舊 sig、五個 repo | [docs/19-ecportal-troop-case.md](docs/19-ecportal-troop-case.md) |
+| **退役記錄** | ecportal 6 份案例檔點解刪、依賴清單、5 個 live repo 現況 | [docs/57](docs/57-ecportal-to-vsportal-migration.md) |
+| **多層系統可選模式（唔係通用）** | R1–R8（定級別／唔做清單／registry／接駁／上游控下游／回傳三條／身份錨點／診斷）＋ VSPORTAL 現行架構 | [docs/58](docs/58-multilevel-system-patterns.md) |
 | **Repo 健康** | 11 個 repo 審計：`api`／`prompt` 留唔留、邊個有 critical／158MB | [docs/20-repo-health-audit.md](docs/20-repo-health-audit.md) |
 
 ---
 
 ## 8.1 專案案例隔離（**唔係通用規則**）
 
-> 2026-10-27 用戶指示：**旅團／進度追蹤管理系統唔屬通用設定，要分開寫。**
-> 所以原本放喺呢度嘅 R1–R8（五級階梯、模組註冊制、接駁 registry、`ALLOW_LOCAL_LOGIN`、身份錨點等）
-> 已全部搬去 **[docs/19 專案案例](docs/19-ecportal-troop-case.md)**，並標明為「可選模式，唔係通用底線」。
+> 2026-10-27 用戶指示：**多單位管理系統嘅設定唔屬通用，要分開寫。**
+> **2026-11-19 更新**：ecportal 已退役；佢嘅 R1–R8（定級別、模組註冊制、接駁 registry、`ALLOW_LOCAL_LOGIN`、身份錨點等）已**通用化**（拎走舊專案名）搬去 **[docs/58 可選模式](docs/58-multilevel-system-patterns.md)**，並標明「唔係通用底線」。舊案例本身喺 git history。
 > 通用技術機制（A7 雙通道 sig／F4 fail closed／F11 備份／U4 推送只存 hash）仍然留喺本檔同對應 `docs/`。
-> 各 repo 有乜病（critical 漏洞／158MB）→ [docs/20](docs/20-repo-health-audit.md)；點解當初抽咗出嚟 → [docs/18](docs/18-as-built-gap-audit.md)。
+> 各 repo 有乜病（critical 漏洞／158MB）→ [docs/20](docs/20-repo-health-audit.md)；點解當初抽咗出嚟 → [docs/57](docs/57-ecportal-to-vsportal-migration.md)。
 
 **判準**：一個設定係咪通用，睇佢係咪「換咗業務都仍然成立」。
 `ALLOW_LOCAL_LOGIN` fail closed、`sig` 雙通道、備份驗 hash → 通用；
@@ -335,7 +334,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 
 一個 change 要被稱為「完成」，必須同時：
 
-- [ ] 多單位系統：職責邊界／唔做清單／功能 registry 已定（可選模式見 [docs/19](docs/19-ecportal-troop-case.md)）
+- [ ] 多單位系統：職責邊界／唔做清單／功能 registry 已定（可選模式 R1–R3 見 [docs/58](docs/58-multilevel-system-patterns.md)）
 - [ ] `node scripts/guard.mjs` 綠（本機 + CI）
 - [ ] `node scripts/final_check_v1.0.mjs` 六角度全綠 + 7 條人手實測做咗（[docs/17](docs/17-final-check-and-tutorial.md)）
 - [ ] 單一 HTML artifact：`node scripts/audit_single_html_v1.0.mjs <檔名>` 無 FAIL（C13-f）

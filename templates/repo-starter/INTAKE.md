@@ -36,7 +36,7 @@
       並加第 14 項 [docs/system-basics.md](docs/system-basics.md)（忘記密碼等 8 樣 + ADMIN 回報系統 8 樣）。
 
 ❓ Q4 — 有冇後台／server-side code？（Vercel /api、GAS .gs、Supabase）
-   ➡️ 建議：無。有就要 .env.example、.vercelignore、零特權（EXTERNAL）、
+   ➡️ 建議：無。有就要 .env.example、.vercelignore、零特權（A18）、
       /api/proxy scope 檢查、AUDIT_LOG；純 vercel.json rewrite 唔當後台。
 
 ❓ Q5 — 係咪 Gemini／Canvas app？邊種結構 A 全開放／B 隱藏水印／C 腦殼分離？

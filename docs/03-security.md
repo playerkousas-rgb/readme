@@ -1,7 +1,7 @@
 # 03 — 安全（A1–A18）
 
 > **案例隔離**：本檔係通用規則。檔內 `UNIT_*`／`DOWNSTREAM_*`／`ALLOW_LOCAL_LOGIN` 等只係**中性示例名**；
-> ecportal 旅團／進度追蹤嘅具體專案設定全部喺 [19 專案案例](19-ecportal-troop-case.md)（**唔係通用規則，新 app 唔使跟名**）；repo 健康 → [20](20-repo-health-audit.md)。
+> **ecportal 已退役（2026-11-19；新系統 = VSPORTAL）**：舊案例已刪，退場見 [57](57-ecportal-to-vsportal-migration.md)；想參考多層系統嘅可選模式 R1–R8 → [58](58-multilevel-system-patterns.md)（**唔係通用規則，新 app 唔使跟**）；repo 健康 → [20](20-repo-health-audit.md)。
 
 
 > **唯一假設**：前端已經被攻陷。任何喺瀏覽器／Canvas／Sheet 見到嘅嘢，都可能被改、被讀、被重放。
@@ -123,7 +123,7 @@ sig       = hex( HMAC-SHA256( canonical, sigKey ) )
 | 比較 | 兩邊各自 SHA-256 再比（避免逐字元短路時序攻擊） |
 | 白名單 | 讀／寫 action 明確兩張表；`login`／`apply`／`logout`／`changePassword`／`updateConfig` 等**永不接受**（即使有 sig） |
 
-> 詳細數學同白名單：[進度追蹤旅系統升級版.md §3](../進度追蹤旅系統升級版.md)。跨 repo 直連唔支援係已知邊界，唔係 bug。
+> 詳細數學同白名單見本節 A7 本身。舊系統嘅 GAS→GAS 鏈式接駁（`DOWNSTREAM_*`）已隨 ecportal 退役（[57](57-ecportal-to-vsportal-migration.md)）。跨 repo 直連唔支援係已知邊界，唔係 bug。
 
 ---
 
@@ -247,7 +247,7 @@ AUDIT_LOG  : ts, actor, targetSub, recordKey, action, before_hash, after_hash, p
 
 ## A18 — 最小權限
 
-- 外部系統**零特權**：攞唔到 apikey / session / 直接 DB（見 [EXTERNAL.md](../EXTERNAL.md)）。
+- 外部系統**零特權**：攞唔到 apikey / session / 直接 DB（見 [A18](03-security.md)）。
 - 工具目錄入面嘅工具必須 stateless（純前端、無後端、無儲存）。
 - `permissions_override` 封頂（A6）；每個 component 只拎佢需要嘅 env。
 - 分享前設：接收方要有該模組；冇就分享唔到（[F3](02-foolproof.md#f3--registry-驅動)）。

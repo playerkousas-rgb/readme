@@ -1,7 +1,7 @@
 # `docs/` 分章索引 — 邊份管邊樣
 
 > **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–55 唔使再靠估。
-> 整理日期：2026-11-19 · 規則衝突時以 [PLAYBOOK](../PLAYBOOK.md) 為準 · 案例已隔離去 [19](19-ecportal-troop-case.md)，**唔係通用底線**。
+> 整理日期：2026-11-19 · 規則衝突時以 [PLAYBOOK](../PLAYBOOK.md) 為準 · ecportal 案例已退役（見 [57](57-ecportal-to-vsportal-migration.md)），多層系統可選模式 R1–R8 去 [58](58-multilevel-system-patterns.md)，**唔係通用底線**。
 
 ## 點用
 
@@ -31,8 +31,8 @@
 | [根 README](../README.md) | 唯一入口、五大鐵律一句版、導覽表 |
 | [AGENTS.md](../AGENTS.md) | Agent 級別／施工邊界／開工順序 |
 | [PLAYBOOK.md](../PLAYBOOK.md) | 核心規範總綱、規則 ID 總表、P1 |
-| [BUILD.md](../BUILD.md) · [EXTERNAL.md](../EXTERNAL.md) | **ecportal as-built 案例**、外部系統零特權（唔當通用規則） |
-| [進度追蹤旅系統升級版.md](../進度追蹤旅系統升級版.md) | 進度 leaf 專案說明 |
+| [A18](03-security.md) | 外部系統零特權（舊 as-built 案例已退役，見 [57](57-ecportal-to-vsportal-migration.md)） |
+| — | ~~進度 leaf 專案說明~~（隨 ecportal 一併退役，見 [57](57-ecportal-to-vsportal-migration.md)） |
 | [00-quickcard.md](00-quickcard.md) | 一頁紙速查 |
 
 ## 章 1 — 五大通用鐵律（S / F / A / W / V）
@@ -58,7 +58,7 @@
 | [52-fresh-eyes-review.md](52-fresh-eyes-review.md) | **金魚審（零上文審查）**：審你份文件嘅人唔可以係寫嗰個人——**改寫先行**（先用自己的話寫返文件主張，改寫錯就係 finding）＋只捉專案特有未定義名詞＋最多重審 1 次；借 `google/elephant-goldfish-model` 方法（Apache-2.0，**冇 clone 冇安裝**）；本倉冇 subagent → 金魚＝**開新對話**，同一個對話自己審自己**唔算** |
 | [53-self-audit-2026-11-19.md](53-self-audit-2026-11-19.md) | **自我審查報告（2026-11-19）**：用 [52](52-fresh-eyes-review.md) 方法審自己個倉，搵到 6 個漏洞（1 CRITICAL：SG7-a／SG11-b 叫簽票 vs SG12「唔需要」）＋逐項已修；**明寫係同一對話做、唔算金魚審** |
 | [54-goldfish-a-group-2026-11-19.md](54-goldfish-a-group-2026-11-19.md) | **金魚審報告（2026-11-19，第一份真金魚）**：新對話零上文審 [`A-GROUP-INSTRUCTION.md`](../templates/repo-starter/A-GROUP-INSTRUCTION.md)，23 條（2 CRITICAL：`iframe-only` 條件寫成「除非四類全中」＋抄閘門檔落 build 輸出會被下次 build 洗走）；另分開列一輪機械核對（唔算金魚） |
-| [57-ecportal-to-vsportal-migration.md](57-ecportal-to-vsportal-migration.md) | **ecportal → VSPORTAL 退場**：`gh` 實查 ecportal repo 已 404、`vs_portal` pushed 2026-11-14；115 次提及／25 份檔；**5 個 live repo 仍靠 docs/19**；真刪要同步改 `guard.mjs` 2 段 ＋ 2 個 test；**建議先寫新案例先刪** |
+| [57-ecportal-to-vsportal-migration.md](57-ecportal-to-vsportal-migration.md) | **ecportal → VSPORTAL 退場記錄**：`gh` 實查 ecportal repo 已 404、`vs_portal` pushed 2026-11-14；**6 份案例檔已於 2026-11-19 刪除**、guard／tests 已同步、四道驗證全綠；5 個 live repo 仍跑舊模式（見 58 §3）；VSPORTAL as-built 仍待寫 |
 | [56-glossary.md](56-glossary.md) | **術語表（一頁睇完）**：真理倉／子 App／規則 ID／`EXCEPTION:`／`guard` 家族／四種 mode／`PORTAL_REGISTRY`／`silentPortalIds`／SG18 slug；**另列「一詞兩義」**（白名單、P1、L、A 組） |
 | [55-whole-repo-comprehension-audit-2026-11-19.md](55-whole-repo-comprehension-audit-2026-11-19.md) | **全倉理解度審查（2026-11-19）**：新對話金魚（同對話第 2 份，判準 [52 §0.2](52-fresh-eyes-review.md)）行一次入口鏈＋機械掃描，**17 條**（2 CRITICAL：`docs/17` 教學漏 6 族規則／SG 範圍寫成 SG1–SG6）＋1 條撤回（scanner bug）；**附錄 C 逐條已修**＋「點解現有檢查捉唔到」 |
 | [templates/repo-starter/FRESH-EYES-REQUEST.md](../templates/repo-starter/FRESH-EYES-REQUEST.md) | **金魚審委託書（一貼即用）**：開新對話審文件；填檔名→連全文貼。7 條規矩＋建議次序＋收貨記錄格式 |
@@ -113,10 +113,10 @@
 
 | 檔 | 範圍 |
 |---|---|
-| [18-as-built-gap-audit.md](18-as-built-gap-audit.md) | as-built 對照「我漏咗乜」 |
-| [19-ecportal-troop-case.md](19-ecportal-troop-case.md) | 旅團五級階梯、R1–R8 可選模式 |
+| — | ~~as-built 對照「我漏咗乜」~~（原 docs/18，已刪；記錄見 [57](57-ecportal-to-vsportal-migration.md)） |
+| [58-multilevel-system-patterns.md](58-multilevel-system-patterns.md) | **多層系統可選模式 R1–R8**（由舊案例抽出）＋ VSPORTAL 現行架構 |
 | [20-repo-health-audit.md](20-repo-health-audit.md) | 11 個 repo 健康檢查（scrape 資料入 git 等） |
-| [21-fix-plans.md](21-fix-plans.md) | 實際點修（已喺 `/tmp` clone 實測） |
+| — | ~~修復方案（原 docs/21）~~：已隨案例刪除；仍有效嘅建議去 [20](20-repo-health-audit.md) |
 | [22-scout-circulars-agent-handoff.md](22-scout-circulars-agent-handoff.md) | 可直接貼畀 `scout-circulars` AGENT 嘅問題清單 |
 
 ## 章 6 — Repo 治理（2026-11-02 新章）

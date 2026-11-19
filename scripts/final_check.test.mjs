@@ -30,25 +30,31 @@ test('版本常數同檔名一致（V1）', () => {
   assert.equal(VERSION, 'v1.0');
 });
 
-test('案例隔離：4 份 as-built + 19/20 隔離檔 + R1–R8 喺 19 而唔係 PLAYBOOK', () => {
+test('案例隔離：6 份 ecportal 案例已刪 + 57/58/20/22 留 + R1–R8 喺 58 而唔係 PLAYBOOK', () => {
   const { readFileSync, existsSync } = require('node:fs');
   const { execFileSync } = require('node:child_process');
   const path = require('node:path');
   const root = path.resolve(ROOT);
-  for (const f of ['BUILD.md', 'AGENTS.md', 'EXTERNAL.md', '進度追蹤旅系統升級版.md']) {
-    assert.ok(existsSync(path.join(root, f)), `缺 as-built 案例 ${f}`);
-    assert.ok(readFileSync(path.join(root, 'README.md'), 'utf8').includes(f), `README 未引用 ${f}`);
+  // 2026-11-19：ecportal 退役，6 份案例檔已刪；改為守 57（退場）／58（可選模式）／20／22。
+  for (const f of ['docs/57-ecportal-to-vsportal-migration.md',
+                   'docs/58-multilevel-system-patterns.md',
+                   'docs/20-repo-health-audit.md',
+                   'docs/22-scout-circulars-agent-handoff.md']) {
+    assert.ok(existsSync(path.join(root, f)), `退役後仍要留 ${f}`);
+    assert.ok(readFileSync(path.join(root, 'README.md'), 'utf8').includes(f), `README 未指向 ${f}`);
+  }
+  for (const g of ['BUILD.md', 'EXTERNAL.md', '進度追蹤旅系統升級版.md',
+                   'docs/18-as-built-gap-audit.md', 'docs/19-ecportal-troop-case.md',
+                   'docs/21-fix-plans.md']) {
+    assert.equal(existsSync(path.join(root, g)), false, `ecportal 案例檔應該已刪：${g}`);
   }
   const pb = readFileSync(path.join(root, 'PLAYBOOK.md'), 'utf8');
-  const caseDoc = readFileSync(path.join(root, 'docs/19-ecportal-troop-case.md'), 'utf8');
-  assert.ok(pb.includes('docs/19-ecportal-troop-case.md'), '通用 PLAYBOOK 要指向 19');
-  for (const id of ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8']) assert.ok(caseDoc.includes(id), `19 案例缺可選模式 ${id}`);
-  assert.ok(caseDoc.includes('唔係通用底線'), '19 要標明可選模式唔係通用底線');
-  assert.ok(existsSync(path.join(root, 'docs/20-repo-health-audit.md')), '缺 20 repo 健康審計');
-  assert.ok(existsSync(path.join(root, 'docs/21-fix-plans.md')), '缺 21 修復方案');
-  assert.ok(existsSync(path.join(root, 'docs/22-scout-circulars-agent-handoff.md')), '缺 22 AGENT handoff');
+  const patterns = readFileSync(path.join(root, 'docs/58-multilevel-system-patterns.md'), 'utf8');
+  assert.ok(pb.includes('docs/58-multilevel-system-patterns.md'), '通用 PLAYBOOK 要指向 58（可選模式）');
+  for (const id of ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8']) assert.ok(patterns.includes(id), `58 缺可選模式 ${id}`);
+  assert.ok(patterns.includes('唔係通用底線'), '58 要標明可選模式唔係通用底線');
   const out = execFileSync(process.execPath, [path.join(root, 'scripts', 'guard.mjs')], { cwd: root, encoding: 'utf8' });
-  assert.match(out, /19 案例隔離/);
+  assert.match(out, /ecportal 已退役/);
 });
 
 test('回歸：單一 HTML 內嵌解碼器唔應該被 guard 判「缺 decoder/codec」', () => {

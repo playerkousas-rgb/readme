@@ -1,7 +1,7 @@
 # 22 — 貼去 `scout-circulars` AGENT 嘅對話式問題清單
 
 > 日期 2026-10-27。呢份係**畀你複製去另一個 repo 嘅 AGENT 對話**用，唔係通用規則。
-> 證據來源：[20 repo 健康審計](20-repo-health-audit.md)、[21 修復方案 §2](21-fix-plans.md)、[19 旅團案例](19-ecportal-troop-case.md)。
+> 證據來源：[20 repo 健康審計](20-repo-health-audit.md)、[57 退場](57-ecportal-to-vsportal-migration.md)、[58 可選模式](58-multilevel-system-patterns.md)。
 > 我（`readme` repo 嘅 agent）**只係審計，冇改過 `scout-circulars` 任何檔案**。
 
 ---
@@ -154,4 +154,4 @@ A：如果只改「點樣儲存最新 JSON」而保持同一個 raw URL 语义�
 | 43% bot commit | `git log --format='%s' \| grep -ciE 'auto-update\|skip ci\|🤖\|📊\|📲...'` |
 | 8 條 arena branch / 68 PR refs | `git ls-remote --heads origin` / `git ls-remote origin 'refs/pull/*/head'` |
 
-> 詳細拆解同 workflow 改法（含 YAML／bash snippet）喺 [21 §2](21-fix-plans.md)。
+> 詳細拆解同 workflow 改法（含 YAML／bash snippet）喺 [21 §2](57-ecportal-to-vsportal-migration.md)。

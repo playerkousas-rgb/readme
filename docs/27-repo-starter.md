@@ -45,7 +45,7 @@
 | App（有資料） | 12 樣 | + 設定層、備份、私隱同意（A12） |
 | 系統（多層／有身份） | 12 樣 | + 設定層 + 隱藏超管 + registry + 審計鏈，**一個都唔少**；＋ [31](31-system-basics.md) 嘅**帳號生命週期 8 樣（含忘記密碼）**同 **ADMIN 回報系統 8 樣**（[起手包第 14 項](../templates/repo-starter/docs/system-basics.md)） |
 
-> **2026-11-02 補**：「正常系統會有嘅基本功能」之前散喺 [`BUILD.md`](../BUILD.md) §2／[03 A5](03-security.md)／`A17`，無一張開局 checklist；**ADMIN 回報系統完全無記錄**（只有 [`GEMINI`](https://github.com/playerkousas-rgb/GEMINI) 個別 repo 有）。兩份而家收埋喺 [31](31-system-basics.md)，並加落 [10 §1.4](10-checklists.md) 同 [30 §6](30-repo-health-check.md)。**唔開新 A-ID**，全部掛返現有 A3/A4/A5/A8/A12/A13/A17 + VL7。
+> **2026-11-02 補**：「正常系統會有嘅基本功能」之前散喺 [`BUILD.md`](58-multilevel-system-patterns.md) §2／[03 A5](03-security.md)／`A17`，無一張開局 checklist；**ADMIN 回報系統完全無記錄**（只有 [`GEMINI`](https://github.com/playerkousas-rgb/GEMINI) 個別 repo 有）。兩份而家收埋喺 [31](31-system-basics.md)，並加落 [10 §1.4](10-checklists.md) 同 [30 §6](30-repo-health-check.md)。**唔開新 A-ID**，全部掛返現有 A3/A4/A5/A8/A12/A13/A17 + VL7。
 
 ## 2b. 第 13 項：13a–13c 按形式加、13d PREFLIGHT 必跑（2026-11-02 補）
 
@@ -152,7 +152,7 @@ node scripts/preflight_v1.0.mjs . --json    # exit 1 = 唔好 commit（取代逐
 |---|---|---|
 | 公開 repo 無 LICENSE | [20](20-repo-health-audit.md) | 第 3 項 + health check L |
 | 硬編碼 Bearer token 喺 `sources.json` | [25 §6](25-reverse-api-reuse.md) | `.gitignore` + guard W6 + health check secret scan |
-| 每日 `git commit` 可再生 scrape JSON | [20](20-repo-health-audit.md)／[21](21-fix-plans.md) | health check 偵測 `schedule:` + `git commit` |
+| 每日 `git commit` 可再生 scrape JSON | [20](20-repo-health-audit.md) | health check 偵測 `schedule:` + `git commit` |
 | Playwright 137MB 入部署 bundle | [25 §6](25-reverse-api-reuse.md)／[01](01-slim.md) | health check 大檔 + S7 |
 | README 係 `create-next-app` 預設文 | `scout-policy-assistant`／`knotmaster`／`skw-score` | 第 1 項 + health check「模板未改」偵測 |
 | 案例規格當通用規則 | [AGENTS.md ②b](../AGENTS.md) | `SCOPE.md` + `docs/` 分章（[docs/README](README.md) 章 5） |

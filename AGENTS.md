@@ -2,16 +2,16 @@
 
 > 🤖 **AGENT BOOT（任何 Agent 第一行讀呢度）**
 > ① 呢個 repo 係**真理倉**（專有名詞睇 [docs/56 術語表](docs/56-glossary.md)），唔係 app；唔好喺度直接改模板當交付。
-> ② 開工順序：`AGENTS.md` 本段 → [README 導覽](README.md#1-我要做嘢應該睇邊份導覽) → [PLAYBOOK 規則 ID](PLAYBOOK.md)（通用規則；**旅團專案案例喺 [19](docs/19-ecportal-troop-case.md)，唔好當通用**）→ [17 STEP BY STEP](docs/17-final-check-and-tutorial.md#2--step-by-step由零到一個-app)。
+> ② 開工順序：`AGENTS.md` 本段 → [README 導覽](README.md#1-我要做嘢應該睇邊份導覽) → [PLAYBOOK 規則 ID](PLAYBOOK.md)（通用規則）→ [17 STEP BY STEP](docs/17-final-check-and-tutorial.md#2--step-by-step由零到一個-app)。多層系統嘅可選模式 R1–R8 喺 [58](docs/58-multilevel-system-patterns.md)，**唔係通用底線**。
 > ②a **若用戶係「開新 repo」**（佢會叫 Agent 先睇一次呢個 repo 嘅 README）：直接跟 [README](README.md) 最頂「🆕 開新 REPO：AGENT 第一步」**6 步（0–5）** —— **第 0 步先主動問用戶**（[`INTAKE.md`](templates/repo-starter/INTAKE.md)，方法原文實體放咗喺 [`skills/external/grilling/SKILL.md`](templates/repo-starter/skills/external/grilling/SKILL.md)；見 [`skills/CATALOG.md`](templates/repo-starter/skills/CATALOG.md)；fact 自己查、用戶確認先郁手）→ 抄 [`START.md`](templates/repo-starter/START.md) → **主動讀** [`repo-setup/SKILL.md`](templates/repo-starter/skills/promoted/repo-setup/SKILL.md)（有 UI 再讀 `design-review`）→ 未 commit 跑 [`PREFLIGHT`](templates/repo-starter/PREFLIGHT.md)。呢個環境無 Skill tool，唔會自動觸發，要 Agent 自己讀。
-> ②b 本檔 §1–2 嘅五級階梯同可改/不可改矩陣**屬專案案例**；**唯一真理係 [19 §2](docs/19-ecportal-troop-case.md)**，本檔只留摘要方便對照——兩邊唔一致**以 19 為準**（可選模式 R1–R8 喺 §14，**唔係通用底線**）；[18](docs/18-as-built-gap-audit.md) 係對照審計記錄；[20](docs/20-repo-health-audit.md) 係 11 個 repo 健康檢查。
+> ②b 本檔 §1–2 嘅五級階梯同可改/不可改矩陣**屬已退役嘅 ecportal 案例**（2026-11-19；新系統 = VSPORTAL）。**現行架構同可選模式見 [58](docs/58-multilevel-system-patterns.md)**，退場／依賴見 [57](docs/57-ecportal-to-vsportal-migration.md)；[20](docs/20-repo-health-audit.md) 係 11 個 repo 健康檢查。本檔 §1–2 只留做歷史對照，**唔好當通用底線**。
 > ②c 新產品研發前必須按 [PLAYBOOK P1](PLAYBOOK.md#0-開工前三分類決定做幾多) 上網查相近產品，記錄比較與決策；參考 [docs/24](docs/24-similar-products.md)，無法查證要說明。
 > ②d **按需閱讀，唔好因為長就略過相關規範**：由 [README §1](README.md#1-我要做嘢應該睇邊份導覽) 揀任務 → [docs 分章目錄](docs/README.md) 定位 → 只展開相關章節。工具評審屬參考，唔係通用規則；做設計／Skills／創作工具比較先睇目錄章 3。
 > ③ 交付前跑 `node scripts/final_check_v1.0.mjs --json`；六角度全綠**只係入場券**，仲要對 [PLAYBOOK §10](PLAYBOOK.md) 17 項逐條剔（L／I／SG／金魚四族唔會喺 `final_check` 出現）——「全綠 ≠ 交付得」見 [docs/47](docs/47-readme-discipline.md) 原則一。
-> ④ `BUILD.md` / `EXTERNAL.md` / 本檔其餘部分是 **ecportal as-built 案例**，唔好當通用規則；衝突以 PLAYBOOK 為準。**ecportal 已退役（2026-11-19；新系統 = VSPORTAL）→ 退場同依賴見 [docs/57](docs/57-ecportal-to-vsportal-migration.md)**。
+> ④ 原 `BUILD.md` / `EXTERNAL.md` **已於 2026-11-19 刪除**（ecportal 退役，新系統 = VSPORTAL）；可選模式 R1–R8 已通用化去 [docs/58](docs/58-multilevel-system-patterns.md)，退場記錄 [docs/57](docs/57-ecportal-to-vsportal-migration.md)。**衝突一律以 PLAYBOOK 為準。**
 
 > **跨專案底線（2026-10-26 加註）**：任何 Agent 喺呢個生態系開工，先讀 **[README.md](README.md)** 同 **[PLAYBOOK.md](PLAYBOOK.md)**。
-> 嗰度嘅瘦身 S／防呆 F／安全 A／COPYRIGHT SCOUT SYSTEM W／雙版號 V 係**所有 app 嘅最低要求**；本檔同 `BUILD.md` 係 ecportal 專案嘅執行面，兩者衝突時以安全／防呆底線為先，並喺 PR 寫明例外。
+> 嗰度嘅瘦身 S／防呆 F／安全 A／COPYRIGHT SCOUT SYSTEM W／雙版號 V 係**所有 app 嘅最低要求**；本檔 §1–2 係 ecportal 專案（已退役）嘅執行面摘要，兩者衝突時以安全／防呆底線為先，並喺 PR 寫明例外。
 > Gemini app 分三種結構（[docs/09-gemini-canvas.md](docs/09-gemini-canvas.md)）：A 全開放／B 隱藏水印／C 腦殼分離。
 > 每次更新交付檔要**檔名＋內文同時改版號**（[docs/13-versioning.md](docs/13-versioning.md)）；每個交付檔要有 © SCOUT SYSTEM（[docs/12-copyright-scout-system.md](docs/12-copyright-scout-system.md)）。
 > **C13（2026-10-27 定案）**：單一 HTML 嘅**正確自動注入 = 三軌同一套** —— ① 全檔唯一 `const API_KEY = ""` 注入 slot ② `credentials:'include'` + 冇 key 唔加 `?key=` 平台代理 ③ `safeStore` BYOK 後備。**用戶已實作、實測可用**；BYOK key 用 `x-goog-api-key` header（[docs/14 §1.1](docs/14-api-key-injection.md#11-canvas-單一-html-artifact你已實作嘅三軌自動注入c13)）。
@@ -25,7 +25,7 @@
 
 ---
 
-## 1. 五級階梯 (對應 BUILD.md §1)
+## 1. 五級階梯（**歷史：ecportal 已退役 2026-11-19**；現行架構見 [docs/58](docs/58-multilevel-system-patterns.md)）
 
 ```
 ADMIN (平台) ── 管 units.json + Vercel env + 收件匣

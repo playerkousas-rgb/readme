@@ -1,14 +1,14 @@
 # 07 — Google Apps Script（X1–X12）
 
 > **案例隔離**：本檔係通用規則。檔內 `UNIT_*`／`DOWNSTREAM_*`／`ALLOW_LOCAL_LOGIN` 等只係**中性示例名**；
-> ecportal 旅團／進度追蹤嘅具體專案設定全部喺 [19 專案案例](19-ecportal-troop-case.md)（**唔係通用規則，新 app 唔使跟名**）；repo 健康 → [20](20-repo-health-audit.md)。
+> **ecportal 已退役（2026-11-19；新系統 = VSPORTAL）**：舊案例已刪，退場見 [57](57-ecportal-to-vsportal-migration.md)；想參考多層系統嘅可選模式 R1–R8 → [58](58-multilevel-system-patterns.md)（**唔係通用規則，新 app 唔使跟**）；repo 健康 → [20](20-repo-health-audit.md)。
 
 
 > 定位：**每個單位自己嘅 leaf 後端** = 一張 Sheet + 一支 `Code.gs` + 一個 `/exec`。
 > 優點：單位自己擁有數據、零 server 成本；限制：quota、6 分鐘執行上限、`/exec` 公開面。
 > 所以呢份文件特別重 **auth / sig / 原子寫入 / 瘦身**。
 
-完整 as-built 實戰（**專案，唔係通用**）：[19 專案案例](19-ecportal-troop-case.md)（內有原檔連結）。
+完整 as-built 實戰（**專案，唔係通用**）：[58 可選模式](58-multilevel-system-patterns.md)（內有原檔連結）。
 
 ---
 
@@ -36,7 +36,7 @@
 | **C** | `UNIT_<id>_NAME` | Vercel env（純顯示名） |
 | **D** | `UNIT_<id>_APIKEY` | GAS `ScriptProperties.API_KEY` + Vercel env；上游 `DOWNSTREAM_<id>_KEY` |
 
-- B/D 由 Sheet 選單一次過抄，經安全渠道交管理員；**四個值都唔寫入任何 Sheet**（案例做法見 [19 §4](19-ecportal-troop-case.md)）。
+- B/D 由 Sheet 選單一次過抄，經安全渠道交管理員；**四個值都唔寫入任何 Sheet**（案例做法見 [58](58-multilevel-system-patterns.md)）。
 - **有測試守「ABCD 唔落任何工作表」**（[F14](02-foolproof.md#f14--守護測試--可執行嘅文件)）。
 - 換 D = 三處同步（[F16](02-foolproof.md#f16--三處同步-checklist最常出事)）。
 
@@ -133,7 +133,7 @@ try {
 ```
 身份只喺**一個來源**誕生（例：主名冊 Sheet）；其餘系統只收鏡像，
 下游 leaf 係純身份消費者：搵唔到 sub 就報「上游未開戶」，唔會自己補、唔會反寫上游。
-（具體角色分層 → [19 §8](19-ecportal-troop-case.md)）
+（具體角色分層 → [58](58-multilevel-system-patterns.md)）
 ```
 
 - 閂口後新戶由**上游前端開戶** → 經 `sig` 落下游 `upsertUser`（兩邊同一 hash）。
@@ -176,7 +176,7 @@ try {
 
 ## X12 — 守護測試（10 項）
 
-守護測試（真實例子 `tests/troop_link.test.mjs` → [19 §12](19-ecportal-troop-case.md)）要守：掣未設定行為零變化／閂口後全拒／sig 可讀可寫＋非 GAS URL 拒／sig 防護／ABCD 唔落 Sheet／兩邊同一 hash＋冪等／匯出入保留舊密碼＋明文拒／`getAllUsers` 唔洩漏 hash／標籤唔變算式／GS 內冇版號。
+守護測試（真實例子 `tests/troop_link.test.mjs` → [58](58-multilevel-system-patterns.md)）要守：掣未設定行為零變化／閂口後全拒／sig 可讀可寫＋非 GAS URL 拒／sig 防護／ABCD 唔落 Sheet／兩邊同一 hash＋冪等／匯出入保留舊密碼＋明文拒／`getAllUsers` 唔洩漏 hash／標籤唔變算式／GS 內冇版號。
 
 真機仍要驗：GAS 302 轉址、Drive 權限、Script Properties 配額、`onOpen` 選單授權。
 

@@ -30,7 +30,7 @@
 | `size` | WARN | 總體積、>5MB 大檔、`dist/`／`build/` 存在 | [S](01-slim.md)／[20](20-repo-health-audit.md) |
 | `links` | **FAIL** | MD 內部連結（跳過 code fence） | guard G10 |
 | `scaffold` | WARN | README 仲係 `create-next-app`／Vite 預設文 | [28](28-repo-taxonomy.md) §7 陷阱表 |
-| `cron-data` | WARN | workflow 同時有 `schedule:` + `git commit` | [20](20-repo-health-audit.md)／[21](21-fix-plans.md) |
+| `cron-data` | WARN | workflow 同時有 `schedule:` + `git commit` | [20](20-repo-health-audit.md) |
 | `skills` | **FAIL**/WARN | 有 `SKILL.md` 就驗 frontmatter | [29](29-reading-map.md) 章 C |
 
 `check_skills` 驗：第一行 `---`、`name` kebab-case ≤64、`description` 非空 ≤1024、名唔重複、`disable-model-invocation` boolean、未 quote 嘅 `word: word`、manifest 列嘅路徑存在。**全倉搵 `SKILL.md`**，唔假設一定喺 `skills/`（`answer` 用單數 `skill/`）。
@@ -113,7 +113,7 @@ node -e "const fs=require('fs');for(const f of fs.readdirSync('/tmp/audit').filt
 ## 7. 點排優先
 
 1. **P0 即刻**：`secrets`／`env` FAIL → rotate key、清 history、加 `.gitignore`（[25 §6](25-reverse-api-reuse.md) 有個真實 Bearer token 例子）。
-2. **P1 今季**：`links` FAIL、`cron-data` WARN、>90MB 大倉（`MD`／`scout-circulars`）→ 跟 [20](20-repo-health-audit.md)／[21](21-fix-plans.md)。
+2. **P1 今季**：`links` FAIL、`cron-data` WARN、>90MB 大倉（`MD`／`scout-circulars`）→ 跟 [20](20-repo-health-audit.md)。
 3. **P2 排隊**：12 個空殼／預留 repo（[28](28-repo-taxonomy.md) §3）決定留／合併／archive；要留嘅補起手包。
 4. **P3 例行**：其餘 WARN 逐季清；每季重跑 §4 並保存 JSON 做趨勢。
 

@@ -2,7 +2,7 @@
 
 > **一句話**：開新 app 前睇呢頁；每次施工前對 checklist；出事先睇 runbook。
 > 呢個 repo **唔係一個 app**，而係我所有 app 共用嘅**說明書 ＋ 可複製模板 ＋ 自動防呆檢查**。
-> **案例隔離（2026-10-27）**：通用規則包括 S/F/A/W/V、研發前調查 P1 ＋ 技術棧契約；ecportal 旅團／進度追蹤嘅專案設定全部喺 [docs/19](docs/19-ecportal-troop-case.md)，**唔係通用底線**；邊個 repo 有問題喺 [docs/20](docs/20-repo-health-audit.md)。
+> **案例隔離（2026-10-27）**：通用規則包括 S/F/A/W/V、研發前調查 P1 ＋ 技術棧契約；ecportal 旅團／進度追蹤嘅專案設定全部喺 [docs/58](docs/58-multilevel-system-patterns.md)，**唔係通用底線**；邊個 repo 有問題喺 [docs/20](docs/20-repo-health-audit.md)。
 
 更新日期：2026-11-19 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase**（GEMINI 系統規範已集中去 GEMINI repo，本倉唔再做佢嘅入口）
 
@@ -102,7 +102,7 @@
 | **影音／創作 AI 工具啱唔啱我哋**（Concat／FilmCraft／VoiceStudio／AutoClip／yovoice／ArtCraft／MoneyPrinterTurbo） | **[docs/48](docs/48-video-audio-creative-tools.md)** — GitHub API 2026-11-12 快照逐個判決；VoiceStudio／MoneyPrinterTurbo 沿用 [docs/35](docs/35-viral-ai-tools.md)「暫不採用」只更新星數；ArtCraft「可試」（唔係產品依賴，係內容製作工具；未實測） |
 | **五個 repo 值唔值得學／收錄**（設計 Skills／Creative Studio／dotfiles／EffectCraft） | **[docs/49](docs/49-design-skills-studio-dotfiles-effectcraft.md)** — GitHub API 2026-11-13：`awesome-design-md`／`taste-skill` 已收錄只更新快照；`ai-design-skills` 借到 2 個 frontmatter 檢查（已入 `check_skills`）；BULDEE 只參考 ADR／phase gate、唔安裝；dotfiles 無 LICENSE 只讀概念；EffectCraft 有場景先試（同 [docs/48](docs/48-video-audio-creative-tools.md) ArtCraft 同族）；未安裝未實測 |
 | **文件寫完想有人用「零上文」眼光捉漏** | **[docs/52](docs/52-fresh-eyes-review.md)** — 金魚審：改寫先行（先用自己的話寫返文件主張）＋只捉專案特有未定義名詞＋最多重審 1 次；**要開新對話**，同一個對話自己審自己唔算（借 `google/elephant-goldfish-model`，Apache-2.0，冇安裝） |
-| **ecportal 退役、VSPORTAL 接手** | **[docs/57](docs/57-ecportal-to-vsportal-migration.md)** — `gh` 實查：ecportal repo 已 404、`vs_portal` 存在（深資童軍管理系統）；案例散落 25 份檔、5 個 live repo 仍靠 `docs/19`；真刪前要改 `guard.mjs` 2 段＋2 個 test |
+| **ecportal 已退役、VSPORTAL 接手** | **[docs/57](docs/57-ecportal-to-vsportal-migration.md)** — `gh` 實查 ecportal repo 已 404、`vs_portal` 存在（深資童軍管理系統）；**6 份案例檔 2026-11-19 已刪**、guard／tests 已同步、四道驗證全綠；5 個 live repo 仍跑舊模式 → [58 §3](docs/58-multilevel-system-patterns.md) |
 | **第一次入嚟，啲字咩意思**（真理倉／子 App／`portalIds`／`EXCEPTION:`／L0–L2…） | **[docs/56 術語表](docs/56-glossary.md)** — 一頁睇完＋「一詞兩義」對照（白名單／P1／L／A 組）；新名詞出現就加一行 |
 | **成個倉邊度會令另一個 AGENT 睇唔明／做錯** | **[docs/55](docs/55-whole-repo-comprehension-audit-2026-11-19.md)** — 2026-11-19 新對話金魚行一次入口鏈＋機械掃描：17 條（2 CRITICAL：`docs/17` 教學漏 SG／雙語／PWA／金魚四族 → 以為做完；SG 範圍四個講法，最窄一句寫「必須跟 SG1–SG6」）**→ 當日全部修好，見 §附錄 C**；另 1 條（章節 §指針）查核後撤回 |
 | **金魚審做過未、審完邊份、捉到咩** | **[docs/54](docs/54-goldfish-a-group-2026-11-19.md)** — 2026-11-19 第一次真金魚（新對話零上文）：審 `A-GROUP-INSTRUCTION.md` 23 條（2 CRITICAL），另列「機械核對」一欄同「我捉唔到乜」；下一份建議 `PLAYBOOK §7.7` |
@@ -120,10 +120,10 @@
 | 用 Supabase（Postgres / Auth / Storage / Push） | [docs/08-supabase.md](docs/08-supabase.md) |
 | 抄嘢（config / SQL / workflow / Canvas 骨架 / 水印） | [templates/](templates/README.md) |
 | 交付前六角度實測 + 用戶教學 | [docs/17-final-check-and-tutorial.md](docs/17-final-check-and-tutorial.md) — `node scripts/final_check_v1.0.mjs` |
-| 知原有 Git 檔有乜好系統／我漏咗乜 | [docs/18-as-built-gap-audit.md](docs/18-as-built-gap-audit.md) — as-built 對照審計 |
-| 睇旅團／進度追蹤**專案**設定（唔係通用） | [docs/19-ecportal-troop-case.md](docs/19-ecportal-troop-case.md) — 五級階梯、`UNIT_*`、舊 sig、五個 repo |
+| 舊系統（ecportal）點退場、唔可以靜靜刪乜 | [docs/57](docs/57-ecportal-to-vsportal-migration.md) — 依賴清單＋真刪記錄 |
+| 睇**多層系統**可選模式 R1–R8（唔係通用） | [docs/58](docs/58-multilevel-system-patterns.md) — 由舊案例抽出＋VSPORTAL 現行架構（共用後端、不同前端） |
 | API／PROMPT 兩個 Git 留唔留？邊個有大問題？ | [docs/20-repo-health-audit.md](docs/20-repo-health-audit.md) — 11 個 repo 實測審計 |
-| 實際點修（升級／瘦 Git／修 sig） | [docs/21-fix-plans.md](docs/21-fix-plans.md) — 已喺 `/tmp` clone 實測嘅指令同 code |
+| repo 有 critical／超肥，點修 | [docs/20](docs/20-repo-health-audit.md) — 逐個 repo 嘅處理建議 |
 | 想叫 `scout-circulars` AGENT 幫手 | [docs/22-scout-circulars-agent-handoff.md](docs/22-scout-circulars-agent-handoff.md) — 可直接複製貼過去嘅問題清單（長版＋短版＋Q&A） |
 | 跑自動檢查 | `node scripts/guard.mjs` |
 
@@ -206,10 +206,9 @@ docs/
   15-resource-index.md     資源查找總索引（prompts.chat / prompt / api 三層）
   16-canvas-case-scout-comic.md  實戰案例：童軍漫畫生成器 v4.2.1（C13 注入 / C13-g 5MB / V1 實證）
   17-final-check-and-tutorial.md  交付前六角度實測 + STEP BY STEP 用戶教學（最短入門）
-  18-as-built-gap-audit.md       原有 4 份 as-built 檔 vs 新系統：漏咗乜／好系統
-  19-ecportal-troop-case.md     【專案案例，唔係通用】旅團／進度追蹤全部具體設定 + 可選模式 R1–R8
+  57-ecportal-to-vsportal-migration.md  ecportal 退場記錄（原 18／19／21 已刪）
+  58-multilevel-system-patterns.md      多層系統可選模式 R1–R8（唔係通用）＋ VSPORTAL 架構
   20-repo-health-audit.md       11 個 repo 健康審計：api/prompt 去留 + critical 漏洞 + 158MB 問題
-  21-fix-plans.md              三個問題嘅實作修復方案（已實測：升級／Git 暴脹／舊 sig 重放）
   22-scout-circulars-agent-handoff.md  貼去 scout-circulars AGENT 嘅對話式問題清單
   23-design-resources.md      設計資源總索引（字體／配色／Icon／UI library／DESIGN.md／系統設計）＋開工 checklist
   24–33                      相近產品／API 教學／repo 治理／圖標等（完整索引：docs/README.md）
@@ -242,26 +241,18 @@ scripts/final_check_v1.0.mjs      交付前一條命令跑六角度實測（docs
 
 ---
 
-## 6. 實戰案例（保留：ecportal 既有 as-built 真理）
+## 6. 實戰案例（**舊系統已退役**：ecportal → VSPORTAL）
 
-> ⚠️ **已退役**：ecportal 已於 2026-11-19 退役（新系統 = VSPORTAL）。下面 4 份係**舊系統存檔**，唔再更新；退場時序、唔可以靜靜刪嘅知識、真刪要同步改邊幾行 code → **[docs/57](docs/57-ecportal-to-vsportal-migration.md)**。
+> ⚠️ **2026-11-19 用戶指示**：ecportal 已退役，新系統 = **VSPORTAL**（[`vs_portal`](https://github.com/playerkousas-rgb/vs_portal) — 深資童軍支部管理系統；**同追蹤系統共用後端、不同前端**，同成員系統／管理系統同一種關係）。
+> 舊案例 **6 份檔同日刪除**：`BUILD.md`／`EXTERNAL.md`／`進度追蹤旅系統升級版.md`／`docs/18`／`docs/19`／`docs/21`。
+> **退場記錄**（點解刪、邊 5 個 live repo 仍靠舊模式、真刪要同步改邊幾行 code）→ **[docs/57](docs/57-ecportal-to-vsportal-migration.md)**。
+> **仍然有用嘅 R1–R8 可選模式**（已拎走舊專案名）→ **[docs/58](docs/58-multilevel-system-patterns.md)**，標明「唔係通用底線」。
 
-以下係**專案級文件**，唔係通用規範；佢哋係上面規則嘅真實來源，改通用規則時要對返佢哋有冇矛盾。
+**要睇舊內容**：`git log --diff-filter=D -- BUILD.md` 或 `git show 6b1b65b^:BUILD.md`（刪除前最後版本）。
 
-| 檔 | 作用 |
-|----|------|
-| [BUILD.md](BUILD.md) | ecportal 建構定案（身份／登入／同步／模組／審計／體積治理） |
-| [AGENTS.md](AGENTS.md) | Agent 級別與施工邊界（五級階梯、越級零容忍） |
-| [EXTERNAL.md](EXTERNAL.md) | 外部系統接入（零特權、三種模式） |
-| [進度追蹤旅系統升級版.md](進度追蹤旅系統升級版.md) | GAS 上下游接駁 as-built（`sig`／`ALLOW_LOCAL_LOGIN`／吐 JSON／10 項守護測試） |
+通用規範同專案文件衝突時：**S/F/A/W/V 五套底線以 PLAYBOOK 為最低要求**。
 
-> **已分開寫**：呢 4 份原檔講嘅全部係 **ecportal 專案**，佢哋嘅具體設定（五級階梯、`UNIT_*`／`DOWNSTREAM_*`、舊 sig、五個 repo）
-> 已集中去 **[docs/19 專案案例](docs/19-ecportal-troop-case.md)**（唔係通用規則）；由案例抽出嘅 R1–R8 亦放喺 19 §14 做**可選模式**。
-> [docs/18](docs/18-as-built-gap-audit.md) 保留做「我漏咗乜」嘅審計記錄。
->
-> 通用規範同專案文件衝突時：**S/F/A/W/V 五套底線以 PLAYBOOK 為最低要求**；專案業務邏輯以該專案 `BUILD.md` 為準，並要喺 PR 寫明點解有例外。
-> 已知例外／勘誤：① ecportal `進度追蹤旅系統升級版.md §9` 仍寫「版號只留本 MD」—— 新 app 一律跟 [V 系列](docs/13-versioning.md)。
-> ② `BUILD.md §S3` 寫 `installCommand: npm install --omit=dev` —— 已證實會令 Vercel build 搵唔到 `vite`；新 app 用 `--include=dev`（[VL3/VL8](docs/06-vercel.md#vl8--部署衛生s8)）。
+> **兩個舊勘誤（已隨案例退役，但仍然要記住）**：① 舊 `進度追蹤…§9` 寫「版號只留本 MD」→ 新 app **一律跟 [V 系列](docs/13-versioning.md)**；② 舊 `BUILD.md §S3` 寫 `installCommand: npm install --omit=dev` → 會令 Vercel build 搵唔到 `vite`，新 app 用 `--include=dev`（[VL3/VL8](docs/06-vercel.md#vl8--部署衛生s8)）。
 
 ---
 
@@ -274,7 +265,7 @@ scripts/final_check_v1.0.mjs      交付前一條命令跑六角度實測（docs
 | [`api`](https://github.com/playerkousas-rgb/api) | 🇭🇰 **香港免費 API 天書**：`data/apis.csv` 機讀總索引 + 20+ 份 `docs/*.md`（天氣／交通／AI／封港名單…） | **開新 app 揀 API 之前先睇**；特別 [`docs/ai.md`](https://github.com/playerkousas-rgb/api/blob/main/docs/ai.md)、[`docs/hk-blocked.md`](https://github.com/playerkousas-rgb/api/blob/main/docs/hk-blocked.md) 直接約束 [14-api-key-injection](docs/14-api-key-injection.md) |
 | [`prompt`](https://github.com/playerkousas-rgb/prompt) | **提示站 Prompt Studio**（Next.js，https://prompt-smoky-pi.vercel.app）：欄位 ↔ 卡面區塊 ↔ 提示詞片段三向連動 | Prompt 資產庫；對應 [C9 保護 PROMPT](docs/09-gemini-canvas.md#c9--type-c保護-prompt-設定)、[V5 版號入紀錄](docs/13-versioning.md) |
 | [`DRAWSCOUT`](https://github.com/playerkousas-rgb/DRAWSCOUT) ／ [`decode`](https://github.com/playerkousas-rgb/decode) | 出圖 app ／ 水印解碼器（你畀我嘅 `drawscout.html` 就係呢條線） | [W2 隱形水印](docs/12-copyright-scout-system.md) 嘅真實來源；已收錄做 `templates/watermark/drawscout_decoder_v1.0.html` |
-| 其餘 5 個旅團 as-built repo | `vsbadge`／`roverbadge`／`cubsbadge`／`scoutbadge`／`scout-circulars` | **屬專案案例** → [docs/19 §12](docs/19-ecportal-troop-case.md)；健康問題 → [docs/20](docs/20-repo-health-audit.md) |
+| 其餘 5 個旅團 as-built repo | `vsbadge`／`roverbadge`／`cubsbadge`／`scoutbadge`／`scout-circulars` | **屬專案案例** → [docs/58](docs/58-multilevel-system-patterns.md)；健康問題 → [docs/20](docs/20-repo-health-audit.md) |
 
 > **去留決定**：`api` 同 `prompt` **兩個都保留**（佢哋係兩個真理源，`docs/15` 只放入口唔複製內容）；
 > 但 `prompt` 有 critical 漏洞要即刻升級 Next.js、`scout-circulars` 158MB 要停止每日 commit 數據 —— 詳情 [docs/20](docs/20-repo-health-audit.md)。

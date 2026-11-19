@@ -1,7 +1,7 @@
 # 04 — 系統設定層 + 隱藏超管（系統級 app 必備）
 
 > **案例隔離**：本檔係通用規則。檔內 `UNIT_*`／`DOWNSTREAM_*`／`ALLOW_LOCAL_LOGIN` 等只係**中性示例名**；
-> ecportal 旅團／進度追蹤嘅具體專案設定全部喺 [19 專案案例](19-ecportal-troop-case.md)（**唔係通用規則，新 app 唔使跟名**）；repo 健康 → [20](20-repo-health-audit.md)。
+> **ecportal 已退役（2026-11-19；新系統 = VSPORTAL）**：舊案例已刪，退場見 [57](57-ecportal-to-vsportal-migration.md)；想參考多層系統嘅可選模式 R1–R8 → [58](58-multilevel-system-patterns.md)（**唔係通用規則，新 app 唔使跟**）；repo 健康 → [20](20-repo-health-audit.md)。
 
 
 > **點解要呢份**：工具型 app 可以冇設定；但一叫「系統」，就一定有唔同單位、唔同環境、唔同開關。冇設定層 = 每個改動都要改 code + redeploy；冇超管 = 管理員鎖咗自己出面就成個系統報銷。

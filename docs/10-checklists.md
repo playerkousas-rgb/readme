@@ -1,7 +1,7 @@
 # 10 — Checklists（全部喺度）
 
 > **案例隔離**：本檔係通用規則。檔內 `UNIT_*`／`DOWNSTREAM_*`／`ALLOW_LOCAL_LOGIN` 等只係**中性示例名**；
-> ecportal 旅團／進度追蹤嘅具體專案設定全部喺 [19 專案案例](19-ecportal-troop-case.md)（**唔係通用規則，新 app 唔使跟名**）；repo 健康 → [20](20-repo-health-audit.md)。
+> **ecportal 已退役（2026-11-19；新系統 = VSPORTAL）**：舊案例已刪，退場見 [57](57-ecportal-to-vsportal-migration.md)；想參考多層系統嘅可選模式 R1–R8 → [58](58-multilevel-system-patterns.md)（**唔係通用規則，新 app 唔使跟**）；repo 健康 → [20](20-repo-health-audit.md)。
 
 
 > 用法：**逐格剔，唔好靠記憶**。CI（`node scripts/guard.mjs`）只可以守住機械化嗰部分；其餘係人肉閘，但都要寫低。
@@ -18,7 +18,7 @@
 [ ] 類型：工具 / App / 系統
 [ ] 若「系統」→ 設定層 + 隱藏超管 + registry + 審計鏈全部係硬性交付物
 [ ] 兩條公理答到：身份 = 邊個 ID + 邊個資料源？接入 = 交俾邊個 + 登記邊個 registry？
-[ ] 多單位系統先需要：定職責邊界／「唔做清單」／功能 registry（**可選做法**，案例見 [19](19-ecportal-troop-case.md)；唔係通用底線）
+[ ] 多單位系統先需要：定職責邊界／「唔做清單」／功能 registry（**可選做法**，案例見 [58](58-multilevel-system-patterns.md)；唔係通用底線）
 [ ] 技術棧揀好：Git / Vercel / GAS / Supabase / Gemini Canvas（邊幾個）
 [ ] Gemini 結構揀好：A 全開放 / B 隱藏水印 / C 腦殼分離（見 [09-gemini-canvas C1](09-gemini-canvas.md#c1--決策表揀錯結構--之後要拆)）
 [ ] SG1/SG2 入口與關站白名單判定（已主動告知用戶五個官方入口 APP STORE／圖書館／成員系統／區管理系統／GEMINI，[50 §0.1](50-app-store-whitelist-and-shutdown.md)）：公開直連 `open`（預設）／頂層跳板白名單 `entry-gate`（`portalIds` 引用）／純 `iframe-only`／暫時關站 `closed`；凡有 `localStorage`（含紀錄冊／C13 BYOK）、PWA 加入主畫面、Web Push、`SameSite=Lax` Cookie 或相機／GPS 嚴禁用 `iframe-only`，改用 `entry-gate`；並已向用戶講清 SG7「先由入口進入，再按瀏覽器選單加入主畫面」；SG8 入口自己永不被閘、直開網址預設唔自動跳；SG9 分享／QR 只由 APP STORE 產生；SG10 統計以 APP STORE `clicks/stars/hearts` 為主、圖書館維持 `open`（SG10-a）、子 App `trackEndpoint` 按需要才加；SG11 下架已按 Delist→Gate→Soft→Hard 逐級、`BOOK` 類已保留入口並通知備份；SG12 防偷用＝`entry-gate`＋`supportNudge`（唔起後端驗票）；SG13 支持提示講明書架政策、預設 skip appstore；SG14 書架政策已公開前置、`BOOK`／自家系統豁免、收起只 Delist；SG16 已分清兩條派發線：outbound（1–4 Vercel，可放行）／canvas（5 Gemini，有自己統計但唔可放行）；SG17 已分清入場準備度（`admit`）：`appstore`＝`always`（`DEFAULT_PORTAL_IDS`，所有子 App 預設寫入）、`library`＝`conditional`（先改 `scout-circulars/index.html` L5662 `noreferrer`，Push／統計／通告流程唔准動）、`member`／`district`＝`optional`（唔做 App 目錄，預設唔加；例外＝4 本 BOOK）、`gemini`＝`never`（放入 `portalIds` 會被剔除）；批量上線按 [51-whitelist-rollout-list.md](51-whitelist-rollout-list.md) A→B→C 批次、D 組入口本體唔加閘（[50](50-app-store-whitelist-and-shutdown.md)）

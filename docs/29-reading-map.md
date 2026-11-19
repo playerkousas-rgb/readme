@@ -25,7 +25,7 @@
 |---|---|---|---|
 | [Diátaxis](https://diataxis.fr/) | Tutorial／How-to／Reference／Explanation 四分流 | 解決「一份 MD 又教又查又解釋」；[docs/README](README.md) 章 0–6 已按「幾時讀」分 | 外網未實測 |
 | [Keep a Changelog](https://keepachangelog.com/)／[olivierlacan/keep-a-changelog](https://github.com/olivierlacan/keep-a-changelog)（6.7k★, MIT） | CHANGELOG 格式 | 起手包 `CHANGELOG.md`；配合 V 雙版號 | GitHub 已核實 |
-| [adr/madr](https://github.com/adr/madr)（2.6k★）／[mattpocock ADR-FORMAT](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/ADR-FORMAT.md) | ADR：一段就夠 + 三條「幾時寫」 | 起手包 `docs/adr/0000-template.md`；[19](19-ecportal-troop-case.md) 嘅定案可回溯寫成 ADR | GitHub 已核實 |
+| [adr/madr](https://github.com/adr/madr)（2.6k★）／[mattpocock ADR-FORMAT](https://github.com/mattpocock/skills/blob/main/skills/engineering/domain-modeling/ADR-FORMAT.md) | ADR：一段就夠 + 三條「幾時寫」 | 起手包 `docs/adr/0000-template.md`；[58](58-multilevel-system-patterns.md) 嘅定案可回溯寫成 ADR | GitHub 已核實 |
 | [mattpocock/skills `AGENTS.md`](https://github.com/mattpocock/skills/blob/main/AGENTS.md) | 一個檔講清楚「skills 分 bucket、邊啲要入 README／manifest、docs tree 點 mirror」 | 借做 [27](27-repo-starter.md) 嘅 `AGENTS.md`「開工順序 + 可改／不可改」 | 已讀全文 |
 | [mattpocock/skills `SCOPE.md` + `.out-of-scope/`](https://github.com/mattpocock/skills/blob/main/SCOPE.md) | 收貨兩條 bar；一個被拒概念一個檔 | 起手包 `SCOPE.md` + `docs/out-of-scope/`；本 repo 嘅「案例隔離」都係同一種思考 | 已讀全文 |
 | [mattpocock/skills `GLOSSARY.md`](https://github.com/mattpocock/skills/blob/main/GLOSSARY.md) | 定義／避免用／關係／已釐清歧義 | 起手包同名檔；減少 Agent 自創術語 | 已讀全文 |
