@@ -75,4 +75,4 @@
 
 - 本頁係 **README 寫作紀律**，唔係新規則 ID；對應 S／F／V／I 系列現有規則。
 - 新案例（唔好嘅 README 寫法）→ 更新本頁；新檢查方法 → 更新對應 docs。
-- 連結：[PLAYBOOK §10](../PLAYBOOK.md#10-驗收閘definition-of-done)、[docs/10-checklists.md](10-checklists.md)、[docs/17](17-final-check-and-tutorial.md)
+- 連結：[PLAYBOOK §10](../PLAYBOOK.md#10-驗收閘definition-of-done)、[docs/10-checklists.md](10-checklists.md)、[docs/17](17-final-check-and-tutorial.md)、[docs/52 金魚審](52-fresh-eyes-review.md)（「寫得清楚」唔等於「零上文讀者讀得明」——交另一個對話審）

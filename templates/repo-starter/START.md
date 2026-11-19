@@ -78,6 +78,7 @@ node scripts/preflight_v1.0.mjs . --json
 | 13b | [`docs/skills/README.md`](docs/skills/README.md) ＋ **`skills/CATALOG.md`**（唯一目錄）＋ `skills/promoted/` 兩份、`skills/external/grilling` 一份 | **所有新 repo 開局**：AGENT 讀 `repo-setup` 跟住做；有 UI 再讀 `design-review`。有 `SKILL.md`／RAG 知識包就留低 `skills/` |
 | 13c | [`docs/skills/0000-template.md`](docs/skills/0000-template.md) | 寫新 skill：frontmatter 規格 + 四段式正文 |
 | 13d | [`PREFLIGHT.md`](PREFLIGHT.md) ＋ `scripts/preflight_v1.0.mjs`（抄現成） | **必跑（所有新 repo）**：AGENT 設定／commit **之前**一條命令擋住（8 個 check），唔係每次 push 跑 YML |
+| 13e | [`docs/fresh-eyes-review.md`](docs/fresh-eyes-review.md) | **所有新 repo 留低**：寫完要交畀其他人／其他 AGENT 執行嘅文件，交付前開**新對話**做一次金魚審（方法見真理倉 [docs/52](https://github.com/playerkousas-rgb/readme/blob/main/docs/52-fresh-eyes-review.md)） |
 
 ## 第 14 項（有身份／有登入系統先加，2026-11-02 補）
 
@@ -106,6 +107,7 @@ node scripts/preflight_v1.0.mjs . --json
 | `skills/CATALOG.md` | **留低**：所有 SKILL.md 嘅唯一目錄；**以後加 skill 必入**，`check_skills` 會自動對 |
 | `skills/external/grilling/SKILL.md` | **留低**：第 0 步方法嘅 MIT 原文（只作溯源，唔改唔執行） |
 | `docs/system-basics.md` | 留低做驗收表（第 14 項，有身份系統先加）；填入自己嘅數值 |
+| `docs/fresh-eyes-review.md` | **留低**（13e）：文件要交畀其他人／AGENT 執行之前，開新對話做一次金魚審 |
 | `github/guard.yml`（如有） | `.github/workflows/guard.yml`（12 樣第 11 項，抄現成） |
 
 ## 檢查
