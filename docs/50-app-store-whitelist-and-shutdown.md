@@ -1,7 +1,7 @@
-# 50 — 關站與 App Store 白名單入口 SG1–SG6（經 website 進入・不適合白名單處理）
+# 50 — 關站與 App Store 白名單入口 SG1–SG19（經 website 進入・不適合白名單處理）
 
 > **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經指定入口（如 APP STORE `website` 或通告圖書館 `scout-circulars`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
-> **層級**：按需啟用嘅入口管制規則（預設 `open` 公開直連，唔強制鎖站；現有 repo 唔自動追溯）。支援**單一入口**或**多個指定入口並存**（例如同時容許由 **SCOUT APP STORE** 或 **通告圖書館** 進入，其餘直連一律攔截）。一旦開新 App 時揀咗白名單或日後要關站，必須按 **SG1–SG17** 處理，避免撞入 Safari 儲存隔離、PWA 主畫面踢人、`SameSite=Lax` Cookie 全滅、通告圖書館 `noreferrer` 清空 `Referer` 同 `308` 永久快取五大陷阱。
+> **層級**：按需啟用嘅入口管制規則（預設 `open` 公開直連，唔強制鎖站；現有 repo 唔自動追溯）。支援**單一入口**或**多個指定入口並存**（例如同時容許由 **SCOUT APP STORE** 或 **通告圖書館** 進入，其餘直連一律攔截）。一旦開新 App 時揀咗白名單或日後要關站，必須按 **SG1–SG19** 處理，避免撞入 Safari 儲存隔離、PWA 主畫面踢人、`SameSite=Lax` Cookie 全滅、通告圖書館 `noreferrer` 清空 `Referer` 同 `308` 永久快取五大陷阱。
 > **官方準入入口（2026-11-15 用戶定案・真理倉唯一登記處）**：**1. APP STORE** · **2. 圖書館** · **3. 成員系統** · **4. 區管理系統** · **5. GEMINI** —— **五個全部屬 Vercel 派發線**（都係我哋自己托管、都可以掛 `store_gate`／`entry-gate`）。**⚠️ 2026-11-15 第二次修正**：GEMINI **唔係** Google 嘅 Gemini／Canvas，而係用戶自己一個 **private repo [`playerkousas-rgb/GEMINI`](https://github.com/playerkousas-rgb/GEMINI)** 部署出嚟嘅 Vercel app（`https://gemini-woad-sigma.vercel.app/`）——同其他子 App 一樣係目錄入面一件貨，可以正常放行（見 [§3.9](#39-第五個門口-gemini係用戶自己嘅-private-repo--唔係-google-gemini)）。五個入口嘅 repo、pinned commit、Origin、現時連結行為同 `<iframe>` 殼狀況全部實查列於 [§0.1](#01-官方五個準入白名單入口註冊表canonical-portal-registry)；程式碼層面嘅同一份表係 [`store_gate_v1.0.js`](../templates/vercel/store_gate_v1.0.js) 嘅 `PORTAL_REGISTRY`。日後加／改名／改網址，**只改呢兩處**。
 
 ---

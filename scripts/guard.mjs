@@ -523,7 +523,7 @@ function checkRuleSync() {
   else if (!cl.includes('51-whitelist')) err('F16/SG：docs/10-checklists.md 未登記 docs/51 清單');
   if (existsSync(path.join(ROOT, sgDoc)) && existsSync(path.join(ROOT, sgJs)) && existsSync(path.join(ROOT, sgVj))
       && readme.includes(sgDoc) && cl.includes('SG1') && intakeTxt.includes('Q8')) {
-    ok('F16/SG：關站與白名單入口 SG1–SG6 同步（PLAYBOOK + docs/50 + docs/51 清單 + INTAKE Q8 + 閘門範本 + checklist）');
+    ok('F16/SG：關站與白名單入口 SG1–SG19 同步（PLAYBOOK + docs/50 + docs/51 清單 + INTAKE Q8 + 閘門範本 + checklist）');
   }
 
   // 金魚審（docs/52，2026-11-19）：方法落地要四處齊 —— 章節 + 貼用範本 + 起手包 + checklist。

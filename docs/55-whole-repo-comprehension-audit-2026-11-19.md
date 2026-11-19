@@ -32,7 +32,7 @@
 
 > 我「以為做完」嗰一步，同 `PLAYBOOK §10` 嘅 17 項 Definition of Done 差咗**最少 6 組規則**：SG1–SG19 白名單、L1–L6 雙語、I1–I8／UP PWA、金魚審、`npm run` 類建置檢查、SG18／SG19 細節。而 `docs/17` 由頭到尾**冇一個字**提過呢 6 組（我 grep 過：`SG` 0 次、`雙語` 0 次、`PWA` 0 次、`金魚` 0 次）。→ 呢個係全份報告最貴嘅一條（A1）。
 
-## 2. Findings：18 條（CRITICAL 2／HIGH 7／MEDIUM 6／LOW 3）
+## 2. Findings：17 條（CRITICAL 2／HIGH 4／MEDIUM 8／LOW 3）＋ 1 條撤回（見附錄 A2）
 
 > 位置全部可 grep。**「機械」欄**＝現有檢查捉唔捉到（呼應 [docs/53 §4](53-self-audit-2026-11-19.md) 嘅「已知上限」）。
 
@@ -58,7 +58,7 @@
 
 | # | 級 | 位置 | 我讀到咩／缺咩 | 影響面 | 機械 |
 |:--:|:--:|---|---|---|---|
-| **C1** | **HIGH** | 全倉 **23 處**（附錄 A 可重跑）。最貴三組：`docs/00 §2`／`§3`（`docs/00` **完全冇編號章節**，係「開新 app／每次 commit／上線前…」）出現 4 次；`docs/19 §8.1`、`§3.5`、`§0`（`docs/19` 冇呢三節）；`docs/03 §5`（`docs/03` 用 A1–A18 編號，冇 §5）出現 2 次 | 我跟住「見 docs/00 §2」搵唔到，只能猜係咪指「每次 commit」嗰段。其中 `docs/03 §5` 我連應該係 A5（登入閘）定係第 5 節都唔知。 | `README`、`docs/17`、`docs/27`、`docs/35`、`docs/48` 等 10 份 | ❌ G10 只驗 markdown 連結＋錨點；**純文字「§X」冇驗** |
+| ~~C1~~ | ~~HIGH~~ | ~~全倉 23 處~~ | **撤回（2026-11-19 同日，見附錄 A2）**：我第一次個 scanner 有兩個 bug（`lstrip('0')` 令 `§0.1` 變假陽性；regex 允許跨 70 字 → 撈隔籬個連結嘅 `§`）。修正後**實測 0 處**死 § 指針（`docs/23 §5.3`／`docs/10 §1.4`／`docs/50 §4.1` 我逐個開檔核對過，全部存在）。**呢條唔係漏洞。** | — | — |
 | **C2** | **LOW** | `README` L34、`docs/00` L7 | 叫「`docs/17` **§3** STEP BY STEP」，實際 STEP BY STEP 係 **§2**（§3 係「捷徑：單一 HTML」）。`README` L161 就寫 §2。同一件事兩個節號。 | 5 分鐘路線嘅讀者（最常撞） | ❌ |
 | **C3** | **MEDIUM** | `docs/README` L3／L8「00–49」；`README` L7「更新日期：2026-11-12」；`docs/README` L4「整理日期：2026-11-13」 | 倉已經有 `docs/50`–`docs/54`（2026-11-15～19），索引首兩行仍然講「00–49」；根 README 更新日期停在 11-12。我作為「第二個 AGENT」會以為 11-12 之後嘅規則（SG16–SG19、金魚審、白名單）係未生效嘅草稿。 | 所有讀首頁嘅 agent | ❌ 冇日期／範圍檢查 |
 
@@ -81,16 +81,16 @@
 
 ## 3. 點解 `guard`／`consistency`／`final_check` 全綠都捉唔到
 
-| 現有檢查 | 捉到 | 捉唔到（本報告 18 條入面） |
+| 現有檢查 | 捉到 | 捉唔到（本報告 17 條入面） |
 |---|---|---|
-| `guard` G10 | 死連結（1535 條）、錨點（177 條） | C1（純文字 §號）、A3／A4（語意相反） |
+| `guard` G10 | 死連結（1535 條）、錨點（177 條） | A3／A4（兩句各自通順，但意思相反） |
 | `guard` F16 系列 | 規則「四處／六處有冇出現」 | B1（出現咗，但範圍寫錯）、D2（標題漏 13e） |
 | `consistency` `CLAIMS` | 6 個統計數（輕／中／重／有後台／空殼／AI） | E2（repo 數 83/85/89/95） |
 | `consistency` 索引覆蓋 | `docs/NN` 有冇索引行 | C3（索引內容過時） |
 | `final_check` 六角度 | 結構、版權、版號、體積 | A1／A2／A6（「夠唔夠」係覆蓋率問題，唔係格式問題） |
 | `PREFLIGHT` 8 check | 起手包完整性 | A1（起手包完整 ≠ 起手包教齊） |
 
-> 一句：**現有檢查全部係「有冇寫」，本報告 18 條大部分係「寫咗但範圍／次序／版本錯」。** 同 [docs/53 §4](53-self-audit-2026-11-19.md) 講嘅已知上限一致，但今次量化咗：18 條之中 **17 條**屬呢類。
+> 一句：**現有檢查全部係「有冇寫」，本報告 17 條大部分係「寫咗但範圍／次序／版本錯」。** 同 [docs/53 §4](53-self-audit-2026-11-19.md) 講嘅已知上限一致，但今次量化咗：18 條之中 **17 條**屬呢類。
 
 ## 4. 我查完先發現「唔係問題」（免得你白修）
 
@@ -105,44 +105,65 @@
 
 | 範圍 | 為何 |
 |---|---|
-| `docs/23`、`docs/34`–`docs/43`、`docs/48`、`docs/49`（工具評審／爆紅清單） | 屬「揀唔揀用某工具」參考章，唔屬 agent 開工必經路徑；只順手掃過指針（C1 內有幾條出自呢批）。 |
+| `docs/23`、`docs/34`–`docs/43`、`docs/48`、`docs/49`（工具評審／爆紅清單） | 屬「揀唔揀用某工具」參考章，唔屬 agent 開工必經路徑；只抽讀過幾段。 |
 | `docs/50` 全文（99 KB，最大一份） | 只讀頭部＋§0.1＋§3.8 附近。**SG7–SG19 逐條有冇前後打架，我未逐條對**——建議列入下一輪金魚（委託書次序 #4）。 |
 | `docs/32`（33 KB 一致性審計） | 屬方法論記錄，未逐段讀。 |
 | `BUILD.md`／`EXTERNAL.md`／`進度追蹤旅系統升級版.md` | 只讀開頭判斷「係案例定通用」（得出 A3）；內容未審。 |
 | 子 App repo 實況 | 一個都冇開。所有「34–35 隻」係照 `docs/51`／`FRESH-EYES-REQUEST` 引述。 |
 | 設計／文案質素 | 唔關「睇唔明」事，冇評。 |
 
-## 附錄 A — 機械掃描（可重跑，唔靠我記憶）
+## 附錄 A — 機械掃描（修正版；第一版有 bug，見附錄 A2）
 
-我跑咗三支一次性 script（冇寫入 repo，因為 [docs/52 §2](52-fresh-eyes-review.md) 講 reviewer 唔准改檔）。你可以照抄落 `scripts/` 自己驗：
+三支一次性 script，冇寫入 repo（[docs/52 §2](52-fresh-eyes-review.md)：reviewer 唔准改檔）。你可以照抄落 `scripts/` 自己驗。
+
+**⚠️ 第一版嘅兩個 bug（就係要撤回 C1 嘅原因）**：① 我用 `s.lstrip('0')` 比對 `0.1` → 變成 `.1`，所有 `§0.x` 章節全部假陽性；② regex 容許檔名同 `§` 之間隔 40–70 字，會**跨過隔籬個連結**撈到人哋嘅 `§`（例如同一行先出現 `docs/00-quickcard.md`，之後隔幾十個字才出現 `docs/17 §2`，就會被報成「docs/00 §2」）。修正：只認緊貼形式、用數字 segment 比對。
 
 ```bash
-# ① 章節指針：docs/NN 有冇 §X 呢一節（今次結果：23 處唔存在）
 python3 - <<'PY'
-import re, pathlib, collections
+import re, pathlib
+
+head = re.compile(r'^#{1,4}\s*§?\s*(\d+(?:\.\d+)*)\s*(?:[\.、]|\s|—|–|-|（|\()')
 heads = {}
 for p in pathlib.Path('.').rglob('*.md'):
     if '.git' in p.parts: continue
-    heads[str(p)] = {m.group(1) for m in
-        (re.match(r'^#{1,4}\s*§?\s*(\d+(?:\.\d+)*)', l) for l in
-         p.read_text(encoding='utf-8', errors='ignore').split('\n')) if m}
-pat = re.compile(r'(?:docs/)?(\d{2})-[a-z0-9\-]+\.md[^\n]{0,40}?§\s*(\d+(?:\.\d+)*)')
+    heads[str(p)] = {m.group(1) for m in (head.match(l) for l in
+        p.read_text(encoding='utf-8', errors='ignore').split('\n')) if m}
+
 docmap = {p.name[:2]: str(p) for p in pathlib.Path('docs').glob('*.md')}
-miss = collections.Counter()
-for p in pathlib.Path('.').rglob('*.md'):
+pat_link = re.compile(r'\[(\d{2})(?:\s+[^\]]*?)?\s*§\s*(\d+(?:\.\d+)*)\]')
+pat_file = re.compile(r'(?:docs/)?(\d{2})-[a-z0-9\-]+\.md\s*(?:\)|嘅|的|\s)*\s*§\s*(\d+(?:\.\d+)*)')
+
+def found(target, sec):
+    want = tuple(int(i) for i in sec.split('.'))
+    for h in heads[target]:
+        hn = tuple(int(i) for i in h.split('.'))
+        if want == hn or (len(hn) > len(want) and hn[:len(want)] == want): return True
+    return False
+
+bad = 0
+for p in sorted(pathlib.Path('.').rglob('*.md')):
     if '.git' in p.parts: continue
     for i, line in enumerate(p.read_text(encoding='utf-8', errors='ignore').split('\n'), 1):
-        for n, s in pat.findall(line):
-            t = docmap.get(n)
-            if t and not any(h == s.lstrip('0') or h.startswith(s + '.') for h in heads[t]):
-                miss[f'docs/{n} §{s}'] += 1
-print(sum(miss.values()), dict(miss))
+        for rx in (pat_link, pat_file):
+            for n, sec in rx.findall(line):
+                tg = docmap.get(n)
+                if tg and not found(tg, sec):
+                    bad += 1; print(f'{p}:{i}  docs/{n} §{sec}')
+print('TOTAL', bad)
 PY
+```
 
-# ② 規則範圍：同一組規則幾個講法（今次結果：SG1–SG19 / SG1–SG17 / SG1–SG6）
+> **2026-11-19 實測：0 處。** 「叫你去睇一節唔存在嘅章節」呢類問題而家**冇**；C1 已撤回，唔需要修。
+
+**② 規則範圍**（統一前有 4 處寫成 6／17）
+
+```bash
 grep -rnoE 'SG1[–-]SG[0-9]+' --include='*.md' . | sed 's/:[0-9]*:/ /' | sort | uniq -c | sort -rn
+```
 
-# ③ 入口文件覆蓋：起手包三份有冇提四族條件式規則（今次結果：全 0）
+**③ 入口文件覆蓋**（起手包 3 份對四族條件式規則：全部 0 次）
+
+```bash
 for f in templates/repo-starter/AGENTS.md templates/repo-starter/README.md \
          templates/repo-starter/docs/quickcard.md; do
   printf '%-44s SG:%s 雙語:%s PWA:%s 金魚:%s\n' "$f" \
@@ -151,11 +172,51 @@ for f in templates/repo-starter/AGENTS.md templates/repo-starter/README.md \
 done
 ```
 
+## 附錄 A2 — 更正紀錄（2026-11-19 同日，寫完之後自己覆核）
+
+| 項 | 原本 | 更正 | 影響 |
+|---|---|---|---|
+| **C1（原本標 HIGH）** | 「全倉 **23 處**」 `docs/NN §X` 指去唔存在嘅章節，並舉例「`docs/00 §2` 出現 4 次」 | **撤回**：修正 scanner 後實測 **0 處**。我逐個開檔核對 `docs/23 §5.3`、`docs/10 §1.4`、`docs/50 §4.1`——全部存在 | findings 18 → **17**；HIGH 由 5 → 4 |
+| 標題級數 | 「HIGH 7／MEDIUM 6」 | 實際逐條數係 **HIGH 4／MEDIUM 8**（我第一版加錯） | 唔影響任何 finding 內容 |
+| 根本原因 | — | 兩個 scanner bug ＋ **我冇抽樣核對就把數字寫落報告** | 教訓：機械掃描嘅數字，最少抽 3 個樣本開檔核對先可以入報告 |
+
 ## 附錄 B — 收貨（作者自己做）
 
 - [ ] 先讀 §1 第 ①、② 段：**「跟 `docs/17` 做完就以為做完」係唔係你真實預期？** 唔係 → 問題喺文件。
-- [ ] 18 條逐條分類：真缺上文／我誤解（可能文件寫得衰）／噪音。凡屬「改語言／改風格／換架構」一律丟。
+- [ ] 17 條逐條分類：真缺上文／我誤解（可能文件寫得衰）／噪音。凡屬「改語言／改風格／換架構」一律丟。
 - [ ] **修完最多重審 1 次**；重審完仍有 CRITICAL → 改結構（[docs/52 §2](52-fresh-eyes-review.md)）。
-- [ ] 建議修序（只按「幾多個 AGENT 會因此做錯」排，唔係改法）：**B1 → A1 → A2 → C1 → D1 → 其餘**。
-- [ ] 記錄：`> 金魚審（新對話，同對話第 2 份文件，見 docs/52 §0.2）2026-11-19：CRITICAL 2／HIGH 7／MEDIUM 6／LOW 3；已修 a，接受風險 b（原因：…）。`
+- [ ] 建議修序（只按「幾多個 AGENT 會因此做錯」排，唔係改法）：**B1 → A1 → A2 → D1 → 其餘**。
+- [ ] 記錄：`> 金魚審（新對話，同對話第 2 份文件，見 docs/52 §0.2）2026-11-19：CRITICAL 2／HIGH 4／MEDIUM 8／LOW 3（另撤回 1 條，見附錄 A2）；已修 a，接受風險 b（原因：…）。`
 - [ ] 下一輪真金魚建議：`docs/50` 全文（99 KB、SG1–SG19 最易前後打架）→ 委託書次序 #4。
+
+## 附錄 C — 已修（2026-11-19，審完即日做；我由 reviewer 變作者，所以**之後唔再算金魚**）
+
+> 紀律：[docs/47](47-readme-discipline.md) 原則二「已修要寫得出邊個 commit、邊個實測」。以下每一行都可以自己重跑驗證。
+
+| # | 改咗邊度 | 改成咩（一句） | 驗證 |
+|:--:|---|---|---|
+| **B1** | `PLAYBOOK §7.7` L236、`docs/50` 標題＋L4、`README` 檔案樹、`guard.mjs` 檢查名 | 四處範圍統一 **SG1–SG19**；§7.7 嗰句加「唔係只有前 6 條」 | `python3` 掃 `SG1[–-]SG\d+` → 只剩 24 次 `SG1–SG19`（其餘 `SG1–SG6` 係 §10 分組標籤同本報告引述舊錯） |
+| **A1** | `docs/17` §2 開頭 ＋ 新 `STEP 11` | 加警語：本教學只包通用骨架；四族（L／I／SG／金魚）唔會出現喺 STEP 0–10，但 §10 會查；STEP 11 叫逐條對 §10，未做 = 未交付 | `grep -c "SG1–SG19\|L1–L6\|I1–I8\|金魚審" docs/17` → 4 |
+| **A2** | 起手包 `README`／`AGENTS`／`docs/quickcard.md` | 驗收加四族條件式規則（中唔中都要寫 N/A）；`AGENTS` 新增「條件式規則」表；quickcard 加一行 | `grep -c SG\|雙語\|PWA\|金魚` 三份 → 各 1（quickcard 用「SG（白名單）」字樣） |
+| **A3** | `BUILD.md` 第 3 行 | 由「本檔係唯一真理」→「ecportal 專案案例；通用規則同衝突以 PLAYBOOK 為準」 | 開檔首 6 行 |
+| **A4** | `AGENTS.md` ②b | 加「唯一真理係 `docs/19 §2`，本檔只留摘要，唔一致以 19 為準」 | 開檔第 7 行 |
+| **A5** | `README.md` 🆕 段落尾 | 加一段講清三個「0」唔同層（README 6 步 0／START ⓪＋⓪b／新 repo AGENTS `0.`） | 開檔 🆕 段尾 |
+| **A6** | `AGENTS.md` ③ | 「六角度全綠**只係入場券**」，要再對 §10 17 項 | 開檔第 5 行 |
+| **B2** | `PLAYBOOK §10` | 一條 SG bullet 拆成 **SG1–SG6／SG7–SG14／SG15–SG19** 三條，可以逐條剔 | §10 尾三條 bullet |
+| ~~C1~~ | — | **撤回**（scanner bug，實測 0 處） | 附錄 A 修正版 script → `TOTAL 0` |
+| **C2** | `README` L34、`docs/00` L7 | `docs/17 §3` → `§2`（§3 係「捷徑：單一 HTML」） | `grep -n "17 §" README.md docs/00-quickcard.md` |
+| **C3** | `docs/README` L3／L8／L4、`README` L7 | `00–49` → `00–55`；更新日期 11-12 → 11-19；整理日期 11-13 → 11-19 | 兩份首 10 行 |
+| **D1** | `PLAYBOOK §10`、`docs/10 §2`、`docs/00` | `npm run check && npm run build` 加「有 `package.json` 先做；冇就 N/A（C13-g）」 | `grep -n "package.json" PLAYBOOK.md docs/10-checklists.md docs/00-quickcard.md` |
+| **D2** | `START` 第 13 項標題 | 標題補 **13e 金魚審** | `grep -n "^## 第 13 項" templates/repo-starter/START.md` |
+| **D3** | `docs/17` STEP 8 | 補第 **7** 條（系統類／新部署真機再跑），同 §4「7 條」對齊 | STEP 8 尾 |
+| **E1** | **新增 [`docs/56-glossary.md`](56-glossary.md)** | 一頁術語表（5 類、30 條）＋「一詞兩義」對照（白名單／P1／L／A 組） | 開檔；`docs/README` 同根 `README` 已加入口 |
+| **E2** | `INTAKE` L12 | 「85 個 repo baseline」→ 列明 85／89／95 三個快照同「即時以 `gh api` 為準」 | 開檔第 12 行 |
+| **E3** | `docs/52` §1.2 例子 | `store-hidden.json`（全倉 0 次）→ `Delist → Gate → Soft → Hard` 四個下架齒輪（真實存在） | `grep -c store-hidden` 全倉 → 0 |
+| **E4** | `PLAYBOOK` F5 欄 | 加註「呢度嘅白名單＝action／欄位 allowlist，唔係 §7.7 入口白名單」 | `grep -n "F5" PLAYBOOK.md` |
+
+**驗證（同一日跑）**：`guard` 25 項全綠、`consistency` 無 FAIL（159 檔／104 MD）、`final_check` PASS、`node --test scripts/*.test.mjs` **125 pass / 0 fail**。
+
+**留低嘅風險（唔修，寫明原因）**：
+- `docs/50` 全文 99 KB，SG7–SG19 逐條對撞**冇做**（本報告 §5 已列）→ 建議下一輪真金魚專門審佢（委託書次序 #4）。
+- `B1` 之後仲有 9 次「SG1–SG6」字樣，全部係**分組標籤**（`§10` 三條 bullet）或**引述舊錯**（本報告、索引）。分類標籤冇刪，因為拆開剔嘅好處大過一個乾淨嘅 grep。
+- 起手包 `docs/quickcard.md` 只寫「SG（白名單）」冇寫 `SG1–SG19` → 覆蓋度 script 會計 0；刻意保持短，詳情指去 `AGENTS.md`。

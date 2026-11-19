@@ -1,6 +1,6 @@
 # ecportal 建構定案 (BUILD) — 2026-09-22
 
-本檔係唯一真理。所有 Agent 以此為準施工。
+**定位（2026-11-19 加註，之前冇寫清）**：本檔係 **ecportal 專案案例**嘅施工定案（`AGENTS.md` ④ 有講）；**通用規則同衝突一律以 [PLAYBOOK](PLAYBOOK.md) 為準**。ecportal 以外嘅 app **唔使**跟本檔嘅專案設定（`TROOP_*`／`units.json`／進度追蹤 leaf 等）。
 兩條公理: **一切身份 = SCOUT_ID + 所在 SHEET**；**一切接入 = 交俾邊個 + 登記邊個 registry**。
 
 **兩層定位（2026-09-23 加註，施工前先分清）**

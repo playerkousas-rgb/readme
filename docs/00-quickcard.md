@@ -4,7 +4,7 @@
 > ecportal 旅團／進度追蹤嘅具體專案設定全部喺 [19 專案案例](19-ecportal-troop-case.md)（**唔係通用規則，新 app 唔使跟名**）；repo 健康 → [20](20-repo-health-audit.md)。
 
 
-> **最短入門**：[17 §3 STEP BY STEP](17-final-check-and-tutorial.md#2--step-by-step由零到一個-app) · 完整版：[PLAYBOOK.md](../PLAYBOOK.md) · Checklist：[10-checklists.md](10-checklists.md)
+> **最短入門**：[17 §2 STEP BY STEP](17-final-check-and-tutorial.md#2--step-by-step由零到一個-app) · 完整版：[PLAYBOOK.md](../PLAYBOOK.md) · Checklist：[10-checklists.md](10-checklists.md)
 > 交付前一條命令：`node scripts/final_check_v1.0.mjs`（六角度報告）
 
 ---
@@ -28,7 +28,7 @@
 [ ] 新 action 入咗白名單 + 有測試
 [ ] 新 env 有 .env.example 條目
 [ ] 新設定有 fail closed 預設值
-[ ] guard 綠 + build 綠
+[ ] guard 綠 + build 綠（冇 package.json 就寫 N/A）
 [ ] commit message: type(scope): 做咩  （Conventional Commits）
 ```
 

@@ -64,7 +64,7 @@ reviewer 第一步**唔准列問題**，要先用自己嘅話寫兩段：
 
 ### 1.2 未定義／未連檔嘅概念
 
-只捉**本專案特有**而又冇解釋嘅名詞：`portalIds`／`supportNudge`／`silentPortalIds`／`store-hidden.json`／`entry-gate`／`appSlug()`。
+只捉**本專案特有**而又冇解釋嘅名詞：`portalIds`／`silentPortalIds`／`supportNudge`／`entry-gate`／`Delist → Gate → Soft → Hard` 四個下架齒輪。
 
 **唔准捉**通用工程名詞（API、cache、idempotent、localStorage）。上游原句大意：你唔識**呢個 project**，但你識軟件。
 

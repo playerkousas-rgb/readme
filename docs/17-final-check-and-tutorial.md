@@ -37,6 +37,12 @@ node scripts/final_check_v1.0.mjs --json                  # AI agent 用
 
 > 每步：**做乜 → 打乜 → 應該見到乜**。Vercel app 例子；單一 HTML app 跳 [§3](#3--捷徑我淨係想檢查一個單一-html)。
 
+> ⚠️ **本教學只包「通用骨架」（P1 ＋ S／F／A／W／V）。下面四族係「按類型才觸發」，唔會出現喺 STEP 0–10，但 PLAYBOOK §10（驗收閘 Definition of Done）會逐條查 —— 冇做 §10 就當「STEP 10 完 = 交付得」係最常見嘅誤判（來源：[docs/55](55-whole-repo-comprehension-audit-2026-11-19.md) A1）**：
+> ① **L1–L6 雙語介面**（有 UI ＋ 雙閘達標）→ PLAYBOOK **§7.5**／[docs/44](44-bilingual-ui.md)
+> ② **I1–I8／UP1–UP5 PWA 安裝＋更新**（有 `manifest`／要加入主畫面）→ **§7.6**／[docs/46](46-pwa-install-and-update.md)
+> ③ **SG1–SG19 入口白名單／關站**（要經 APP STORE 等入口入）→ **§7.7**／[docs/50](50-app-store-whitelist-and-shutdown.md)；**開新 app 第 0 步就要問用戶**（`INTAKE` Q8）
+> ④ **金魚審**（文件要交畀其他人／其他 AGENT 執行）→ [docs/52](52-fresh-eyes-review.md)
+
 **STEP 0 — 定邊界（1 分鐘，多單位系統先需要）**：答三句 —— ① 邊個准改邊層？② 呢個元件嘅「唔做清單」係乜？③ 新功能入咗功能 registry 未？
 呢三句係**可選做法**，具體案例喺 [19 專案案例](19-ecportal-troop-case.md)（**唔係通用底線**）；[PLAYBOOK §8.1](../PLAYBOOK.md) 係案例隔離指針。
 
@@ -80,6 +86,7 @@ printf '# My App\n' > "$APP/README.md" && cd "$APP"
 4. 成品圖放入 `drawscout_decoder_v1.0.html` → 讀到水印 payload。
 5. F12 Console → 無 error、無 `AIza...`、無 `?key=`。
 6. 清 cache 再開 → 唔係舊版。
+7. **系統類／新部署**：真 URL／真 Sheet 再跑一次（GAS 302、Drive 權限、Script Properties 配額、`onOpen` 授權）—— 同 [§4](#4--最終人手實測7-條機器代唔到) 第 7 條同一件事，本地回歸綠唔算完成。
 
 **STEP 9 — Commit / PR / CI**
 
@@ -91,6 +98,8 @@ git push -u origin feat/my-app && gh pr create --fill
 ✅ PR 頁 CI 全綠。紅就返 STEP 4。
 
 **STEP 10 — Deploy 驗收**：Production branch = `main` only；非 main 關 Preview；retention 7 日。部署後喺**真 URL** 再做一次 STEP 8 第 1、5 點；回滾指令（上一個 deployment URL）寫入 PR。
+
+**STEP 11 — 對 [PLAYBOOK §10](../PLAYBOOK.md)（驗收閘 Definition of Done） 逐條剔（唔好跳）**：上面四族（L／I／SG／金魚）＋ `npm run` 類檢查 ＋ 單一 HTML 審計，邊條中咗就做，冇就喺 PR 寫 `N/A + 原因`。**呢步冇做完 = 未交付**，即使 `final_check` 六角度全綠。
 
 ---
 

@@ -93,7 +93,7 @@
 | **F2** | ID 正規化單一實現 | `trim → 大寫 → 補零 → 字母尾`（`82/082/0082` = 同一個），只准有一個 function |
 | **F3** | registry 驅動 | 導航／功能入口／下游連結由註冊表生成；未登記 = 唔存在 |
 | **F4** | fail closed | 只有 `1/true/yes/on/open` 算開；其他值（包括串錯字）一律閂 |
-| **F5** | 白名單 > 黑名單 | action／檔種／origin／欄位／重定向 URL 全部用 allowlist |
+| **F5** | 白名單 > 黑名單（呢度嘅「白名單」＝action／欄位 allowlist；**唔係** §7.7 嘅入口白名單） | action／檔種／origin／欄位／重定向 URL 全部用 allowlist |
 | **F6** | 冪等鍵 + 寫入結果狀態 | `transferId`／`nonce`／`jti`／`baseVersion`；重複請求結果一致，唔會雙寫。**送咗之後**分 `not_sent`／`not_applied`／`accepted`／`may_have_applied`／`applied`；2xx 只係 accepted，readback 搵到先算 applied，不確定**唔准自動重送**（[F6-b](docs/02-foolproof.md#f6-b--寫入結果狀態送咗之後點算)） |
 | **F7** | 樂觀鎖 + 原子寫入 | 寫入帶 `baseVersion`；撞版回 `conflict:true`；後端 lock + 暫存行一次過 commit；刪除 = tombstone |
 | **F8** | 三色狀態 | 黃＝未存、綠＝已存、紅＝衝突；一鍵複製診斷報告 `{version,bytes,sizes,stagingRows}` |
@@ -233,7 +233,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 
 > **2026-11-15 用戶定案**：「未來有機會會關站，或某些程式必須經 APP STORE（repo `website`）進入；要把這在開 APP 時告知有白名單，以及那些 APP 不適合白名單如何處理。」
 > **2026-11-15 用戶第二次定案（五個官方入口，SG16 修正後）**：準入白名單入口一共 **5 個**（1 APP STORE · 2 圖書館 · 3 成員系統 · 4 區管理系統 · 5 GEMINI），登記於真理倉 [docs/50 §0.1](docs/50-app-store-whitelist-and-shutdown.md) ＋ 程式碼嘅 `PORTAL_REGISTRY`。子 App 一律用 `portalIds` 引用，唔准自己另抄一堆網址。
-> **層級**：按需啟用（預設 `open` 公開直連，現有 repo 唔自動追溯）。一旦揀咗經指定入口白名單進入或暫時關站，必須跟 **SG1–SG6**。
+> **層級**：按需啟用（預設 `open` 公開直連，現有 repo 唔自動追溯）。一旦揀咗經指定入口白名單進入或暫時關站，必須跟 **SG1–SG19**（§7.7 全 19 條，唔係只有前 6 條）。
 
 | # | 入口 | Origin | 現時撳入行為 | `<iframe>` 殼 |
 |:--:|---|---|---|---|
@@ -339,7 +339,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 - [ ] `node scripts/guard.mjs` 綠（本機 + CI）
 - [ ] `node scripts/final_check_v1.0.mjs` 六角度全綠 + 7 條人手實測做咗（[docs/17](docs/17-final-check-and-tutorial.md)）
 - [ ] 單一 HTML artifact：`node scripts/audit_single_html_v1.0.mjs <檔名>` 無 FAIL（C13-f）
-- [ ] `npm run check && npm run build` 綠
+- [ ] **有 `package.json`（有建置步驟）先做**：`npm run check && npm run build` 綠；純文件／單一 HTML／Canvas app 冇 package.json → 喺 PR 寫 `N/A`（C13-g）
 - [ ] G11：9 個圖標齊（尺寸用程式驗）、manifest 4 icon 200、9 檔 ≤260 KB、`og:image` 絕對網址
 - [ ] S7 體積冇超標（Vercel/dist 類）；**單一 HTML 改用 C13-g 5MB 上限，唔強制瘦身**；新增資源經 `npm run slim:dead` 檢查
 - [ ] 每個新 action 有白名單 + 測試；每個新 secret 有 `.env.example` 條目 + rotation 步驟
@@ -348,7 +348,9 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 - [ ] W1 版權標示 + W2 水印（如出圖）+ W6 交付檔無真 key
 - [ ] V1 檔名＋內文版號一致 + V4 部署拷貝已 sync（Type C）
 - [ ] L1–L6：雙閘達標嘅 app 有英文 + 右上角切換掣（`i18n_check` 無 FAIL + 人手撳實測）；唔做有寫 `EXCEPTION: L1`（[docs/44](docs/44-bilingual-ui.md)）
-- [ ] SG1–SG19（圖書館維持 `open`；下架按四齒輪逐級落；`supportNudge` 文案已寫明書架政策、預設 skip appstore；書架政策已公開、`BOOK`／自家系統豁免）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`；「加入主畫面」引導係「先入口、後安裝」；分享／QR 只由 APP STORE 產生、下架按「Delist→Gate→Soft→Hard」逐級落、`BOOK` 類落 ③④ 前已通知用戶備份（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+- [ ] SG1–SG6（判定／告知／提示卡／閘門）：已避開五類 `iframe` 禁區、開 APP 時有白名單／關站提示卡、`redirects` 用 `permanent: false`、“加入主畫面”引導係「先入口、後安裝」（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）
+- [ ] SG7–SG14（運作／統計／下架／書架）：圖書館維持 `open`；下架按四齒輪 Delist→Gate→Soft→Hard 逐級落；`supportNudge` 文案寫明書架政策、預設 skip appstore；書架政策已公開、`BOOK`／自家系統豁免；`BOOK` 類落 ③④ 前已通知用戶備份
+- [ ] SG15–SG19（交接／入口擴充／回跳）：逐個 App 交接清單派咗、五個入口用 `portalIds`／`admit` 而唔自抄網址、分享／QR 只由 APP STORE 產生、SG18／SG19 詳見下一行
 - [ ] SG18／SG19（子 App 回跳主站用 `getAppStoreUrl(slug)`，冇直連主站 Supabase；`<slug>` 對 `20261116-app-slug-seed.sql` 核實；`silentPortalIds` 之後攔截卡只出一粒掣；`[hidden]{display:none}` 有寫實)
 - [ ] README 寫作紀律（[docs/47](docs/47-readme-discipline.md)）：每句「已修」有檢查或實測、每句「未做」寫限制、冇「理論上應該 work」字樣
 - [ ] `docs/` 同 `PLAYBOOK.md` 已更新（規則改動時）

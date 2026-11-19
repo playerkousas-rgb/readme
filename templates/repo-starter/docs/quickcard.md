@@ -8,6 +8,8 @@
 2. `node scripts/guard.mjs`
 3. 改完 `node scripts/final_check_v1.0.mjs --json`
 
+> **條件式**：有 UI → L（雙語）｜有 manifest → I／UP（PWA）｜要經官方入口入 → SG（白名單）｜文件要交人執行 → 金魚審。詳見 [AGENTS.md](../AGENTS.md) 同真理倉 PLAYBOOK §7.5–§7.7。
+
 ## 五大鐵律
 
 | | 一句 |

@@ -9,7 +9,7 @@
 
 1. **設計樹 + frontier**：一輪問晒「而家問得」嘅問題（唔使等第 1 題答案就已經可以問嘅），**編號 + 每條俾一個建議答案**；問法要令用戶答「係／照你講」就等於接受建議。
 2. **等用戶答完先至下一輪**：第 2 輪只問被第 1 輪答案解鎖嘅問題（例：答咗「有登入」先問帳號／回報細節）。
-3. **Fact 係 AGENT 自己查**，唔好問用戶：85 個 repo  baseline、`docs/28` 嘅形式名、模板有乜檔、[P1](https://github.com/playerkousas-rgb/readme/blob/main/PLAYBOOK.md) 相近產品／授權、ToS。用戶只負責**決定**。
+3. **Fact 係 AGENT 自己查**，唔好問用戶：repo baseline（**數目會變，唔好當死數**：分類基準 85／2026-11-07 形狀普查 89／2026-11-13 全掃 95 個 repo、69 個有公開網址；即時以 `gh api` 為準，見真理倉 `docs/28`／`docs/51`）、`docs/28` 嘅形式名、模板有乜檔、[P1](https://github.com/playerkousas-rgb/readme/blob/main/PLAYBOOK.md) 相近產品／授權、ToS。用戶只負責**決定**。
 4. **問完要寫低**，唔好只留喺對話：答案寫入 `SCOPE.md`（做乜／唔做乜兩條 bar）+ README 第一句定位；難逆轉嘅決定寫一段 [`docs/adr/0001-*.md`](docs/adr/0000-template.md)。
 5. **用戶確認「係，理解啱」先好抄檔**；未確認唔好 `git init`、唔好揀授權、唔好改 `LICENSE`。
 6. **唔好靠估**：答唔到就寫「未定／待用戶確認」，唔好自己揀個 default 當答案。

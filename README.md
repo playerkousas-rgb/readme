@@ -4,7 +4,7 @@
 > 呢個 repo **唔係一個 app**，而係我所有 app 共用嘅**說明書 ＋ 可複製模板 ＋ 自動防呆檢查**。
 > **案例隔離（2026-10-27）**：通用規則包括 S/F/A/W/V、研發前調查 P1 ＋ 技術棧契約；ecportal 旅團／進度追蹤嘅專案設定全部喺 [docs/19](docs/19-ecportal-troop-case.md)，**唔係通用底線**；邊個 repo 有問題喺 [docs/20](docs/20-repo-health-audit.md)。
 
-更新日期：2026-11-12 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase**（GEMINI 系統規範已集中去 GEMINI repo，本倉唔再做佢嘅入口）
+更新日期：2026-11-19 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase**（GEMINI 系統規範已集中去 GEMINI repo，本倉唔再做佢嘅入口）
 
 ---
 
@@ -23,6 +23,7 @@
 
 > ⚠️ **唔係自動觸發**：呢個環境無 Skill tool／plugin harness，要你（AGENT）**主動讀** `repo-setup`／`design-review` 兩份 `SKILL.md`（`external/grilling` 只作溯源）；PREFLIGHT 只驗佢哋存在、frontmatter 合格同**入咗 [`CATALOG.md`](templates/repo-starter/skills/CATALOG.md)**，**唔會代你執行**。
 > ⚠️ **唔會自動整靚版面**：無瀏覽器／screenshots／Chrome inspector；望圖、設計分、`ROUND n` critique、兩軸報告要你自己寫低，做唔到就照實寫「做唔到」（[docs/32 §8.9](docs/32-consistency-audit.md)）。想睇「開新 repo 之後實際會／唔會發生乜」：[`START.md` 個對照表](templates/repo-starter/START.md)。
+> **四份文件嘅「第 0 步」唔同層，唔好當同一個**：本 README 6 步嘅 **0** ＝ `INTAKE` 第 1 輪問用戶；`START.md` **⓪** 就係同一步、**⓪b** 係喺真理倉跑一次 PREFLIGHT（驗起手包冇壞）；抄完之後新 repo 自己 `AGENTS.md` 嘅 **`0.`** ＝ 喺新 repo 跑 PREFLIGHT（開工第一步）。三個「0」唔可以互相取代。
 > 用戶只想**改現有 repo／查規則／審計** → 落下面 §1 導覽，唔好行呢 6 步（改現有 repo 只需要問「想改乜」，見 `INTAKE.md` 第 2 輪）。
 
 ---
@@ -31,7 +32,7 @@
 
 | 你得… | 讀呢啲就夠 |
 |-------|-----------|
-| **5 分鐘** | [docs/00-quickcard.md](docs/00-quickcard.md)（一頁紙）＋ [docs/17 §3 STEP BY STEP 教學](docs/17-final-check-and-tutorial.md#2--step-by-step由零到一個-app) |
+| **5 分鐘** | [docs/00-quickcard.md](docs/00-quickcard.md)（一頁紙）＋ [docs/17 §2 STEP BY STEP 教學](docs/17-final-check-and-tutorial.md#2--step-by-step由零到一個-app) |
 | **20 分鐘** | 本 README ＋ [PLAYBOOK.md](PLAYBOOK.md)（規則 ID 總表） |
 | 撞到問題 | 下面 §1 導覽 → 對應 `docs/` |
 | 交付前 | `node scripts/final_check_v1.0.mjs`（六角度實測，見 [docs/17](docs/17-final-check-and-tutorial.md)） |
@@ -101,7 +102,8 @@
 | **影音／創作 AI 工具啱唔啱我哋**（Concat／FilmCraft／VoiceStudio／AutoClip／yovoice／ArtCraft／MoneyPrinterTurbo） | **[docs/48](docs/48-video-audio-creative-tools.md)** — GitHub API 2026-11-12 快照逐個判決；VoiceStudio／MoneyPrinterTurbo 沿用 [docs/35](docs/35-viral-ai-tools.md)「暫不採用」只更新星數；ArtCraft「可試」（唔係產品依賴，係內容製作工具；未實測） |
 | **五個 repo 值唔值得學／收錄**（設計 Skills／Creative Studio／dotfiles／EffectCraft） | **[docs/49](docs/49-design-skills-studio-dotfiles-effectcraft.md)** — GitHub API 2026-11-13：`awesome-design-md`／`taste-skill` 已收錄只更新快照；`ai-design-skills` 借到 2 個 frontmatter 檢查（已入 `check_skills`）；BULDEE 只參考 ADR／phase gate、唔安裝；dotfiles 無 LICENSE 只讀概念；EffectCraft 有場景先試（同 [docs/48](docs/48-video-audio-creative-tools.md) ArtCraft 同族）；未安裝未實測 |
 | **文件寫完想有人用「零上文」眼光捉漏** | **[docs/52](docs/52-fresh-eyes-review.md)** — 金魚審：改寫先行（先用自己的話寫返文件主張）＋只捉專案特有未定義名詞＋最多重審 1 次；**要開新對話**，同一個對話自己審自己唔算（借 `google/elephant-goldfish-model`，Apache-2.0，冇安裝） |
-| **成個倉邊度會令另一個 AGENT 睇唔明／做錯** | **[docs/55](docs/55-whole-repo-comprehension-audit-2026-11-19.md)** — 2026-11-19 模擬新 AGENT 行一次入口鏈＋機械掃描：18 條（2 CRITICAL：`docs/17` 教學漏 SG／雙語／PWA／金魚四族 → 以為做完；SG 範圍四個講法，最窄一句寫「必須跟 SG1–SG6」）；附可重跑 script |
+| **第一次入嚟，啲字咩意思**（真理倉／子 App／`portalIds`／`EXCEPTION:`／L0–L2…） | **[docs/56 術語表](docs/56-glossary.md)** — 一頁睇完＋「一詞兩義」對照（白名單／P1／L／A 組）；新名詞出現就加一行 |
+| **成個倉邊度會令另一個 AGENT 睇唔明／做錯** | **[docs/55](docs/55-whole-repo-comprehension-audit-2026-11-19.md)** — 2026-11-19 新對話金魚行一次入口鏈＋機械掃描：17 條（2 CRITICAL：`docs/17` 教學漏 SG／雙語／PWA／金魚四族 → 以為做完；SG 範圍四個講法，最窄一句寫「必須跟 SG1–SG6」）**→ 當日全部修好，見 §附錄 C**；另 1 條（章節 §指針）查核後撤回 |
 | **金魚審做過未、審完邊份、捉到咩** | **[docs/54](docs/54-goldfish-a-group-2026-11-19.md)** — 2026-11-19 第一次真金魚（新對話零上文）：審 `A-GROUP-INSTRUCTION.md` 23 條（2 CRITICAL），另列「機械核對」一欄同「我捉唔到乜」；下一份建議 `PLAYBOOK §7.7` |
 | **用新方法審自己個倉，搵到咩漏洞** | **[docs/53](docs/53-self-audit-2026-11-19.md)** — 2026-11-19 一次實測：6 個漏洞（1 CRITICAL：PLAYBOOK SG7-a／SG11-b 叫做簽票，同 SG12「唔需要」相反），已全部修；**並列明新檢查捉唔到乜**（覆蓋率只驗 ID 有冇出現，唔驗內容對唔對） |
 | **10 個站實測＋邊啲值得自己做**（設計畫廊／Logo／SEO） | **[docs/39-verified-sites-and-diy.md](docs/39-verified-sites-and-diy.md)** — 10 站逐個開嚟核實（Scrolltide 係付費、3dicons CC0、Refero DESIGN.md 庫）；自己做總清單：已做 `scripts/seo_check_v1.0.mjs`＋`web-motion` 補 framer-motion 線，其餘逐個判 |
@@ -221,7 +223,7 @@ docs/
   45-ui-skills-text-to-cad.md  UI 設計／動效 Skills 與參數化 CAD 分類評估：未安裝未實測
   46-pwa-install-and-update.md  PWA 安裝入口 I1–I8＋版本更新 UP1–UP5：「安裝要有掣、更新要問過人」（2026-11-12 定案；出門玩 v1.2.0＋4 個 BOOK pinned）
   52-fresh-eyes-review.md   金魚審（零上文審查）：改寫先行＋專案特有未定義名詞＋最多重審 1 次（2026-11-19；冇安裝上游 plugin）
-  50-app-store-whitelist-and-shutdown.md  關站與 App Store 白名單入口 SG1–SG6：Pause／iframe 白名單／唔適合 iframe 改行頂層跳板 entry-gate（2026-11-15 定案）
+  50-app-store-whitelist-and-shutdown.md  關站與 App Store 白名單入口 SG1–SG19：Pause／iframe 白名單／唔適合 iframe 改行頂層跳板 entry-gate（2026-11-15 定案）
   （圖標規範**唯一來源係 [docs/33](docs/33-icon-standard.md)** — 2026-11-02 由 README §9 抽出；9 個 PNG／ICO、maskable 66%、16px 手繪）
 templates/
   README.md               可抄嘢對照表 + 一鍵抄指令

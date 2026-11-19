@@ -1,11 +1,11 @@
 # `docs/` 分章索引 — 邊份管邊樣
 
-> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–49 唔使再靠估。
-> 整理日期：2026-11-13 · 規則衝突時以 [PLAYBOOK](../PLAYBOOK.md) 為準 · 案例已隔離去 [19](19-ecportal-troop-case.md)，**唔係通用底線**。
+> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–55 唔使再靠估。
+> 整理日期：2026-11-19 · 規則衝突時以 [PLAYBOOK](../PLAYBOOK.md) 為準 · 案例已隔離去 [19](19-ecportal-troop-case.md)，**唔係通用底線**。
 
 ## 點用
 
-**Agent 按需讀，唔使順序讀晒 00–49**：先用根 README §1 揀任務，再用下面章節定位；必守規則讀 PLAYBOOK，工具評審只喺相關任務先讀，唔係安裝清單。
+**Agent 按需讀，唔使順序讀晒 00–55**：先用根 README §1 揀任務，再用下面章節定位；必守規則讀 PLAYBOOK，工具評審只喺相關任務先讀，唔係安裝清單。
 
 | 任務分類 | 直達章節 |
 |---|---|
@@ -58,7 +58,8 @@
 | [52-fresh-eyes-review.md](52-fresh-eyes-review.md) | **金魚審（零上文審查）**：審你份文件嘅人唔可以係寫嗰個人——**改寫先行**（先用自己的話寫返文件主張，改寫錯就係 finding）＋只捉專案特有未定義名詞＋最多重審 1 次；借 `google/elephant-goldfish-model` 方法（Apache-2.0，**冇 clone 冇安裝**）；本倉冇 subagent → 金魚＝**開新對話**，同一個對話自己審自己**唔算** |
 | [53-self-audit-2026-11-19.md](53-self-audit-2026-11-19.md) | **自我審查報告（2026-11-19）**：用 [52](52-fresh-eyes-review.md) 方法審自己個倉，搵到 6 個漏洞（1 CRITICAL：SG7-a／SG11-b 叫簽票 vs SG12「唔需要」）＋逐項已修；**明寫係同一對話做、唔算金魚審** |
 | [54-goldfish-a-group-2026-11-19.md](54-goldfish-a-group-2026-11-19.md) | **金魚審報告（2026-11-19，第一份真金魚）**：新對話零上文審 [`A-GROUP-INSTRUCTION.md`](../templates/repo-starter/A-GROUP-INSTRUCTION.md)，23 條（2 CRITICAL：`iframe-only` 條件寫成「除非四類全中」＋抄閘門檔落 build 輸出會被下次 build 洗走）；另分開列一輪機械核對（唔算金魚） |
-| [55-whole-repo-comprehension-audit-2026-11-19.md](55-whole-repo-comprehension-audit-2026-11-19.md) | **全倉理解度審查（2026-11-19）**：新對話金魚（同對話第 2 份，判準 [52 §0.2](52-fresh-eyes-review.md)）由入口行一次＋機械掃描，18 條（2 CRITICAL：`docs/17` 教學漏 6 族規則／SG 範圍寫成 SG1–SG6）；附「點解現有檢查捉唔到」＋可重跑 script；**身分判準已寫入 docs/52 §0.2** |
+| [56-glossary.md](56-glossary.md) | **術語表（一頁睇完）**：真理倉／子 App／規則 ID／`EXCEPTION:`／`guard` 家族／四種 mode／`PORTAL_REGISTRY`／`silentPortalIds`／SG18 slug；**另列「一詞兩義」**（白名單、P1、L、A 組） |
+| [55-whole-repo-comprehension-audit-2026-11-19.md](55-whole-repo-comprehension-audit-2026-11-19.md) | **全倉理解度審查（2026-11-19）**：新對話金魚（同對話第 2 份，判準 [52 §0.2](52-fresh-eyes-review.md)）行一次入口鏈＋機械掃描，**17 條**（2 CRITICAL：`docs/17` 教學漏 6 族規則／SG 範圍寫成 SG1–SG6）＋1 條撤回（scanner bug）；**附錄 C 逐條已修**＋「點解現有檢查捉唔到」 |
 | [templates/repo-starter/FRESH-EYES-REQUEST.md](../templates/repo-starter/FRESH-EYES-REQUEST.md) | **金魚審委託書（一貼即用）**：開新對話審文件；填檔名→連全文貼。7 條規矩＋建議次序＋收貨記錄格式 |
 | [24-similar-products.md](24-similar-products.md) | **P1** 研發前搜尋相近產品（人工檢查，記錄來源同決策） |
 

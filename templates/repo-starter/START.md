@@ -68,7 +68,7 @@ node scripts/preflight_v1.0.mjs . --json
 > **加減**：純工具（stateless）可省 `SCOPE.md`／`CHANGELOG.md` 以外嘅系統級要求；
 > **系統**（多層／有身份）額外要設定層、隱藏超管、registry、審計鏈，**再加第 14 項基本功能驗收**（含忘記密碼 + ADMIN 回報系統）—— 見 [PLAYBOOK §0](https://github.com/playerkousas-rgb/readme/blob/main/PLAYBOOK.md) 同 [docs/31](https://github.com/playerkousas-rgb/readme/blob/main/docs/31-system-basics.md)。
 
-## 第 13 項（13a–13c 按形式加、13d PREFLIGHT 必跑，2026-11-02 補）
+## 第 13 項（13a–13c 按形式加、13d PREFLIGHT 必跑、13e 金魚審留低，2026-11-02 補／11-19 補 13e）
 
 > 由 [mattpocock/skills](https://github.com/mattpocock/skills) ＋ [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) 借；**唔係 12 樣核心**，純工具／知識倉／資料管道唔使加。理由同「唔抄乜」見 [docs/27 §2b](https://github.com/playerkousas-rgb/readme/blob/main/docs/27-repo-starter.md)。
 

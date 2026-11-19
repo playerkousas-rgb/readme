@@ -72,7 +72,7 @@
 ```
 [ ] node scripts/guard.mjs 綠
 [ ] 有單一 HTML 交付：node scripts/audit_single_html_v1.0.mjs <檔名> 無 FAIL（C13-f）
-[ ] npm run check && npm run build 綠
+[ ] 有 `package.json` 先做：npm run check && npm run build 綠；純文件／單一 HTML／Canvas app 寫 N/A（C13-g）
 [ ] 冇 secret / .env / node_modules / dist / *.bak,tmp,old,log 入 Git（G5）
 [ ] 新 action → 白名單 + 測試（F5/F14）
 [ ] 新 env → .env.example 條目 + F12 自檢 + rotation 步驟
