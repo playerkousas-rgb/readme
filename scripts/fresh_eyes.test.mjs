@@ -138,16 +138,19 @@ test('guard：docs/52 冇「改寫先行」或冇寫「新對話」→ FAIL（�
   }
 });
 
-test('guard：docs/52 + 範本 + README + checklist 齊 → 印出四處同步 OK', () => {
+test('guard：docs/52 + 範本 + 委託書 + README + checklist 齊 → 印出五處同步 OK', () => {
   const dir = tempRepo();
   try {
     mkdirSync(path.join(dir, 'templates', 'repo-starter', 'docs'), { recursive: true });
+    mkdirSync(path.join(dir, 'templates'), { recursive: true });
     writeFileSync(path.join(dir, DOC), read(DOC));
     writeFileSync(path.join(dir, TPL), read(TPL));
+    writeFileSync(path.join(dir, 'templates', 'repo-starter', 'FRESH-EYES-REQUEST.md'), read('templates', 'repo-starter', 'FRESH-EYES-REQUEST.md'));
+    writeFileSync(path.join(dir, 'templates', 'README.md'), '# t\nFRESH-EYES-REQUEST.md\n');
     writeFileSync(path.join(dir, 'README.md'), '# t\n' + DOC + '\n');
     writeFileSync(path.join(dir, 'docs', '10-checklists.md'), '[ ] ' + DOC + '\n');
     const r = runGuard(dir);
-    assert.match(r.out, /F16\/金魚審：[^]*四處同步/);
+    assert.match(r.out, /F16\/金魚審：[^]*五處同步/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -195,4 +198,53 @@ test('docs/53 自我審查報告存在，而且明寫「唔算金魚審」（唔
   const t = read('docs', '53-self-audit-2026-11-19.md');
   assert.match(t, /唔係\*{0,2}金魚審|唔算\*{0,2}金魚審/, '要老實講呢份唔係金魚審');
   assert.match(t, /捉唔到/, '要列出新檢查嘅上限');
+});
+
+/* ---------- 2026-11-19：Arena 優勢 ＋ 委託書（用戶指出新對話模型可能唔同） ---------- */
+test('docs/52 要寫明 Arena 優勢：新對話可能連模型都唔同（隔離更徹底）', () => {
+  const t = read('docs', '52-fresh-eyes-review.md');
+  assert.match(t, /可能換埋底層模型|底層模型都可能唔同/, '要講明 Arena 換對話＝可能換模型');
+  assert.match(t, /更強|更徹底/, '要講明隔離比上游強');
+});
+
+test('docs/52 要寫「唔同模型」嘅代價同對策（唔會以為廣東話係錯）', () => {
+  const t = read('docs', '52-fresh-eyes-review.md');
+  for (const k of ['冇檔案系統', '唔知本倉慣例', '會用另一套審美']) {
+    assert.ok(t.includes(k), `要有代價「${k}」同對策`);
+  }
+  assert.match(t, /當噪音/, 'reviewer 講「改英文／改正式啲」要當噪音');
+});
+
+test('委託書存在，而且 7 條規矩齊（唔准建議改法／改語言／改檔案）', () => {
+  const t = read('templates', 'repo-starter', 'FRESH-EYES-REQUEST.md');
+  for (const k of ['唔准建議改法', '唔准建議改語言', '唔准改任何檔案', '改寫', 'CRITICAL', '50 條']) {
+    assert.ok(t.includes(k), `委託書缺「${k}」`);
+  }
+  // 要有「開新對話」同「貼全文」（新 AGENT 可能冇檔案系統）
+  assert.match(t, /開一個新對話/);
+  assert.match(t, /全文/);
+  // 唔可以叫人喺原本對話貼
+  assert.match(t, /唔好.*喺原本嗰個對話貼/s);
+});
+
+test('guard：委託書缺規矩／缺 README 指針 會 FAIL（唔係寫住好聽）', () => {
+  const dir = tempRepo();
+  try {
+    writeFileSync(path.join(dir, DOC), read(DOC));
+    writeFileSync(path.join(dir, TPL), read(TPL));
+    mkdirSync(path.join(dir, 'templates'), { recursive: true });
+    writeFileSync(path.join(dir, 'templates', 'README.md'), '# t\n');
+    writeFileSync(path.join(dir, 'README.md'), '# t\n' + DOC + '\n');
+    writeFileSync(path.join(dir, 'docs', '10-checklists.md'), '[ ] ' + DOC + '\n');
+    // ① 完全冇委託書
+    let r = runGuard(dir);
+    assert.equal(r.ok, false, '缺委託書應該 FAIL');
+    assert.match(r.out, /FRESH-EYES-REQUEST/);
+    // ② 有委託書但缺「唔准建議改語言」
+    writeFileSync(path.join(dir, 'templates', 'repo-starter', 'FRESH-EYES-REQUEST.md'),
+      read('templates', 'repo-starter', 'FRESH-EYES-REQUEST.md').replace(/唔准建議改語言/g, '可以建議改語言'));
+    r = runGuard(dir);
+    assert.equal(r.ok, false, '委託書缺語言規矩應該 FAIL');
+    assert.match(r.out, /唔准建議改語言/);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });

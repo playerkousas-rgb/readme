@@ -541,8 +541,23 @@ function checkRuleSync() {
     if (!/改寫/.test(feTxt)) err(`F16/金魚審：${feDoc} 缺「改寫先行」（唯一捉到『零件齊但駁唔埋』嘅一步）`);
     if (!/新對話/.test(feTxt)) err(`F16/金魚審：${feDoc} 要寫明本倉冇 subagent → 金魚＝開新對話（唔准自己審自己）`);
   }
-  if (existsSync(path.join(ROOT, feDoc)) && existsSync(path.join(ROOT, feTpl)) && readme.includes(feDoc) && cl.includes('52-fresh-eyes-review.md')) {
-    ok('F16/金魚審：docs/52 + 貼用範本 + README + checklist 四處同步');
+  // 委託書（一貼即用）：必須存在，而且規矩唔可以少（唔准建議改法／改語言／改檔案）
+  const feReq = path.join(ROOT, 'templates', 'repo-starter', 'FRESH-EYES-REQUEST.md');
+  if (!existsSync(feReq)) err('F16/金魚審：缺 templates/repo-starter/FRESH-EYES-REQUEST.md（一貼即用委託書）');
+  else {
+    const rq = read('templates/repo-starter/FRESH-EYES-REQUEST.md');
+    for (const [k, why] of [
+      ['唔准建議改法', '唔准叫 reviewer 改法（只講缺咩）'],
+      ['唔准建議改語言', '唔同模型會以為廣東話書面語係錯'],
+      ['唔准改任何檔案', 'reviewer 只讀'],
+      ['改寫', '改寫先行係唯一捉到「零件齊但駁唔埋」嘅一步'],
+    ]) {
+      if (!rq.includes(k)) err(`F16/金魚審：FRESH-EYES-REQUEST.md 缺「${k}」（${why}）`);
+    }
+    if (!read('templates/README.md').includes('FRESH-EYES-REQUEST.md')) err('F16/金魚審：templates/README.md 未指向委託書');
+  }
+  if (existsSync(path.join(ROOT, feDoc)) && existsSync(path.join(ROOT, feTpl)) && existsSync(feReq) && readme.includes(feDoc) && cl.includes('52-fresh-eyes-review.md')) {
+    ok('F16/金魚審：docs/52 + 貼用範本 + 委託書 + README + checklist 五處同步');
   }
 
   // 規則覆蓋率（2026-11-19，借 GitHub Spec Kit `/analyze` 嘅 Coverage Gaps）：
