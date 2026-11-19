@@ -152,7 +152,8 @@ const STALE = [
   // 第三個元素 = 「unless」：match 前後 160 字出現呢個 pattern 就當係引用舊講法做證據，唔報。
   [/永遠唔會放入\s*`?portalIds`?|放入\s*`?portalIds`?\s*都會被程式剔除|NEVER_ADMIT_PORTAL_IDS\s*=\s*\['gemini'\]|GEMINI[^|\n]{0,20}永遠唔會/g,
    'GEMINI 已改為可放行（SG16）：NEVER_ADMIT_PORTAL_IDS 現時係空陣列，唔會剔除',
-   /舊版|已撤回|係\*\*錯\*\*|錯誤|舊講法|上一版/],
+   // 「唔可以再／唔准再」= 明文標記呢句係禁用舊寫法（守護陳述），唔係自己講返出嚟
+   /舊版|已撤回|係\*\*錯\*\*|錯誤|舊講法|上一版|唔可以再|唔准再|不可再/],
   [/四大官方入口|四大準入|四大指定入口|入口一共\s*\*{0,2}4\s*個/g,
    '官方入口已經係五個（SG16）：APP STORE／圖書館／成員系統／區管理系統／GEMINI',
    /舊版|已撤回|係\*\*錯\*\*|舊講法|上一版/],
@@ -160,7 +161,7 @@ const STALE = [
   [/\?app=<slug>[^|\n]{0,30}現時未支援|APP STORE 要先支援 `?app|未支援讀\s*`?\?app/g,
    'APP STORE 已支援 ?app=<slug>（website bd721421），唔可以再寫「未支援」',
    /舊版|已撤回|係\*\*錯\*\*|舊講法|上一版|未證實/],
-  [/缺\s*slug[^|\n]{0,40}(?:只會退回|去首頁|功能失效)|\(?:冇|無\)\s*slug[^|\n]{0,20}去唔到/g,
+  [/缺\s*slug(?:(?!唔會|不會|唔好)[^|\n]){0,40}(?:只會退回|去首頁|功能失效)|\(?:冇|無\)\s*slug(?:(?!唔會|不會)[^|\n]){0,20}去唔到/g,
    'appSlug() 實查有 _id fallback（app.js L73-76），缺 slug 唔會去首頁，只係連結難睇',
    /舊版|已撤回|係\*\*錯\*\*|舊講法|上一版|未證實/],
   [/改一行就通|L5662[^|\n]{0,30}現時\s*`?rel="noopener noreferrer|同時間可選做|改完\s*`?noreferrer`?\s*之後[^|\n]{0,10}才可加/g,
@@ -168,9 +169,32 @@ const STALE = [
    /舊版|已撤回|係\*\*錯\*\*|舊講法|上一版/],
 ];
 const isAuditReport = (p) => rel(p) === 'docs/32-consistency-audit.md';
-for (const p of mdFiles) {
+// 2026-11-19：STALE 指紋掃埋 .mjs／.js 嘅 **description**（test 名／describe 標題）——
+// 只掃描述字串，唔掃整份 code；註解同 regex 自己唔算。
+// 原因：docs 已經改做「五個入口」，但 test 名仍然寫「四大官方入口」（terminology drift）。
+// 唔會全檔掃，因為 test／checker 會**故意**引用舊講法做守護（實測會誤報 10 處）。
+const DESC_IN_MJS = /\b(?:test|it|describe)\(\s*(['"`])((?:\\.|(?!\1)[^\\])*)\1/g;
+// 收集「要驗 stale 指紋嘅文字」：.md 全文 ＋ .mjs/.js 嘅 test 名
+const staleTargets = [];
+for (const p of mdFiles) staleTargets.push([p, () => textOf(p)]);
+for (const p of textFiles.filter((f) => /\.(mjs|js)$/.test(f))) {
+  // 只掃 description；但 test 名本身係「守護陳述」（assert 失敗訊息／故意引用舊講法）就跳過，
+  // 準則：同一行有 includes( / 正則字面 / assert → 當守護，唔當矛盾。
+  const src = textOf(p);
+  const srcLines = src.split('\n');
+  // 放返原位：用陣列索引保住真行號（直接 join 會令報告行號變成「第幾句」）
+  const arr = new Array(srcLines.length).fill('');
+  for (const m of src.matchAll(DESC_IN_MJS)) {
+    const line = src.slice(src.lastIndexOf('\n', m.index) + 1, src.indexOf('\n', m.index));
+    if (/includes\(|assert|\/\^|\$\//.test(line)) continue;   // 守護陳述／失敗訊息，唔當矛盾
+    const ln = src.slice(0, m.index).split('\n').length;
+    arr[ln - 1] = (arr[ln - 1] ? arr[ln - 1] + ' ' : '') + m[2];
+  }
+  staleTargets.push([p, () => arr.join('\n')]);
+}
+for (const [p, getTxt] of staleTargets) {
   if (isAuditReport(p)) continue;   // 報告要引用已修正嘅舊講法做證據，唔當矛盾
-  const t = textOf(p);
+  const t = getTxt();
   for (const [re, why, unless] of STALE) {
     for (const m of t.matchAll(re)) {
       // unless：附近有「呢個係舊講法／已撤回」之類標記 → 係引用做證據，唔當矛盾
