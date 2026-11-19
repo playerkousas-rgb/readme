@@ -525,6 +525,25 @@ function checkRuleSync() {
       && readme.includes(sgDoc) && cl.includes('SG1') && intakeTxt.includes('Q8')) {
     ok('F16/SG：關站與白名單入口 SG1–SG6 同步（PLAYBOOK + docs/50 + docs/51 清單 + INTAKE Q8 + 閘門範本 + checklist）');
   }
+
+  // 金魚審（docs/52，2026-11-19）：方法落地要四處齊 —— 章節 + 貼用範本 + 起手包 + checklist。
+  // 只驗「規則同範本喺度」；有冇真係開新對話審過係人手紀錄，機器驗唔到（docs/52 §5 已寫明未實測）。
+  const feDoc = 'docs/52-fresh-eyes-review.md';
+  const feTpl = 'templates/repo-starter/docs/fresh-eyes-review.md';
+  for (const f of [feDoc, feTpl]) {
+    if (!existsSync(path.join(ROOT, f))) err(`F16/金魚審：缺 ${f}（改寫先行方法要詳情 + 貼用範本）`);
+  }
+  if (!readme.includes(feDoc)) err(`F16/金魚審：README.md 未指向 ${feDoc}`);
+  if (!cl.includes('52-fresh-eyes-review.md')) err('F16/金魚審：docs/10-checklists.md 未登記金魚審（新規則／派工指令交付前要交另一個對話）');
+  if (existsSync(path.join(ROOT, feDoc))) {
+    const feTxt = read(feDoc);
+    // 改寫先行係最值錢嗰條：唔可以喺搬字途中消失
+    if (!/改寫/.test(feTxt)) err(`F16/金魚審：${feDoc} 缺「改寫先行」（唯一捉到『零件齊但駁唔埋』嘅一步）`);
+    if (!/新對話/.test(feTxt)) err(`F16/金魚審：${feDoc} 要寫明本倉冇 subagent → 金魚＝開新對話（唔准自己審自己）`);
+  }
+  if (existsSync(path.join(ROOT, feDoc)) && existsSync(path.join(ROOT, feTpl)) && readme.includes(feDoc) && cl.includes('52-fresh-eyes-review.md')) {
+    ok('F16/金魚審：docs/52 + 貼用範本 + README + checklist 四處同步');
+  }
 }
 
 /* ---------- 10. as-built 案例留存（R2 / G10 / F16） ---------- */

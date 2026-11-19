@@ -55,6 +55,7 @@
 | [47-readme-discipline.md](47-readme-discipline.md) | **README 寫作紀律（五條原則）**：每句都要有檢查或誠實限制兜住——「檢查全綠≠用得」「已修要有 commit＋實測」「未做要老實列」「體積版號係紀律」「唔好寫理論上應該 work」；來源案例 morse-beacon-app v5.1.0→v5.2.0（2026-11-12 定案） |
 | [50-app-store-whitelist-and-shutdown.md](50-app-store-whitelist-and-shutdown.md) | **SG1–SG19 關站與準入白名單入口**：**§0.1 官方五個入口註冊表**（1. APP STORE／2. 圖書館／3. 成員系統／4. 區管理系統；程式碼 `PORTAL_REGISTRY`／`portalIds`）、`iframe` 機制與禁區五類、`BOOK` 本機儲存與主畫面 PWA（Android 共用／iOS 分家）、INTAKE Q8、`store_gate_v1.0.js`、Pause vs 軟關站；四個 repo pinned commit 實查（2026-11-15 定案） |
 | [51-whitelist-rollout-list.md](51-whitelist-rollout-list.md) | **白名單上線清單（全 repo 掃描）**：69 個有網址 repo 分 A／B／C／D 四組＋建議執行次序；掃描限制如實列明（入口檔 grep、需各 App AGENT 覆核） |
+| [52-fresh-eyes-review.md](52-fresh-eyes-review.md) | **金魚審（零上文審查）**：審你份文件嘅人唔可以係寫嗰個人——**改寫先行**（先用自己的話寫返文件主張，改寫錯就係 finding）＋只捉專案特有未定義名詞＋最多重審 1 次；借 `google/elephant-goldfish-model` 方法（Apache-2.0，**冇 clone 冇安裝**）；本倉冇 subagent → 金魚＝**開新對話**，同一個對話自己審自己**唔算** |
 | [24-similar-products.md](24-similar-products.md) | **P1** 研發前搜尋相近產品（人工檢查，記錄來源同決策） |
 
 ## 章 2 — 技術棧契約

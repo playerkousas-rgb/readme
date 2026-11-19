@@ -100,6 +100,7 @@
 | **寫 README 之前對五條原則** | **[docs/47](docs/47-readme-discipline.md)** — 每句都要有檢查或誠實限制兜住：「檢查全綠≠用得」「已修要有 commit＋實測」「未做要老實列」「體積版號係紀律」「唔好寫理論上應該 work」；來源案例 morse-beacon-app v5.1.0→v5.2.0（2026-11-12 定案） |
 | **影音／創作 AI 工具啱唔啱我哋**（Concat／FilmCraft／VoiceStudio／AutoClip／yovoice／ArtCraft／MoneyPrinterTurbo） | **[docs/48](docs/48-video-audio-creative-tools.md)** — GitHub API 2026-11-12 快照逐個判決；VoiceStudio／MoneyPrinterTurbo 沿用 [docs/35](docs/35-viral-ai-tools.md)「暫不採用」只更新星數；ArtCraft「可試」（唔係產品依賴，係內容製作工具；未實測） |
 | **五個 repo 值唔值得學／收錄**（設計 Skills／Creative Studio／dotfiles／EffectCraft） | **[docs/49](docs/49-design-skills-studio-dotfiles-effectcraft.md)** — GitHub API 2026-11-13：`awesome-design-md`／`taste-skill` 已收錄只更新快照；`ai-design-skills` 借到 2 個 frontmatter 檢查（已入 `check_skills`）；BULDEE 只參考 ADR／phase gate、唔安裝；dotfiles 無 LICENSE 只讀概念；EffectCraft 有場景先試（同 [docs/48](docs/48-video-audio-creative-tools.md) ArtCraft 同族）；未安裝未實測 |
+| **文件寫完想有人用「零上文」眼光捉漏** | **[docs/52](docs/52-fresh-eyes-review.md)** — 金魚審：改寫先行（先用自己的話寫返文件主張）＋只捉專案特有未定義名詞＋最多重審 1 次；**要開新對話**，同一個對話自己審自己唔算（借 `google/elephant-goldfish-model`，Apache-2.0，冇安裝） |
 | **10 個站實測＋邊啲值得自己做**（設計畫廊／Logo／SEO） | **[docs/39-verified-sites-and-diy.md](docs/39-verified-sites-and-diy.md)** — 10 站逐個開嚟核實（Scrolltide 係付費、3dicons CC0、Refero DESIGN.md 庫）；自己做總清單：已做 `scripts/seo_check_v1.0.mjs`＋`web-motion` 補 framer-motion 線，其餘逐個判 |
 | **邊啲嘢應該用 Gemini＋Canvas 自己整** | **[docs/40-canvas-diy-candidates.md](docs/40-canvas-diy-candidates.md)** — 第一：G11 圖標產生器（Type A）；第二：現有產生器加風格 presets（Type B，唔新起）；第三：Pre-mortem 鬧場（Type C，產出只當假設）；其餘唔用 Canvas 嘅原因逐個寫明 |
 | **值得自己做總清單（淨係免費）** | **[docs/41-free-self-build-shortlist.md](docs/41-free-self-build-shortlist.md)** — Gemini AI（風格產生器／Pre-mortem）值得做；本機／自架用戶決定唔做；前端網站圖標・相片工具已做；付費嘅唔保留（Scrolltide 已剔除） |
@@ -216,6 +217,7 @@ docs/
   44-bilingual-ui.md        L1–L6 雙語介面：雙閘判定／右上角一鍵切換／乾淨分離；跟 4 個 BOOK 實作（預設要做・可豁免）
   45-ui-skills-text-to-cad.md  UI 設計／動效 Skills 與參數化 CAD 分類評估：未安裝未實測
   46-pwa-install-and-update.md  PWA 安裝入口 I1–I8＋版本更新 UP1–UP5：「安裝要有掣、更新要問過人」（2026-11-12 定案；出門玩 v1.2.0＋4 個 BOOK pinned）
+  52-fresh-eyes-review.md   金魚審（零上文審查）：改寫先行＋專案特有未定義名詞＋最多重審 1 次（2026-11-19；冇安裝上游 plugin）
   50-app-store-whitelist-and-shutdown.md  關站與 App Store 白名單入口 SG1–SG6：Pause／iframe 白名單／唔適合 iframe 改行頂層跳板 entry-gate（2026-11-15 定案）
   （圖標規範**唯一來源係 [docs/33](docs/33-icon-standard.md)** — 2026-11-02 由 README §9 抽出；9 個 PNG／ICO、maskable 66%、16px 手繪）
 templates/

@@ -1,0 +1,104 @@
+# 52 — 金魚審（零上文審查）：改寫先行，捉「零件齊但駁唔埋」
+
+> **2026-11-19 落地**。來源：[`google/elephant-goldfish-model`](https://github.com/google/elephant-goldfish-model)（Apache-2.0，v0.1.1，commit [`70406c4`](https://github.com/google/elephant-goldfish-model/tree/70406c4d22cc7ea8299637c2c5b44625c48b3f08)）—— **只讀方法，冇 clone、冇安裝、冇裝 plugin、冇加任何 dependency**。
+> **適用**：真理倉嘅新規則、新 `docs/` 章節、要貼去其他 repo 嘅派工指令、大改一份已有文件。
+> **唔新增規則 ID**（同 [47](47-readme-discipline.md) 一樣，本頁只講「幾時用同點用」）；對應 [F16](../PLAYBOOK.md) 四處同步同 [47 原則二](47-readme-discipline.md)（「已修」要寫得出驗證方法）。
+
+## 0. 一句判決同誠實限制
+
+一句：**審你份文件嘅人，唔可以係寫嗰個人，亦唔可以睇過你點解咁寫。**
+
+| 項目 | 實情 |
+|---|---|
+| 上游做乜 | 大象（有全部上文）寫設計文件 → **金魚**（全新 context、零對話紀錄、只讀檔）分階段挑漏 |
+| 我哋有冇 subagent | **冇**——呢個 repo 冇 Skill tool／plugin harness（見 [CATALOG 未核實](../templates/repo-starter/skills/CATALOG.md)） |
+| 所以「金魚」＝ | **開一個新對話**，只貼檔案或全文 ＋ 下面 §4 嗰段；唔貼背景、唔講你之前改過乜、唔講你想佢讚 |
+| 上游自己都咁講 | 原文意思：冇 subagent tool 就**停手同用戶講**——同一個 context 做嘅 review **唔算**金魚 review |
+
+> **唔准扮做到**：喺同一個對話「自己審自己」、或者叫同一個模型「用金魚角度再睇一次」，都唔算。
+> 冇開新對話就照實寫「未做金魚審」（[47 原則三](47-readme-discipline.md)：未做要老實列）。
+
+## 1. 三個審查向量（抄方法，唔抄 code）
+
+### 1.1 改寫先行（最值錢嘅一條）
+
+reviewer 第一步**唔准列問題**，要先用自己嘅話寫兩段：
+
+1. **呢份文件主張做乜**（2–5 句）
+2. **按呢份文件所講，現有系統點運作**（2–5 句）
+
+然後作者對照自己原意。**改寫錯咗，本身就係一個 finding。**
+
+點解有效（上游原文意思）：淨係列「未定義名詞」，捉唔到一種文件——**每個名詞都定義咗，但各部分駁唔埋**。改寫捉得到。
+
+> 我哋最常撞嘅正正係呢種：兩份文件各自寫得通順、每個名詞都解釋過，但兩份放埋一齊就矛盾（例如同一份文件前面寫「X 可以放行」、後面寫「X 永遠剔除」）。結構檢查同 stale 指紋都捉唔到，因為兩句自己都冇錯。
+
+### 1.2 未定義／未連檔嘅概念
+
+只捉**本專案特有**而又冇解釋嘅名詞：`portalIds`／`supportNudge`／`silentPortalIds`／`store-hidden.json`／`entry-gate`／`appSlug()`。
+
+**唔准捉**通用工程名詞（API、cache、idempotent、localStorage）。上游原句大意：你唔識**呢個 project**，但你識軟件。
+
+### 1.3 假設咗嘅前提
+
+講「點做」但當讀者已經知前置步驟。典型三種：
+
+- 叫跑 `preflight`，但冇講要由真理倉抄邊幾支 script；
+- 叫「加白名單」，但冇講 `<slug>` 要對 seed 核實（SG18）；
+- 叫「改一行」，但冇講行號會漂。
+
+## 2. 三條紀律
+
+| 紀律 | 內容 | 點解 |
+|---|---|---|
+| **reviewer 只讀** | 唔准改檔、唔准「順手幫你修」 | 一改就變咗作者，之後捉唔到自己嘅錯 |
+| **一次 re-audit cap** | 同一份文件最多重審 **1** 次；之後剩低嘅寫入「接受風險」，唔好無限 loop | 防止最後變成改標點 |
+| **報告落地成檔** | 唔准喺對話倒長篇；寫落檔再講路徑 | 作者可以逐條剔、逐條覆，唔會淹沒喺對話 |
+
+## 3. 幾時用
+
+| 用 | 例子 |
+|---|---|
+| 新規則／新 SG | 一次過加幾條，最易前後矛盾 |
+| 新 `docs/` 章節 | 尤其會指去其他章節或引數字嘅 |
+| **派工指令** | [`A-GROUP-INSTRUCTION.md`](../templates/repo-starter/A-GROUP-INSTRUCTION.md)／[`WHITELIST-HANDOFF.md`](../templates/repo-starter/WHITELIST-HANDOFF.md)／[`APP-STORE-SLUG-INSTRUCTION.md`](../templates/repo-starter/APP-STORE-SLUG-INSTRUCTION.md) —— **要貼去另一個 AGENT 自己執行**，佢讀錯就做錯 |
+| 大改一份已有文件 | 一次改 8 處以上（漏改一半最常見） |
+| **唔用** | 改錯字、改死連結、加一行索引——`guard` G10 已經捉 |
+
+## 4. 貼去新對話嘅固定段落
+
+```text
+你係第一次接觸呢個 project 嘅讀者。你唔知任何背景，我亦唔會補充。
+只讀下面呢份文件，然後照次序做：
+
+1) 先用你自己嘅話寫兩段：① 呢份文件主張做乜 ② 按佢所講，現有系統點運作。（每段 2–5 句）
+2) 逐個列出你唔明嘅地方。每個寫：嚴重程度（Blocker／Major／Nit）、位置（章節標題或行號）、你缺咩上文。
+3) 只捉「呢個 project 特有而又冇解釋」嘅名詞；通用工程名詞（API、cache、idempotent）唔使捉。
+4) 唔准讚、唔准講「整體清晰」、唔准建議修法。冇發現就照講冇發現。
+5) 唔准改任何檔案。
+
+文件：<貼全文，或貼路徑／URL>
+```
+
+**收貨重點**：作者先讀第 ① 段改寫，睇下係咪等於自己原意。
+**唔等於 → 問題喺文件，唔係喺 reviewer。**
+
+## 5. 驗收同未核實
+
+| 已做（2026-11-19） | 未做 |
+|---|---|
+| 讀齊上游 `skills/egm-review/SKILL.md`、`skills/egm-draft/SKILL.md`、`skills/egm-lite/SKILL.md`、`agents/comprehension.md`、`agents/zoom_out.md`、`resources/document_standards/zoom-out-standard.md`，抽出上面方法 | **未喺真新對話跑過一次** —— 本輪只係方法落地，冇實測紀錄 |
+| 記錄授權（Apache-2.0）同 pinned commit，方便日後追溯 | 上游 v0.1.1（2026-11-06），Google 明寫「唔係官方支援產品」→ **唔會**納入起手包做 dependency |
+| 冇 clone、冇安裝、冇加 dependency | 未試上游完整流程（Zoom Out／Readiness 等階段），只取最抵用嘅三條 |
+
+### 收貨 checklist
+
+- [ ] 有兩段改寫，而作者讀完覺得「就係呢個意思」
+- [ ] 每個 finding 有嚴重程度 ＋ 位置（章節或行號）
+- [ ] 係**另一個對話**做，唔係同一個對話自己審自己
+- [ ] 剩餘爭議已寫入「接受風險」，而唔係無聲消失
+
+---
+
+- 維護：上游方法有變 → 改本頁 §1–§2；我哋實測過一次 → 補入 §5 右欄。**唔好**將上游 `SKILL.md` 原文抄入本倉（F1 一個事實寫一次）。
+- 相關：[47 README 寫作紀律](47-readme-discipline.md)（誠實原則）、[32 一致性審計](32-consistency-audit.md)（機器捉得到嘅部分）、[10 checklists](10-checklists.md) §3.4。

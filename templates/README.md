@@ -19,6 +19,7 @@
 | **🖼️ 站台圖標規範** | [README §9 G11](../README.md#9-g11-全站圖標標準iconfavicon) | 9 個 PNG／ICO + `<head>` 5 link ＋ 4 meta |
 | **🖼️ G11 圖標產生器（Type A）** | [`iconmaker/icon_maker_v1.0.html`](iconmaker/icon_maker_v1.0.html)＋[`iconmaker/README.md`](iconmaker/README.md) | 上載母圖→本地出齊 9 檔＋16px 手繪格＋maskable 66% 預覽＋head/manifest；照 [docs/33](../docs/33-icon-standard.md) 規格 |
 | **🖼️ 相片預備工具（Type A）** | [`iconmaker/photo_prep_v1.0.html`](iconmaker/photo_prep_v1.0.html) | 上載前壓到目標 KB（預設 500KB）／轉 JPEG·WebP·PNG／去 EXIF；本地處理唔上載 |
+| **🐟 金魚審（零上文審查）** | [`repo-starter/docs/fresh-eyes-review.md`](repo-starter/docs/fresh-eyes-review.md) | 文件要貼去另一個 AGENT 自己執行之前，開**新對話**讀一次：改寫先行＋只捉專案特有未定義名詞；最多重審 1 次。理由見 [docs/52](../docs/52-fresh-eyes-review.md) |
 | **💀 Pre-mortem 模板** | [`repo-starter/docs/pre-mortem.md`](repo-starter/docs/pre-mortem.md) | 開工前 AI 分飾四人鬧 idea；產出只入「待驗證假設」，唔代替問真人 |
 | **🎨 House DESIGN 風格庫** | [`repo-starter/docs/design-styles_v1.0.md`](repo-starter/docs/design-styles_v1.0.md) | 自家 3 套 DESIGN.md 起點（Field／Paper／Clean）；揀一套抄入新 repo，唔抄人哋品牌 |
 | **🌐 雙語切換（L1–L6）** | [`i18n/lang_toggle_v1.0.js`](i18n/lang_toggle_v1.0.js) | 單一 HTML／Canvas 零依賴範本：`data-i18n` + 字典 + 右上角掣；改 `LANG_KEY` 前綴同 `DICT` 即用。React app 抄 4 個 BOOK 嘅 `i18n.jsx` 形狀（[docs/44](../docs/44-bilingual-ui.md)）；驗用 `scripts/i18n_check_v1.0.mjs`。**只為未來新開 app 而設，現有 repo 唔追溯** |

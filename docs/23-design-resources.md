@@ -6,6 +6,7 @@
 
 **星星數為 2026-10-29 用 GitHub API 實測**（`GET /repos/{owner}/{repo}` 嘅 `stargazers_count`），唔係估。
 **2026-11-06 增補**：三個配色站嘅分工同對比驗收見 §5.1–5.2；唔改上面五個主庫嘅歷史星數快照。
+**2026-11-19 補 §2.6**：`meta/astryx` 只做 token 概念參考（唔入 §1 五個主庫、唔改歷史星數快照）。
 **2026-11-09 分類入口**：想搵 UI 最壞資料、手機體驗同動效判斷嘅 Agent Skills，見 [45 §1](45-ui-skills-text-to-cad.md#1-ui-設計動效借方法唔搬成套)；屬未來借鑑，未安裝未改起手包。
 
 ---
@@ -87,6 +88,25 @@
 - 體積：antd 全套唔細，Vercel 類交付要睇 S7（dist < 5MB／bundle < 2MB）；單一 HTML 例外看 C13-g 5MB。
 - 相關：`ant-design/ant-design-pro`（後台樣板）、`ant-design/icons`（圖標，同樣要標來源）。
 
+### 2.6 `meta/astryx`（React 19 ＋ StyleX，**beta**，MIT）— 只抄 token 概念
+
+- 快照 **2026-11-19**：30,697★／2,404 fork／license MIT／TypeScript／size ≈1.4 GB／releases 最新 `v0.7.16`（2026-11-14）／commit [`4388ac4`](https://github.com/meta/astryx/tree/4388ac4d4f6a8233a4441c9a1f86d17046c2b962)。上游 README 自稱 **Currently in Beta**，八年 Meta 內部演變、13,000+ 個 app 用過。
+- **技術要求**：`react`／`react-dom` **19+**（peer dependency）＋ `@astryxdesign/core` ＋ `@astryxdesign/theme-*` ＋ `@stylexjs/stylex`。
+- **同我哋三條規則直接衝**：
+
+| 規則 | 衝突 |
+|---|---|
+| [S1](01-slim.md) | 要引入 npm 依賴（React 19＋StyleX 執行期），同「一套 token、零框架」相反 |
+| [S7](01-slim.md)／C13-g | 150+ 組件＋多 theme 對 `dist < 5MB`／單一 HTML ≤5MB 係風險；上游 repo 本身 size ≈1.4 GB |
+| 單一 HTML／Canvas 路線 | A 組大部分 app 係零 build 單檔；Astryx 只適用 **React + Vite/Next** 嘅 repo |
+
+- **值得抄嘅三樣（唔使裝）**：
+  1. **Theme ＝ 一組 CSS custom property 覆寫** — 唔 fork、唔 wrap 組件就換到品牌。**我哋 [`design-styles_v1.0.md`](../templates/repo-starter/docs/design-styles_v1.0.md) 三套（Field／Paper／Clean）已經係同一個做法**，即係方向正確；要抄嘅係「一套 theme 一份檔、唔喺個別 repo 偷偷改 token」嘅紀律（同該檔尾 checklist 一致）。
+  2. **`swizzle` 概念**：要改就用 eject 擁有源碼，唔好靠覆寫打補丁 — 對應我哋「唔好喺個別 repo 改共用 token，改就升版號」。
+  3. **組件命名同無障礙慣例**（表格／表單／抽屜／通知／空狀態）— 同 §2.5 antd「抄規格唔抄 code」完全一樣，**兩者唔使分開記**。
+- **唔好做**：唔好為咗用 Astryx 而將單一 HTML app 改寫成 React；唔好因為 7 套 theme 靚而引入多一層依賴。要用，先寫 `EXCEPTION:` ＋ 量 S7 體積，並且只限本來已經係 React 19 嘅 repo。
+- **狀態**：**未安裝、未實測、未改任何範本**；本節只係「知有呢個選項，同知道自己已經做對」。
+
 ---
 
 ## 3. 新 Git 開工：設計決策 checklist（照做）
@@ -100,7 +120,7 @@
 | 5 | 揀字體：≤2 家族、≤4 字重、中文 subset | `<link>` 或 self-host | S1／S7 |
 | 6 | 揀 icon 方案：**一個**（inline SVG sprite 或 icon library 按需） | `icons/` | S1／W8 |
 | 7 | 出齊 9 個圖標（favicon.ico／16／32／180／192／512／maskable×2／og） | `public/icons/*` | **G11**（[README §9](../README.md#9-g11-全站圖標標準iconfavicon)） |
-| 8 | UI 組件：自己寫 or antd／shadcn 類 → 記錄理由 | `docs/DESIGN.md` §Components | S1 |
+| 8 | UI 組件：自己寫 or antd／shadcn／astryx 類 → 記錄理由（**主題用一組 CSS 變數覆寫**，見 §2.6） | `docs/DESIGN.md` §Components | S1 |
 | 9 | 若要後端架構：用 system-design-primer 對照 cache／index／queue | `docs/ARCH.md`（可選） | F／U／X |
 | 10 | 交付前：`© SCOUT SYSTEM`、雙版號、guard 全綠 | 頁尾＋`node scripts/guard.mjs` | W1／V1／F16 |
 
