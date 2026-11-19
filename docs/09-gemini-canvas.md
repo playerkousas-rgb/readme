@@ -37,7 +37,7 @@
 
 ## C2 — Type A：全開放（一個 HTML）
 
-**適用**：密碼產生器、日期計算機、色票、教材 MOCK、公開 demo、外接工具目錄（[EXTERNAL.md 模式 C](../EXTERNAL.md)）。
+**適用**：密碼產生器、日期計算機、色票、教材 MOCK、公開 demo、外接工具目錄（[A18](03-security.md)）。
 
 ```
 ✅ 一個 HTML，方便 Gemini Canvas preview／直接分享

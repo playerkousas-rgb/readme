@@ -1,7 +1,7 @@
 # 01 — 瘦身（S1–S12）
 
 > 目標：**唔好用嘅嘢一件都唔部署**。瘦身唔止慳 quota，仲直接影響冷啟動、CI 時間、attack surface。
-> 硬數字來自 ecportal 實戰（[BUILD.md §10](../BUILD.md)）；所有數字都由 `scripts/guard.mjs` 或 CI 把守。
+> 硬數字來自 ecportal 實戰（舊 as-built 已刪，退場見 [57](57-ecportal-to-vsportal-migration.md)）；所有數字都由 `scripts/guard.mjs` 或 CI 把守。
 
 ---
 
@@ -45,7 +45,7 @@ uploads/
 .env*
 ```
 
-> **`.md` 都要擋**：維運文件只留 Git，唔部署到公開網站（[進度追蹤旅系統升級版.md §9](../進度追蹤旅系統升級版.md) 已有呢條教訓）。
+> **`.md` 都要擋**：維運文件只留 Git，唔部署到公開網站（舊案例 ecportal 已有呢條教訓，已退役見 [57](57-ecportal-to-vsportal-migration.md)）。
 
 ---
 

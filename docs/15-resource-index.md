@@ -1,7 +1,7 @@
 # 15 — 資源查找總索引（API ／ Prompt ／ PROMPTS.CHAT）
 
 > **案例隔離**：本檔係通用規則。檔內 `UNIT_*`／`DOWNSTREAM_*`／`ALLOW_LOCAL_LOGIN` 等只係**中性示例名**；
-> ecportal 旅團／進度追蹤嘅具體專案設定全部喺 [19 專案案例](19-ecportal-troop-case.md)（**唔係通用規則，新 app 唔使跟名**）；repo 健康 → [20](20-repo-health-audit.md)。
+> **ecportal 已退役（2026-11-19；新系統 = VSPORTAL）**：舊案例已刪，退場見 [57](57-ecportal-to-vsportal-migration.md)；想參考多層系統嘅可選模式 R1–R8 → [58](58-multilevel-system-patterns.md)（**唔係通用規則，新 app 唔使跟**）；repo 健康 → [20](20-repo-health-audit.md)。
 
 
 > **點解有呢份**：三個 repo 各有真理，唔好將內容複製過嚟（會 drift，違反 F1 單一真理）。
@@ -29,7 +29,7 @@
         ↓ 研發前 P1 調查（README §0）
 ④ readme（呢個 repo）     S/F/A/W/V 通用規則 + 模板 + guard
    特別 [14-api-key-injection.md](14-api-key-injection.md) 講「GEMINI 自動注入」同香港做法
-⑤ 專案案例（旅團 as-built 5 repo）  → [19 §12](19-ecportal-troop-case.md)（**唔係通用資源**）
+⑤ 專案案例（旅團 as-built 5 repo）  → [58](58-multilevel-system-patterns.md)（**唔係通用資源**）
 ```
 
 ---
@@ -58,7 +58,7 @@
 ## 2.5 專案案例 repo → 去 19（唔喺呢度重複）
 
 > 五個旅團 as-built repo（`vsbadge`／`roverbadge`／`cubsbadge`／`scoutbadge`／`scout-circulars`）
-> 連同真檔名（`operations/TROOP_LINK_UPGRADE.md`、`docs/TROOP_UPGRADE_2026.md`）、`<purpose>` 常數、現況差異對照表，**全部屬專案案例** → [19 §12](19-ecportal-troop-case.md)。
+> 連同真檔名（`operations/TROOP_LINK_UPGRADE.md`、`docs/TROOP_UPGRADE_2026.md`）、`<purpose>` 常數、現況差異對照表，**全部屬專案案例** → [58](58-multilevel-system-patterns.md)。
 > 呢份索引只放**通用資源**（API／Prompt／開源庫），唔好再將專案 repo 表抄返入嚟（F1 單一真理）。
 > 邊個 repo 有 critical 漏洞／158MB 問題 → [20 repo 健康審計](20-repo-health-audit.md)。
 

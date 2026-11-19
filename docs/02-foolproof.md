@@ -1,11 +1,11 @@
 # 02 — 防呆（F1–F18）
 
 > **案例隔離**：本檔係通用規則。檔內 `UNIT_*`／`DOWNSTREAM_*`／`ALLOW_LOCAL_LOGIN` 等只係**中性示例名**；
-> ecportal 旅團／進度追蹤嘅具體專案設定全部喺 [19 專案案例](19-ecportal-troop-case.md)（**唔係通用規則，新 app 唔使跟名**）；repo 健康 → [20](20-repo-health-audit.md)。
+> **ecportal 已退役（2026-11-19；新系統 = VSPORTAL）**：舊案例已刪，退場見 [57](57-ecportal-to-vsportal-migration.md)；想參考多層系統嘅可選模式 R1–R8 → [58](58-multilevel-system-patterns.md)（**唔係通用規則，新 app 唔使跟**）；repo 健康 → [20](20-repo-health-audit.md)。
 
 
 > 核心假設：**人一定會手震、會抄錯、會漏一步、會以為自己記得**。所以每一個「一定要」都要變成系統自動攔截，唔係寫喺文件就叫做完。
-> 呢度嘅規則多數係由 ecportal 真實事故／邊界提煉（[BUILD.md](../BUILD.md)、[進度追蹤旅系統升級版.md](../進度追蹤旅系統升級版.md)）。
+> 呢度嘅規則多數係由 ecportal 真實事故／邊界提煉（案例已於 2026-11-19 退役刪除，見 [57](57-ecportal-to-vsportal-migration.md)）。
 
 ---
 
@@ -63,7 +63,7 @@ export function isOpen(v) { return OPEN.has(String(v ?? '').trim().toLowerCase()
 ```
 
 適用：功能開關、`ALLOW_LOCAL_LOGIN`、kill switch、遠端 config、權限旗、webhook 簽名驗證。
-**串錯字 = 閂**，唔係「當佢開」。呢條救過 `ALLOW_LOCAL_LOGIN`（[進度追蹤 §5](../進度追蹤旅系統升級版.md)）。
+**串錯字 = 閂**，唔係「當佢開」。呢條救過舊系統嘅 `ALLOW_LOCAL_LOGIN`（ecportal 已退役，見 [57](57-ecportal-to-vsportal-migration.md)）。
 
 ---
 
@@ -182,7 +182,7 @@ if (seen.has(req.transferId)) return seen.get(req.transferId);
 
 - 匯入先驗 `schemaVersion`（唔支援就拒，唔好「試吓」），再驗 `sha256(data)`。
 - 密碼匯出只可選「含 hash」模式，且只收 64-bit hex hash；**帶明文 `password` 一律拒**。
-- 匯出檔即設 `Access.PRIVATE` + `Permission.NONE`；用完即刪（[進度追蹤 §7](../進度追蹤旅系統升級版.md)）。
+- 匯出檔即設 `Access.PRIVATE` + `Permission.NONE`；用完即刪（舊案例做法；案例已退役）。
 
 ---
 
@@ -270,8 +270,8 @@ const E = {
 理由：單靠 MD 記版號，部署出去嗰個檔無人知係邊版；單靠 code 註解又會同 MD 打架。
 而家兩邊都要寫、要一致，並由 `scripts/guard.mjs` + 測試自動對照（V6）。
 
-> 專案級例外：[進度追蹤旅系統升級版.md §9](../進度追蹤旅系統升級版.md) 仍係「版號只留本 MD」——
-> 嗰個係 ecportal 既有約定，新 app 一律跟 V 系列；要沿用舊約定喺 PR 用 `EXCEPTION: V1` 登記。
+> 專案級例外（歷史）：舊 ecportal 曾用「版號只留本 MD」嘅約定，**已隨案例退役**；
+> 新 app 一律跟 V 系列；真有特殊情況要沿用舊約定，喺 PR 用 `EXCEPTION: V1` 登記。
 
 ---
 

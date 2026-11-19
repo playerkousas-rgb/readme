@@ -75,18 +75,17 @@ function requireFiles(list, label) {
 if (!ASSETS_ONLY) {
   if (isTruthRepo) {
     requireFiles([
-      'README.md', 'PLAYBOOK.md', 'AGENTS.md', 'BUILD.md', 'EXTERNAL.md',
-      '進度追蹤旅系統升級版.md',
+      'README.md', 'PLAYBOOK.md', 'AGENTS.md',
       'docs/00-quickcard.md', 'docs/01-slim.md', 'docs/02-foolproof.md', 'docs/03-security.md',
       'docs/04-settings-super.md', 'docs/05-git.md', 'docs/06-vercel.md',
       'docs/07-apps-script.md', 'docs/08-supabase.md', 'docs/09-gemini-canvas.md',
       'docs/10-checklists.md', 'docs/11-incidents.md',
       'docs/12-copyright-scout-system.md', 'docs/13-versioning.md', 'docs/14-api-key-injection.md',
       'docs/15-resource-index.md', 'docs/16-canvas-case-scout-comic.md',
-      'docs/17-final-check-and-tutorial.md', 'docs/18-as-built-gap-audit.md',
-      'docs/19-ecportal-troop-case.md', 'docs/20-repo-health-audit.md',
-      'docs/21-fix-plans.md', 'docs/22-scout-circulars-agent-handoff.md',
+      'docs/17-final-check-and-tutorial.md',
+      'docs/20-repo-health-audit.md', 'docs/22-scout-circulars-agent-handoff.md',
       'docs/23-design-resources.md',
+      'docs/57-ecportal-to-vsportal-migration.md', 'docs/58-multilevel-system-patterns.md',
       'scripts/audit_single_html_v1.0.mjs', 'scripts/refresh_resources_v1.0.mjs',
       'scripts/final_check_v1.0.mjs',
       'templates/README.md', 'templates/watermark/README.md',
@@ -465,10 +464,10 @@ function checkRuleSync() {
   for (const d of ['docs/01-slim.md', 'docs/04-settings-super.md', 'docs/09-gemini-canvas.md',
                    'docs/10-checklists.md', 'docs/12-copyright-scout-system.md', 'docs/13-versioning.md',
                    'docs/14-api-key-injection.md', 'docs/15-resource-index.md',
-                   'docs/18-as-built-gap-audit.md',
-                   'docs/19-ecportal-troop-case.md', 'docs/20-repo-health-audit.md',
-                   'docs/21-fix-plans.md',
+                   'docs/20-repo-health-audit.md',
                    'docs/22-scout-circulars-agent-handoff.md',
+                   'docs/57-ecportal-to-vsportal-migration.md',
+                   'docs/58-multilevel-system-patterns.md',
                    'docs/23-design-resources.md']) {
     if (!readme.includes(d)) err(`F16：README.md 未指向 ${d}`);
   }
@@ -523,7 +522,7 @@ function checkRuleSync() {
   else if (!cl.includes('51-whitelist')) err('F16/SG：docs/10-checklists.md 未登記 docs/51 清單');
   if (existsSync(path.join(ROOT, sgDoc)) && existsSync(path.join(ROOT, sgJs)) && existsSync(path.join(ROOT, sgVj))
       && readme.includes(sgDoc) && cl.includes('SG1') && intakeTxt.includes('Q8')) {
-    ok('F16/SG：關站與白名單入口 SG1–SG6 同步（PLAYBOOK + docs/50 + docs/51 清單 + INTAKE Q8 + 閘門範本 + checklist）');
+    ok('F16/SG：關站與白名單入口 SG1–SG19 同步（PLAYBOOK + docs/50 + docs/51 清單 + INTAKE Q8 + 閘門範本 + checklist）');
   }
 
   // 金魚審（docs/52，2026-11-19）：方法落地要四處齊 —— 章節 + 貼用範本 + 起手包 + checklist。
@@ -591,22 +590,27 @@ function checkRuleSync() {
 /* ---------- 10. as-built 案例留存（R2 / G10 / F16） ---------- */
 function checkAsBuilt() {
   if (!isTruthRepo) { ok('案例隔離：app repo，跳過 as-built 案例檢查'); return; }
-  const cases = ['BUILD.md', 'AGENTS.md', 'EXTERNAL.md', '進度追蹤旅系統升級版.md'];
-  const missing = cases.filter((f) => !existsSync(path.join(ROOT, f)));
+  // 2026-11-19：ecportal 已退役，6 份案例檔（BUILD／EXTERNAL／進度追蹤／docs18／19／21）刪除。
+  // 仍然有用嘅 R1–R8 已通用化搬去 docs/58；退場記錄 docs/57。呢段改為守「新結構」。
+  const need = ['docs/57-ecportal-to-vsportal-migration.md', 'docs/58-multilevel-system-patterns.md',
+                'docs/20-repo-health-audit.md', 'docs/22-scout-circulars-agent-handoff.md'];
+  const missing = need.filter((f) => !existsSync(path.join(ROOT, f)));
   const readme = read('README.md');
-  const unlinked = cases.filter((f) => !readme.includes(f));
-  const caseDoc = existsSync(path.join(ROOT, 'docs/19-ecportal-troop-case.md')) ? read('docs/19-ecportal-troop-case.md') : '';
-  const missR = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8'].filter((id) => !caseDoc.includes(id));
-  const separated = read('PLAYBOOK.md').includes('docs/19-ecportal-troop-case.md') && caseDoc.includes('唔係通用底線');
-  const health = ['docs/20-repo-health-audit.md', 'docs/21-fix-plans.md',
-                   'docs/22-scout-circulars-agent-handoff.md'].every((f) => existsSync(path.join(ROOT, f)));
-  if (missing.length) err(`F16/G10：as-built 案例缺檔 ${missing.join(', ')}`);
-  if (unlinked.length) err(`F16/G10：README.md 未引用 as-built 案例 ${unlinked.join(', ')}`);
-  if (missR.length || !caseDoc) err(`F16：docs/19 專案案例缺 R 系列可選模式 ${missR.join(', ')}`);
-  if (!separated) err('F16：通用 PLAYBOOK 未指向 docs/19，專案案例同通用規則未分離');
-  if (!health) err('F16：缺 docs/20／21／22 其中一份');
-  if (!missing.length && !unlinked.length && !missR.length && separated && health) {
-    ok('F16：as-built 4 份 + 19 案例隔離 + 20 審計 + 21 修復 + 22 AGENT handoff 齊');
+  const unlinked = need.filter((f) => !readme.includes(f));
+  const gone = ['BUILD.md', 'EXTERNAL.md', '進度追蹤旅系統升級版.md',
+                'docs/18-as-built-gap-audit.md', 'docs/19-ecportal-troop-case.md',
+                'docs/21-fix-plans.md'].filter((f) => existsSync(path.join(ROOT, f)));
+  const patterns = 'docs/58-multilevel-system-patterns.md';
+  const pTxt = existsSync(path.join(ROOT, patterns)) ? read(patterns) : '';
+  const missR = ['R1', 'R2', 'R3', 'R4', 'R5', 'R6', 'R7', 'R8'].filter((id) => !pTxt.includes(id));
+  const separated = read('PLAYBOOK.md').includes(patterns) && pTxt.includes('唔係通用底線');
+  if (missing.length) err(`F16：缺 ${missing.join(', ')}（退役後仍要 57／58／20／22）`);
+  if (unlinked.length) err(`F16：README.md 未指向 ${unlinked.join(', ')}`);
+  if (gone.length) err(`F16：ecportal 案例檔應該已刪，但仍然存在 ${gone.join(', ')}（見 docs/57）`);
+  if (missR.length || !pTxt) err(`F16：docs/58 缺 R 系列可選模式 ${missR.join(', ')}`);
+  if (!separated) err('F16：PLAYBOOK 未指向 docs/58，或者 58 未標明 R1–R8「唔係通用底線」');
+  if (!missing.length && !unlinked.length && !gone.length && !missR.length && separated) {
+    ok('F16：ecportal 已退役（57 退場 + 58 可選模式 + 20 審計 + 22 handoff 齊，6 份舊案例檔已刪）');
   }
 }
 

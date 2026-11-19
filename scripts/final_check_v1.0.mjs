@@ -96,16 +96,19 @@ export function collect(extraHtml = []) {
     `contract fileVersion=${contract.fileVersion} · copyright=${contract.copyright}`);
   }
   if (TRUTH) {
-    const cases = ['BUILD.md', 'AGENTS.md', 'EXTERNAL.md', '進度追蹤旅系統升級版.md'];
+    // 2026-11-19：ecportal 退役，6 份案例檔已刪；案例隔離改守 57（退場）／58（可選模式）／20／22
+    const retired = ['BUILD.md', 'EXTERNAL.md', '進度追蹤旅系統升級版.md',
+                     'docs/18-as-built-gap-audit.md', 'docs/19-ecportal-troop-case.md',
+                     'docs/21-fix-plans.md'];
     const readme = readFileSync(R('README.md'), 'utf8');
-    const there = cases.filter((f) => existsSync(R(f)));
-    const linked = cases.filter((f) => readme.includes(f));
-    const caseFiles = ['docs/18-as-built-gap-audit.md', 'docs/19-ecportal-troop-case.md',
-                        'docs/20-repo-health-audit.md', 'docs/21-fix-plans.md',
-                        'docs/22-scout-circulars-agent-handoff.md'];
-    const cf = caseFiles.filter((f) => existsSync(R(f)));
-    add('arch', there.length === 4 && linked.length === 4 && cf.length === 5,
-      `as-built 案例 ${there.length}/4 存在 · README 引用 ${linked.length}/4 · 隔離檔 18/19/20/21/22 ${cf.length}/5（案例同通用規則分離）`);
+    const gone = retired.filter((f) => !existsSync(R(f)));
+    const kept = ['docs/57-ecportal-to-vsportal-migration.md', 'docs/58-multilevel-system-patterns.md',
+                  'docs/20-repo-health-audit.md', 'docs/22-scout-circulars-agent-handoff.md'];
+    const cf = kept.filter((f) => existsSync(R(f)));
+    add('arch', gone.length === 6 && cf.length === 4
+        && readme.includes('docs/57-ecportal-to-vsportal-migration.md')
+        && readme.includes('docs/58-multilevel-system-patterns.md'),
+      `已刪案例 ${gone.length}/6 · 保留 57/58/20/22 ${cf.length}/4 · README 指向 57／58`);
   }
 
   /* ---------- 5. AI Agent ---------- */
@@ -114,9 +117,10 @@ export function collect(extraHtml = []) {
     add('agent', boot.every((p) => existsSync(R(p))), `入口檔齊（${boot.length}）`);
     const pb = readFileSync(R('PLAYBOOK.md'), 'utf8');
     add('agent', ['S1', 'F1', 'A1', 'W1', 'V1', 'C13', '5MB'].every((k) => pb.includes(k)), 'PLAYBOOK 規則 ID + 5MB 上限齊');
-    const caseDoc = existsSync(R('docs/19-ecportal-troop-case.md')) ? readFileSync(R('docs/19-ecportal-troop-case.md'), 'utf8') : '';
-    add('agent', pb.includes('docs/19-ecportal-troop-case.md') && caseDoc.includes('R1') && caseDoc.includes('R8') && caseDoc.includes('唔係通用底線'),
-      '通用 PLAYBOOK 只留指針；R1–R8 可選模式喺 19 專案案例（案例隔離）');
+    const p58 = 'docs/58-multilevel-system-patterns.md';
+    const caseDoc = existsSync(R(p58)) ? readFileSync(R(p58), 'utf8') : '';
+    add('agent', pb.includes(p58) && caseDoc.includes('R1') && caseDoc.includes('R8') && caseDoc.includes('唔係通用底線'),
+      '通用 PLAYBOOK 只留指針；R1–R8 可選模式喺 58（案例隔離）');
   } else {
     add('agent', existsSync(R('README.md')), 'app repo 有 README.md 入口');
     add('agent', true, '真理倉規則由 readme repo 管理，app repo 唔使重複');
@@ -145,7 +149,7 @@ export const MANUAL = [
   '普通用戶：成品圖放入 drawscout_decoder_v1.0.html，應該讀到水印 payload',
   'Vercel：Preview deployment 開一次；Production 開一次；F12 Console 無 error',
   'Git：PR 頁面睇 CI 全部綠，先至 merge；merge 後睇 deployment log',
-  '系統架構師／19 案例教訓：本地回歸綠唔算完成 —— 新部署要真機跑一次（GAS 302 轉址／Drive 權限／Script Properties 配額／onOpen 選單授權）',
+  '系統架構師／57–58 案例教訓：本地回歸綠唔算完成 —— 新部署要真機跑一次（GAS 302 轉址／Drive 權限／Script Properties 配額／onOpen 選單授權）',
 ];
 
 /* ---- CLI ---- */

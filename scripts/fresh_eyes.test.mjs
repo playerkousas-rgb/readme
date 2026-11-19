@@ -95,8 +95,9 @@ function tempRepo() {
   ].join('\n'));
   for (const f of ['docs/01-slim.md', 'docs/04-settings-super.md', 'docs/09-gemini-canvas.md',
     'docs/10-checklists.md', 'docs/12-copyright-scout-system.md', 'docs/13-versioning.md',
-    'docs/14-api-key-injection.md', 'docs/15-resource-index.md', 'docs/18-as-built-gap-audit.md',
-    'docs/19-ecportal-troop-case.md', 'docs/20-repo-health-audit.md', 'docs/21-fix-plans.md',
+    'docs/14-api-key-injection.md', 'docs/15-resource-index.md',
+    'docs/57-ecportal-to-vsportal-migration.md', 'docs/58-multilevel-system-patterns.md',
+    'docs/20-repo-health-audit.md',
     'docs/22-scout-circulars-agent-handoff.md', 'docs/23-design-resources.md']) {
     writeFileSync(path.join(dir, f), '# t\n');
   }

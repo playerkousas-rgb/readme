@@ -17,7 +17,7 @@
 |---|---|---|
 | **輕重** | 輕 / 中 / 重 | [PLAYBOOK §0 三分類](../PLAYBOOK.md)（工具／App／系統）、[C13-g](09-gemini-canvas.md) |
 | **交付形狀** | 單一 HTML／靜態多檔／框架 SPA／後台靜態殼／多層系統／資料管道／知識倉／空殼 | [09](09-gemini-canvas.md) Type A/B/C、[01](01-slim.md) |
-| **有冇後台** | 無 / `api/` / GAS / Supabase / 混合 | [06-vercel](06-vercel.md) VL、[07-apps-script](07-apps-script.md)、[08-supabase](08-supabase.md)、[EXTERNAL](../EXTERNAL.md) |
+| **有冇後台** | 無 / `api/` / GAS / Supabase / 混合 | [06-vercel](06-vercel.md) VL、[07-apps-script](07-apps-script.md)、[08-supabase](08-supabase.md)、[A18 零特權](03-security.md) |
 | **Gemini／AI** | 無 / Canvas 單檔 / Gem・Share Link / 直接 API / 其他 AI 辨識 / AI 文件 | [09](09-gemini-canvas.md)、[14-api-key-injection](14-api-key-injection.md) |
 | **P1 檔次** | 工具 / App / 系統（推斷） | [PLAYBOOK §0](../PLAYBOOK.md) |
 
@@ -67,7 +67,7 @@
 - **Supabase**（1）：`GEMINI`
 - **Vercel /api+GAS+Supabase**（1）：`member-portal`
 
-> 有後台就要 [A 安全](03-security.md)／[VL7 rate limit](06-vercel.md)／[EXTERNAL 零特權](../EXTERNAL.md)；若同時係 `後台／多層系統`（18 個），仲要**設定層 + 隱藏超管 + registry + 審計鏈**，一個都唔少。
+> 有後台就要 [A 安全](03-security.md)／[VL7 rate limit](06-vercel.md)／[EXTERNAL 零特權](57-ecportal-to-vsportal-migration.md)；若同時係 `後台／多層系統`（18 個），仲要**設定層 + 隱藏超管 + registry + 審計鏈**，一個都唔少。
 
 ### 4.3 「Gemini／AI」（17 個，逐個講清楚屬邊種）
 
@@ -192,8 +192,8 @@
 | 單一 HTML／少檔靜態 | 12 樣可簡化 SCOPE／GLOSSARY | `audit_single_html_v1.0.mjs`、W1/V2、5MB | [09 C2](09-gemini-canvas.md)、[13](13-versioning.md) |
 | 靜態多檔／PWA | 12 樣 | `guard.mjs` G10、`repo_health` size/scaffold | [01](01-slim.md)、[02](02-foolproof.md) |
 | 框架 SPA／PWA | 12 樣 + `.gitignore` ＋ 13a 設計檢查（[27 §2b](27-repo-starter.md)） | S7、`npm audit`、三寬度望圖 | [06](06-vercel.md)、[17](17-final-check-and-tutorial.md) |
-| 後台靜態殼／多層系統 | **全套**（設定層＋超管＋registry＋審計鏈）＋ [31](31-system-basics.md) 基本功能驗收（第 14 項） | `repo_health` secrets/env、`guard` A1、[10 checklists](10-checklists.md) §1.1、帳號／回報實測 | [03](03-security.md)、[04](04-settings-super.md)、[EXTERNAL](../EXTERNAL.md) |
-| 資料管道 | 全套 + `data` 分支策略 | `repo_health` cron-data、fail-closed 實測 | [20](20-repo-health-audit.md)、[21](21-fix-plans.md) |
+| 後台靜態殼／多層系統 | **全套**（設定層＋超管＋registry＋審計鏈）＋ [31](31-system-basics.md) 基本功能驗收（第 14 項） | `repo_health` secrets/env、`guard` A1、[10 checklists](10-checklists.md) §1.1、帳號／回報實測 | [03](03-security.md)、[04](04-settings-super.md)、[A18 零特權](03-security.md) |
+| 資料管道 | 全套 + `data` 分支策略 | `repo_health` cron-data、fail-closed 實測 | [20](20-repo-health-audit.md) |
 | 知識／索引倉 | 12 樣 + `CREDITS`／W8 | `guard` G10 連結＋錨點、`check_skills` | [15](15-resource-index.md)、[25](25-reverse-api-reuse.md) |
 | 空殼／預留 | 決定留／合併／archive；留就補 | `repo_health` scaffold | [27](27-repo-starter.md) |
 
@@ -213,7 +213,7 @@
 ## 8. 未核實／限制
 
 - 只涵蓋 **public** repo；`MD`、`scout-circulars` 兩個大倉（94MB／161MB）無 shallow clone，用 GitHub 檔案樹 + 已讀檔案判斷。
-- 「有冇後台」係** repo 內有冇 server-side 碼**；唔包括「前端直連第三方 API」（例如 `hkcamping` 直連官方 feed、`forward` 用 Resend）—— 嗰啲屬 [EXTERNAL](../EXTERNAL.md)「外部系統」，唔當自己後台。
+- 「有冇後台」係** repo 內有冇 server-side 碼**；唔包括「前端直連第三方 API」（例如 `hkcamping` 直連官方 feed、`forward` 用 Resend）—— 嗰啲屬 [A18 零特權](03-security.md)「外部系統」，唔當自己後台。
 - `P1 檔次` 係按檔案結構推斷，未逐個對 README／實際部署；`空殼／預留` 12 個要人手確認係咪真係放棄。
 - AI 標籤以** repo 內可見嘅 code** 為準；`skw-score` 有 AI 字眼但無 API 證據，標「無（待核實）」；`scout-circulars` 嘅 AI 底圖係外製圖片，唔係 repo 內 call API。
 - 星星／體積／框架版本係 2026-11-02 快照；`package.json` deps 會變，決策前要重新核實（[P1](../PLAYBOOK.md)）。

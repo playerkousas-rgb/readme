@@ -1,10 +1,10 @@
 # 一頁紙速查卡（印出嚟貼枱）
 
 > **案例隔離**：本檔係通用規則。檔內 `UNIT_*`／`DOWNSTREAM_*`／`ALLOW_LOCAL_LOGIN` 等只係**中性示例名**；
-> ecportal 旅團／進度追蹤嘅具體專案設定全部喺 [19 專案案例](19-ecportal-troop-case.md)（**唔係通用規則，新 app 唔使跟名**）；repo 健康 → [20](20-repo-health-audit.md)。
+> **ecportal 已退役（2026-11-19；新系統 = VSPORTAL）**：舊案例已刪，退場見 [57](57-ecportal-to-vsportal-migration.md)；想參考多層系統嘅可選模式 R1–R8 → [58](58-multilevel-system-patterns.md)（**唔係通用規則，新 app 唔使跟**）；repo 健康 → [20](20-repo-health-audit.md)。
 
 
-> **最短入門**：[17 §3 STEP BY STEP](17-final-check-and-tutorial.md#2--step-by-step由零到一個-app) · 完整版：[PLAYBOOK.md](../PLAYBOOK.md) · Checklist：[10-checklists.md](10-checklists.md)
+> **最短入門**：[17 §2 STEP BY STEP](17-final-check-and-tutorial.md#2--step-by-step由零到一個-app) · 完整版：[PLAYBOOK.md](../PLAYBOOK.md) · Checklist：[10-checklists.md](10-checklists.md)
 > 交付前一條命令：`node scripts/final_check_v1.0.mjs`（六角度報告）
 
 ---
@@ -28,7 +28,7 @@
 [ ] 新 action 入咗白名單 + 有測試
 [ ] 新 env 有 .env.example 條目
 [ ] 新設定有 fail closed 預設值
-[ ] guard 綠 + build 綠
+[ ] guard 綠 + build 綠（冇 package.json 就寫 N/A）
 [ ] commit message: type(scope): 做咩  （Conventional Commits）
 ```
 
@@ -117,7 +117,7 @@ C13-g：單一 HTML 5MB 上限、唔強制瘦身（越輕 load 越快）；S7/S1
 ② 一切接入 = 交俾邊個管 + 登記喺邊個 registry
 永遠：apikey 唔落 URL／QR／前端／Sheet 格；下游唔自開戶反寫上游；
       閂下游入口前，上游 sig 轉發路徑要已起好。
-多單位系統：先定職責邊界／唔做清單／功能 registry（可選模式見 [19](19-ecportal-troop-case.md)，**唔係通用底線**）
+多單位系統：先定職責邊界／唔做清單／功能 registry（可選模式見 [58](58-multilevel-system-patterns.md)，**唔係通用底線**）
 本地回歸綠唔算完成 —— 新部署要真機跑一次（[17 §4](17-final-check-and-tutorial.md)）
 ```
 

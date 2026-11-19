@@ -1,7 +1,7 @@
 # 06 — Vercel（VL1–VL12）
 
 > **案例隔離**：本檔係通用規則。檔內 `UNIT_*`／`DOWNSTREAM_*`／`ALLOW_LOCAL_LOGIN` 等只係**中性示例名**；
-> ecportal 旅團／進度追蹤嘅具體專案設定全部喺 [19 專案案例](19-ecportal-troop-case.md)（**唔係通用規則，新 app 唔使跟名**）；repo 健康 → [20](20-repo-health-audit.md)。
+> **ecportal 已退役（2026-11-19；新系統 = VSPORTAL）**：舊案例已刪，退場見 [57](57-ecportal-to-vsportal-migration.md)；想參考多層系統嘅可選模式 R1–R8 → [58](58-multilevel-system-patterns.md)（**唔係通用規則，新 app 唔使跟**）；repo 健康 → [20](20-repo-health-audit.md)。
 
 
 > Vercel = **前端靜態 host + `/api` serverless proxy**。佢係唯一可以揸 secret 嘅前端側元件；亦係最易「靜靜變肥」嘅地方（見 [01-slim](01-slim.md)）。
@@ -93,7 +93,7 @@ if (origin && !ALLOW.has(origin)) return new Response('forbidden', {status:403})
 
 - 唔好用 `*` 配 credentials。
 - 回打端點（`SUPER_VERIFY_URL`）寫死 server 常數，唔由 request 指定（A9）。
-- 容許第三方訂閱來源時，用 origin allowlist（[BUILD.md §4 個人化訂閱](../BUILD.md)）。
+- 容許第三方訂閱來源時，用 origin allowlist（[58](58-multilevel-system-patterns.md)）。
 
 ---
 
@@ -120,8 +120,7 @@ if (++hits.get(key) > LIMIT[action]) return json({code:'RATE_LIMITED'}, 429);
 | `.vercelignore` | 必須存在，擋 `node_modules/.git/docs`（S2） |
 | `installCommand` | `npm install --include=dev`（**唔好**用 `--omit=dev`） |
 
-> ⚠️ **勘誤（Vercel 官方視角）**：`BUILD.md §S3` 仍然寫 `--omit=dev`，係 ecportal 舊 as-built 值，
-> 我哋保留原檔做案例，但**新 app 一律用 `--include=dev`**。原因：Vercel build 要 `devDependencies`
+> ⚠️ **勘誤（Vercel 官方視角）**：舊 `BUILD.md §S3` 曾寫 `--omit=dev`（該檔已隨 ecportal 退役刪除，見 [57](57-ecportal-to-vsportal-migration.md)）；**新 app 一律用 `--include=dev`**。原因：Vercel build 要 `devDependencies`
 > 先有 `vite` [2](https://vercel.com/docs/builds/configure-a-build)；`NODE_ENV=production` 會跳過 devDeps
 > 令 `vite: command not found` [4](https://vercel.com/kb/guide/dependencies-from-package-json-missing-after-install)。
 

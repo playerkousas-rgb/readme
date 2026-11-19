@@ -48,6 +48,9 @@ tests/             測試
 [ ] P1：研發前查過相近產品 + 自己現有方案，來源同未核實項寫低
 [ ] 無真 key、無 .env、無大檔入 Git
 [ ] `node scripts/repo_health_v1.0.mjs .` 0 FAIL
+[ ] **條件式規則（按類型，唔中都要喺 PR 寫 N/A）**：
+      L1–L6 雙語（有 UI）· I1–I8／UP PWA（有 manifest）· SG1–SG19 入口白名單／關站（要經官方入口入）· 金魚審（文件要交畀其他人執行）
+[ ] 交付前對一次真理倉 PLAYBOOK §10（驗收閘 Definition of Done）17 項 —— 呢張 5 行唔等於 §10
 ```
 
 ---

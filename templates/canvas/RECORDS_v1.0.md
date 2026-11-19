@@ -33,7 +33,7 @@
 | 項目／進度 | ScriptProperties `STATE`（JSON） | server-side，多人共用，唔落 LocalStorage |
 | 身份／角色 | ScriptProperties `USER_ROLES`（email → role） | server 驗，唔信前端 role（A6） |
 | API key / config | ScriptProperties | A1，.env.example 只寫名 |
-| 非敏感 UI 偏好 | 可以 LocalStorage | 例如排序、訂閱分類（[EXTERNAL.md](../../EXTERNAL.md)） |
+| 非敏感 UI 偏好 | 可以 LocalStorage | 例如排序、訂閱分類（[A18](../../docs/03-security.md)） |
 
 > ScriptProperties 有配額（[S11](../../docs/01-slim.md)）：狀態太大就搬去 Sheet，DB 只存 pointer。
 

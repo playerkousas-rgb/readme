@@ -157,7 +157,7 @@ jobs:
 
 - 教材／runbook 放 `docs/`，跟 repo 版本；唔好放喺個人 Drive。
 - 改 code 唔改 docs = 未完成（Definition of Done）。
-- 專案文件同通用規則衝突 → 喺 PR 寫明，並更新其中一份；唔好兩份並存互相矛盾（實戰教訓：[進度追蹤 §11](../進度追蹤旅系統升級版.md)）。
+- 專案文件同通用規則衝突 → 喺 PR 寫明，並更新其中一份；唔好兩份並存互相矛盾（實戰教訓：見 [57](57-ecportal-to-vsportal-migration.md)）。
 
 ---
 

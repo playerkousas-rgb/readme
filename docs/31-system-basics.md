@@ -1,7 +1,7 @@
 # 31 — 有身份系統嘅基本功能 ＋ ADMIN 回報系統
 
 > **2026-11-02 補**。適用：[PLAYBOOK §0](../PLAYBOOK.md) 三分類嘅**第三類「系統（多層／有身份）」**，同 [28](28-repo-taxonomy.md) 嘅 18 個「後台／多層系統」；30 個「輕」工具、知識倉、資料管道**唔適用**。
-> **呢份係通用底線，唔係專案案例**：具體團號／檔名／數值全部只係例子，案例隔離去 [19](19-ecportal-troop-case.md) 同 `BUILD.md`。
+> **呢份係通用底線，唔係專案案例**：具體團號／檔名／數值全部只係例子，案例隔離去 [58](58-multilevel-system-patterns.md) 同 `BUILD.md`。
 > 配套：[03 安全 A3–A5／A17](03-security.md) · [04 設定層＋隱藏超管](04-settings-super.md) · [10 §1 開新 app](10-checklists.md) · [27 起手包](27-repo-starter.md) · [30 L0 gate](30-repo-health-check.md)
 
 ---
@@ -10,7 +10,7 @@
 
 | 你問嘅 | 之前狀態 | 而家 |
 |---|---|---|
-| **忘記密碼等基本功能** | ⚠️ **有，但散**：[`BUILD.md §2`](../BUILD.md) 第 47 行（EMAIL 帳號一次性連結、用一次即廢、統一回應防枚舉）、[03 A5](03-security.md)（登入閘表）、[PLAYBOOK A17](../PLAYBOOK.md)（防枚舉）。**無一張開局 checklist，亦無寫入起手包** | 收埋做 §2 一張 8 格表 + [`docs/system-basics.md`](../templates/repo-starter/docs/system-basics.md) 可抄 tick list |
+| **忘記密碼等基本功能** | ⚠️ **有，但散**：[`BUILD.md §2`](58-multilevel-system-patterns.md) 第 47 行（EMAIL 帳號一次性連結、用一次即廢、統一回應防枚舉）、[03 A5](03-security.md)（登入閘表）、[PLAYBOOK A17](../PLAYBOOK.md)（防枚舉）。**無一張開局 checklist，亦無寫入起手包** | 收埋做 §2 一張 8 格表 + [`docs/system-basics.md`](../templates/repo-starter/docs/system-basics.md) 可抄 tick list |
 | **ADMIN 回報系統** | ❌ **完全無**：只有資料管道嘅 `error_sources`（[25](25-reverse-api-reuse.md)／[26](26-reverse-api-walkthrough.md)）同 [`GEMINI`](https://github.com/playerkousas-rgb/GEMINI) repo 自己嘅回報收件箱，**未升做通用底線** | §3 定義成**所有有身份系統都要有**嘅通用功能（你講得啱：呢個係通用） |
 
 > **唔開新 A-ID**：全部掛返現有 `A3/A4/A5/A8/A12/A13/A17` + `VL7` + `A18`，避免要改 `PLAYBOOK`／`guard`／`templates` 四處同步（F16）而走雞。呢份係**驗收清單**，唔係新規則。
@@ -30,7 +30,7 @@
 
 > 密碼本身：`PBKDF2-SHA256 ≥100k` + per-user salt + timing-safe compare，hash 只存 server（[A3](03-security.md)）。**唔好自己發明 hash，唔好喺前端做授權判斷。**
 
-**唔使加（除非 P1 比較後有需要）**：OAuth 第三方登入、MFA／SMS、密碼強度計、CAPTCHA、自助註冊審批流 —— 呢啲係成本同 attack surface，唔係「正常系統一定要有」。要加先做 [P1](../PLAYBOOK.md) 記錄同 [EXTERNAL](../EXTERNAL.md) 零特權評估。
+**唔使加（除非 P1 比較後有需要）**：OAuth 第三方登入、MFA／SMS、密碼強度計、CAPTCHA、自助註冊審批流 —— 呢啲係成本同 attack surface，唔係「正常系統一定要有」。要加先做 [P1](../PLAYBOOK.md) 記錄同 [A18 零特權](03-security.md) 零特權評估。
 
 ## 3. ADMIN 回報系統（通用，唔只 `GEMINI`）
 
@@ -121,5 +121,5 @@
 
 - 呢份係**要求清單**，本倉無 runtime、無資料庫、無寄信服務；所有數值（300 字／20 則／90 日／5 次 15 分鐘／30 分鐘 session）係既有規則或個別案例嘅數，**唔係新訂通用標準**，要按自己風險重定並寫入 `SCOPE.md`。
 - `GEMINI` 嘅回報系統只讀過 README，**未 clone 實測、未驗 Supabase RPC／原子鎖行為**。
-- 寄送一次性連結涉及第三方郵件服務：ToS、rate limit、PDPO、費用要另外核（[EXTERNAL](../EXTERNAL.md)／[P1](../PLAYBOOK.md)），唔好當「正常系統」就順手接。
+- 寄送一次性連結涉及第三方郵件服務：ToS、rate limit、PDPO、費用要另外核（[A18 零特權](03-security.md)／[P1](../PLAYBOOK.md)），唔好當「正常系統」就順手接。
 - 「回報系統」唔等於 GitHub Issues；用 Issues 做後備時要寫明**公開 vs 私人**，同埋邊個負責 triage。
