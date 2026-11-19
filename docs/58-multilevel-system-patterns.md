@@ -4,15 +4,28 @@
 > **本頁做兩件事**：① 保留由舊案例抽出、**仍然有用**嘅 R1–R8 可選模式（拎走舊專案名）；② 寫低 **2026-11-19 用戶定案**嘅新系統關係。
 > **同通用規則嘅界線**：技術機制（`sig` 雙通道、fail closed、備份、hash、票據、身份錨點）**屬通用**，喺 PLAYBOOK；組織階梯、模組名、ID 格式、`<purpose>` 字串**屬專案**，唔好當底線。
 
-## 0. 一句
+## 0. 兩條界線（2026-11-19 用戶裁決）
 
-**R1–R8 係「可選模式」，唔係通用底線**。新 app 只需守 S/F/A/W/V ＋ P1 ＋ 技術棧契約；見到「多層／多單位／有身份」先返嚟揀幾條用。
+**① R1–R8 係「可選模式」，唔係通用底線**。新 app 只需守 S/F/A/W/V ＋ P1 ＋ 技術棧契約；見到「多層／多單位／有身份」先返嚟揀幾條用。
+
+**② 呢個真理倉唔收錄每個 app 嘅 as-built**。用戶原話：「**其實呢個係真理倉，係畀人睇，唔使咩都寫係度，咁有 1 萬個 app 咪寫死你，又睇死新嘅人？**」
+
+| 寫喺邊 | 寫乜 |
+|---|---|
+| **每個 app 自己嘅 repo** | 嗰個 app 嘅 `SCOPE.md`／`AGENTS.md`／`docs/` — 邊界、唔做清單、畫面、API、部署細節、逐次 UPDATE 記錄 |
+| **本真理倉** | **通用底線**（S/F/A/W/V、技術棧契約）＋ **入口同指針**（去邊個 repo／邊份檔）＋ 有教學價值嘅**短**案例 |
+
+> **唔好再做**：把某個 app 嘅整份 as-built 搬入 `docs/`。舊 ecportal 就係咁變成 25 份檔散落全倉，一退役就要 36 檔改連結——**案例會腐化，指針唔會**。
+> **判斷**：想寫落嚟嘅嘢如果**只對嗰個 app 成立** → 寫返嗰個 app 嘅 repo；如果**對所有 app 都成立** → 入 PLAYBOOK。
+
+VSPORTAL 嘅真正邊界喺佢自己 repo：[`vs_portal/SCOPE.md`](https://github.com/playerkousas-rgb/vs_portal/blob/main/SCOPE.md)（§1 系統樹邊界／§3 唔做清單）＋ [`vs_portal/AGENTS.md`](https://github.com/playerkousas-rgb/vs_portal/blob/main/AGENTS.md)。
+
 
 ## 1. 現行系統關係（2026-11-19 用戶定案）
 
 | 項 | 定案 |
 |---|---|
-| **VSPORTAL** | 即 [`playerkousas-rgb/vs_portal`](https://github.com/playerkousas-rgb/vs_portal) —— **深資童軍支部管理系統**（public，`pushedAt` 2026-11-14） |
+| **VSPORTAL** | 即 [`playerkousas-rgb/vs_portal`](https://github.com/playerkousas-rgb/vs_portal) —— **深資童軍支部管理系統**（public，`pushedAt` 2026-11-14）；**詳細邊界睇佢自己嘅 [`SCOPE.md`](https://github.com/playerkousas-rgb/vs_portal/blob/main/SCOPE.md)／[`AGENTS.md`](https://github.com/playerkousas-rgb/vs_portal/blob/main/AGENTS.md)，本頁唔重複** |
 | **架構** | **同追蹤系統共用後端、唔同前端**；同現有 **成員系統（`member-portal`）／管理系統（`scout-district-portal`）** 屬同一種關係：**一個後端，多個前端**按角色／場景呈現 |
 | **舊做法唔再用** | ecportal 時代嘅 **GAS→GAS `sig` 鏈式接駁**（`ScriptProperties` `DOWNSTREAM_*`）、**上游寫下游 `ALLOW_LOCAL_LOGIN`**、五級 `ADMIN／TROOP／BRANCH／SHEET／EXTERNAL` 階梯 —— **全部唔係 VSPORTAL 嘅做法** |
 | **新功能點做** | 前端唔係安全邊界：每個 action 由**共用後端**按 **session／role／scope** 驗；前端只決定「顯示乜」（同 `vs_portal` README 寫法一致） |

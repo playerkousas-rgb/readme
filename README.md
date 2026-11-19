@@ -2,7 +2,8 @@
 
 > **一句話**：開新 app 前睇呢頁；每次施工前對 checklist；出事先睇 runbook。
 > 呢個 repo **唔係一個 app**，而係我所有 app 共用嘅**說明書 ＋ 可複製模板 ＋ 自動防呆檢查**。
-> **案例隔離（2026-10-27）**：通用規則包括 S/F/A/W/V、研發前調查 P1 ＋ 技術棧契約；ecportal 旅團／進度追蹤嘅專案設定全部喺 [docs/58](docs/58-multilevel-system-patterns.md)，**唔係通用底線**；邊個 repo 有問題喺 [docs/20](docs/20-repo-health-audit.md)。
+> **案例隔離（2026-10-27；2026-11-19 收緊）**：通用規則包括 S/F/A/W/V、研發前調查 P1 ＋ 技術棧契約；ecportal 專案設定已退役，仍有用嘅 R1–R8 喺 [docs/58](docs/58-multilevel-system-patterns.md)，**唔係通用底線**；邊個 repo 有問題喺 [docs/20](docs/20-repo-health-audit.md)。
+> **本倉唔收錄每個 app 嘅 as-built**（用戶 2026-11-19：「唔使咩都寫係度，有一萬個 app 咪寫死你，又睇死新嘅人」）—— 每個 app 嘅邊界／唔做清單住喺**嗰個 app 自己嘅 repo**（例：`vs_portal/SCOPE.md`、`vs_portal/AGENTS.md`），本倉只放通用底線同指針。
 
 更新日期：2026-11-19 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase**（GEMINI 系統規範已集中去 GEMINI repo，本倉唔再做佢嘅入口）
 

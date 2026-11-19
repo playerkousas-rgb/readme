@@ -93,4 +93,9 @@ docs/19 自己指住 **5 個仍然存在嘅 repo**：`vsbadge`／`scoutbadge`／
 | 修連結 | 全倉 36 檔修死連結；12 份 boilerplate 改「ecportal 已退役 → 57／58／20」；`templates/canvas/RECORDS_v1.0.md` 改 `../../docs/` |
 | 驗證 | `guard` 25 項全綠、`consistency` PASS（154 檔）、`final_check` PASS、`node --test scripts/*.test.mjs` 125 pass |
 
-> **仍然風險**：VSPORTAL 架構目前只有本倉 57 §1／58 §1 嘅二手描述，未有一份 as-built。要補就開新 doc（例：`docs/59-vsportal-case.md`），**唔好靠 58 頂替**。
+> **原本我建議「開 docs/59 寫 VSPORTAL as-built」—— 2026-11-19 用戶否決**：「呢個係真理倉，係畀人睇，唔使咩都寫係度，咁有 1 萬個 app 咪寫死你，又睇死新嘅人？」
+> **改為**：VSPORTAL 嘅邊界／唔做清單／架構細節**留喺 [`vs_portal`](https://github.com/playerkousas-rgb/vs_portal) 自己嘅 `SCOPE.md`／`AGENTS.md`／`docs/`**；本倉只保留 58 §1 嘅關係摘要做指針。呢條界線已寫入 [58 §0](58-multilevel-system-patterns.md)。
+
+## 7. 未做／要跟（跨 repo）
+
+`vs_portal` 自己有 **5 份檔仍然寫住 `readme/docs/19`**（`AGENTS.md`／`SCOPE.md`／`GLOSSARY.md`／`scripts/guard.mjs`／`scripts/final_check_v1.0.mjs`）—— 嗰份 2026-11-19 已刪，所以係**跨 repo 死連結**。呢個係本倉刪檔嘅副作用，**要喺 `vs_portal` 改指針**（改去 PLAYBOOK 通用規則／本頁），唔關本倉 CI 事，所以本倉綠燈唔代表已修。
