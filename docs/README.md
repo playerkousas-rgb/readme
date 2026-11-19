@@ -58,6 +58,7 @@
 | [52-fresh-eyes-review.md](52-fresh-eyes-review.md) | **金魚審（零上文審查）**：審你份文件嘅人唔可以係寫嗰個人——**改寫先行**（先用自己的話寫返文件主張，改寫錯就係 finding）＋只捉專案特有未定義名詞＋最多重審 1 次；借 `google/elephant-goldfish-model` 方法（Apache-2.0，**冇 clone 冇安裝**）；本倉冇 subagent → 金魚＝**開新對話**，同一個對話自己審自己**唔算** |
 | [53-self-audit-2026-11-19.md](53-self-audit-2026-11-19.md) | **自我審查報告（2026-11-19）**：用 [52](52-fresh-eyes-review.md) 方法審自己個倉，搵到 6 個漏洞（1 CRITICAL：SG7-a／SG11-b 叫簽票 vs SG12「唔需要」）＋逐項已修；**明寫係同一對話做、唔算金魚審** |
 | [54-goldfish-a-group-2026-11-19.md](54-goldfish-a-group-2026-11-19.md) | **金魚審報告（2026-11-19，第一份真金魚）**：新對話零上文審 [`A-GROUP-INSTRUCTION.md`](../templates/repo-starter/A-GROUP-INSTRUCTION.md)，23 條（2 CRITICAL：`iframe-only` 條件寫成「除非四類全中」＋抄閘門檔落 build 輸出會被下次 build 洗走）；另分開列一輪機械核對（唔算金魚） |
+| [55-whole-repo-comprehension-audit-2026-11-19.md](55-whole-repo-comprehension-audit-2026-11-19.md) | **全倉理解度審查（2026-11-19）**：模擬另一個 AGENT 由入口行一次＋機械掃描，18 條（2 CRITICAL：`docs/17` 教學漏 6 族規則／SG 範圍寫成 SG1–SG6）；附「點解現有檢查捉唔到」＋可重跑 script；**明寫唔係金魚** |
 | [templates/repo-starter/FRESH-EYES-REQUEST.md](../templates/repo-starter/FRESH-EYES-REQUEST.md) | **金魚審委託書（一貼即用）**：開新對話審文件；填檔名→連全文貼。7 條規矩＋建議次序＋收貨記錄格式 |
 | [24-similar-products.md](24-similar-products.md) | **P1** 研發前搜尋相近產品（人工檢查，記錄來源同決策） |
 
