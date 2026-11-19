@@ -8,7 +8,7 @@
 > ②c 新產品研發前必須按 [PLAYBOOK P1](PLAYBOOK.md#0-開工前三分類決定做幾多) 上網查相近產品，記錄比較與決策；參考 [docs/24](docs/24-similar-products.md)，無法查證要說明。
 > ②d **按需閱讀，唔好因為長就略過相關規範**：由 [README §1](README.md#1-我要做嘢應該睇邊份導覽) 揀任務 → [docs 分章目錄](docs/README.md) 定位 → 只展開相關章節。工具評審屬參考，唔係通用規則；做設計／Skills／創作工具比較先睇目錄章 3。
 > ③ 交付前跑 `node scripts/final_check_v1.0.mjs --json`；六角度全綠**只係入場券**，仲要對 [PLAYBOOK §10](PLAYBOOK.md) 17 項逐條剔（L／I／SG／金魚四族唔會喺 `final_check` 出現）——「全綠 ≠ 交付得」見 [docs/47](docs/47-readme-discipline.md) 原則一。
-> ④ `BUILD.md` / `EXTERNAL.md` / 本檔其餘部分是 **ecportal as-built 案例**，唔好當通用規則；衝突以 PLAYBOOK 為準。
+> ④ `BUILD.md` / `EXTERNAL.md` / 本檔其餘部分是 **ecportal as-built 案例**，唔好當通用規則；衝突以 PLAYBOOK 為準。**ecportal 已退役（2026-11-19；新系統 = VSPORTAL）→ 退場同依賴見 [docs/57](docs/57-ecportal-to-vsportal-migration.md)**。
 
 > **跨專案底線（2026-10-26 加註）**：任何 Agent 喺呢個生態系開工，先讀 **[README.md](README.md)** 同 **[PLAYBOOK.md](PLAYBOOK.md)**。
 > 嗰度嘅瘦身 S／防呆 F／安全 A／COPYRIGHT SCOUT SYSTEM W／雙版號 V 係**所有 app 嘅最低要求**；本檔同 `BUILD.md` 係 ecportal 專案嘅執行面，兩者衝突時以安全／防呆底線為先，並喺 PR 寫明例外。

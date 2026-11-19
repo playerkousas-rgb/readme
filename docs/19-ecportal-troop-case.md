@@ -1,5 +1,7 @@
 # 19 — ecportal 旅團／進度追蹤：專案案例（**唔係通用設定**）
 
+> ⚠️ **生命週期：ecportal 已退役（2026-11-19 用戶指示；新系統 = VSPORTAL）**。本頁係**舊系統案例存檔**，唔再更新；退場同依賴清單 → [57](57-ecportal-to-vsportal-migration.md)。
+
 > ## ⚠️ 定位聲明（2026-10-27 用戶指示）
 > **呢份係一個專案嘅 as-built 案例，唔係通用規則。**
 > 通用底線只有 [PLAYBOOK](../PLAYBOOK.md) 嘅 **S／F／A／W／V ＋ G／VL／X／U／C**。

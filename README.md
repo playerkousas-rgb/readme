@@ -102,6 +102,7 @@
 | **影音／創作 AI 工具啱唔啱我哋**（Concat／FilmCraft／VoiceStudio／AutoClip／yovoice／ArtCraft／MoneyPrinterTurbo） | **[docs/48](docs/48-video-audio-creative-tools.md)** — GitHub API 2026-11-12 快照逐個判決；VoiceStudio／MoneyPrinterTurbo 沿用 [docs/35](docs/35-viral-ai-tools.md)「暫不採用」只更新星數；ArtCraft「可試」（唔係產品依賴，係內容製作工具；未實測） |
 | **五個 repo 值唔值得學／收錄**（設計 Skills／Creative Studio／dotfiles／EffectCraft） | **[docs/49](docs/49-design-skills-studio-dotfiles-effectcraft.md)** — GitHub API 2026-11-13：`awesome-design-md`／`taste-skill` 已收錄只更新快照；`ai-design-skills` 借到 2 個 frontmatter 檢查（已入 `check_skills`）；BULDEE 只參考 ADR／phase gate、唔安裝；dotfiles 無 LICENSE 只讀概念；EffectCraft 有場景先試（同 [docs/48](docs/48-video-audio-creative-tools.md) ArtCraft 同族）；未安裝未實測 |
 | **文件寫完想有人用「零上文」眼光捉漏** | **[docs/52](docs/52-fresh-eyes-review.md)** — 金魚審：改寫先行（先用自己的話寫返文件主張）＋只捉專案特有未定義名詞＋最多重審 1 次；**要開新對話**，同一個對話自己審自己唔算（借 `google/elephant-goldfish-model`，Apache-2.0，冇安裝） |
+| **ecportal 退役、VSPORTAL 接手** | **[docs/57](docs/57-ecportal-to-vsportal-migration.md)** — `gh` 實查：ecportal repo 已 404、`vs_portal` 存在（深資童軍管理系統）；案例散落 25 份檔、5 個 live repo 仍靠 `docs/19`；真刪前要改 `guard.mjs` 2 段＋2 個 test |
 | **第一次入嚟，啲字咩意思**（真理倉／子 App／`portalIds`／`EXCEPTION:`／L0–L2…） | **[docs/56 術語表](docs/56-glossary.md)** — 一頁睇完＋「一詞兩義」對照（白名單／P1／L／A 組）；新名詞出現就加一行 |
 | **成個倉邊度會令另一個 AGENT 睇唔明／做錯** | **[docs/55](docs/55-whole-repo-comprehension-audit-2026-11-19.md)** — 2026-11-19 新對話金魚行一次入口鏈＋機械掃描：17 條（2 CRITICAL：`docs/17` 教學漏 SG／雙語／PWA／金魚四族 → 以為做完；SG 範圍四個講法，最窄一句寫「必須跟 SG1–SG6」）**→ 當日全部修好，見 §附錄 C**；另 1 條（章節 §指針）查核後撤回 |
 | **金魚審做過未、審完邊份、捉到咩** | **[docs/54](docs/54-goldfish-a-group-2026-11-19.md)** — 2026-11-19 第一次真金魚（新對話零上文）：審 `A-GROUP-INSTRUCTION.md` 23 條（2 CRITICAL），另列「機械核對」一欄同「我捉唔到乜」；下一份建議 `PLAYBOOK §7.7` |
@@ -242,6 +243,8 @@ scripts/final_check_v1.0.mjs      交付前一條命令跑六角度實測（docs
 ---
 
 ## 6. 實戰案例（保留：ecportal 既有 as-built 真理）
+
+> ⚠️ **已退役**：ecportal 已於 2026-11-19 退役（新系統 = VSPORTAL）。下面 4 份係**舊系統存檔**，唔再更新；退場時序、唔可以靜靜刪嘅知識、真刪要同步改邊幾行 code → **[docs/57](docs/57-ecportal-to-vsportal-migration.md)**。
 
 以下係**專案級文件**，唔係通用規範；佢哋係上面規則嘅真實來源，改通用規則時要對返佢哋有冇矛盾。
 

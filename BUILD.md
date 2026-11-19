@@ -1,5 +1,7 @@
 # ecportal 建構定案 (BUILD) — 2026-09-22
 
+> ⚠️ **生命週期：ecportal 已退役（2026-11-19 用戶指示；新系統 = VSPORTAL）**。本檔係**舊系統 as-built 存檔**，唔再更新內容；退場時序、唔可以靜靜刪嘅知識、真刪要同步改邊幾行 code → [docs/57](docs/57-ecportal-to-vsportal-migration.md)。
+
 **定位（2026-11-19 加註，之前冇寫清）**：本檔係 **ecportal 專案案例**嘅施工定案（`AGENTS.md` ④ 有講）；**通用規則同衝突一律以 [PLAYBOOK](PLAYBOOK.md) 為準**。ecportal 以外嘅 app **唔使**跟本檔嘅專案設定（`TROOP_*`／`units.json`／進度追蹤 leaf 等）。
 兩條公理: **一切身份 = SCOUT_ID + 所在 SHEET**；**一切接入 = 交俾邊個 + 登記邊個 registry**。
 

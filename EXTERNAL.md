@@ -1,5 +1,7 @@
 # EXTERNAL — 外部系統接入定案 (2026-09-22)
 
+> ⚠️ **生命週期：ecportal 已退役（2026-11-19 用戶指示；新系統 = VSPORTAL）**。本檔係**舊系統 as-built 存檔**，唔再更新內容；退場時序、唔可以靜靜刪嘅知識、真刪要同步改邊幾行 code → [docs/57](docs/57-ecportal-to-vsportal-migration.md)。
+
 附件於 BUILD.md。外部系統 = 唔屬於平台/旅 registry 嘅網站同工具。
 核心原則: **外部系統零特權** — 永遠攞唔到 apikey、session、直接 DB 存取；數據出口只經 Share 頁同內建個人化訂閱。真正要深度接入嘅系統，行 BUILD.md §1 單位接入 (交 ADMIN/旅長登記)，就唔再係「外部」。
 
