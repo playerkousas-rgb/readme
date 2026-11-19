@@ -355,7 +355,7 @@ function getSilentIds(options = {}) {
   return new Set(list.map((v) => String(v || '').trim().toLowerCase()).filter(Boolean));
 }
 
-/** 正規化指定入口清單：自訂 portals 優先，其次官方 portalIds（四大入口註冊表），最後 storeUrl 單一入口 */
+/** 正規化指定入口清單：自訂 portals 優先，其次官方 portalIds（五個入口註冊表），最後 storeUrl 單一入口 */
 function normalizePortals(options = {}) {
   const allowLocalhost = Boolean(options.allowLocalhost);
   const silentIds = getSilentIds(options);
@@ -477,7 +477,7 @@ function evaluateStoreGate(options = {}, env = {}) {
   if (mode === 'closed') {
     return { allowed: false, reason: 'closed', mode };
   }
-  // SG8：入口網站自己永遠唔會被自己嘅閘擋死（否則四大入口一齊鎖死）。
+  // SG8：入口網站自己永遠唔會被自己嘅閘擋死（否則五個入口一齊鎖死）。
   // 判定：當前頁面自己嘅 origin ∈ 白名單入口清單 → 放行；closed 已喺上面優先處理（關站蓋過一切），
   // open 亦已喺上面直接放行，所以呢兩行唔會改變原有行為。
   if (mode === 'iframe-only' || mode === 'entry-gate') {

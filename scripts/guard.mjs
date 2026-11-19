@@ -544,6 +544,33 @@ function checkRuleSync() {
   if (existsSync(path.join(ROOT, feDoc)) && existsSync(path.join(ROOT, feTpl)) && readme.includes(feDoc) && cl.includes('52-fresh-eyes-review.md')) {
     ok('F16/金魚審：docs/52 + 貼用範本 + README + checklist 四處同步');
   }
+
+  // 規則覆蓋率（2026-11-19，借 GitHub Spec Kit `/analyze` 嘅 Coverage Gaps）：
+  // PLAYBOOK 每條規則 ID 最少要喺 docs/10-checklists.md 出現一次 —— 否則「寫咗但冇人會去執行」。
+  // 純字面比對（唔判斷意思），所以唔違反「consistency 唔做語意交叉檢查」嘅決定。
+  // 例外走 PLAYBOOK 嘅「純參考，唔入 checklist」標記，唔准偷偷加白名單清單。
+  const pbSrc = read('PLAYBOOK.md');
+  const pbIds = [...new Set([...pbSrc.matchAll(/\*\*([A-Z]{1,3}\d+(?:-[a-z0-9]+)?)\*\*/g)].map((m) => m[1]))];
+  const refOnly = new Set(
+    [...pbSrc.matchAll(/純參考[^|\n]{0,40}?([A-Z]{1,3}\d+(?:-[a-z0-9]+)?(?:[／、,][A-Z]{1,3}\d+)*)/g)]
+      .flatMap((m) => m[1].split(/[／、,]/)).map((x) => x.trim()).filter(Boolean),
+  );
+  // 覆蓋 = docs/10 checklist 有落點，或者有機械檢查（guard／test／checker）。
+  // 兩邊都冇 = 「寫咗但冇人會執行」= 真孤兒。
+  let machineTxt = '';
+  for (const f of files.filter((x) => /\.(mjs|js)$/.test(x.name) && /^(scripts|templates)/.test(rel(x.p)))) {
+    if (/(^|\/)guard\.mjs$/.test(rel(f.p))) continue;   // 唔好自己證明自己
+    machineTxt += readFileSync(f.p, 'utf8');
+  }
+  const covered = (id) => refOnly.has(id)
+    || new RegExp(`\\b${id}\\b`).test(cl)
+    || new RegExp(`\\b${id}\\b`).test(machineTxt);
+  const uncovered = pbIds.filter((id) => !covered(id));
+  if (uncovered.length) {
+    err(`規則覆蓋率：PLAYBOOK 有 ${uncovered.length} 條 ID 兩邊都冇落點（docs/10 checklist 同機械檢查都冇，即「寫咗但冇人會執行」）：${uncovered.join(', ')} —— 要麼加 checklist 一項，要麼加檢查，要麼喺 PLAYBOOK 標「純參考」`);
+  } else {
+    ok(`規則覆蓋率：PLAYBOOK ${pbIds.length} 條 ID 全部有落點（docs/10 checklist 或機械檢查；純參考 ${refOnly.size} 條）`);
+  }
 }
 
 /* ---------- 10. as-built 案例留存（R2 / G10 / F16） ---------- */

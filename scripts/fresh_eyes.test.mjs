@@ -52,7 +52,7 @@ test('貼用段落存在、可直接 copy，而且冇未填 placeholder', () => 
   assert.ok(m, 'docs/52 要有 ```text 貼用段落');
   const block = m[1];
   assert.match(block, /兩段/, '貼用段落要叫 reviewer 先寫兩段改寫');
-  assert.match(block, /Blocker/, 'finding 要分嚴重程度');
+  assert.match(block, /CRITICAL／HIGH／MEDIUM／LOW/, 'finding 要分嚴重程度（四級，借 Spec Kit /analyze）');
   assert.match(block, /唔准改任何檔案/, 'reviewer 只讀');
   assert.doesNotMatch(block.replace(/<[^>]+>/g, ''), /\{\{[A-Z_]+\}\}/, '貼用段落唔應該有 {{...}} 模板佔位');
 });

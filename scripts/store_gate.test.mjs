@@ -491,7 +491,7 @@ test('SG8：入口網站自己永遠唔會被閘（portalIds 含自身 origin �
     mode: 'entry-gate',
     portalIds: ['appstore', 'library', 'member', 'district'],
   }, self.win);
-  assert.equal(res.allowed, true, '入口自己必須放行，否則四大入口全部鎖死');
+  assert.equal(res.allowed, true, '入口自己必須放行，否則五個入口全部鎖死');
   assert.equal(res.reason, 'self-portal');
   assert.equal(self.doc.getElementById('scoutStoreGate'), null, '入口自己唔應該見到任何閘卡');
 
@@ -619,7 +619,7 @@ test('SG3/SG5：portals 多指定入口白名單（同時容許 SCOUT APP STORE 
   assert.equal(actions.children[1].textContent, '前往通告圖書館');
 });
 
-test('SG1/SG5：PORTAL_REGISTRY 官方四大入口註冊表（1 APP STORE／2 圖書館／3 成員系統／4 區管理系統）', () => {
+test('SG1/SG5：PORTAL_REGISTRY 官方五個入口註冊表（1 APP STORE／2 圖書館／3 成員系統／4 區管理系統）', () => {
   assert.deepEqual([...gate.PORTAL_IDS], ['appstore', 'library', 'member', 'district', 'gemini']);
   assert.deepEqual([...gate.OUTBOUND_PORTAL_IDS], ['appstore', 'library', 'member', 'district', 'gemini']);
   assert.deepEqual(
@@ -651,7 +651,7 @@ test('SG1/SG5：PORTAL_REGISTRY 官方四大入口註冊表（1 APP STORE／2 �
   assert.ok(gate.OUTBOUND_PORTAL_IDS.includes('gemini'));
 });
 
-test('SG1/SG5：portalIds 直接引用四大入口即可放行／攔截（唔使逐個 app 抄網址）', () => {
+test('SG1/SG5：portalIds 直接引用官方入口即可放行／攔截（唔使逐個 app 抄網址）', () => {
   const ids = ['appstore', 'library', 'member', 'district'];
   for (const id of ['appstore', 'member', 'district']) {
     const { win } = makeMockEnv({ referrer: `${gate.getPortal(id).origin}/some/page` });
@@ -742,7 +742,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
   assert.ok(dix.includes('50-app-store-whitelist-and-shutdown.md'), 'docs/README 要有索引');
   assert.match(wf, /store_gate\.test\.mjs/, 'guard.yml 要跑 store_gate.test.mjs');
   assert.match(doc, /bd721421/, 'docs/50 要有 website 最新 pinned commit 實查連結（2026-11-18 起）');
-  // 四大官方入口註冊表要同 PORTAL_REGISTRY 完全對齊（同一份真理）
+  // 五個官方入口註冊表要同 PORTAL_REGISTRY 完全對齊（同一份真理）
   for (const id of ['appstore', 'library', 'member', 'district']) {
     const p = gate.getPortal(id);
     assert.ok(doc.includes(p.origin), `docs/50 §0.1 缺 ${id} Origin（${p.origin}）`);
@@ -750,7 +750,7 @@ test('F16/SG：規則、INTAKE Q8、範本、checklist、CI 與 website 實查�
     assert.ok(doc.includes(p.repo), `docs/50 §0.1 缺 ${id} repo（${p.repo}）`);
   }
   for (const kw of ['1. APP STORE', '2. 圖書館', '3. 成員系統', '4. 區管理系統']) {
-    assert.ok(doc.includes(kw), `docs/50 要明寫四大入口「${kw}」`);
+    assert.ok(doc.includes(kw), `docs/50 要明寫五個入口「${kw}」`);
   }
   assert.ok(doc.includes('PORTAL_REGISTRY') && doc.includes('portalIds'), 'docs/50 要寫明 PORTAL_REGISTRY／portalIds 用法');
   // SG16：Gemini 屬 inbound，docs 要講清楚兩個方向
@@ -1054,7 +1054,7 @@ test('consistency：stale-phrase 指紋封住三個已知錯講法（有 unless 
   const src = read('scripts', 'consistency_v1.0.mjs');
   assert.ok(src.includes("永遠唔會放入"), '要封「GEMINI 永遠唔會放入 portalIds」');
   assert.ok(src.includes('NEVER_ADMIT_PORTAL_IDS'), '要封「NEVER_ADMIT_PORTAL_IDS = [gemini]」');
-  assert.ok(src.includes('四大官方入口'), '要封「四大官方入口」');
+  assert.ok(src.includes('四大官方入口'), '要封「四大官方入口」（舊講法）');
   assert.ok(src.includes('改一行就通'), '要封「圖書館改一行就通」');
   // 一定係 global regex，否則 matchAll 會 throw
   const staleBlock = src.slice(src.indexOf('const STALE = ['), src.indexOf('];', src.indexOf('const STALE = [')));
