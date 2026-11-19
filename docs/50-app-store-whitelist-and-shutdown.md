@@ -72,7 +72,7 @@ initStoreGate({
 | **SG10** | **統計按入口各司其職，唔好重複起爐灶** | ① **APP STORE（`main`）＝唯一權威統計來源**：已有 `apps.clicks／stars／hearts`（RPC `bump_clicks`／`bump_stars`／`bump_hearts`），後台睇逐個 App 點擊／收藏／Like，**唔需要**再加 `trackEndpoint`。② **圖書館（`feed`）現時唔統計**（用戶定案 2026-11-15：圖書館主責係睇通告＋Push 訂閱，推廣 APP STORE 係後期功能）——**唔准**為咗統計而改動圖書館核心流程。③ **子 App `trackEndpoint` 屬 opt-in 補充**（未設＝零請求），只補 APP STORE 睇唔到嘅嘢：`reason: 'standalone-pwa'`（主畫面開啟）同 `reason: 'missing-whitelist-entry'`（撞卡＝仲用舊連結） |
 | **SG11** | **「收起」≠「用不到」——要分清四個下架齒輪** | ⚠️ **實查**：APP STORE 後台「隱藏」只係前端過濾（`store.js` L782 `sb.from("apps").select("*")` 拉晒全部，再用 `a.visible !== false` 喺瀏覽器篩走），**個 App 本身仍然 100% 開得**（舊 link／書籤／QR／搜尋照入）。要真正令人用唔到，必須用：① **Delist**（APP STORE 隱藏）＝冇人發現，但 URL 仍可入；② **Gate**（`entry-gate`）＝擋直開；③ **Soft close**（`mode: 'closed'`）＝見維護卡；④ **Hard close**（Vercel Pause）＝完全離線。四者係**齒輪唔係等號**，見 §3.7 |
 | **SG11-a** | **有本機儲存（`BOOK`）嘅 App 唔可以「一收起就當冇」** | `SCOUTBOOK`／`CUBSBOOK`／`ROVERBOOK`／`VSBOOK` 用戶手上有**真實紀錄**（成員進度、考章）。Delist 或 Hard close 會令佢哋**冇入口更新／冇得匯出**。所以 `BOOK` 類下架前必須：① 保留可達入口（APP STORE 或成員系統，`internal` 角色）＋ ② 開 `allowStandalone`（已裝用戶照用）＋ ③ **先叫用戶匯出 JSON／QR 備份**，之後才可以 Pause |
-| **SG11-b** | **敏感 App 唔可以靠「隱藏」做保護** | 既然隱藏只係前端過濾、`apps` 表匿名可 `select("*")`，**`visible=false` 唔係安全邊界**。含個人資料／收費／權限嘅 App 要落架，必須用 `entry-gate`（+ §4.3 簽票）或 Vercel Pause，**唔可以只喺 APP STORE 撳「隱藏」就當處理完** |
+| **SG11-b** | **敏感 App 唔可以靠「隱藏」做保護** | 既然隱藏只係前端過濾、`apps` 表匿名可 `select("*")`，**`visible=false` 唔係安全邊界**。含個人資料／收費／權限嘅 App 要落架，必須用 `entry-gate`（或 Vercel Pause 全停）；§4.3 簽票只屬「日後有真正有價資產」嘅技術參考，**唔係預設要做**（見 §3.8 B、SG12），**唔可以只喺 APP STORE 撳「隱藏」就當處理完** |
 | **SG12** | **防「偷用」唔係技術問題，係「表態」問題** | 用戶 2026-11-15 定案：「領袖權限**不用保**，我有空改一下功能變數就可以」「我很多 App 功能簡單，他們要抄也能自己寫；我只想擋那些**又不表態支持又想用**的人」。→ 所以：① **唔准**為咗「防抄」而過度工程（唔需要為每個 App 起後端驗票）；② **真正要做**嘅係「**經入口**（`entry-gate`）＋ **一個極低門檻嘅支持位置**（`supportNudge`，見 §3.8-B）」；③ 抄走代碼**唔當損失**（你自己講：佢抄得到都寫得到），損失係「用你嘅成果但唔表態」 |
 | **SG13** | **支持提示要講真話：「書架位置有限，冇人用會收起」——而且只對「你睇唔到嘅人」講** | 文案**必須**老實講後果（長期 0 收藏／Like → 收起騰位），唔好講「多謝支持」呢類客氣話。**預設 `skipPortalIds: ['appstore']`**：經 APP STORE 正常入嘅人，你 `clicks`／`stars`／`hearts` 已經睇得到，**唔需要再騷擾佢**；只有「主畫面直開」同「由其他入口入」嘅人（你睇唔到）才提一次。其餘硬規則：只在**已放行**時顯示、`role="complementary"`（唔遮內容唔阻擋）、一定有「唔使喇」、每 30 日最多一次、Safari 封 storage 靜默、**嚴禁**倒數／延時／遮罩迫 Like |
 | **SG14** | **書架政策：唔寫死門檻，但「公開、可逆、唔刪資料」三條要守** | 幾時收起由**你睇後台**（`clicks`／`stars`／`hearts`）自行判斷——**唔准**寫任何固定日數／數字門檻入代碼或文件（用戶 2026-11-15 定案：「唔需要特登寫死規則，其實個後台我成日都睇」）。要守嘅只有三條：① **公開前置**（收起政策寫喺 APP STORE 說明，唔可以臨時通知）；② **收起＝只 Delist**，代碼／網址／用戶資料一律保留、隨時復活；③ **豁免**：`BOOK` 類（有人存真實紀錄）同自家系統。**Like 數 ≠ 使用人數**，所以決定權喺你，唔喺數字 |
@@ -632,6 +632,9 @@ initStoreGate({
   - 如果想用家直打子站網址時**親眼喺畫面見到「此程式需經指定入口網站開啟」提示卡（並可揀去 App Store 或通告圖書館）**，刪走 `vercel.json` 段 `redirects`，淨留 `CSP frame-ancestors` header ＋ `<head>` 嘅 `store_gate_v1.0.js`（`mode: 'iframe-only'` ＋ `portals`）即可。
 
 ### 4.3 嚴格級後端驗票（不適合 `<iframe>` 且有敏感內容／後端 `/api` 嘅 App）
+
+> ⚠️ **本節係技術參考，唔係預設要做**。用戶 2026-11-15 定案（[SG12](../PLAYBOOK.md)）：領袖權限唔值得為佢起基建；`§3.8 B` 已寫「技術防線（唔採用）」。**預設做法係 `entry-gate` ＋ 表態設計**；只有日後出現**真正有價資產**（收費、大量第三方 API 額度）才參考本節。
+> **唔准**因為本節存在，就喺子 App 加後端簽票／驗票（[SG12](../PLAYBOOK.md)）。
 
 如果個 App 有後端 `/api`、唔入得 `<iframe>`，同時要防人用 DevTools 改 `sessionStorage` 或 `curl` 偽造 `Referer`，用對齊 [PLAYBOOK A7](../PLAYBOOK.md)（詳見 [03-security](03-security.md)）嘅 **60 秒 HMAC 通行票據**（多入口同樣適用）：
 

@@ -254,7 +254,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | **SG5** | 不適合 `<iframe>` 改用頂層跳板 `entry-gate` | App 留喺頂層獨立網域運行；輕量級驗 `new URL(referrer).origin` 白名單 Set ＋ `sessionStorage`（`try/catch`）＋ `allowStandalone: true` 放行已裝主畫面 PWA；敏感／有 `/api` 升級用 60 秒 HMAC `sig` `/api/enter` 驗票。**經任何一個入口做頂層跳轉都唔會影響 `BOOK` 嘅 `localStorage`**（只認子站 origin）；`iframe` 先會令儲存分區 |
 | **SG6** | 暫時關站雙軌 | 硬關站：Vercel Dashboard `Pause Project`（連 `/api` 即停）；軟關站：`store_gate_v1.0.js` `mode: 'closed'` 或 `vercel.json` `redirects` **`"permanent": false`（302，嚴禁 `true`/308 永久快取）** |
 | **SG7** | 「加入主畫面」只准由入口第一次進入 | 直開網址唔會 404（會出白名單卡），但**唔准教用家直開網址再裝**：在入口母站裝會裝到母站；真 404 冇 `manifest` 裝唔到；舊 icon 撳落去白屏。標準話術「先由入口進入 → 再按瀏覽器選單加入主畫面」，配 `allowStandalone: true` 令裝好後撳 icon 直開 |
-| **SG7-a** | 白名單有代價，必須講清 | 分享連結／搜尋／書籤／QR／推播深層連結一律撞卡，WhatsApp 內置瀏覽器另有沙盒；有 Push 嘅 app 維持 `open` 或改用簽票（docs/50 §3.4）。**「唔使用 iframe 就對 App 內部零影響」≠「對所有東西零影響」** |
+| **SG7-a** | 白名單有代價，必須講清 | 分享連結／搜尋／書籤／QR／推播深層連結一律撞卡，WhatsApp 內置瀏覽器另有沙盒；有 Push 嘅 app 維持 `open`（**唔准**因為白名單而落閘）（docs/50 §3.4）。**「唔使用 iframe 就對 App 內部零影響」≠「對所有東西零影響」** |
 | **SG8** | 入口自己永不被閘 | 五個入口自己嘅 origin 在 `portalIds` 內即自動放行（`reason: 'self-portal'`）——入口就係入口，唔需要再經其他地方；`closed` 優先蓋過 self 放行；入口自己唔應該掛 `entry-gate` |
 | **SG8-a** | 直開網址預設唔自動跳 | `autoRedirectSeconds: 0` 為預設（停低顯示入口卡，避免用家以為壞咗、亦避免其餘三個入口變裝飾）；要自動就 3–5 秒＋顯示目的地，或用 `autoRedirectPortalId` 指定入口 |
 | **SG9** | 入口角色分工，分享只由 `main` | `main`＝APP STORE（主站，**唯一**帶分享連結／QR）／`feed`＝圖書館（每日引流）／`internal`＝成員系統、區管理系統（自家副系統）。`website/app.js` L723／L727 現時直接分享 `app.url`（子站），開閘後會全部撞卡，要改指 `?app=<slug>` |
@@ -263,7 +263,7 @@ defaults (code)  →  env (Vercel / ScriptProperties)  →  remote config (Supab
 | **SG10-a** | 圖書館要維持 `open` | `scout-circulars` 載住 Push 訂閱（`push_subscriptions`）→ **唔可以 `iframe`、唔可以 `closed`、唔可以改 `start_url`**；要限經入口只可以局部限非通告頁 |
 | **SG11** | 「收起」≠「用不到」：四個下架齒輪 | **實查**：APP STORE「隱藏」只係前端過濾（`store.js` L782 `select("*")` 拉晒再 `a.visible !== false` 篩走），**App 本身照開得**。四齒輪＝① Delist（隱藏，URL 仍可入）② Gate（`entry-gate`，擋直開但主畫面照用）③ Soft close（`closed`，見告示）④ Hard close（Vercel Pause，完全離線）。按意圖揀，唔係按「幾快」 |
 | **SG11-a** | `BOOK` 類下架要先保入口＋備份 | 有真實紀錄（成員進度／考章）→ 只可以 Delist，**唔可以同時拆走入口**；必須 `allowStandalone: true`；落 ③④ 前先出通告叫用戶匯出 JSON／QR |
-| **SG11-b** | 敏感 App 唔可以靠「隱藏」做保護 | `visible=false` 唔係安全邊界（API 照回傳）→ 要 `entry-gate` ＋ §4.3 簽票 ＋ 後端 `VL1 /api/proxy` 驗 session；要全停就 Vercel Pause |
+| **SG11-b** | 敏感 App 唔可以靠「隱藏」做保護 | `visible=false` 唔係安全邊界（API 照回傳）→ 要 `entry-gate`（或 Vercel Pause 全停）；**唔准**用 §4.3 簽票／後端驗票做預設（SG12：用戶明確唔需要基建）（docs/50 §3.8 B） |
 | **SG12** | 防偷用唔係技術問題，係「表態」問題 | 用戶定案：領袖權限**不用保**（有空改功能變數即可）；功能簡單嘅 App「佢抄得到都寫得到」。→ **唔准**過度工程（唔需要為每個 App 起後端驗票）；真正要做＝**經入口 `entry-gate`** ＋ **一次輕量支持邀請 `supportNudge`**；抄走代碼唔當損失，損失係「用你嘅成果但唔表態」 |
 | **SG13** | 支持提示要講真話，只對「睇唔到嘅人」講 | 文案用「**書架位置有限：長期冇人收藏／Like 會收起，騰位俾新 App**」（唔用客氣話）。**預設 `skipPortalIds: ['appstore']`**：經 APP STORE 入嘅你已睇得到 `clicks`／`stars`／`hearts`，唔提；只對「主畫面直開」同「其他入口入」嘅人提。其餘：只在已放行時顯示、`role="complementary"`、有「唔使喇」、30 日一次、Safari 封 storage 靜默、**嚴禁**迫 Like |
 | **SG14** | 書架政策：唔寫死門檻，三條要守 | **唔准**寫固定日數／數字門檻（用戶睇後台自行判斷）；只守 ① 公開前置（政策寫喺 APP STORE 說明）② 收起＝只 Delist，代碼／網址／資料保留 ③ 豁免 `BOOK` 類同自家系統；Like 數 ≠ 使用人數，所以決定權喺用戶 |

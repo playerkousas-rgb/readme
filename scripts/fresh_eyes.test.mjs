@@ -150,3 +150,49 @@ test('guard：docs/52 + 範本 + README + checklist 齊 → 印出四處同步 O
     assert.match(r.out, /F16\/金魚審：[^]*四處同步/);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+/* ---------- 2026-11-19 自我審查（docs/53）搵到嘅漏洞，要有人守 ---------- */
+test('漏洞 #1 唔可以復發：PLAYBOOK 唔可以再叫子 App 用簽票／後端驗票做預設', () => {
+  const pb = read('PLAYBOOK.md');
+  // SG12／docs/50 §3.8 B 已定案「唔需要」；SG7-a／SG11-b 唔可以建議相反做法
+  for (const line of pb.split('\n')) {
+    if (!/\|\s*\*\*SG(7-a|11-b)\*\*/.test(line)) continue;
+    assert.doesNotMatch(line, /改用簽票|＋\s*§4\.3 簽票\s*＋\s*後端/, `SG 行唔可以再叫簽票：${line.slice(0, 80)}`);
+    assert.match(line, /唔准|唔可以/, `${line.slice(0, 40)} 要明寫「唔准」做技術防線`);
+  }
+  assert.match(read('docs', '50-app-store-whitelist-and-shutdown.md'), /## 3\.8 真正目的[^]*技術防線（唔採用）/);
+});
+
+test('漏洞 #2 唔可以復發：有 Web Push 嘅 app 唔准寫成「可以落閘」', () => {
+  const cl = read('docs', '10-checklists.md');
+  assert.doesNotMatch(cl, /有 Web Push 嘅 app 維持 `open` 或改用/, '唔可以寫「或改用 entry-gate」（等於允許落閘）');
+  assert.match(cl, /有 Web Push 嘅 app 一律維持 `open`，唔准落閘/);
+});
+
+test('漏洞 #3 唔可以復發：新加 checklist 要跟 PLAYBOOK 原文用語', () => {
+  const pb = read('PLAYBOOK.md');
+  const cl = read('docs', '10-checklists.md');
+  // 每條都抽 PLAYBOOK 原文一句關鍵字，checklist 必須有
+  const pairs = [
+    ['F17', '先安全底層 → 再功能 → 最後 UI 糖衣'],
+    ['W7', '只放 unit／date／hash'],
+    ['A18', '外部系統零特權'],
+    ['S5', 'grep `public/images/assets`'],
+    ['V5', '可由成品圖反查版本'],
+  ];
+  for (const [id, kw] of pairs) {
+    assert.ok(pb.includes(kw), `PLAYBOOK ${id} 原文應該有「${kw}」`);
+    assert.ok(cl.includes(kw), `docs/10 ${id} checklist 要跟原文用「${kw}」，唔可以自創講法`);
+  }
+});
+
+test('漏洞 #6 唔可以復發：docs/52 要講「重審完仍有 CRITICAL 點算」', () => {
+  const t = read('docs', '52-fresh-eyes-review.md');
+  assert.match(t, /仍然有 CRITICAL[^。]*改結構/, '重審完仍有 CRITICAL 要有出口，否則會無限審');
+});
+
+test('docs/53 自我審查報告存在，而且明寫「唔算金魚審」（唔准扮做過）', () => {
+  const t = read('docs', '53-self-audit-2026-11-19.md');
+  assert.match(t, /唔係\*{0,2}金魚審|唔算\*{0,2}金魚審/, '要老實講呢份唔係金魚審');
+  assert.match(t, /捉唔到/, '要列出新檢查嘅上限');
+});
