@@ -2,8 +2,8 @@
 
 > **一句話**：開新 app 前睇呢頁；每次施工前對 checklist；出事先睇 runbook。
 > 呢個 repo **唔係一個 app**，而係我所有 app 共用嘅**說明書 ＋ 可複製模板 ＋ 自動防呆檢查**。
-> **案例隔離（2026-10-27；2026-11-19 收緊）**：通用規則包括 S/F/A/W/V、研發前調查 P1 ＋ 技術棧契約；ecportal 專案設定已退役，仍有用嘅 R1–R8 喺 [docs/58](docs/58-multilevel-system-patterns.md)，**唔係通用底線**；邊個 repo 有問題喺 [docs/20](docs/20-repo-health-audit.md)。
-> **本倉唔收錄每個 app 嘅 as-built**（用戶 2026-11-19：「唔使咩都寫係度，有一萬個 app 咪寫死你，又睇死新嘅人」）—— 每個 app 嘅邊界／唔做清單住喺**嗰個 app 自己嘅 repo**（例：`vs_portal/SCOPE.md`、`vs_portal/AGENTS.md`），本倉只放通用底線同指針。
+> **通用規則（2026-11-19 更新）**：S/F/A/W/V、研發前調查 P1、**D1 設計地圖**＋技術棧契約；ecportal 專案設定已退役，仍有用嘅 R1–R8 喺 [docs/58](docs/58-multilevel-system-patterns.md)，**唔係通用底線**；邊個 repo 有問題喺 [docs/20](docs/20-repo-health-audit.md)。
+> **本倉係所有新 App 開工前必讀嘅真理倉**：本倉寫通用底線、D1 地圖規格與可複製範本；每個 App 實際畫出嘅 `ARCHITECTURE.md`、SCOPE／as-built 留喺**嗰個 App 自己嘅 repo**（例：`vs_portal/ARCHITECTURE.md`、`SCOPE.md`、`AGENTS.md`），方便下一個 Agent 接手。唔集中收錄所有 App 細節，避免一萬個 App 寫死本倉。
 
 更新日期：2026-11-19 · 適用技術棧：**Git ＋ Vercel ＋ Google Apps Script ＋ Supabase**（GEMINI 系統規範已集中去 GEMINI repo，本倉唔再做佢嘅入口）
 
@@ -17,14 +17,14 @@
 |:--:|---|---|
 | **0** | **主動問用戶**：一輪問晒「而家問得」嘅問題（形式／有冇 UI／身份／後台／Gemini／授權／一句定位／五個官方入口白名單與關站模式），每條俾建議答案；**主動告知有白名單及邊類 App 唔適合 `iframe`**（[docs/50](docs/50-app-store-whitelist-and-shutdown.md)）；**fact 自己查、決定留畀用戶；用戶確認先好郁手** | [`INTAKE.md`](templates/repo-starter/INTAKE.md) ＋ 實體原文 [`external/grilling/SKILL.md`](templates/repo-starter/skills/external/grilling/SKILL.md)（MIT）；全部喺 [`skills/CATALOG.md`](templates/repo-starter/skills/CATALOG.md) 入咗目錄 |
 | 1 | 抄起手包 → 填 `{{...}}` → **揀授權** → 抄 5 支真理 script → `git init` | [`templates/repo-starter/START.md`](templates/repo-starter/START.md) ⓪–④ |
-| 2 | **主動讀 `repo-setup` 並跟住做**：12 樣核心 → 按**形式**揀第 13／14 項 → 兩軸 review（Standards／Spec 分開） | [`skills/promoted/repo-setup/SKILL.md`](templates/repo-starter/skills/promoted/repo-setup/SKILL.md) |
+| 2 | **主動讀 `repo-setup` 並跟住做**：12 樣核心 → 按**形式**揀第 13／14 項 → **實作前按 D1 畫 `ARCHITECTURE.md` 地圖** → 兩軸 review（Standards／Spec 分開） | [`skills/promoted/repo-setup/SKILL.md`](templates/repo-starter/skills/promoted/repo-setup/SKILL.md) |
 | 3 | **有 UI／要出畫面**：`repo-setup` 第 4 步會明確叫你讀 `design-review`（house rules、inventory、390/768/1440 望圖、6 條 critique、`ROUND n`、40/30/20/10） | [`skills/promoted/design-review/SKILL.md`](templates/repo-starter/skills/promoted/design-review/SKILL.md) |
-| 4 | **未 commit 之前**跑閘門：`ok: true` 先好郁，`exit 1` 即刻停手（8 個 check） | [`PREFLIGHT.md`](templates/repo-starter/PREFLIGHT.md) ＋ `node scripts/preflight_v1.0.mjs . --json` |
+| 4 | **未 commit 之前**跑閘門：`ok: true` 先好郁，`exit 1` 即刻停手（9 個 check，含 D1 地圖存在／填妥） | [`PREFLIGHT.md`](templates/repo-starter/PREFLIGHT.md) ＋ `node scripts/preflight_v1.0.mjs . --json` |
 | 5 | 交付前 `guard` ＋ `final_check`；舊 repo 唔使一次過補，按 L2 排隊 | [docs/30](docs/30-repo-health-check.md) · [docs/27](docs/27-repo-starter.md) |
 
 > ⚠️ **唔係自動觸發**：呢個環境無 Skill tool／plugin harness，要你（AGENT）**主動讀** `repo-setup`／`design-review` 兩份 `SKILL.md`（`external/grilling` 只作溯源）；PREFLIGHT 只驗佢哋存在、frontmatter 合格同**入咗 [`CATALOG.md`](templates/repo-starter/skills/CATALOG.md)**，**唔會代你執行**。
 > ⚠️ **唔會自動整靚版面**：無瀏覽器／screenshots／Chrome inspector；望圖、設計分、`ROUND n` critique、兩軸報告要你自己寫低，做唔到就照實寫「做唔到」（[docs/32 §8.9](docs/32-consistency-audit.md)）。想睇「開新 repo 之後實際會／唔會發生乜」：[`START.md` 個對照表](templates/repo-starter/START.md)。
-> **四份文件嘅「第 0 步」唔同層，唔好當同一個**：本 README 6 步嘅 **0** ＝ `INTAKE` 第 1 輪問用戶；`START.md` **⓪** 就係同一步、**⓪b** 係喺真理倉跑一次 PREFLIGHT（驗起手包冇壞）；抄完之後新 repo 自己 `AGENTS.md` 嘅 **`0.`** ＝ 喺新 repo 跑 PREFLIGHT（開工第一步）。三個「0」唔可以互相取代。
+> **開局次序有層次，唔好跳步**：本 README 6 步嘅 **0** ＝ `INTAKE` 問用戶；`START.md` **⓪** 同一步、**⓪b** 係真理倉 source PREFLIGHT；新 repo 的 `AGENTS.md` **0** ＝ 主動讀 `repo-setup`、先完成 D1 設計地圖；**1** ＝目標 repo PREFLIGHT（9/9）過關後先實作／commit。source gate、D1 設計、target gate 各做唔同事，唔可以互相取代。
 > 用戶只想**改現有 repo／查規則／審計** → 落下面 §1 導覽，唔好行呢 6 步（改現有 repo 只需要問「想改乜」，見 `INTAKE.md` 第 2 輪）。
 
 ---
@@ -55,6 +55,8 @@
 | 4 | **COPYRIGHT SCOUT SYSTEM W** | 版權要講出口、寫入圖、留紀錄 | `© SCOUT SYSTEM` 頁尾＋中繼資料；生成圖落 DCT 隱形水印（v1/v2）；原圖／成品圖／使用紀錄 | [12-copyright](docs/12-copyright-scout-system.md) |
 | 5 | **雙版號 V** | 每次更新檔名同內文一齊改版號 | `app_v1.0.html` ↔ `meta/title/APP_VERSION/頁尾/註解` 全部 v1.0；測試＋guard 自動對照 | [13-versioning](docs/13-versioning.md) |
 
+**D1 設計地圖（所有新 App；人工設計閘，唔係第六條 CI 鐵律）**：已確認需求後、開始實作前，由設計 Agent 直接在 App repo 的 `ARCHITECTURE.md` 畫出預期結構／入口／元件責任／資料源與流向／跨系統依賴；小工具亦要簡圖，無後端寫「無」。下一位 Agent 開工先讀；架構改動同步更新。中央規格＋可複製範本：[PLAYBOOK D1](PLAYBOOK.md#0-開工前三分類決定做幾多) · [ARCHITECTURE.md template](templates/repo-starter/ARCHITECTURE.md) · [詳情 docs/59](docs/59-graphify-codebase-knowledge-graph.md)。
+
 **系統級 app 必須額外有兩樣嘢**（唔係 optional）：
 - **設定層**：所有開關／參數一個入口讀寫，唔准散落喺 code 同 UI → [04-settings-super](docs/04-settings-super.md)
 - **隱藏超管**：唔喺任何選單／名冊／API 回應出現嘅 break-glass 通道，用一次留一次痕 → [04-settings-super](docs/04-settings-super.md#2-隱藏超管hidden-super-admin)
@@ -69,14 +71,14 @@
 
 | 我想… | 睇 |
 |-------|-----|
-| 5 分鐘內知全部規矩 | **[PLAYBOOK.md](PLAYBOOK.md)** — 核心規範總綱（規則 ID：S/F/A/W/V/G/VL/X/U/C；專案案例已分開去 19） |
+| 5 分鐘內知全部規矩 | **[PLAYBOOK.md](PLAYBOOK.md)** — 核心規範總綱（規則 ID 包含 D1 設計地圖；專案案例已分開去 docs/57–58） |
 | 印出嚟貼喺枱面 | [docs/00-quickcard.md](docs/00-quickcard.md) — 一頁紙速查 |
 | 研發前查相近產品 | [docs/24-similar-products.md](docs/24-similar-products.md) — 既有比較及來源；新項目仍須自行搜尋核實（P1） |
 | 盤點自己 Git 有乜可以重用（Reverse API／私有 API） | [docs/25-reverse-api-reuse.md](docs/25-reverse-api-reuse.md) — 85 個 repo 盤點：已有後台 API client／proxy／fail-closed／drift audit，獨缺 HAR→codegen |
 | **想將 `docs/` 分章分類放好** | **[docs/README.md](docs/README.md)** — 章 0–6 索引、命名約定、加新檔四步 |
 | 仍唔明「自製 API」點用 | [docs/26-reverse-api-walkthrough.md](docs/26-reverse-api-walkthrough.md) — 用九龍城區／營地天氣／IKEA 三個例子 + [`templates/reverse-api-demo/`](templates/reverse-api-demo/README.md) 可跑示範 |
 | 開新 Git repo 要加乜 | [docs/27-repo-starter.md](docs/27-repo-starter.md) ＋ [`templates/repo-starter/START.md`](templates/repo-starter/START.md) — 12 樣 ＋ 第 13／14 項；**AGENT 開局讀 [`repo-setup/SKILL.md`](templates/repo-starter/skills/promoted/repo-setup/SKILL.md)**（有 UI 再讀 `design-review`） |
-| **想 AGENT 設定 repo 前先檢查好**（唔想每次 push 跑 YML） | [`templates/repo-starter/PREFLIGHT.md`](templates/repo-starter/PREFLIGHT.md) ＋ `node scripts/preflight_v1.0.mjs . --json` — 8 個 check 一次過，exit 1 就停手 |
+| **想 AGENT 設定 repo 前先檢查好**（唔想每次 push 跑 YML） | [`templates/repo-starter/PREFLIGHT.md`](templates/repo-starter/PREFLIGHT.md) ＋ `node scripts/preflight_v1.0.mjs . --json` — 9 個 check（含 D1 設計地圖），exit 1 就停手 |
 | 有身份系統要有乜基本功能（忘記密碼／ADMIN 回報） | **[docs/31-system-basics.md](docs/31-system-basics.md)** — 帳號生命週期 8 樣 ＋ **ADMIN 回報系統 8 樣**（通用）＋ [`templates/repo-starter/docs/system-basics.md`](templates/repo-starter/docs/system-basics.md) 可抄驗收表 |
 | 我啲 repo 係咪「輕／有後台／Gemini」 | [docs/28-repo-taxonomy.md](docs/28-repo-taxonomy.md) — **形式分類**：30 輕／30 有後台／17 同 AI 有關，85 個逐個標籤 |
 | API 設計／SKILL／分類嘅閱讀地圖 | [docs/29-reading-map.md](docs/29-reading-map.md) — 含 mattpocock/skills 同 taste-skill 評審 |
@@ -97,6 +99,7 @@
 | **動畫 CLI／API 目錄／AI 預測啱唔啱我哋**（Animate UI／ApiVault／MiroFish） | **[docs/38-animation-3d-prediction-tools.md](docs/38-animation-3d-prediction-tools.md)** — ApiVault 入 [docs/15](docs/15-resource-index.md) 做搵 API 第二層；Animate UI 要 shadcn 先用得（我哋 89 個 repo 普查：React 26／Next 9／靜態 32、shadcn 零個，2026-11-07）；MiroFish 只當假設產生器、唔當市場證據 |
 | **UI 設計 Skills／文字生成 CAD 有冇用**（emilkowalski／text-to-cad） | **[docs/45-ui-skills-text-to-cad.md](docs/45-ui-skills-text-to-cad.md)** — UI：最壞資料／手機體驗／動效判斷列為未來借鑑；CAD：實物製作有場景先試；未安裝未實測，未改起手包 Skill |
 | **網站學成 API／程式碼知識圖譜啱唔啱我哋**（API Anything／CodeGraph） | **[docs/43-api-anything-codegraph.md](docs/43-api-anything-codegraph.md)** — 公開 GitHub 源碼評審（pinned commit＋file/line 連結）：學確定性歸納／證據分級／write 不確定狀態／index freshness；API Anything 只限本機偵察、唔入 app 依賴；CodeGraph 食獨立 `.mjs`／`.py`，Markdown／plain HTML 唔食，`.gs` 自訂映射唔等於 GAS 支援；telemetry default on；未安裝未實測（2026-11-08） |
+| **Graphify／設計地圖點揀？** | **[docs/59](docs/59-graphify-codebase-knowledge-graph.md)** — 更正需求：設計者直接畫預期地圖，Graphify 只分析現有 code；暫不安裝，日後有 drift 核對痛點先考慮（2026-11-19） |
 | **未來新 app 要唔要加英文版、個掣點放**（雙語介面 L） | **[docs/44-bilingual-ui.md](docs/44-bilingual-ui.md)** — L1–L6：雙閘判定（體積 ＋ ≤300 字串）／右上角一鍵切換顯示目標語言／`data-lang`＋`lang`＋`localStorage` try-catch／螢幕乾淨分離（列印先並排）／零依賴範本 `templates/i18n/lang_toggle_v1.0.js`＋`scripts/i18n_check_v1.0.mjs`；預設要做可豁免，唔係硬鐵律；只為未來新開 app 而設，現有 repo 唔追溯（2026-11-08） |
 | 想 App 化（加入主畫面）＋版本更新 | [docs/46](docs/46-pwa-install-and-update.md) — I1–I8／UP1–UP5 |
 | **寫 README 之前對五條原則** | **[docs/47](docs/47-readme-discipline.md)** — 每句都要有檢查或誠實限制兜住：「檢查全綠≠用得」「已修要有 commit＋實測」「未做要老實列」「體積版號係紀律」「唔好寫理論上應該 work」；來源案例 morse-beacon-app v5.1.0→v5.2.0（2026-11-12 定案） |
@@ -187,7 +190,8 @@ Type B/C 專用起機指令：[templates/README.md](templates/README.md) · [wat
 
 ```
 README.md                 ← 你而家喺度（入口／導覽）
-PLAYBOOK.md               ← 核心規範總綱（唯一規則編號表：S/F/A/W/V/G/VL/X/U/C/I/UP）
+PLAYBOOK.md               ← 核心規範總綱（唯一規則編號表，含 D1 設計地圖）
+ARCHITECTURE.md            ← 真理倉自身地圖；各 App 的地圖留在各自 repo
 docs/
   00-quickcard.md          一頁紙速查卡
   01-slim.md               S1–S12 瘦身
@@ -222,6 +226,7 @@ docs/
   40-canvas-diy-candidates.md  用 Gemini＋Canvas 自己整嘅候選判決：圖標產生器（A）／風格 presets（B）／Pre-mortem（C）
   44-bilingual-ui.md        L1–L6 雙語介面：雙閘判定／右上角一鍵切換／乾淨分離；跟 4 個 BOOK 實作（預設要做・可豁免）
   45-ui-skills-text-to-cad.md  UI 設計／動效 Skills 與參數化 CAD 分類評估：未安裝未實測
+  59-graphify-codebase-knowledge-graph.md  更正 Graphify 需求：設計者直接畫預期地圖；Graphify 只作現況／drift 輔助（2026-11-19）
   46-pwa-install-and-update.md  PWA 安裝入口 I1–I8＋版本更新 UP1–UP5：「安裝要有掣、更新要問過人」（2026-11-12 定案；出門玩 v1.2.0＋4 個 BOOK pinned）
   52-fresh-eyes-review.md   金魚審（零上文審查）：改寫先行＋專案特有未定義名詞＋最多重審 1 次（2026-11-19；冇安裝上游 plugin）
   50-app-store-whitelist-and-shutdown.md  關站與 App Store 白名單入口 SG1–SG19：Pause／iframe 白名單／唔適合 iframe 改行頂層跳板 entry-gate（2026-11-15 定案）

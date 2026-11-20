@@ -91,7 +91,7 @@
 | [27 起手包](27-repo-starter.md) §2 | P1「系統」欄加呢兩份；`START.md` 列做**第 14 項（有身份系統先加）** |
 | [30 §6 人手對](30-repo-health-check.md) | 兩格：基本功能實測、回報系統閉環 |
 
-> ⚠️ **`preflight_v1.0.mjs`／`guard.mjs` 係靜態檢查，驗唔到呢啲功能有冇寫、能唔能跑**。呢份係**人手閘 + runtime 實測**，唔好見到 8/8 PASS 就當已完成（[30 §6](30-repo-health-check.md)）。
+> ⚠️ **`preflight_v1.0.mjs`／`guard.mjs` 係靜態檢查，驗唔到呢啲功能有冇寫、能唔能跑**。呢份係**人手閘 + runtime 實測**，唔好見到 9/9 PASS 就當已完成（[30 §6](30-repo-health-check.md)）。
 
 ## 5. 邊啲唔適用
 

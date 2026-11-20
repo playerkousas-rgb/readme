@@ -23,8 +23,8 @@ description: >-
 ### 開局步驟（照次序；同真理倉 README 🆕 6 步對齊）
 
 0. **先主動問用戶**（[`INTAKE.md`](../../../INTAKE.md)）：借 [`external/grilling/SKILL.md`](../../external/grilling/SKILL.md)（實體檔，[原檔](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md)）嘅方法 —— 一輪問晒「而家問得」嘅 frontier（形式／UI／身份／後台／Gemini／授權／定位／`website` 白名單入口與關站模式），每條俾**建議答案**；主動告知用戶本生態有 `scoutappstore.vercel.app` 白名單及關站機制，若該 App 有 `localStorage`／PWA／Push／登入 Cookie 則提醒**唔適合 `iframe` 白名單**並建議改用頂層跳板 `entry-gate`（[docs/50](https://github.com/playerkousas-rgb/readme/blob/main/docs/50-app-store-whitelist-and-shutdown.md)）；**fact 自己查**（`ls`／讀模板／P1），**決定留畀用戶**；**用戶確認先好抄檔**。**喺任何 `cp`／`git init` 之前**。若用戶喺真理倉 README 已經答咗並確認，跳過呢步，唔好重複問。
-1. 由 [`START.md`](../../../START.md) ⓪–④ 抄起手包：填 `{{...}}`、**先揀授權**先至將 `LICENSE-MIT.txt` 改名做 `LICENSE`、抄 5 支真理 script、`git init`、跑 [`PREFLIGHT`](../../../PREFLIGHT.md) gate（`exit 1` 即刻停手，8 個 check）。
-2. 讀 [`AGENTS.md`](../../../AGENTS.md) → [`SCOPE.md`](../../../SCOPE.md) → [`GLOSSARY.md`](../../../GLOSSARY.md)。**將第 0 步嘅答案寫入 `SCOPE.md`**（做乜／唔做乜兩條 bar）+ README 第一句；一個事實只寫一次，用字跟 GLOSSARY。
+1. 由 [`START.md`](../../../START.md) ⓪–④ 抄起手包：填 `{{...}}`、**先揀授權**先至將 `LICENSE-MIT.txt` 改名做 `LICENSE`、抄 5 支真理 script。此時先唔 `git init`／唔跑目標 PREFLIGHT；先完成下一步 D1 地圖，避免未填範本就假過閘。
+2. 讀 [`AGENTS.md`](../../../AGENTS.md) → [`SCOPE.md`](../../../SCOPE.md) → [`GLOSSARY.md`](../../../GLOSSARY.md)。**將第 0 步嘅答案寫入 `SCOPE.md`**（做乜／唔做乜兩條 bar）+ README 第一句；一個事實只寫一次，用字跟 GLOSSARY。然後執行 **D1**：用起手包已複製到 repo 根目錄的 [`ARCHITECTURE.md`](../../../ARCHITECTURE.md) 範本，按已確認需求直接畫設計地圖；畫入口、元件責任、資料源／流向、依賴與信任邊界；純前端／無外部依賴也要畫最小流程並標「無」。未確認關係列出並問用戶，未答之前唔好自行定案。**地圖完成並由用戶確認後先開始實作**；然後跑 [`PREFLIGHT`](../../../PREFLIGHT.md)（9 個 check，D1 map 要存在／填妥），`ok: true` 先 `git init`／開始實作。
 3. **用第 0 步用戶確認嘅答案按形式揀**，唔好按內容／主題、唔好自己估（[docs/28](https://github.com/playerkousas-rgb/readme/blob/main/docs/28-repo-taxonomy.md)）：
    - 有 UI／要出畫面 → 明確**讀 `design-review` 呢份 skill** 並跟佢嘅望圖步驟（唔好只睇 `docs/design-review.md`）。
    - 有 `SKILL.md`／RAG／agent 工作流 → 留低 `skills/` 同 [`docs/skills/README.md`](../../../docs/skills/README.md)；新 skill 用 [`0000-template.md`](../../../docs/skills/0000-template.md)。
@@ -56,7 +56,8 @@ description: >-
 ## It's working if
 
 - [ ] **第 0 步問咗 + 用戶確認 + 答案寫入 `SCOPE.md`**（未確認就唔算完成）。
-- [ ] `node scripts/preflight_v1.0.mjs . --json` 係 `ok: true`（8/8）。
+- [ ] **D1 地圖**：實作前已在 repo 根目錄完成 `ARCHITECTURE.md`，圖上有入口／元件／資料流向／依賴；小工具亦有最小圖；未知關係標待確認並已向用戶問清。
+- [ ] `node scripts/preflight_v1.0.mjs . --json` 係 `ok: true`（9/9，含 `design_map`）。
 - [ ] `node scripts/check_skills_v1.0.mjs .` 對呢份同 `design-review` 嘅 frontmatter 都 PASS。
 - [ ] grep `{{` 零結果；`docs/README.md` 同根 `README.md` 都有新檔索引行。
 - [ ] 兩軸 review 報告**分開**存在，各有一句最差項；冇扮跑過 browser／sub-agent／issue tracker。

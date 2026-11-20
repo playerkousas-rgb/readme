@@ -32,7 +32,7 @@
 | **`guard`** | 結構／連結／版號／secret 嘅硬閘（本機＋CI 同一條） | `scripts/guard.mjs` |
 | **`consistency`** | 全倉「標準／數字／舊講法」一致性掃描（只喺真理倉跑） | `scripts/consistency_v1.0.mjs` |
 | **`final_check`** | 六角度最終實測 orchestrator，會印 7 條人手實測 | `scripts/final_check_v1.0.mjs` |
-| **`preflight`** | 新 repo 開局 8 個 check 嘅 orchestrator（複用上面幾支） | [PREFLIGHT](../templates/repo-starter/PREFLIGHT.md) |
+| **`preflight`** | 新 repo 開局 9 個 check 嘅 orchestrator（含 D1 設計地圖存在檢查；複用上面幾支） | [PREFLIGHT](../templates/repo-starter/PREFLIGHT.md) |
 
 ## 3. 入口白名單（SG 系列）
 

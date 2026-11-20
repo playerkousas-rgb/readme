@@ -9,13 +9,13 @@
 
 | 層 | 幾時 | 做乜 | 命令 |
 |---|---|---|---|
-| **L0 開局** | 新 repo 第一個 commit 前，**AGENT 設定前** | [PREFLIGHT](../templates/repo-starter/PREFLIGHT.md)：12 樣 + 授權決定 + placeholder + UTF-8 + 4 支真理 script 一次過 | `node scripts/preflight_v1.0.mjs . --json` |
+| **L0 開局** | 新 repo 第一個 commit／實作前，D1 地圖完成後 | [PREFLIGHT](../templates/repo-starter/PREFLIGHT.md)：12 樣 + 授權決定 + D1 `ARCHITECTURE.md` + placeholder／UTF-8 + 4 支真理 script 一次過 | `node scripts/preflight_v1.0.mjs . --json` |
 | **L1 每次 commit / PR** | 每次施工前後（**本機**，唔係 push YML） | 真理倉 `guard.mjs` + 交付前 `final_check --json` + 本工具 `--json` 做本機 gate | `node scripts/guard.mjs && node scripts/final_check_v1.0.mjs --json` |
 | **L2 每季全倉** | 每季一次／重大改版後 | 85 個 repo 逐個體檢 + GitHub metadata 對照 + 手動 checklist（§5） | 見 §4 |
 
 **Gate 定義**：`FAIL > 0` 就 exit 1，AGENT 停手；`WARN` 入 backlog，**唔阻塞交付**。開局 gate 係 [PREFLIGHT](../templates/repo-starter/PREFLIGHT.md)（本機、未 commit），CI 只做改動後 regression。
 
-> **L0 用 PREFLIGHT，唔用 YML**：`preflight_v1.0.mjs` 係零依賴 orchestrator，一次過 `spawn` `guard`／`final_check`／`repo_health`／`check_skills`，再加 placeholder／UTF-8／`node --check`。由 **AGENT 喺設定／commit repo 之前本機跑**，`exit 1` 即刻停手 —— 唔係 push 之後先由 CI 話你知。詳見 [PREFLIGHT.md](../templates/repo-starter/PREFLIGHT.md)。CI 留返 L1 做 regression。
+> **L0 用 PREFLIGHT，唔用 YML**：`preflight_v1.0.mjs` 係零依賴 orchestrator，一次過 `spawn` `guard`／`final_check`／`repo_health`／`check_skills`，再加 placeholder／UTF-8／`node --check`。由 **AGENT 喺 D1 設計地圖完成後、實作／commit repo 之前本機跑**，`exit 1` 即刻停手 —— 唔係 push 之後先由 CI 話你知。詳見 [PREFLIGHT.md](../templates/repo-starter/PREFLIGHT.md)。CI 留返 L1 做 regression。
 
 ## 2. 工具檢查乜（11 個 check）
 
@@ -38,7 +38,7 @@
 ## 3. 點跑
 
 ```bash
-# AGENT 開局 gate（8 個 check 一次過；exit 1 = 唔好設定／commit）
+# AGENT 開局 gate（9 個 check 一次過；D1 地圖完成後執行；exit 1 = 唔好實作／commit）
 node scripts/preflight_v1.0.mjs . --json
 # 驗真理倉／起手包範本本身（範本有 placeholder 屬正常）
 node /path/to/readme/scripts/preflight_v1.0.mjs /path/to/readme --allow-placeholders --json

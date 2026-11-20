@@ -30,10 +30,11 @@ mkdir -p scripts
 cp /path/to/readme/scripts/{guard.mjs,final_check_v1.0.mjs,check_skills_v1.0.mjs,repo_health_v1.0.mjs,preflight_v1.0.mjs} scripts/
 # ③ LICENSE：揀好授權先至改名（見 docs/27 §3）
 cp LICENSE-MIT.txt LICENSE && rm LICENSE-MIT.txt
-# ④ 初始化 + 交付前 PREFLIGHT（exit 1 = 唔好 commit）
+# ④ AGENT 主動讀 skills/promoted/repo-setup/SKILL.md，依 D1 填好 ARCHITECTURE.md；未確認嘅關係先問用戶
+#    PREFLIGHT 會驗檔案已填、有圖形標記；只在 map 完成後跑
+node scripts/preflight_v1.0.mjs . --json    # 9/9 PASS 先好繼續
+# ⑤ git init / commit；之後開始 implementation
 git init && git add -A
-node scripts/preflight_v1.0.mjs . --json
-# ⑤ 交畀 AGENT：核對第 0 步答案已寫入 SCOPE.md，再行 AGENTS.md 開工順序（主動讀 skill）
 ```
 
 ### 開新 repo 之後，實際會／唔會發生乜（2026-11-02 實測）
@@ -41,12 +42,18 @@ node scripts/preflight_v1.0.mjs . --json
 | | 會 | 唔會（要人手／AGENT 自己寫） |
 |---|---|---|
 | **問需求（第 0 步）** | AGENT 跟 [`INTAKE.md`](INTAKE.md) **主動問用戶** 8 條（形式／UI／身份／後台／Gemini／授權／定位／`website` 白名單入口），一輪問晒 + 每條建議答案 + **用戶確認先郁手**；答案寫入 `SCOPE.md` | ❌ 唔會自己估、唔會代用戶揀授權；**fact 自己查**（形式名／模板檔／P1），唔好問用戶 |
-| **開局** | AGENT 讀 [`AGENTS.md`](AGENTS.md) → 第 0 步 PREFLIGHT 8 個 check 全過 → 第 1 步讀 `repo-setup` 跟住做 12 樣 + 按形式揀 13／14 項 | ❌ 唔會「一 `git init` 就自動彈個 skill 出嚟」；無 Skill tool／plugin harness，要 AGENT 主動讀 |
+| **開局** | AGENT 讀 [`AGENTS.md`](AGENTS.md) → 主動讀 `repo-setup` 寫好 D1 `ARCHITECTURE.md` → PREFLIGHT 9 個 check 全過 → `git init`／開始實作 | ❌ 唔會「一 `git init` 就自動彈個 skill 出嚟」；無 Skill tool／plugin harness，要 AGENT 主動讀 |
 | **版面靚 D** | 有 UI 時 `repo-setup` 明確叫 `design-review`：house rules、inventory 8–12、claim+proof、6 條 critique、40/30/20/10 rubric、`ROUND n` 格式、最多 3 輪 look-and-fix | ❌ 唔會自動出圖／截图／計分：無瀏覽器、無 Chrome inspector、無 247 站 library。望圖 390/768/1440 要人手，冇就要寫「做唔到」（[PREFLIGHT 未核實](PREFLIGHT.md)） |
-| **設計流程** | 兩份 `SKILL.md` 寫低 What／When／開局步驟／It's working if；`docs/design-review.md` 係長文 rubric；交付前兩軸 review（Standards／Spec 分開） | ❌ 唔會自動產生 review 報告、`ROUND n` critique、ADR；要 AGENT 自己寫低 |
-| **審計** | PREFLIGHT 8 check（scripts 齊／placeholder／UTF-8／syntax／guard／final_check／repo_health／check_skills）+ `guard` G10 + `final_check` 六角度 | ❌ 唔驗設計質素、唔跑 app／API／ToS、唔實測忘記密碼／ADMIN 回報（[docs/system-basics.md](docs/system-basics.md)）、唔做全倉矛盾審計（嗰支係真理倉 `consistency_v1.0.mjs`） |
+| **設計流程** | 設計者／AGENT 按已確認需求直接畫 D1 `ARCHITECTURE.md`；`repo-setup` 列明地圖欄位及驗收；交付前兩軸 review（Standards／Spec 分開） | ❌ 唔會自動畫設計意圖；地圖內容／ADR 要 AGENT 自己寫，未知關係要問用戶 |
+| **審計** | PREFLIGHT 9 check（含 `ARCHITECTURE.md` 存在／圖形標記）+ `guard` G10 + `final_check` 六角度 | ❌ 唔判斷地圖設計正確性、唔驗 app／API／ToS、唔實測忘記密碼／ADMIN 回報、唔做全倉矛盾審計 |
 
 > 一句：**佢唔係「自動識」，係「AGENT 一開工就有明確指示 + 一道閘門」**。冇 AGENT 去讀 `AGENTS.md`，或者係純人手 `cp -r` 之後直接寫 code，呢兩份 skill 就唔會被執行。
+
+## D1 設計成果（所有新 App 必須有；另計，不改 12 樣檔案核心）
+
+- 起手包已含根目錄 `ARCHITECTURE.md`。設計 Agent 根據用戶確認的 SCOPE 畫出入口、元件責任、資料源／資料流、依賴及信任邊界；無後端／外部依賴的小工具亦畫精簡流程並標「無」。
+- 地圖完成／未知關係問清楚後，才跑目標 PREFLIGHT（`design_map` 是第 9 個 check）；唔可以將佔位範本當成已完成設計。
+- 後續施工前先讀地圖；架構改動同步更新。詳見真理倉 [PLAYBOOK D1](https://github.com/playerkousas-rgb/readme/blob/main/PLAYBOOK.md#0-開工前三分類決定做幾多)／[docs/59](https://github.com/playerkousas-rgb/readme/blob/main/docs/59-graphify-codebase-knowledge-graph.md)。
 
 ## 12 樣必加（打勾先至開工）
 
@@ -77,7 +84,7 @@ node scripts/preflight_v1.0.mjs . --json
 | 13a | [`docs/design-review.md`](docs/design-review.md) | **有 UI／要出畫面**：反 slop、頁面 vs app 屏幕、三寬度望圖自檢 |
 | 13b | [`docs/skills/README.md`](docs/skills/README.md) ＋ **`skills/CATALOG.md`**（唯一目錄）＋ `skills/promoted/` 兩份、`skills/external/grilling` 一份 | **所有新 repo 開局**：AGENT 讀 `repo-setup` 跟住做；有 UI 再讀 `design-review`。有 `SKILL.md`／RAG 知識包就留低 `skills/` |
 | 13c | [`docs/skills/0000-template.md`](docs/skills/0000-template.md) | 寫新 skill：frontmatter 規格 + 四段式正文 |
-| 13d | [`PREFLIGHT.md`](PREFLIGHT.md) ＋ `scripts/preflight_v1.0.mjs`（抄現成） | **必跑（所有新 repo）**：AGENT 設定／commit **之前**一條命令擋住（8 個 check），唔係每次 push 跑 YML |
+| 13d | [`PREFLIGHT.md`](PREFLIGHT.md) ＋ `scripts/preflight_v1.0.mjs`（抄現成） | **必跑（所有新 repo）**：D1 地圖完成後、實作／commit **之前**一條命令擋住（9 個 check），唔係每次 push 跑 YML |
 | 13e | [`docs/fresh-eyes-review.md`](docs/fresh-eyes-review.md) | **所有新 repo 留低**：寫完要交畀其他人／其他 AGENT 執行嘅文件，交付前開**新對話**做一次金魚審（方法見真理倉 [docs/52](https://github.com/playerkousas-rgb/readme/blob/main/docs/52-fresh-eyes-review.md)） |
 
 ## 第 14 項（有身份／有登入系統先加，2026-11-02 補）
@@ -102,7 +109,7 @@ node scripts/preflight_v1.0.mjs . --json
 | `docs/skills/0000-template.md` | 複製成 `skills/<bucket>/<name>/SKILL.md`（13c） |
 | `skills/promoted/repo-setup/SKILL.md` | **留低**，寫入 `AGENTS.md` 開工順序第 1 步（13b） |
 | `skills/promoted/design-review/SKILL.md` | **留低**；有 UI 先由 `repo-setup` 明確叫（13b） |
-| `PREFLIGHT.md` | 留低，並寫入 `AGENTS.md` 開工順序第 0 步（13d） |
+| `PREFLIGHT.md` | 留低，並寫入 `AGENTS.md` 開工順序第 1 步（D1 map 後，13d） |
 | `INTAKE.md` | **留低**：第 0 步問卷；答案寫入 `SCOPE.md`，唔好只留喺對話 |
 | `skills/CATALOG.md` | **留低**：所有 SKILL.md 嘅唯一目錄；**以後加 skill 必入**，`check_skills` 會自動對 |
 | `skills/external/grilling/SKILL.md` | **留低**：第 0 步方法嘅 MIT 原文（只作溯源，唔改唔執行） |
@@ -113,7 +120,7 @@ node scripts/preflight_v1.0.mjs . --json
 ## 檢查
 
 ```bash
-node scripts/preflight_v1.0.mjs . --json      # AGENT 開局 gate（8 個 check 一次過）
+node scripts/preflight_v1.0.mjs . --json      # D1 地圖完成後；開局 gate（9 個 check 一次過）
 node scripts/repo_health_v1.0.mjs .           # 單獨體檢（backlog 用）
 node scripts/check_skills_v1.0.mjs .          # 單獨驗 SKILL.md frontmatter
 ```

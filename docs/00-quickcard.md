@@ -14,11 +14,12 @@
 ```
 [ ] 0. 判定類型：工具 / App / 系統  （系統＝一定要設定層 + 隱藏超管）
 [ ] 1. 抄 templates/ → 新 repo
-[ ] 2. .env.local 填 secret（只喺本機 + Vercel Dashboard）
-[ ] 3. .gitignore / .vercelignore / vercel.json 就位
-[ ] 4. node scripts/guard.mjs 綠
-[ ] 5. getConfig() + fail closed + env 自檢
-[ ] 6. 先做安全底層（PLAYBOOK §9 第 1–8 步），先至做功能
+[ ] 2. D1：已確認需求後、實作前，直接畫 `ARCHITECTURE.md` 預期地圖；未確認關係標待確認並問用戶
+[ ] 3. .env.local 填 secret（只喺本機 + Vercel Dashboard）
+[ ] 4. .gitignore / .vercelignore / vercel.json 就位
+[ ] 5. node scripts/guard.mjs 綠
+[ ] 6. getConfig() + fail closed + env 自檢
+[ ] 7. 先做安全底層（PLAYBOOK §9 第 1–8 步），先至做功能
 ```
 
 ## 每次 commit
