@@ -1,11 +1,11 @@
 # PLAYBOOK — 核心規範總綱（唯一規則編號表）
 
-> **點用**：呢份係「必看」嘅濃縮版。每條規則有一個 ID（S/F/A/W/V/G/VL/X/U/C/P/L/I/UP/SG）。
-> **案例隔離（2026-11-19 更新）**：ecportal 案例已退役刪除（[docs/57](docs/57-ecportal-to-vsportal-migration.md)）；由佢抽出嘅「可選模式」R1–R8 已通用化去 [docs/58](docs/58-multilevel-system-patterns.md)，**唔係通用底線**；新 app 守 S/F/A/W/V、P1 ＋ 技術棧契約。checklist、CI、PR template 全部用 ID 引用，唔好改 ID。
+> **點用**：呢份係「必看」嘅濃縮版。每條規則有一個 ID（S/F/A/W/V/G/VL/X/U/C/P/L/I/UP/SG/D）。
+> **案例隔離（2026-11-19 更新）**：ecportal 案例已退役刪除（[docs/57](docs/57-ecportal-to-vsportal-migration.md)）；由佢抽出嘅「可選模式」R1–R8 已通用化去 [docs/58](docs/58-multilevel-system-patterns.md)，**唔係通用底線**；新 app 守 S/F/A/W/V、P1、D1 ＋ 技術棧契約。checklist、CI、PR template 全部用 ID 引用，唔好改 ID。
 > **層級**：呢份 = 所有 app 嘅**最低要求**。個別 app 可以加嚴，唔可以減；要減就喺 PR 寫例外原因 + 補償措施。
 > 深挖：每個章節尾有對應 `docs/` 連結。
 
-**Version 1.0.0** ｜ **Ratified 2026-10-24** ｜ **Last Amended 2026-11-19**
+**Version 1.1.0** ｜ **Ratified 2026-10-24** ｜ **Last Amended 2026-11-19**
 
 | 版號位 | 幾時升 | 例子 |
 |---|---|---|
@@ -14,11 +14,13 @@
 | **PATCH** | 澄清、改字、改連結、補例子（意思不變） | 改一句錯別字 |
 
 > **規矩**：本輪新增嘅規則**一定**同時改 `Last Amended`。版號只喺呢一行，唔好喺每個章節各寫一個。
-> **為何要版號**：呢份有 94 條 ID、子 App 會引用「SG16」「F16」等 ID；冇版號就分唔到「舊版 SG16」同「現時 SG16」（SG16 就係 MAJOR 級改口）。Git history 係最終證據，版號係方便人引用。
+> **為何要版號**：呢份有 95 條 ID、子 App 會引用「SG16」「F16」等 ID；冇版號就分唔到「舊版 SG16」同「現時 SG16」（SG16 就係 MAJOR 級改口）。Git history 係最終證據，版號係方便人引用。
 
 ---
 
 ## 0. 開工前：三分類，決定做幾多
+
+**D1 — 設計地圖（所有新 App 必須有；現有 App 下次重大架構改動時補／更新）**：需求同範圍經用戶確認後、開始實作前，由負責設計的 Agent 根據已確認事實，在 App 自己的 repo 根目錄建立／更新 [`ARCHITECTURE.md`](templates/repo-starter/ARCHITECTURE.md)。用一張易讀圖畫出入口、主要元件、責任邊界、資料源／讀寫方向、內外部依賴；按 App 形狀補身份／權限／信任邊界及關鍵錯誤流程。就算係純前端小工具都要有精簡地圖，無後端／外部依賴要明寫「無」，唔可以留空或省略。**不得靠估**：未確認嘅關係標「待確認」並向用戶查清；未有答案前不得把它寫成既定設計。後續 Agent 每次施工前先讀地圖；任何令元件、資料流、責任邊界或跨 App 關係改變的施工，先同步更新地圖，再改 code／驗收。此為人工設計／維護閘，不是 Graphify 自動生成，亦非 CI 能保證圖的語義正確。詳情與範本見 [docs/59](docs/59-graphify-codebase-knowledge-graph.md)／[repo-starter ARCHITECTURE.md](templates/repo-starter/ARCHITECTURE.md)。
 
 **P1 — 研發前先搜尋相近產品（所有工具／app／系統）**：開始新產品研發前，先上網查找相近產品及現有方案，包括自己的項目；記錄搜尋日期、關鍵字、來源連結、相同／不同功能、適用地區、費用或授權及未核實事項，並寫明採用、整合或自建的理由。不得單憑宣傳或舊資料假設功能已可用；無法上網或查不到時如實記錄限制及待查項，先向用戶說明，不能當已完成調查。既有比較可參考 [docs/24](docs/24-similar-products.md)，仍須重新核實。此為人工檢查，並非自動 CI 保證。
 
@@ -30,7 +32,7 @@
 
 > 用戶講「系統」兩個字 = 自動當第三類，**設定層同隱藏超管係硬性交付物**，唔係 nice-to-have。
 > 無論邊一類，**S 瘦身／F 防呆／A 安全／W COPYRIGHT SCOUT SYSTEM／V 雙版號** 五套通用規則全部適用。
-> **另外兩條條件式通用規則**（同屬通用，但唔係 CI 硬擋）：**P1** 研發前搜尋（上面，人工檢查）；**L1–L6 雙語介面**（下面 §7.5，詳情 [docs/44](docs/44-bilingual-ui.md)）——唔太重嘅 app 預設要有英文版 + 右上角切換掣，可豁免但要寫 `EXCEPTION`。
+> **人工通用規則（唔係 CI 硬擋）**：**D1** 設計地圖（上面，所有新 App 必須有；架構改動要更新）；**P1** 研發前搜尋（上面）；**L1–L6** 雙語介面（下面 §7.5，詳情 [docs/44](docs/44-bilingual-ui.md)）——唔太重嘅 app 預設要有英文版 + 右上角切換掣，可豁免但要寫 `EXCEPTION`。
 
 ---
 

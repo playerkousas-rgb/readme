@@ -20,7 +20,7 @@
 1. 用 [`docs/skills/0000-template.md`](../docs/skills/0000-template.md) 生 `skills/<bucket>/<name>/SKILL.md`：四段（What／When／Common questions／It's working if）+ frontmatter（`name` kebab-case、`description` rich trigger；user-invoked 版唔好列「Use when…」）。
 2. 跑 `node scripts/check_skills_v1.0.mjs .` 驗 frontmatter（strict YAML；`word: word` 未 quote 會令成個 skill 靜靜被 drop）。
 3. **加一行落上面張表**：要同時有 `name` 同**完整相對路徑**（`skills/.../SKILL.md`），兩樣都要齊 —— `check_skills` 同 `consistency` 會逐份對，漏一様即 FAIL。再喺 [`AGENTS.md`](../AGENTS.md) 開工順序**明確指名**呢個 skill；promoted 先加去 [docs/README](https://github.com/playerkousas-rgb/readme/blob/main/docs/README.md) 同根 README 索引。
-4. 跑 `node scripts/preflight_v1.0.mjs . --json`（新 repo 8 個 check）／`node scripts/consistency_v1.0.mjs .`（真理倉）；**兩樣綠先好 commit**。
+4. 跑 `node scripts/preflight_v1.0.mjs . --json`（新 repo 9 個 check，含 D1 map）／`node scripts/consistency_v1.0.mjs .`（真理倉）；**兩樣綠先好 commit**。
 
 > **點解要自動驗**：2026-11-02 之前 `INTAKE.md` 只係文字引用外連 `grilling/SKILL.md`，repo 入面無實體檔，AGENT 搵唔到會當你呃佢。而家 `check_skills` 見到 `skills/CATALOG.md` 就逐份對；**冇 catalog 嘅舊 repo 唔會被逼改**（向後兼容，例如單數 `skill/` 嘅 repo 照 PASS）。
 
@@ -30,7 +30,7 @@
 |---|---|---|
 | frontmatter **＋ 目錄** | `node scripts/check_skills_v1.0.mjs .` | 每份 SKILL.md 合格，**同埋**喺 CATALOG.md 有 `name` + 路徑；缺一即 FAIL |
 | 全倉標準／Spec | `node scripts/consistency_v1.0.mjs .` | `skills-catalog`／`skills-wired`／`intake-wired` 三條硬檢查 |
-| 開局一次過 | `node scripts/preflight_v1.0.mjs . --json` | 8 個 check，包 `check_skills` |
+| 開局一次過 | `node scripts/preflight_v1.0.mjs . --json` | 9 個 check，包 `design_map`／`check_skills` |
 
 ## 未核實
 

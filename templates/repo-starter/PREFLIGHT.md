@@ -6,7 +6,7 @@
 
 ## AGENT boot 第一步（寫入 [AGENTS.md](AGENTS.md)）
 
-> **未讀 SCOPE、未抄檔、未 `git init` 之前**，先跑呢條。`ok: true` 先好開工；**exit 1 = 唔好郁個 repo**。
+> **抄完起手包、填好 SCOPE 同 D1 `ARCHITECTURE.md`、未 `git init`／commit 之前**，跑目標 repo 呢條。`ok: true` 先好開工；**exit 1 = 唔好開始實作／commit**。
 
 ```bash
 # ⓪ 驗「來源」：真理倉個起手包本身冇壞（未抄檔之前跑一次）
@@ -19,12 +19,13 @@ node scripts/preflight_v1.0.mjs . --json
 
 `--allow-placeholders` **只准**用於驗真理倉／範本本身（範本本來就有 `{{...}}`）；驗目標 repo 唔可以加，否則會放過未填嘅 placeholder。
 
-## 8 個 check（一條命令行晒）
+## 9 個 check（一條命令行晒）
 
 | id | 查乜 | FAIL 代表 |
 |---|---|---|
 | `scripts` | `scripts/` 有冇抄齊 4 支真理 script | AGENT 「以為 set 好」但其實未抄 → 之後所有檢查都係假綠 |
 | `placeholders` | 非模板檔仲有冇未填 placeholder | 會將 `{{REPO_NAME}}` 交付畀人 |
+| `design_map` | 根目錄 `ARCHITECTURE.md` 存在、非空、已填範本並有 Mermaid／箭咀／圖像連結標記 | 新 App 無可供後續 Agent 閱讀嘅設計地圖；**只驗存在與圖形標記，不判斷語義正確** |
 | `utf8` | 文字檔有冇雙重編碼／壞字（U+FFFD 或 Latin-1 常見 mojibake） | 中文變亂碼、或 `é` 被存成兩碼 |
 | `syntax` | 所有 `.mjs` `node --check` | 腳本一跑就 syntax error |
 | `guard` | G10 連結／錨點、A1 secret、S 體積 | 壞連結、真 key、爆 5MB |

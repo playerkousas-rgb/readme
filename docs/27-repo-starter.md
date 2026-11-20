@@ -47,6 +47,16 @@
 
 > **2026-11-02 補**：「正常系統會有嘅基本功能」之前散喺 [`BUILD.md`](58-multilevel-system-patterns.md) §2／[03 A5](03-security.md)／`A17`，無一張開局 checklist；**ADMIN 回報系統完全無記錄**（只有 [`GEMINI`](https://github.com/playerkousas-rgb/GEMINI) 個別 repo 有）。兩份而家收埋喺 [31](31-system-basics.md)，並加落 [10 §1.4](10-checklists.md) 同 [30 §6](30-repo-health-check.md)。**唔開新 A-ID**，全部掛返現有 A3/A4/A5/A8/A12/A13/A17 + VL7。
 
+## 2a. D1 — 所有新 App 實作前直接畫設計地圖（2026-11-19 定案）
+
+> 呢張地圖由設計者／負責 Agent 按已確認需求直接畫，唔係由 Graphify 反推 code 結構。真理倉寫規格同範本；**每個 App 實際的 `ARCHITECTURE.md` 留在該 App 自己 repo**，下一位 Agent 接手第一步先讀。
+
+- **時機**：INTAKE／SCOPE 跟用戶確認後、第一行 app implementation code 之前完成。未確定關係先問；可以把未獲確認的內容標「待確認」，但不得當成已定案而照實作。
+- **內容**：一張圖畫入口、主要元件／責任、資料 source of truth 及讀寫方向、App／外部系統依賴；按情況加身份／權限、信任邊界、錯誤與故障路徑。純前端小工具都要簡圖，無後端／無外部依賴明寫「無」，唔准用「太簡單」省略。
+- **維護**：每次架構變動同步改圖；接手 Agent 先讀圖再施工。圖與實作有差異時先核實／修正，不自動以工具輸出覆蓋設計意圖。
+- **範本**：[`templates/repo-starter/ARCHITECTURE.md`](../templates/repo-starter/ARCHITECTURE.md)；由 [PLAYBOOK D1](../PLAYBOOK.md#0-開工前三分類決定做幾多) 定底線，細節見 [59](59-graphify-codebase-knowledge-graph.md)。PREFLIGHT 第 9 格只驗檔案存在及有圖形標記，語義／設計正確性仍由人手 review。
+- **追溯範圍**：新 App 必須遵守；舊 repo 不要求一次過全補，下一次重大架構改動時補／更新。
+
 ## 2b. 第 13 項：13a–13c 按形式加、13d PREFLIGHT 必跑（2026-11-02 補）
 
 > 你提嗰兩個 repo —— [mattpocock/skills](https://github.com/mattpocock/skills) 同 [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill) —— **應該加，之前只加咗一半**。但唔係塞落 12 樣核心：30 個「輕」工具／知識倉／資料管道唔需要。按 [28](28-repo-taxonomy.md) 嘅**形式**揀：
@@ -58,15 +68,15 @@
 | 單一 HTML／少檔靜態（出畫面嘅 Canvas app） | ⚠️ 只加 `design-review.md` |
 | 知識／索引倉、資料管道、空殼／預留 | ❌ 唔加 13a–13c，留返 12 樣 |
 
-> **13d PREFLIGHT 唔跟形式**：所有新 repo 開局都要跑一次（寫入 `AGENTS.md` 第 0 步），上表只決定 13a–13c。
-> **13b 嘅 5 份 `SKILL.md`（promoted 三份 + external 兩份）亦唔跟形式**：佢哋係「開新 repo 嗰個 AGENT」要用嘅指示／溯源（寫入 `AGENTS.md` 第 1 步），唔係等目標 repo 有 RAG 先至加。目標 repo 要唔要**留低** `skills/` 就按上表形式決定（[32 §8.9](32-consistency-audit.md)）。
+> **13d PREFLIGHT 唔跟形式**：所有新 repo 開局都要跑一次；依 D1 完成 `ARCHITECTURE.md` 後先跑（寫入 `AGENTS.md` 第 1 步），上表只決定 13a–13c。
+> **13b 嘅 5 份 `SKILL.md`（promoted 三份 + external 兩份）亦唔跟形式**：佢哋係「開新 repo 嗰個 AGENT」要用嘅指示／溯源（寫入 `AGENTS.md` 第 0 步），唔係等目標 repo 有 RAG 先至加。目標 repo 要唔要**留低** `skills/` 就按上表形式決定（[32 §8.9](32-consistency-audit.md)）。
 
 | # | 檔 | 借自 | 實際加到乜 |
 |:--:|---|---|---|
 | 13a | [`docs/design-review.md`](../templates/repo-starter/docs/design-review.md) | taste-skill | 反 slop house style、頁面 vs app 屏幕、inventory 8–12 件、每段 claim＋proof、`390/768/1440` 三寬度 look-and-fix、6 條 critique、評分 40/30/20/10；**零依賴、無 Chrome inspector** |
 | 13b | [`skills/CATALOG.md`](../templates/repo-starter/skills/CATALOG.md)（唯一目錄）＋ [`docs/skills/README.md`](../templates/repo-starter/docs/skills/README.md) ＋ `promoted/` 兩份 ＋ [`external/grilling/SKILL.md`](../templates/repo-starter/skills/external/grilling/SKILL.md) | mattpocock × taste-skill | **4 個 bucket**（含 `external/`）＋ invocation 軸 ＋ progressive disclosure，再加 `repo-setup`（開局 12 樣／13 項／第 14 項／兩軸 review）、`design-review`（望圖）同 `external/grilling`（MIT 原文）；全部入 [`CATALOG.md`](../templates/repo-starter/skills/CATALOG.md)，**以後加 skill 必入**；`AGENTS.md` 開工順序明確指名 |
 | 13c | [`docs/skills/0000-template.md`](../templates/repo-starter/docs/skills/0000-template.md) | 兩者 | `SKILL.md` frontmatter 規格（kebab-case ≤64／description ≤1024／唯一名／boolean flag）＋ What／When／Common questions／It's working if 四段 |
-| 13d | [`PREFLIGHT.md`](../templates/repo-starter/PREFLIGHT.md) ＋ [`scripts/preflight_v1.0.mjs`](../scripts/preflight_v1.0.mjs) | taste-skill 嘅**檢查內容**，改咗**觸發時機** | AGENT 喺**設定／commit repo 之前**一條命令擋住：8 個 check（scripts 齊／placeholder／UTF-8／`node --check`／guard／final_check／repo_health／check_skills） |
+| 13d | [`PREFLIGHT.md`](../templates/repo-starter/PREFLIGHT.md) ＋ [`scripts/preflight_v1.0.mjs`](../scripts/preflight_v1.0.mjs) | taste-skill 嘅**檢查內容**，改咗**觸發時機** | D1 地圖完成後、實作／commit 前一條命令擋住：9 個 check（含設計地圖、scripts 齊／placeholder／UTF-8／syntax／guard／final_check／repo_health／check_skills） |
 
 ### 13d 點解唔係一條 YML（2026-11-02 修正）
 

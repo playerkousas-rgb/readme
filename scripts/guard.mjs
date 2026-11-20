@@ -441,7 +441,8 @@ function checkActionsPin() {
 function checkRuleSync() {
   if (!isTruthRepo) { ok('F16：app repo，跳過規則同步檢查'); return; }
   const pb = read('PLAYBOOK.md');
-  const need = ['S1', 'S7', 'S12', 'F4', 'F14', 'F15', 'F16', 'A1', 'A7', 'A14',
+  const readme = read('README.md');
+  const need = ['D1', 'S1', 'S7', 'S12', 'F4', 'F14', 'F15', 'F16', 'A1', 'A7', 'A14',
                 'W1', 'W6', 'V1', 'V6', 'G1', 'G11', 'VL1', 'X1', 'U1', 'C1', 'C12', 'C13',
                 'L1', 'L2', 'L3', 'L4', 'L5', 'L6',
                 'SG1', 'SG2', 'SG3', 'SG4', 'SG5', 'SG6'];
@@ -450,7 +451,24 @@ function checkRuleSync() {
   else ok(`F16：PLAYBOOK.md 規則 ID 齊（${need.length} 個抽樣）`);
   if (!/5MB/.test(pb)) err('F16/C13-g：PLAYBOOK.md 要寫明單一 HTML 嘅 5MB 上限（唔適用 S7/S10）');
 
-  const readme = read('README.md');
+  // D1：設計者維護的預期地圖要有唯一通用規格、起手範本、Agent 指示與人手 checklist。
+  const dDoc = 'docs/59-graphify-codebase-knowledge-graph.md';
+  const dTpl = 'templates/repo-starter/ARCHITECTURE.md';
+  const dMap = 'ARCHITECTURE.md';
+  const dCl = existsSync(path.join(ROOT, 'docs/10-checklists.md')) ? read('docs/10-checklists.md') : '';
+  for (const f of [dDoc, dTpl, dMap]) {
+    if (!existsSync(path.join(ROOT, f))) err(`F16/D1：缺 ${f}（設計地圖規格／範本／真理倉自圖）`);
+  }
+  if (!readme.includes('D1') || !readme.includes(dDoc)) err('F16/D1：根 README 未指向 D1 設計地圖規則與 docs/59');
+  if (!dCl.includes('D1') || !pb.includes(dDoc)) err('F16/D1：PLAYBOOK／docs/10 未同步 D1');
+  const dGuides = ['docs/README.md', 'templates/repo-starter/AGENTS.md', 'templates/repo-starter/INTAKE.md',
+    'templates/repo-starter/PREFLIGHT.md', 'templates/repo-starter/README.md', 'templates/repo-starter/START.md',
+    'templates/repo-starter/skills/promoted/repo-setup/SKILL.md'];
+  for (const f of dGuides) {
+    if (!existsSync(path.join(ROOT, f)) || !read(f).includes('D1')) err(`F16/D1：${f} 未有 D1 指引`);
+  }
+  if (existsSync(path.join(ROOT, dTpl)) && !/```mermaid/.test(read(dTpl))) err(`F16/D1：${dTpl} 缺可複製地圖示例`);
+
   // G11：9 個圖標檔名要喺唯一來源出現。2026-11-02 起完整標準搬到 docs/33，
   //       README §9 只留原則 + 指針；冇 docs/33 嘅舊／新 repo 仍然可以靠 README 過（向後兼容）。
   const iconDoc = 'docs/33-icon-standard.md';

@@ -1,13 +1,13 @@
 # `docs/` 分章索引 — 邊份管邊樣
 
-> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–55 唔使再靠估。
+> **呢個 repo 嘅唯一入口仍然係 [根 README](../README.md)**；本頁只做 `docs/` 嘅分章分類，等 00–59 唔使再靠估。
 > 整理日期：2026-11-19 · 規則衝突時以 [PLAYBOOK](../PLAYBOOK.md) 為準 · ecportal 案例已退役（見 [57](57-ecportal-to-vsportal-migration.md)），多層系統可選模式 R1–R8 去 [58](58-multilevel-system-patterns.md)，**唔係通用底線**。
 
 ## 點用
 
 > **界線（2026-11-19）**：本倉只放**通用底線 ＋ 指針**；每個 app 嘅 as-built／SCOPE／逐次 UPDATE **留喺嗰個 app 自己嘅 repo**（例：`vs_portal/SCOPE.md`）。唔好把 app 細節搬入 `docs/` —— app 一退役就要全倉改連結，新 agent 又要讀死。
 
-**Agent 按需讀，唔使順序讀晒 00–55**：先用根 README §1 揀任務，再用下面章節定位；必守規則讀 PLAYBOOK，工具評審只喺相關任務先讀，唔係安裝清單。
+**Agent 按需讀，唔使順序讀晒 00–59**：先用根 README §1 揀任務，再用下面章節定位；必守規則讀 PLAYBOOK，工具評審只喺相關任務先讀，唔係安裝清單。
 
 | 任務分類 | 直達章節 |
 |---|---|
@@ -32,7 +32,8 @@
 |---|---|
 | [根 README](../README.md) | 唯一入口、五大鐵律一句版、導覽表 |
 | [AGENTS.md](../AGENTS.md) | Agent 級別／施工邊界／開工順序 |
-| [PLAYBOOK.md](../PLAYBOOK.md) | 核心規範總綱、規則 ID 總表、P1 |
+| [PLAYBOOK.md](../PLAYBOOK.md) | 核心規範總綱、規則 ID 總表、P1 ＋ D1（設計地圖） |
+| [ARCHITECTURE.md 起手範本](../templates/repo-starter/ARCHITECTURE.md) | D1：新 App 實作前由設計者直接畫；後續 Agent 先讀、架構變更要更新 |
 | [A18](03-security.md) | 外部系統零特權（舊 as-built 案例已退役，見 [57](57-ecportal-to-vsportal-migration.md)） |
 | — | ~~進度 leaf 專案說明~~（隨 ecportal 一併退役，見 [57](57-ecportal-to-vsportal-migration.md)） |
 | [00-quickcard.md](00-quickcard.md) | 一頁紙速查 |
@@ -96,6 +97,7 @@
 | [45-ui-skills-text-to-cad.md](45-ui-skills-text-to-cad.md) | **UI 設計 Skills／參數化 CAD**：emilkowalski/skills（最壞資料／手機／動效判斷，列為未來借鑑）／text-to-cad（實物場景先試）；來源、授權、安全界線及未實測狀態 |
 | [49-design-skills-studio-dotfiles-effectcraft.md](49-design-skills-studio-dotfiles-effectcraft.md) | **五個 repo 判「值唔值得學／收錄」**：awesome-design-md／taste-skill 已收錄（只更新快照）；ai-design-skills 借到 `name`＝資料夾名＋`compatibility` 上限並已入 checker；BULDEE creative-studio 只參考 ADR／phase gate、唔安裝；dotfiles 無 LICENSE 只讀概念；EffectCraft 有場景先試（同 [48](48-video-audio-creative-tools.md) ArtCraft 同族）。GitHub API 2026-11-13，未安裝未實測 |
 | [43-api-anything-codegraph.md](43-api-anything-codegraph.md) | **公開 GitHub 源碼評審**：API Anything（確定性 core 同 agent 分工；local save／holdout／heal replay 係唔同閘；write 不確定狀態＋readback；capture/加密/sharing 有條件）／CodeGraph（靜態 lexical graph＋provenance＋freshness；支援獨立 `.mjs`／`.py`，`.gs` 可映射但唔係 GAS 完整支援；telemetry default on）；pinned file/line 證據、benchmark 限制、SCOUT 零安裝採用清單（2026-11-08），未安裝未實測 |
+| [59-graphify-codebase-knowledge-graph.md](59-graphify-codebase-knowledge-graph.md) | **Graphify（Graphify-Labs/graphify）評估及需求更正**：設計者直接畫預期地圖；Graphify 從 code 分析現況，非設計真理；暫不安裝，只有日後出現 code／設計圖 drift 痛點才考慮；固定 `v8` commit／Apache-2.0、安全與私隱界線（2026-11-19） |
 | [39-verified-sites-and-diy.md](39-verified-sites-and-diy.md) | **10 站實測＋自己做總清單**：Scrolltide（付費，更正免費講法）／Refero DESIGN.md 庫／3dicons（CC0）／liquid-glass（MIT v0.1）／LogoDiffusion（出真 SVG）；自己做：`seo_check_v1.0.mjs` 已做＋`web-motion` 補 framer-motion 線，DESIGN.md 庫／ApiVault 搜尋頁／pre-mortem 模板排下次 |
 | [40-canvas-diy-candidates.md](40-canvas-diy-candidates.md) | **Gemini＋Canvas 自己整候選判決**：G11 圖標產生器（Type A，第一）／風格海報 presets 升級現有產生器（Type B）／Pre-mortem 鬧場（Type C，假設唔係證據）／相片預備（Type A 可選）；SEO script／LLM 路由／電台／3D 世界等唔用 Canvas 嘅原因逐個寫明；未開工狀態明寫 |
 | [42-iconmaker-photoprep-repo-briefs.md](42-iconmaker-photoprep-repo-briefs.md) | **兩個新 repo 開工對話**：Icon Maker／Photo Prep 各一段成稿（背景／要做／紅線／驗收），開新 repo 後貼去第一個 AI 對話即用；起好要返嚟更新 41／40 狀態 |
@@ -138,7 +140,7 @@
 | [templates/repo-starter/PREFLIGHT.md](../templates/repo-starter/PREFLIGHT.md) | **AGENT 開局 gate**：設定／commit 前一條命令擋住（取代每次 push 嘅 YML） |
 | [templates/repo-starter/INTAKE.md](../templates/repo-starter/INTAKE.md) | **第 0 步問卷**：開新 repo 前 AGENT 主動問清楚用戶需求（借 mattpocock `grilling`），唔好靠估 |
 | [templates/reverse-api-demo/](../templates/reverse-api-demo/README.md) | 5 分鐘「自製 API」可跑示範 |
-| [scripts/preflight_v1.0.mjs](../scripts/preflight_v1.0.mjs) | PREFLIGHT orchestrator：8 個 check 一次過，`--json`／exit 1（零依賴） |
+| [scripts/preflight_v1.0.mjs](../scripts/preflight_v1.0.mjs) | PREFLIGHT orchestrator：9 個 check 一次過（含 D1 map），`--json`／exit 1（零依賴） |
 | [scripts/repo_health_v1.0.mjs](../scripts/repo_health_v1.0.mjs) | 單 repo 體檢（JSON／CLI） |
 | [scripts/check_skills_v1.0.mjs](../scripts/check_skills_v1.0.mjs) | `SKILL.md` frontmatter 檢查（零依賴） |
 | [scripts/consistency_v1.0.mjs](../scripts/consistency_v1.0.mjs) | 全倉一致性審計（Mechanics／Standards／Spec 三軸，`--json`／exit 1） |

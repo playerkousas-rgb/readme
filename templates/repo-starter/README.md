@@ -13,7 +13,7 @@
 | 我想… | 去 |
 |---|---|
 | 即刻跑 | {{RUN_COMMAND_OR_URL}} |
-| 知規矩 | [AGENTS.md](AGENTS.md) · [SCOPE.md](SCOPE.md) · [GLOSSARY.md](GLOSSARY.md) |
+| 知規矩／先理解架構 | [AGENTS.md](AGENTS.md) · [SCOPE.md](SCOPE.md) · [GLOSSARY.md](GLOSSARY.md) · [ARCHITECTURE.md](ARCHITECTURE.md) |
 | 一頁紙速查 | [docs/quickcard.md](docs/quickcard.md) |
 | 交付前檢查 | `node scripts/guard.mjs` + `node scripts/final_check_v1.0.mjs --json` |
 | 出事 | {{INCIDENT_DOC_OR_RUNBOOK}} |
@@ -30,6 +30,7 @@
 ```
 README.md          入口
 AGENTS.md          Agent 開工順序 / 邊界
+ARCHITECTURE.md    D1：設計者維護嘅入口／元件／資料流地圖（後續 Agent 先讀）
 SCOPE.md           做乜 / 唔做乜
 GLOSSARY.md        共用語言
 CONTRIBUTING.md    點提 issue / PR
@@ -45,6 +46,7 @@ tests/             測試
 
 ```
 [ ] 五大通用鐵律 S / F / A / W / V（見真理倉 PLAYBOOK）
+[ ] D1：`ARCHITECTURE.md` 已由設計者畫出、架構改動已更新；後續 Agent 先讀地圖
 [ ] P1：研發前查過相近產品 + 自己現有方案，來源同未核實項寫低
 [ ] 無真 key、無 .env、無大檔入 Git
 [ ] `node scripts/repo_health_v1.0.mjs .` 0 FAIL

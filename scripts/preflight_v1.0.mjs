@@ -59,7 +59,19 @@ add('placeholders', allowPlaceholders || ph.length === 0,
   allowPlaceholders ? `範本模式：略過 placeholder（${ph.length} 個檔有，屬正常）`
     : ph.length ? `未填 placeholder：${ph.slice(0, 6).join(', ')}${ph.length > 6 ? ' …' : ''}` : '無未填 placeholder');
 
-/* 4. UTF-8 無雙重編碼／壞字（對應 taste-skill 嘅 check-skills.yml，但零依賴）
+/* 4. D1：每個新 repo 必須有已填寫的設計地圖；只驗存在與有圖形標記，不判斷設計正確性。 */
+const mapPath = path.join(root, 'ARCHITECTURE.md');
+let mapText = '';
+try { if (existsSync(mapPath)) mapText = readFileSync(mapPath, 'utf8'); } catch { /* report below */ }
+const hasMapDiagram = /```mermaid[\s\S]*?```/i.test(mapText)
+  || /(?:-->|->|→)/.test(mapText)
+  || /!\[[^\]]+\]\([^)]+\)/.test(mapText);
+const mapOk = mapText.trim().length >= 250 && hasMapDiagram && !/\{\{[A-Z_]+\}\}/.test(mapText);
+add('design_map', mapOk, mapOk
+  ? 'ARCHITECTURE.md 存在、已填，且有圖形／流程標記（D1 語義仍須人手 review）'
+  : '缺 ARCHITECTURE.md、仍是空殼／未填範本，或未見地圖／流程圖；按 D1 設計確認後再 PREFLIGHT');
+
+/* 5. UTF-8 無雙重編碼／壞字（對應 taste-skill 嘅 check-skills.yml，但零依賴）
    用 \u escape 寫，避免 checker 自己個 regex 變成「壞字」例子，自己中自己。 */
 const MOJIBAKE = new RegExp('[\\u00C3\\u00C2][\\u00A9\\u00A8\\u00AA\\u00B0\\u00BC\\u00BD\\u00BE].');
 const badUtf8 = [];
