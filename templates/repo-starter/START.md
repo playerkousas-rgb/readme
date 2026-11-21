@@ -126,3 +126,5 @@ node scripts/check_skills_v1.0.mjs .          # 單獨驗 SKILL.md frontmatter
 ```
 
 **PREFLIGHT 係開局／交付前 gate**，唔係 CI：由 AGENT 本機跑、未 commit 就擋；詳見 [PREFLIGHT.md](PREFLIGHT.md)。三層檢查（L0 開局／L1 每次 commit／L2 每季全倉）見 [docs/30](https://github.com/playerkousas-rgb/readme/blob/main/docs/30-repo-health-check.md)。
+
+> **SG18（所有新 App 必做，2026-11-21 定案）**：落地前要確認 App 內有「讚好／收藏」一鍵掣（常駐非阻塞 + fail-safe hidden + `[hidden]{display:none}`，參考航空圖鑑 v0.37.0，見真理倉 [docs/60](https://github.com/playerkousas-rgb/readme/blob/main/docs/60-future-apps-support-button.md)）。PREFLIGHT 驗**唔到**掣有冇寫（靜態檢查，只驗檔存在），交付前要人手逐件驗 —— 掣存在 / hidden fail-safe / 窄屏 / print / 雙語。

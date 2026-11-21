@@ -1,7 +1,7 @@
 # A 組 App 白名單指令（可直接複製貼去該 App 對話）
 
 > 用途：你逐個 App 開對話時，複製下面「=== 開始 ===」到「=== 結束 ===」之間嘅整段，貼落去即可。
-> 只適用於 [docs/51](../../docs/51-whitelist-rollout-list.md) **A 組**（無 `/api`；本機儲存只限介面偏好／小遊戲分數）。
+> 只適用於 [docs/51](../../docs/51-whitelist-rollout-list.md) **A 組**（無 `/api`；本機儲存只限介面偏好／小遊戲分數）。SG18（讚好／收藏掣）係**所有新 App 必做**（2026-11-21 定案，詳見 docs/60），唔止 A 組。
 > 貼之前只需改 **3 個位**：`<APPKEY>`（repo 名細楷）、`<SLUG>`（主站 slug，**要核實，唔准猜**）、`<REPO名>`。
 > **2026-11-17 更新**：加入 SG19（`silentPortalIds` ＋ 單一粒掣 ＋ 簡短文案）、SG18（一鍵回跳主站讚好／收藏）、Vercel 發佈根目錄核實、模擬 vs 真機分欄。
 
@@ -88,7 +88,7 @@ Next.js 改 `app/layout.tsx` 用 `<Script src="/store_gate_v1.0.js" strategy="be
 - ❌ 唔准動 `share`／`QR`／資料格式
 - ❌ **唔准直連主站 Supabase**、唔准複製主站 URL／anon key、唔准自行呼叫 `bump_hearts`／`bump_stars`（SG18）
 
-### 第 4 步：SG18 — 加「讚好／收藏」一鍵回跳主站掣（A 組標準做法）
+### 第 4 步：SG18 — 加「讚好／收藏」一鍵回跳主站掣（所有新 App 標準做法，2026-11-21 定案；參考航空圖鑑 v0.37.0，見真理倉 docs/60）
 
 ```html
 <!-- 頂欄右上角：常駐、低調、非阻塞 -->

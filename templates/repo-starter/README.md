@@ -52,6 +52,7 @@ tests/             測試
 [ ] `node scripts/repo_health_v1.0.mjs .` 0 FAIL
 [ ] **條件式規則（按類型，唔中都要喺 PR 寫 N/A）**：
       L1–L6 雙語（有 UI）· I1–I8／UP PWA（有 manifest）· SG1–SG19 入口白名單／關站（要經官方入口入）· 金魚審（文件要交畀其他人執行）
+[ ] **SG18 讚好／收藏掣（所有新 App 必做，2026-11-21 定案）**：App 內有「讚好／收藏」一鍵回跳主站掣 —— 掣存在＋fail-safe hidden＋`[hidden]{display:none}` ＋ 窄屏/print/雙語，人手逐件驗（PREFLIGHT 驗唔到程序碼內容）；參考航空圖鑑 v0.37.0（真理倉 docs/60）
 [ ] 交付前對一次真理倉 PLAYBOOK §10（驗收閘 Definition of Done）17 項 —— 呢張 5 行唔等於 §10
 ```
 
