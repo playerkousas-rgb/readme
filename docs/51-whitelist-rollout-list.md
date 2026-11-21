@@ -26,6 +26,8 @@
 
 條件：`api=0`。用 `mode: 'entry-gate'` ＋ `portalIds: ['appstore']` ＋ **`silentPortalIds: ['library']`**（SG19，攔截卡只出一粒掣）即可，**風險最低**。
 
+> **2026-11-21 定案**：SG18「讚好／收藏」掣係**所有新 App 必做**（唔分 A／B／C 組），唔單止 A 組照抄航空圖鑑嘅做法——見 [60](60-future-apps-support-button.md)。
+
 > **2026-11-17 修正**：本節舊標題寫「無明顯本機儲存」，但**表內有 7 行 `本機儲存痕跡=1`**（`drawtheroute`／`hkcamping`／`knotmaster`／`scoutdesign`／`skw-radar-hunt2`／`skw-score`／`minigame`）—— 標題同表格前後唔一致。已改為「本機儲存只限介面偏好／小遊戲分數」：呢 7 隻用 `entry-gate` ＋ `allowStandalone: true` 一樣安全（唔用 `iframe` 就唔會令儲存分家），但**要按 WHITELIST-HANDOFF Q1 停機規則逐隻問**（若涉及用家自建重要紀錄而冇備份 → 停手）。
 
 | Repo | 網址 | `/api` | manifest | SW | 本機儲存痕跡 | 狀態 |
@@ -67,7 +69,7 @@
 | `vsmeeting` | https://vsmeeting.vercel.app | 0 | 1 | 1 | 0 | ⬜ 待做 |
 
 > **直接可用嘅指令**：[`templates/repo-starter/A-GROUP-INSTRUCTION.md`](../templates/repo-starter/A-GROUP-INSTRUCTION.md)（複製即貼去該 App 對話，只需改 `<APPKEY>`、`<SLUG>`、`<REPO名>`）。
-> **✅ 已完成示範倉（2026-11-17）：`Aircraft-Encyclopedia`** —— `v0.36.0` 接入白名單（`mode: 'entry-gate'`、`portalIds: ['appstore']`、`allowStandalone: true`，HEAD `050951f5`）；`v0.37.0` 加 SG18 一鍵返回 APP STORE 讚好／收藏（頂欄 `#storeSupportTop` ＋ 頁尾 `#storeSupportBar`，零 Supabase 請求、零寫死網址、中英同步、列印自動隱藏）。**其餘 34 隻照抄佢嘅結構即可。**
+> **✅ 已完成示範倉（2026-11-17）：`Aircraft-Encyclopedia`** —— `v0.36.0` 接入白名單（`mode: 'entry-gate'`、`portalIds: ['appstore']`、`allowStandalone: true`，HEAD `050951f5`）；`v0.37.0` 加 SG18 一鍵返回 APP STORE 讚好／收藏（頂欄 `#storeSupportTop` ＋ 頁尾 `#storeSupportBar`，零 Supabase 請求、零寫死網址、中英同步、列印自動隱藏）。**其餘 34 隻照抄佢嘅結構即可。2026-11-21 起，呢個示範倉係全 App 必做 SG18 嘅參考 implementation（見 [60](60-future-apps-support-button.md)）。**
 > 建議第一批先揀 3–5 個試（例如 `Icon-Maker`、`Photo-Prep`、`router`、`voice_slide_web`），真機驗一次再批次做。**有 `SW=1` 嘅**（`AYP`／`CUBSGAME`／`GAME`／`cubsmeeting`／`ghmeeting`／`scoutmeeting`／`vsmeeting`／`HKMAP`）要先確認個 Service Worker 係做離線快取定 Push 訂閱。
 
 ### 1.1 A 組 slug 對照（**落閘前必須核實**，SG18 靠佢）
@@ -223,7 +225,7 @@ function appSlug(app) {
 </script>
 ```
 
-> **SG18**（子 App 一鍵回跳主站讚好／收藏）另見 [50 §4.1](50-app-store-whitelist-and-shutdown.md)；`<slug>` 對照見上面 §1.1。
+> **SG18**（子 App 一鍵回跳主站讚好／收藏）另見 [50 §4.1](50-app-store-whitelist-and-shutdown.md) 同 [60](60-future-apps-support-button.md)（**2026-11-21 全 App 必做**）；`<slug>` 對照見上面 §1.1。
 
 ## 7. 要唔要「先同兩個大入口講」？→ 只有一件事要動（SG17）
 

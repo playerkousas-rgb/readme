@@ -86,7 +86,7 @@ SG：關站／經五個官方入口白名單進入（按需啟用 → docs/50 §
     SG13：supportNudge 文案＝「書架位有限，長期冇人收藏/Like 會收起」；預設 skip appstore（你已睇得到 clicks）
     SG14：書架政策要公開＋可逆＋唔刪資料；唔准寫死日數／門檻（睇後台自行判斷）；BOOK／自家系統豁免
     SG17：唔使逐個入口「打招呼」！APP STORE＝永遠預設（分享／QR 由佢出）、圖書館＝✅ 已改好（89ef3cf1，L5812）可直接放入 silentPortalIds、
-    SG18：子 App「讚好／收藏」一鍵回跳主站（getAppStoreUrl(slug) 開新分頁 → /?app=<slug>）；嚴禁直連主站 Supabase／copy anon key／call bump_hearts（收藏清單喺主站同源 localStorage）；slug 對 website/migrations/20261116-app-slug-seed.sql 核實，唔准靠 repo 名猜；A 組預設唔開 supportNudge
+    SG18：子 App「讚好／收藏」一鍵回跳主站（getAppStoreUrl(slug) 開新分頁 → /?app=<slug>）；**2026-11-21 全 App 必做**（參考航空圖鑑 v0.37.0，見 docs/60）；嚴禁直連主站 Supabase／copy anon key／call bump_hearts（收藏清單喺主站同源 localStorage）；slug 對 website/migrations/20261116-app-slug-seed.sql 核實，唔准靠 repo 名猜；預設唔開 supportNudge
     SG19：攔截卡「按鈕」≠「放行來源」→ portalIds:['appstore'] + silentPortalIds:['library'] （library 照放行但唔畫掣）；allowedOrigins 只係額外放行來源，同 portals 聯集唔可以蓋過；單一粒掣自動去「1.」編號；預設文案＝「需經由 SCOUT APP STORE 開啟」（舊字串保留做 alias）
           成員／區管理＝唔做 App 目錄（唔使理），GEMINI＝可加（自己 private repo，可放行）
 ```
