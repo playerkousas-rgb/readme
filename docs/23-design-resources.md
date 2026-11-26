@@ -7,6 +7,7 @@
 **星星數為 2026-10-29 用 GitHub API 實測**（`GET /repos/{owner}/{repo}` 嘅 `stargazers_count`），唔係估。
 **2026-11-06 增補**：三個配色站嘅分工同對比驗收見 §5.1–5.2；唔改上面五個主庫嘅歷史星數快照。
 **2026-11-19 補 §2.6**：`meta/astryx` 只做 token 概念參考（唔入 §1 五個主庫、唔改歷史星數快照）。
+**2026-11-26 更新 §2.6**：API 實查 33,333★／`v0.7.17`（仍 beta）；新結論＝技術上裝得落我哋 React 19 嘅 repo，但唔值得換；真正值得抄係「agent-ready 規格層」（`astryx init` 寫 `AGENTS.md`＋CLI 查組件規格）。
 **2026-11-09 分類入口**：想搵 UI 最壞資料、手機體驗同動效判斷嘅 Agent Skills，見 [45 §1](45-ui-skills-text-to-cad.md#1-ui-設計動效借方法唔搬成套)；屬未來借鑑，未安裝未改起手包。
 
 ---
@@ -88,26 +89,26 @@
 - 體積：antd 全套唔細，Vercel 類交付要睇 S7（dist < 5MB／bundle < 2MB）；單一 HTML 例外看 C13-g 5MB。
 - 相關：`ant-design/ant-design-pro`（後台樣板）、`ant-design/icons`（圖標，同樣要標來源）。
 
-### 2.6 `meta/astryx`（React 19 ＋ StyleX，**beta**，MIT）— 只抄 token 概念
+### 2.6 `meta/astryx`（React 19 ＋ StyleX，**beta**，MIT）— 抄「agent-ready 嘅規格層」，唔抄組件
 
-- 快照 **2026-11-19**：30,697★／2,404 fork／license MIT／TypeScript／size ≈1.4 GB／releases 最新 `v0.7.16`（2026-11-14）／commit [`4388ac4`](https://github.com/meta/astryx/tree/4388ac4d4f6a8233a4441c9a1f86d17046c2b962)。上游 README 自稱 **Currently in Beta**，八年 Meta 內部演變、13,000+ 個 app 用過。
-- **技術要求**：`react`／`react-dom` **19+**（peer dependency）＋ `@astryxdesign/core` ＋ `@astryxdesign/theme-*` ＋ `@stylexjs/stylex`。
-- **同我哋三條規則直接衝**：
+- 快照 **2026-11-19**：30,697★／2,404 fork／MIT／TypeScript／size ≈1.4 GB／最新 release `v0.7.16`（2026-11-14）。
+- 快照 **2026-11-26**（用 GitHub API 實查）：**33,333★**／**2,601 fork**／8,834 commits／最新 release [`v0.7.17`](https://github.com/meta/astryx/releases/tag/v0.7.17)（2026-11-20）／每週仍活躍合併／上游 README 仍寫 **Currently in Beta**。一週 +2,636★，屬「唔止小圈子」級數。
+- **佢係乜**：Meta 內部八年、13,000+ 個 app 用過嘅 design system 開源版 —— **150+ 個無障礙 React 組件 ＋ 7 套 theme（neutral／butter／chocolate／matcha／stone／gothic／y2k）＋ 一個 CLI**。用 StyleX 寫樣式但**對用家隱形**：可以用 `className` 配 Tailwind／CSS module／純 CSS 覆寫，唔鎖死。
+- **技術要求**：`react`／`react-dom` **19+**（peer dependency）＋ `@astryxdesign/core` ＋ `@astryxdesign/theme-*` ＋ `@stylexjs/stylex`；**唔使** build plugin／PostCSS／Babel。
 
-| 規則 | 衝突 |
+| 規則 | 衝突（同 2026-11-19 一樣，未變） |
 |---|---|
-| [S1](01-slim.md) | 要引入 npm 依賴（React 19＋StyleX 執行期），同「一套 token、零框架」相反 |
+| [S1](01-slim.md) | 要引入 npm 依賴（React 19 ＋ StyleX 執行期），同「一套 token、零框架」相反 |
 | [S7](01-slim.md)／C13-g | 150+ 組件＋多 theme 對 `dist < 5MB`／單一 HTML ≤5MB 係風險；上游 repo 本身 size ≈1.4 GB |
-| 單一 HTML／Canvas 路線 | A 組大部分 app 係零 build 單檔；Astryx 只適用 **React + Vite/Next** 嘅 repo |
+| 單一 HTML／Canvas 路線 | 68 個有網址 app 大多數係零 build 單檔；Astryx 只適用 **React 19 + Next／Vite** 嘅 repo |
 
-- **值得抄嘅三樣（唔使裝）**：
-  1. **Theme ＝ 一組 CSS custom property 覆寫** — 唔 fork、唔 wrap 組件就換到品牌。**我哋 [`design-styles_v1.0.md`](../templates/repo-starter/docs/design-styles_v1.0.md) 三套（Field／Paper／Clean）已經係同一個做法**，即係方向正確；要抄嘅係「一套 theme 一份檔、唔喺個別 repo 偷偷改 token」嘅紀律（同該檔尾 checklist 一致）。
-  2. **`swizzle` 概念**：要改就用 eject 擁有源碼，唔好靠覆寫打補丁 — 對應我哋「唔好喺個別 repo 改共用 token，改就升版號」。
-  3. **組件命名同無障礙慣例**（表格／表單／抽屜／通知／空狀態）— 同 §2.5 antd「抄規格唔抄 code」完全一樣，**兩者唔使分開記**。
-- **唔好做**：唔好為咗用 Astryx 而將單一 HTML app 改寫成 React；唔好因為 7 套 theme 靚而引入多一層依賴。要用，先寫 `EXCEPTION:` ＋ 量 S7 體積，並且只限本來已經係 React 19 嘅 repo。
+- **新結論（2026-11-26）：技術上裝得，但唔值得換。** 我哋已經有 React 19 嘅 repo（`member-portal` Next 16.3 + React 19.2、`scout-district-portal` Next），所以「裝唔到」係錯嘅講法；真問題係**換完要重寫全部現有 Tailwind／自家 token 樣式，而 S1 體積預算同 [design-styles_v1.0.md](../templates/repo-starter/docs/design-styles_v1.0.md) 三套自家 theme 已經做緊同一件事**。要試就只喺**新開**嘅 React repo 試，唔好中途換。
+- **最值得抄嘅已經唔係組件，係「agent-ready」嗰層（今次新學到）**：
+  1. `astryx init` 會將**同一份規格**寫入 `AGENTS.md`／`CLAUDE.md`，令「人同 AI 由同一個參考建 UI」——同我哋 [AGENTS.md](../AGENTS.md) 開工順序、[docs/47](47-readme-discipline.md)「每句都要有檢查兜住」同一個方向，但佢做得更徹底：**規格係機器可讀、可查、可被 CLI 驗**。
+  2. CLI `astryx component <Name>` 將組件規格（props、a11y 要求、anatomy）變成**一行命令查得到**，唔使人記 wiki。→ 對應我哋「真假規格分開、唔好靠記憶」；日後我們 docs 想加「CLI 可查」係可以參考，**唔使裝 Astryx**。
+  3. `swizzle`（要改就 eject 源碼自己擁有）＋ theme ＝ 一組 CSS custom property 覆寫 → 同我們「唔好喺個別 repo 偷偷改共用 token，改就升版號」一致。
+- **唔好做**：唔好為咗用 Astryx 而將單一 HTML app 改寫成 React；唔好因為 7 套 theme 靚而引入多一層依賴；唔好將 `@astryxdesign/lab`／`charts` 嘅 canary 包放入正式 app。
 - **狀態**：**未安裝、未實測、未改任何範本**；本節只係「知有呢個選項，同知道自己已經做對」。
-
----
 
 ## 3. 新 Git 開工：設計決策 checklist（照做）
 

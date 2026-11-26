@@ -1,5 +1,6 @@
 # 51 — 白名單上線清單（全 repo 掃描・2026-11-15）
 
+> **2026-11-26 加 §0.1**：用 `gh` 實查**邊個 repo 真係已經接咗閘**（唔係靠估、唔係靠舊清單）。結果：68 個有網址 repo 之中 **21 個已接閘、43 個未接、4 個屬入口本體唔可以接**。舊清單漏咗 8 個（原因見 §0.1「掃描陷阱」）。
 > **用途**：回答「邊啲 App 可以現在就加白名單」。**唔係靠估**：下表由 GitHub API 逐個 repo 掃 `git/trees` ＋讀入口檔 grep `localStorage|indexedDB|safeStore` 得出。
 > **掃描範圍**：`playerkousas-rgb` 全部 95 個 repo，其中 **69 個有公開網址**（其餘係非網站 repo 或未部署）。
 > **⚠️ 掃描限制（必須由該 App 嘅 AGENT 覆核）**：① 「本機儲存痕跡」只 grep 根目錄入口檔（`index.html`／`src/main.*`／`src/App.*`／`app/page.tsx`），深層檔案可能漏；② 「`/api` 數」＝路徑開頭符合 `api/`、`pages/api/`、`app/api/`、`src/api/`、`server/` 嘅檔案數，含非 serverless 檔；③ **冇掃** Web Push、`SameSite` Cookie、相機／GPS 權限、`beforeinstallprompt`。所以每隻 App 仍要行 [`WHITELIST-HANDOFF.md`](../templates/repo-starter/WHITELIST-HANDOFF.md) 6 條問題。
@@ -22,6 +23,68 @@
 
 ---
 
+## 0.1 2026-11-26 實查：邊個 repo **真係**已經接咗閘（`gh` 逐個核，唔係靠估）
+
+**查法（可以照做，兩分鐘）**：
+
+```bash
+gh api -X GET search/code -f q='initStoreGate user:playerkousas-rgb' -f per_page=100   # ① 全帳戶搜呼叫
+gh api repos/playerkousas-rgb/<repo>/git/trees/main?recursive=1                        # ② 搵入口檔
+gh api repos/playerkousas-rgb/<repo>/contents/<入口檔>                                  # ③ 讀 mode／portalIds
+```
+
+**⚠️ 掃描陷阱（今次真係撞到，所以舊清單漏咗 8 個）**：
+
+1. **入口檔唔一定係根 `index.html`**：`Aircraft-Encyclopedia`／4 本 BOOK 喺 `web/`；`router`／`troop-attendance` 喺 `public/`；`HKMAP` 喺 `js/entry_v1.1.0.js`；`map3d` 喺 `public/store_gate_map3d_init.js`；`minigame` 喺 `store_gate_config_v1.3.0.js`。
+2. **檔案 >1MB code search 索引唔到**：`mirror` 嘅 `index.html` 2.7MB，`contents` API 亦回唔到內容，要用 `git/blobs` 讀 → **唔查就以為佢冇閘**。
+3. **「有 `store_gate_v1.0.js` 檔」≠「有閘」**：要見到 `<script>` 載入 **＋** `initStoreGate({…})` 呼叫先算。
+4. 只查 `main` 分支同 repo 源碼；**未喺 live URL 驗**（今次網絡只通 GitHub），亦未計 production env（`birddex3`／2 本 BOOK 用 `IS_PRODUCTION`／`localDev` 分支決定 `mode`，本機 build 會變 `open`，屬正常）。
+
+### A. 已接閘 21 個（✅ 有呼叫、mode = `entry-gate`、`portalIds: ['appstore']`；有寫 `silentPortalIds: ['library']` 嘅另標）
+
+| 組 | Repo | 入口檔（實查） | 備註 |
+|:--:|---|---|---|
+| A | `Aircraft-Encyclopedia` | `web/index.html` | 示範倉；SG18 讚好掣參考實作 |
+| A | `AYP` | `index.html` | |
+| A | `drawtheroute` | `index.html` | |
+| A | `hkcamping` | `index.html` | |
+| A | `HKMAP` | `js/entry_v1.1.0.js` | 唔喺根 `index.html` |
+| A | `map3d` | `public/store_gate_map3d_init.js` | 獨立 init 檔 |
+| A | `minigame` | `store_gate_config_v1.3.0.js` | 經 `STORE_GATE_CONFIG.mode` |
+| A | `mirror` | `index.html`（2.7MB） | 大檔，要 `git/blobs` 先讀到 |
+| A | `skw-radar-hunt2` | `index.html` | |
+| A | `skw-tracking-signs` | `index.html` | |
+| A | `upgrade` | `index.html` | |
+| B | `scoutworld` | `index.html` | 有 SW，`allowStandalone: true` |
+| B | `Zentangle-Pattern-Generator` | `index.html` | |
+| C | `AvianDex` | `index.html` | 有 `/api`，前端閘唔等於後端閘 |
+| C | `birddex3` | `index.html` | `IS_PRODUCTION ? 'entry-gate' : 'open'` |
+| C | `CUBSBOOK` | `web/index.html` | |
+| C | `HM20C` | `index.html` | |
+| C | `ROVERBOOK` | `web/index.html` | `localDev ? 'open' : 'entry-gate'` |
+| C | `SCOUT3D` | `index.html` | |
+| C | `SCOUTBOOK` | `web/index.html` | 同上 |
+| C | `VSBOOK` | `web/index.html` | |
+
+### B. 未接閘 43 個（有網址、可以接、但實查**冇** `initStoreGate` 呼叫）
+
+| 組 | Repo（逐個都要做） | 小計 |
+|:--:|---|:--:|
+| **A**（風險最低） | `BP`、`card`、`course`、`CUBSGAME`、`cubsmeeting`、`dbs`、`doll`、`forward`、`GAME`、`ghmeeting`、`Icon-Maker`、`knotmaster`、`MCScript`、`photo-edit`、`Photo-Prep`、`pioneer`、`router`、`scoutdesign`、`scoutmeeting`、`skw-score`、`troop-router`、`Veritas`、`voice_slide_web`、`vsmeeting` | **24** |
+| **B**（有本機儲存） | `CERT`、`decode`、`morse-beacon-app`、`Orienteering` | **4** |
+| **C**（有 `/api`／紀錄冊） | `cardmaster`、`code`、`cubsbadge`、`dbs3.0`、`DGA`、`event`、`roverbadge`、`scout-admin`、`scoutapp`、`scoutbadge`、`troop-attendance`、`troop-camera`、`troop-portal`、`vs_portal`、`vsbadge` | **15** |
+
+> `skw-birdex2` 仍在 repo 清單但**冇 `homepageUrl`（未部署）**，所以唔計入 68；部署之後再按同一個流程查。
+
+### C. 永遠唔加閘 4 個（入口本體，SG8）
+
+`website`（APP STORE）、`scout-circulars`（圖書館）、`member-portal`（成員系統）、`scout-district-portal`（區管理系統）。GEMINI 係 private repo／自己部署，亦屬入口，**唔會幫佢加閘**。
+
+> **對數**：91 個 public repo − 23 個冇網址 = 68 → 21 已接 ＋ 43 未接 ＋ 4 入口 = 68 ✅
+> **下一步**：未接嘅 43 個照 §6 三行改；但如果你打算行「登記制」（[docs/61](61-registration-gate-and-single-session.md)），**先做中心 P0，再一次過改**，唔好改完白名單又改登記閘（每個 app 要開兩次工）。
+
+---
+
 ## 1. A 組：第一批可以即做（無 `/api`；本機儲存只限介面偏好／小遊戲分數）— 35 個
 
 條件：`api=0`。用 `mode: 'entry-gate'` ＋ `portalIds: ['appstore']` ＋ **`silentPortalIds: ['library']`**（SG19，攔截卡只出一粒掣）即可，**風險最低**。
@@ -29,6 +92,8 @@
 > **2026-11-21 定案**：SG18「讚好／收藏」掣係**所有新 App 必做**（唔分 A／B／C 組），唔單止 A 組照抄航空圖鑑嘅做法——見 [60](60-future-apps-support-button.md)。
 
 > **2026-11-17 修正**：本節舊標題寫「無明顯本機儲存」，但**表內有 7 行 `本機儲存痕跡=1`**（`drawtheroute`／`hkcamping`／`knotmaster`／`scoutdesign`／`skw-radar-hunt2`／`skw-score`／`minigame`）—— 標題同表格前後唔一致。已改為「本機儲存只限介面偏好／小遊戲分數」：呢 7 隻用 `entry-gate` ＋ `allowStandalone: true` 一樣安全（唔用 `iframe` 就唔會令儲存分家），但**要按 WHITELIST-HANDOFF Q1 停機規則逐隻問**（若涉及用家自建重要紀錄而冇備份 → 停手）。
+
+> **2026-11-26 更新（以 §0.1 為準）**：下表「狀態」欄係 2026-11-15 掃描時嘅快照；**現時真實狀態睇 §0.1-A**——A 組已完成 11 個（`Aircraft-Encyclopedia`／`AYP`／`drawtheroute`／`hkcamping`／`HKMAP`／`map3d`／`minigame`／`mirror`／`skw-radar-hunt2`／`skw-tracking-signs`／`upgrade`），**剩 24 個未做**。下面「⬜ 待做」唔再逐行改，免得兩份清單各講一套。
 
 | Repo | 網址 | `/api` | manifest | SW | 本機儲存痕跡 | 狀態 |
 |---|:--:|:--:|:--:|:--:|:--:|:--:|
@@ -69,7 +134,7 @@
 | `vsmeeting` | https://vsmeeting.vercel.app | 0 | 1 | 1 | 0 | ⬜ 待做 |
 
 > **直接可用嘅指令**：[`templates/repo-starter/A-GROUP-INSTRUCTION.md`](../templates/repo-starter/A-GROUP-INSTRUCTION.md)（複製即貼去該 App 對話，只需改 `<APPKEY>`、`<SLUG>`、`<REPO名>`）。
-> **✅ 已完成示範倉（2026-11-17）：`Aircraft-Encyclopedia`** —— `v0.36.0` 接入白名單（`mode: 'entry-gate'`、`portalIds: ['appstore']`、`allowStandalone: true`，HEAD `050951f5`）；`v0.37.0` 加 SG18 一鍵返回 APP STORE 讚好／收藏（頂欄 `#storeSupportTop` ＋ 頁尾 `#storeSupportBar`，零 Supabase 請求、零寫死網址、中英同步、列印自動隱藏）。**其餘 34 隻照抄佢嘅結構即可。2026-11-21 起，呢個示範倉係全 App 必做 SG18 嘅參考 implementation（見 [60](60-future-apps-support-button.md)）。**
+> **✅ 已完成示範倉（2026-11-17）：`Aircraft-Encyclopedia`** —— `v0.36.0` 接入白名單（`mode: 'entry-gate'`、`portalIds: ['appstore']`、`allowStandalone: true`，HEAD `050951f5`）；`v0.37.0` 加 SG18 一鍵返回 APP STORE 讚好／收藏（頂欄 `#storeSupportTop` ＋ 頁尾 `#storeSupportBar`，零 Supabase 請求、零寫死網址、中英同步、列印自動隱藏）。**其餘未做嘅照抄佢嘅結構即可（2026-11-26 實查：A 組已完成 11 個、剩 24 個，見 §0.1-A／B）。2026-11-21 起，呢個示範倉係全 App 必做 SG18 嘅參考 implementation（見 [60](60-future-apps-support-button.md)）。**
 > 建議第一批先揀 3–5 個試（例如 `Icon-Maker`、`Photo-Prep`、`router`、`voice_slide_web`），真機驗一次再批次做。**有 `SW=1` 嘅**（`AYP`／`CUBSGAME`／`GAME`／`cubsmeeting`／`ghmeeting`／`scoutmeeting`／`vsmeeting`／`HKMAP`）要先確認個 Service Worker 係做離線快取定 Push 訂閱。
 
 ### 1.1 A 組 slug 對照（**落閘前必須核實**，SG18 靠佢）
@@ -144,6 +209,8 @@ function appSlug(app) {
 
 ## 2. B 組：可以加，但要 `allowStandalone` 先做（本機儲存明顯）— 6 個
 
+> **2026-11-26 實查**：`scoutworld`、`Zentangle-Pattern-Generator` **已接閘**；`CERT`、`decode`、`morse-beacon-app`、`Orienteering` 未接（見 §0.1）。
+
 `entry-gate` **一樣零影響**（儲存喺子站自己 origin），但一定要：① `allowStandalone: true`；② 確認有備份／匯出功能；③ 唔可以用 `iframe-only`。
 
 | Repo | 網址 | `/api` | manifest | SW | 本機儲存痕跡 |
@@ -156,6 +223,8 @@ function appSlug(app) {
 | `Zentangle-Pattern-Generator` | https://zentangle-pattern-generator.vercel.app | 0 | 1 | 0 | 8 | ⬜ 待做 |
 
 ## 3. C 組：有 `/api` 或屬 4 本紀錄冊 — 最後做，要逐個判斷 — 24 個
+
+> **2026-11-26 實查**：`AvianDex`、`birddex3`、`CUBSBOOK`、`HM20C`、`ROVERBOOK`、`SCOUT3D`、`SCOUTBOOK`、`VSBOOK` **已接閘**（4 本 BOOK 全部）；其餘 15 個未接（見 §0.1）。⚠️ 有 `/api` 嘅 app 前端閘只擋頁面，`/api` 仍然直開——要硬擋見 [docs/61](61-registration-gate-and-single-session.md) L3。
 
 有後端就要考慮「`entry-gate` 只擋前端，`/api` 仍然開得」。按你嘅定案（SG12）**唔需要**起簽票基建，但要：
 - 若 `/api` 只係 proxy／統計 → 可以直接 `entry-gate`；

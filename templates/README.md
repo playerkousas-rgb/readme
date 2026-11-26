@@ -33,6 +33,7 @@
 | GAS manifest | `gas/appsscript.json` | Apps Script `appsscript.json`（顯示隱藏檔案） |
 | RLS 範本 | `supabase/rls.sql` | `supabase/migrations/<ts>_rls.sql` |
 | 推送訂閱表 | `supabase/push_subscriptions.sql` | `supabase/migrations/<ts>_push.sql` |
+| **🔐 登記閘／會員制／單一活躍 session／刪人（MG，docs/61）** | [`supabase/member_gate_v1.0.sql`](supabase/member_gate_v1.0.sql) | 貼落 Supabase SQL Editor：`profiles`／`sessions`（partial unique index＝同帳號只 1 個活躍）／`gate_settings`／`gate_audit` ＋ `open_session`／`touch_session`／`owner_kick`／`owner_block`／`owner_approve`／`owner_delete`（真刪 `auth.users`）＋ RLS。**未實測**，首次喺測試專案跑（[docs/61](../docs/61-registration-gate-and-single-session.md)） |
 | **🆕 新 repo 起手包（12 樣 + 第 13 項 + 第 14 項）** | [`repo-starter/START.md`](repo-starter/START.md) | 成個 `repo-starter/` 抄去新 repo，改 `{{...}}`；見 [docs/27](../docs/27-repo-starter.md) |
 | **🎨 設計檢查（可選 13a）** | [`repo-starter/docs/design-review.md`](repo-starter/docs/design-review.md) | 有 UI 先加：反 slop、頁面 vs app 屏幕、390/768/1440 望圖自檢（借 taste-skill，零依賴） |
 | **📇 SKILL 唯一目錄（CATALOG）** | [`repo-starter/skills/CATALOG.md`](repo-starter/skills/CATALOG.md) | **以後加 SKILL 必入**：5 份 listed + 加新四步；`external/grilling`／`external/motion-prompt` 係 MIT 原文；漏入目錄 `check_skills` 會 FAIL |
