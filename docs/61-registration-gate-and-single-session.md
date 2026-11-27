@@ -97,6 +97,32 @@ create unique index sessions_one_active_per_user
 
 **唔好收嘅資料**：電話、身份證、地址、學校班別。`email` ＋ 自選顯示名已經足夠行「誰在用」；收多咗就係 PDPO 負擔（見 §9）。
 
+### 4.1 登記方式點揀：三條路嘅真實摩擦（**2026-11-26 補**）
+
+| 方式 | 用戶要做幾步 | 適合邊個 | 真實唔好處（會令你收投訴） |
+|---|---|:--:|---|
+| **Email 6 位 OTP**（Supabase 內建，最易起） | 打 email → 去信箱搵信 → 打 6 位 → 回 App | 有自己 email 嘅領袖／家長 | 學校／公司信箱**收唔到外部信**；OTP 落 spam；由 WhatsApp 內建瀏覽器跳去郵件再返嚟成日失 context；**兩兄弟姊妹共用一個 email → 只開到一個戶口** |
+| Magic Link（一撳即登入） | 打 email → 去信箱撳 link | 電腦多嘅成人 | 喺 WhatsApp／IG／FB **WebView 開 link 會失效**；公司／學校安全掃描器會「先開咗」條 link → 你撳時已經用過（一次性）→ 死 |
+| **邀請碼 ＋ 自訂用戶名 ＋ 4 位 PIN**（建議做童軍主路） | 領袖派 6 位碼 → 打碼＋打名＋設 PIN | **幼童軍／冇 email 嘅成員**、一班人一次過開戶 | 你要派碼、派漏／外流要換；忘記 PIN 要你重設；名冊要跟旅團 |
+| Google 一撳 | 揀帳號 | 有 Google 嘅人 | 13 歲以下多數冇；共用裝置要揀帳號、易揀錯人；同 Google 綁死 |
+
+**建議（兩條路並存，寫入同一個 `profiles`）**：
+- **成人／領袖／家長 → Email OTP**（唔用 magic link，因為你嘅用戶多數由 WhatsApp 入）。
+- **幼童軍／冇 email → 邀請碼**：由領袖喺自己旅一次過派（每碼限 1 人、90 日有效、用過即失效）。呢條路同時幫你「只放自己人」，因為碼只會經領袖流出。
+- 如果你唔想管 PIN／派碼，就先淨用 Email OTP，接受「共用 email 只能開一個戶口」——**但要寫明**，唔好等家長投訴先發現。
+
+### 4.2 用戶實際體驗：五個場景，邊個位最痛
+
+| # | 場景 | 用戶經歷 | 痛度 | 減痛做法 |
+|:--:|---|---|:--:|---|
+| 1 | **第一次**（由 QR／分享連結／APP STORE 入） | 見「此程式需先登記」→ 打 email → 打 6 位 → 自動返去原本嗰頁。**約 5 次點擊、60–90 秒**（估算，未實測） | 🟡 中 | 一屏搞掂（名＋email 同一頁）；**保留原本路徑**（`?next=` 帶埋 path＋query，唔好掉返首頁）；中文先、英文後 |
+| 2 | **第二次開另一個 App** | 唔使再做任何嘢（中心已有 session） | 🟢 無 | 呢個就係「登記完可以用晒所有 APP」 |
+| 3 | **換電話／清咗瀏覽器** | 要再收一次 OTP | 🟡 中 | 登記頁記住 email（localStorage）；session 設 30 日，唔好每次開都問 |
+| 4 | **同時兩部機（電話＋平板）** | 第二部登入 → **第一部 60 秒內被踢**，會以為「壞咗」 | 🔴 **最痛** | 開 2 部裝置（`max_active_sessions=2`）；被踢畫面要寫清楚「你喺另一部裝置登入，如非本人請…」，唔好靜靜彈走 |
+| 5 | **已裝主畫面（PWA）** | 開 icon 仍然要驗登記 | 🟡 中（但**必須**） | 見 §6 MG7：**唔可以**為咗順暢而放行 standalone，否則變後門 |
+
+> **最易被忽略嘅兩點**：① **一個 email 兩個小朋友**（共用 email 只能一個戶口）；② **WhatsApp 內建瀏覽器**（OTP／link 流程最易斷）。呢兩點唔解決，你日後收嘅投訴會集中喺度。
+
 ---
 
 ## 5. 「同一帳號只 1 人」到底有幾硬？三個嚴格度
@@ -134,6 +160,10 @@ payload = { sub: <user uuid>, sid: <session uuid>, aud: <app slug>, iat, exp: ia
 驗票三步（**次序唔可以調**）：① 簽名對（`timingSafeEqual`）→ ② `exp` 未過（≤60 秒，容許 ±5 秒時差）→ ③ `session_is_active(sid)` 仍然 true。任何一步 fail = 唔放行。
 
 > 純靜態 app **驗唔到簽名**（secret 唔可以落前端）。所以軟閘只「認有冇票」，唔「認票真假」——呢個就係 §5 講嘅 L1 上限。**唔好用「以為簽咗名就安全」嚟說服自己。**
+
+> **MG7（2026-11-26 修正，重要）：登記模式下 `allowStandalone: true` 係後門，唔准用。**
+> [docs/50](50-app-store-whitelist-and-shutdown.md) 嗰個 `allowStandalone` 係為**白名單**（「邊度嚟」）而設——已裝主畫面就當係自己人，合理。但**登記模式**（「有冇戶口」）唔同：任何人只要喺你開閘**之前**撳過「加入主畫面」，之後開 icon 就會因為 standalone 而被放行，**永遠唔使登記**。
+> 所以：`require_registration` 嘅 App 一律 `allowStandalone: false`（或者只准「已登記用戶」先放行），並且喺真機用「先裝 PWA、後開閘」嘅次序實測一次。**呢個係 docs/50 舊行為同 docs/61 新要求嘅唯一直接衝突，以本文為準。**
 
 ---
 
@@ -219,7 +249,7 @@ update public.sessions s set revoked_at = now(), revoked_reason = 'owner'
 - [ ] 你喺 `/admin` 撳「刪除」→ 該 email 即刻開唔返；SQL 查 `profiles` 冇殘留
 - [ ] `curl` 直打有後端 app 嘅 `/api/*` → 401（L3 才有）
 - [ ] 舊書籤（`?app=<slug>` 深層連結）→ 落到登記頁，唔會白屏
-- [ ] 已加主畫面（standalone PWA）→ 仍然正常（`allowStandalone: true` 行為同 [docs/50](50-app-store-whitelist-and-shutdown.md) 一致）
+- [ ] 已加主畫面（standalone PWA）→ **仍然要驗登記**；`allowStandalone` 已設 `false`（MG7），並且試過「先裝主畫面、後開閘」都攔得到
 - [ ] 私隱聲明有連結、`robots.txt`／`X-Robots-Tag: noindex` 已生效
 - [ ] 你自己（owner）手機＋電腦同時用得（如果有需要）
 - [ ] 全站急停（`access_mode='closed'`）→ 出中文告示卡，唔係白屏或英文 500

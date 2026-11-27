@@ -136,6 +136,8 @@ L2／L3 只答「呢個 App 而家係開、閘、定關」。要「所有人登�
 | **私隱** | 主站會見到每個 App 幾時被開 | 只記 `app`＋時間，唔記 IP／UA；同 [docs/61](61-registration-gate-and-single-session.md) §9 一致 |
 | **SEO** | 關站卡唔等於唔被索引 | 全部 App 加 `X-Robots-Tag: noindex`（見 61 §9） |
 
+> **CP7：登記模式下唔可以用 `allowStandalone` 放行已裝主畫面**（[docs/61](61-registration-gate-and-single-session.md) §6 MG7）——嗰個掣係白名單用，用喺登記就變後門：開閘前裝過 PWA 嘅人永遠免登記。
+
 > **CP5：唔准將「中央設定」當安全邊界。** 佢係**政策方便**，唔係防護。要擋人，靠 [docs/61](61-registration-gate-and-single-session.md) 後端驗票；要擋搜尋引擎，靠 header。識改 `sessionStorage` 嘅人一樣繞得過軟閘（同 [docs/50](50-app-store-whitelist-and-shutdown.md) §5）。
 
 ---
