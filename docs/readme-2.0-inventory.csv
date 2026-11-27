@@ -1,92 +1,92 @@
-repo,homepage,2.0 分類,用途（推測）,信心 H/M/L,狀態
-AGENT,,L5 基礎設施,Agent 指令／共用設定,M,未部署／非網站
-Aircraft-Encyclopedia,https://aircraft-encyclopedia-web.vercel.app/,L3 工具 App,航空圖鑑,H,有網址
-answer,,L5 基礎設施,待確認（answer，Python）,L,未部署／非網站
-api,,L5 基礎設施,API／代理,H,未部署／非網站
-AvianDex,https://avian-dex.vercel.app,L3 工具 App,鳥類圖鑑,H,有網址
-AYP,https://ayp-eight.vercel.app,L3 工具 App,青年獎勵計劃（AYP）,H,有網址
-BadgeHouse,,L1 中央生態,專章秘書系統？（推測）,L,未部署／非網站
-birddex3,https://birddex3.vercel.app,L3 工具 App,鳥類圖鑑 v3,H,有網址
-bookkeeping,,L5 基礎設施,記帳（內部營運？）,L,未部署／非網站
-BP,https://bp-nine-beryl.vercel.app,L3 工具 App,待確認（BP）,L,有網址
-card,https://card-git-arena-01a0f5ad-card-playerkousas-rgbs-projects.vercel.app/,L3 工具 App,圖卡（分支預覽網址，要換 production）,M,有網址
-cardmaster,https://cardmaster-pi.vercel.app,L3 工具 App,圖卡製作,M,有網址
-ceremony,,L3 工具 App,典禮流程,M,未部署／非網站
-CERT,https://cert-tan.vercel.app,L1 中央生態,證書／證明產生器（可能屬訓練班或專章）,L,有網址
-code,https://code-zeta-beryl.vercel.app,L3 工具 App,密碼／編碼工具,M,有網址
-course,https://course-six-coral.vercel.app,L1 中央生態,訓練班系統（推測）,M,有網址
-cubs_portal,,L2 旅團生態,支部系統：幼童軍（未部署）,M,未部署／非網站
-cubsbadge,https://cubsbadge.vercel.app,L2 旅團生態,徽章：幼童軍,H,有網址
-CUBSBOOK,https://cubsbook.vercel.app,L2 旅團生態,紀錄冊：幼童軍,H,有網址
-CUBSGAME,https://cubsgame.vercel.app,L3 工具 App,幼童軍遊戲,H,有網址
-cubsmeeting,https://cubsmeeting.vercel.app,L2 旅團生態,幼童軍集會,H,有網址
-dbs,https://dbs-teal-iota.vercel.app,L1 中央生態,區徽章系統（舊版）,M,有網址
-dbs3.0,https://districtbadgesystem30.vercel.app,L1 中央生態,區徽章系統 3.0（districtbadgesystem30）,H,有網址
-decode,https://decode-sandy-eight.vercel.app,L3 工具 App,解碼,H,有網址
-DGA,https://dga-five.vercel.app,L3 工具 App,待確認（DGA）,L,有網址
-doll,https://doll-ivory.vercel.app,L3 工具 App,紙公仔／換裝,M,有網址
-drawtheroute,https://drawtheroute-yd8p.vercel.app,L3 工具 App,畫路線,H,有網址
-event,https://event-zeta-sage.vercel.app,L3 工具 App,活動報名／行事曆,M,有網址
-forward,https://forward-black.vercel.app,L3 工具 App,待確認（forward）,L,有網址
-GAME,https://game-blond-nu.vercel.app,L3 工具 App,遊戲,H,有網址
-gh_portal,,L2 旅團生態,支部系統：小童軍（未部署）,M,未部署／非網站
-ghmeeting,https://ghmeeting.vercel.app/,L2 旅團生態,小童軍集會,H,有網址
-gitlink,,L5 基礎設施,Git 連結／工具,M,未部署／非網站
-hkcamping,https://hkcamping.vercel.app,L3 工具 App,香港營地,H,有網址
-HKMAP,https://hkmap.vercel.app,L3 工具 App,香港地圖,H,有網址
-HM20C,https://hm20c.vercel.app,L3 工具 App,HM20C 地圖,H,有網址
-Icon-Maker,https://icon-maker-tau.vercel.app,L3 工具 App,圖標產生器,H,有網址
-knotmaster,https://knotmaster.vercel.app,L3 工具 App,繩結,H,有網址
-makemovie,,L3 工具 App,影片製作,M,未部署／非網站
-map3d,https://map3d-chi.vercel.app/,L3 工具 App,3D 地圖,H,有網址
-Materials,,L4 內容與素材,素材庫,M,未部署／非網站
-MCScript,https://mc-script.vercel.app,L3 工具 App,摩斯／電碼,H,有網址
-MD,,L4 內容與素材,Markdown／文件,M,未部署／非網站
-member-portal,https://member-portal-sigma-swart.vercel.app,L1 中央生態,服務平台（成員系統）,H,有網址
-minigame,https://minigame-one-red.vercel.app,L3 工具 App,小遊戲,H,有網址
-mirror,https://mirror-ten-sand.vercel.app,L3 工具 App,對稱／鏡像繪圖,M,有網址
-morse-beacon-app,https://morse-beacon-app.vercel.app,L3 工具 App,摩斯訊號,H,有網址
-oneclick-photo,,L3 工具 App,一鍵相片,M,未部署／非網站
-onlinegame,,L3 工具 App,線上遊戲,M,未部署／非網站
-Orienteering,https://orienteering-tan.vercel.app,L3 工具 App,定向,H,有網址
-photo-edit,https://photo-edit-vert.vercel.app,L3 工具 App,相片編輯,H,有網址
-Photo-Prep,https://photo-prep-eight.vercel.app,L3 工具 App,相片預備（壓縮／EXIF）,H,有網址
-pioneer,https://pioneer-ecru.vercel.app,L3 工具 App,先鋒工程,H,有網址
-PPTMAKER,,L4 內容與素材,PPT 產生,M,未部署／非網站
-readme,,L7 治理,真理倉（規則／範本／審計）；唔係 App,H,未部署／非網站
-router,https://router-gold.vercel.app,L5 基礎設施,轉駁器（短連結／跳轉）,H,有網址
-roverbadge,https://roverbadge.vercel.app,L2 旅團生態,徽章：樂行童軍,H,有網址
-ROVERBOOK,https://roverbook.vercel.app,L2 旅團生態,紀錄冊：樂行童軍,H,有網址
-rs_portal,,L2 旅團生態,支部系統：樂行童軍（未部署）,M,未部署／非網站
-rsmeeting,,L2 旅團生態,樂行童軍集會（未部署）,M,未部署／非網站
-sc_portal,,L2 旅團生態,支部系統：童軍（未部署）,M,未部署／非網站
-scout-admin,https://scout-admin-blue.vercel.app,L1 中央生態,管理系統（推測）,L,有網址
-scout-circulars,https://scout-circulars.vercel.app,L0 平台,通告圖書館＋Push 通知,H,有網址
-scout-district-portal,https://scout-district-portal.vercel.app,L1 中央生態,區系統,H,有網址
-scout-survival-tin,,L3 工具 App,求生 tin,M,未部署／非網站
-SCOUT3D,https://scout3d-gamma.vercel.app,L3 工具 App,3D 童軍工具,M,有網址
-scoutapp,https://scoutapp-vico.vercel.app,L1 中央生態,報名／名冊平台（Flask，有登入）,M,有網址
-scoutbadge,https://scoutbadge.vercel.app,L2 旅團生態,徽章：童軍,H,有網址
-SCOUTBOOK,https://scoutbook-five.vercel.app,L2 旅團生態,紀錄冊：童軍,H,有網址
-scoutdesign,https://scoutdesign.vercel.app,L3 工具 App,設計工具,M,有網址
-scoutmeeting,https://scoutmeeting.vercel.app,L2 旅團生態,童軍集會,H,有網址
-scoutworld,https://scoutworld.vercel.app,L3 工具 App,童軍世界（含本機儲存）,M,有網址
-skw-radar-hunt2,https://skw-radar-hunt2.vercel.app,L3 工具 App,雷達捉迷藏（SKW 活動）,H,有網址
-skw-score,https://skw-score.vercel.app,L3 工具 App,計分（SKW 活動）,H,有網址
-skw-tracking-signs,https://skw-tracking-signs-8r55.vercel.app,L3 工具 App,追蹤符號,H,有網址
-troop-attendance,https://troop-attendance.vercel.app,L2 旅團生態,支部／旅團點名,M,有網址
-troop-camera,https://troop-camera.vercel.app,L3 工具 App,活動相機／相片牆,M,有網址
-troop-portal,https://troop-portal.vercel.app,L2 旅團生態,旅團系統,M,有網址
-troop-router,https://troop-router.vercel.app,L5 基礎設施,旅團轉駁器,M,有網址
-troop_portal,,L2 旅團生態,旅系統（未部署）,M,未部署／非網站
-upgrade,https://upgrade-ashen.vercel.app,L3 工具 App,待確認（upgrade）,L,有網址
-Veritas,https://veritas-delta-seven.vercel.app,L3 工具 App,待確認（Veritas）,L,有網址
-Veritas-Project,,L3 工具 App,待確認（Veritas 相關）,L,未部署／非網站
-veritas2,,L3 工具 App,待確認（Veritas 相關）,L,未部署／非網站
-voice_slide_web,https://voice-slide-web.vercel.app,L3 工具 App,語音簡報,H,有網址
-vs_portal,https://vs-portal-pi.vercel.app,L2 旅團生態,支部系統：深資童軍,H,有網址
-vsbadge,https://vsbadge.vercel.app,L2 旅團生態,徽章：深資童軍,H,有網址
-VSBOOK,https://vsbook-sand.vercel.app,L2 旅團生態,紀錄冊：深資童軍,H,有網址
-vsmeeting,https://vsmeeting.vercel.app,L2 旅團生態,深資童軍集會,H,有網址
-website,https://scoutappstore.vercel.app/,L0 平台,APP STORE 殼（唯一入口／登入／目錄／搜尋／最愛）,H,有網址
-Zentangle-Pattern-Generator,https://zentangle-pattern-generator.vercel.app,L3 工具 App,禪繞圖案,H,有網址
+repo,homepage,layer,app_id,2.0 名稱（建議）,2.0 動作,合併去向,信心,狀態
+AGENT,,L5,INFRA-03,Agent 指令／共用設定,重建,,M,未部署／非網站
+Aircraft-Encyclopedia,https://aircraft-encyclopedia-web.vercel.app/,L3,TOOL-001,航空圖鑑,重建,,H,有網址
+answer,,L5,INFRA-04,待確認（answer，Python）,待確認,,L,未部署／非網站
+api,,L5,INFRA-01,API 代理,重建,,H,未部署／非網站
+AvianDex,https://avian-dex.vercel.app,L3,TOOL-020,鳥類圖鑑,合併,TOOL-020,H,有網址
+AYP,https://ayp-eight.vercel.app,L3,TOOL-011,青年獎勵計劃（AYP）,重建,,H,有網址
+BadgeHouse,,L1,CEN-05,專章秘書系統,重建,,L,未部署／非網站
+birddex3,https://birddex3.vercel.app,L3,TOOL-020,鳥類圖鑑,合併,TOOL-020,H,有網址
+bookkeeping,,L5,INFRA-06,記帳（內部營運？）,待確認,,L,未部署／非網站
+BP,https://bp-nine-beryl.vercel.app,L3,TOOL-012,待確認（BP）,待確認,,L,有網址
+card,https://card-git-arena-01a0f5ad-card-playerkousas-rgbs-projects.vercel.app/,L3,TOOL-030,圖卡,待確認,,M,有網址
+cardmaster,https://cardmaster-pi.vercel.app,L3,TOOL-031,圖卡製作,待確認,,M,有網址
+ceremony,,L3,TOOL-065,典禮流程,待確認,,M,未部署／非網站
+CERT,https://cert-tan.vercel.app,L1,CEN-04a,證書／證明產生（訓練班子模組）,合併,CEN-04,L,有網址
+code,https://code-zeta-beryl.vercel.app,L3,TOOL-040,密碼／編碼,待確認,,M,有網址
+course,https://course-six-coral.vercel.app,L1,CEN-04,訓練班系統,重建,,M,有網址
+cubs_portal,,L2,TRP-02,支部 portal：幼童軍,合併,TRP-02,H,未部署／非網站
+cubsbadge,https://cubsbadge.vercel.app,L2,TRP-05,徽章（幼童軍 config）,合併,TRP-05,H,有網址
+CUBSBOOK,https://cubsbook.vercel.app,L2,TRP-04,紀錄冊 BOOK（幼童軍 config）,合併,TRP-04,H,有網址
+CUBSGAME,https://cubsgame.vercel.app,L3,TOOL-050,幼童軍遊戲,重建,,H,有網址
+cubsmeeting,https://cubsmeeting.vercel.app,L3,TOOL-060,集會,合併,TOOL-060,H,有網址
+dbs,https://dbs-teal-iota.vercel.app,L1,—,區徽章系統（舊版）,退役,,M,有網址
+dbs3.0,https://districtbadgesystem30.vercel.app,L1,CEN-01a,區徽章系統 3.0（區系統子模組）,合併,CEN-01,H,有網址
+decode,https://decode-sandy-eight.vercel.app,L3,TOOL-041,解碼,重建,,H,有網址
+DGA,https://dga-five.vercel.app,L3,TOOL-016,待確認（DGA）,待確認,,L,有網址
+doll,https://doll-ivory.vercel.app,L3,TOOL-032,紙公仔／換裝,待確認,,M,有網址
+drawtheroute,https://drawtheroute-yd8p.vercel.app,L3,TOOL-021,畫路線,重建,,H,有網址
+event,https://event-zeta-sage.vercel.app,L3,TOOL-061,活動／報名,待確認,,M,有網址
+forward,https://forward-black.vercel.app,L3,TOOL-017,待確認（forward）,待確認,,L,有網址
+GAME,https://game-blond-nu.vercel.app,L3,TOOL-051,遊戲,重建,,H,有網址
+gh_portal,,L2,TRP-02,支部 portal：小童軍,合併,TRP-02,H,未部署／非網站
+ghmeeting,https://ghmeeting.vercel.app/,L3,TOOL-060,集會,合併,TOOL-060,H,有網址
+gitlink,,L5,INFRA-05,Git 連結工具,待確認,,M,未部署／非網站
+hkcamping,https://hkcamping.vercel.app,L3,TOOL-022,香港營地,重建,,H,有網址
+HKMAP,https://hkmap.vercel.app,L3,TOOL-023,香港地圖,重建,,H,有網址
+HM20C,https://hm20c.vercel.app,L3,TOOL-024,HM20C 地圖,重建,,H,有網址
+Icon-Maker,https://icon-maker-tau.vercel.app,L3,TOOL-070,圖標產生器,重建,,H,有網址
+knotmaster,https://knotmaster.vercel.app,L3,TOOL-002,繩結,重建,,H,有網址
+makemovie,,L3,TOOL-076,影片製作,待確認,,M,未部署／非網站
+map3d,https://map3d-chi.vercel.app/,L3,TOOL-025,3D 地圖,重建,,H,有網址
+Materials,,L4,CONTENT-01,素材庫,重建,,M,未部署／非網站
+MCScript,https://mc-script.vercel.app,L3,TOOL-042,摩斯／電碼,重建,,H,有網址
+MD,,L4,CONTENT-03,文件／Markdown,待確認,,L,未部署／非網站
+member-portal,https://member-portal-sigma-swart.vercel.app,L1,CEN-02,服務平台（成員系統）,重建,,H,有網址
+minigame,https://minigame-one-red.vercel.app,L3,TOOL-052,小遊戲,重建,,H,有網址
+mirror,https://mirror-ten-sand.vercel.app,L3,TOOL-033,對稱／鏡像繪圖,待確認,,M,有網址
+morse-beacon-app,https://morse-beacon-app.vercel.app,L3,TOOL-043,摩斯訊號,重建,,H,有網址
+oneclick-photo,,L3,TOOL-075,一鍵相片,重建,,M,未部署／非網站
+onlinegame,,L3,TOOL-053,線上遊戲,待確認,,M,未部署／非網站
+Orienteering,https://orienteering-tan.vercel.app,L3,TOOL-026,定向,重建,,H,有網址
+photo-edit,https://photo-edit-vert.vercel.app,L3,TOOL-071,相片編輯,重建,,H,有網址
+Photo-Prep,https://photo-prep-eight.vercel.app,L3,TOOL-072,相片預備,重建,,H,有網址
+pioneer,https://pioneer-ecru.vercel.app,L3,TOOL-003,先鋒工程,重建,,H,有網址
+PPTMAKER,,L4,CONTENT-02,PPT 產生,重建,,M,未部署／非網站
+readme,,L7,GOV-01,真理倉（規則／規格／審計）,重建,,H,未部署／非網站
+router,https://router-gold.vercel.app,L5,INFRA-02,轉駁器（短連結）,重建,,H,有網址
+roverbadge,https://roverbadge.vercel.app,L2,TRP-05,徽章（樂行 config）,合併,TRP-05,H,有網址
+ROVERBOOK,https://roverbook.vercel.app,L2,TRP-04,紀錄冊 BOOK（樂行 config）,合併,TRP-04,H,有網址
+rs_portal,,L2,TRP-02,支部 portal：樂行童軍,合併,TRP-02,H,未部署／非網站
+rsmeeting,,L3,TOOL-060,集會,合併,TOOL-060,H,未部署／非網站
+sc_portal,,L2,TRP-02,支部 portal：童軍,合併,TRP-02,H,未部署／非網站
+scout-admin,https://scout-admin-blue.vercel.app,L1,CEN-03,管理系統,重建,,L,有網址
+scout-circulars,https://scout-circulars.vercel.app,L0,PLAT-04,通告中心（要登入）,重建,,H,有網址
+scout-district-portal,https://scout-district-portal.vercel.app,L1,CEN-01,區系統,重建,,H,有網址
+scout-survival-tin,,L3,TOOL-014,求生 tin,重建,,M,未部署／非網站
+SCOUT3D,https://scout3d-gamma.vercel.app,L3,TOOL-027,3D 童軍工具,重建,,M,有網址
+scoutapp,https://scoutapp-vico.vercel.app,L1,CEN-06,徽章／專章內容平台（Flask，有登入）,待確認,,L,有網址
+scoutbadge,https://scoutbadge.vercel.app,L2,TRP-05,徽章（童軍 config）,合併,TRP-05,H,有網址
+SCOUTBOOK,https://scoutbook-five.vercel.app,L2,TRP-04,紀錄冊 BOOK（童軍 config）,合併,TRP-04,H,有網址
+scoutdesign,https://scoutdesign.vercel.app,L3,TOOL-073,設計工具,重建,,M,有網址
+scoutmeeting,https://scoutmeeting.vercel.app,L3,TOOL-060,集會,合併,TOOL-060,H,有網址
+scoutworld,https://scoutworld.vercel.app,L3,TOOL-028,童軍世界,重建,,M,有網址
+skw-radar-hunt2,https://skw-radar-hunt2.vercel.app,L3,TOOL-062,雷達捉迷藏,重建,,H,有網址
+skw-score,https://skw-score.vercel.app,L3,TOOL-063,計分,重建,,H,有網址
+skw-tracking-signs,https://skw-tracking-signs-8r55.vercel.app,L3,TOOL-013,追蹤符號,重建,,H,有網址
+troop-attendance,https://troop-attendance.vercel.app,L2,TRP-01,點名（旅系統子模組）,合併,TRP-01,M,有網址
+troop-camera,https://troop-camera.vercel.app,L3,TOOL-064,活動相機,重建,,M,有網址
+troop-portal,https://troop-portal.vercel.app,L2,TRP-01,旅系統（現行）,合併,TRP-01,M,有網址
+troop-router,https://troop-router.vercel.app,L5,INFRA-02,轉駁器（旅團用）,合併,INFRA-02,M,有網址
+troop_portal,,L2,TRP-01,旅系統（未部署）,合併,TRP-01,M,未部署／非網站
+upgrade,https://upgrade-ashen.vercel.app,L3,TOOL-018,待確認（upgrade）,待確認,,L,有網址
+Veritas,https://veritas-delta-seven.vercel.app,L3,TOOL-019,待確認（Veritas）,待確認,,L,有網址
+Veritas-Project,,L3,TOOL-019,待確認（Veritas 相關）,待確認,,L,未部署／非網站
+veritas2,,L3,TOOL-019,待確認（Veritas 相關）,待確認,,L,未部署／非網站
+voice_slide_web,https://voice-slide-web.vercel.app,L3,TOOL-074,語音簡報,重建,,H,有網址
+vs_portal,https://vs-portal-pi.vercel.app,L2,TRP-02,支部 portal：深資童軍,合併,TRP-02,H,有網址
+vsbadge,https://vsbadge.vercel.app,L2,TRP-05,徽章（深資 config）,合併,TRP-05,H,有網址
+VSBOOK,https://vsbook-sand.vercel.app,L2,TRP-04,紀錄冊 BOOK（深資 config）,合併,TRP-04,H,有網址
+vsmeeting,https://vsmeeting.vercel.app,L3,TOOL-060,集會,合併,TOOL-060,H,有網址
+website,https://scoutappstore.vercel.app/,L0,PLAT-01,APP STORE 殼,重建,,H,有網址
+Zentangle-Pattern-Generator,https://zentangle-pattern-generator.vercel.app,L3,TOOL-034,禪繞圖案,重建,,H,有網址

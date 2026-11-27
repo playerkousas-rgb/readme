@@ -31,6 +31,7 @@
 | 檔 | 管乜 |
 |---|---|
 | [根 README](../README.md) | 唯一入口、五大鐵律一句版、導覽表 |
+| [**`v2/` README 2.0 規格包**](../v2/README.md) | 2.0 八層、13 條定案、App 規劃書模板、分類目錄、施工順序（1.0 根 README 凍結中） |
 | [AGENTS.md](../AGENTS.md) | Agent 級別／施工邊界／開工順序 |
 | [PLAYBOOK.md](../PLAYBOOK.md) | 核心規範總綱、規則 ID 總表、P1 ＋ D1（設計地圖） |
 | [ARCHITECTURE.md 起手範本](../templates/repo-starter/ARCHITECTURE.md) | D1：新 App 實作前由設計者直接畫；後續 Agent 先讀、架構變更要更新 |
