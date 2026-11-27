@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="copyright" content="© SCOUT SYSTEM">
+<meta name="app-version" content="v0.1">
+<meta name="robots" content="noindex">
+<title>行山行程輸入測試 v0.1 — © SCOUT SYSTEM</title>
+<style>
+  :root{font-family:system-ui,-apple-system,"PingFang HK","Microsoft JhengHei",sans-serif;color:#17231d;background:#f3f7f3}
+  *{box-sizing:border-box}
+  body{max-width:760px;margin:24px auto;padding:0 16px 32px}
+  h1{font-size:1.45rem;margin:.4rem 0}
+  h2{font-size:1.05rem;margin:0 0 .6rem}
+  p{line-height:1.55}
+  .muted{color:#64736a;font-size:.9rem}
+  .card{background:#fff;border:1px solid #dce6dd;border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 3px 12px #17351d0a}
+  .notice{border-left:4px solid #d68b16;background:#fff8e9;padding:10px 12px;border-radius:6px;font-size:.9rem}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  label{display:block;font-size:.9rem;font-weight:650;margin:8px 0 4px}
+  input,select,button{font:inherit}
+  input,select{width:100%;padding:10px;border:1px solid #cbd8cd;border-radius:8px;background:#fff;color:inherit}
+  input:focus,select:focus{outline:3px solid #86c99a66;border-color:#319852}
+  .camp-row{padding:10px 0;border-top:1px solid #e5ece6}
+  .camp-row:first-child{border-top:0}
+  .camp-title{font-weight:700;margin-bottom:4px}
+  button{width:100%;padding:12px;border:0;border-radius:9px;background:#176b36;color:white;font-weight:700;cursor:pointer;margin-top:12px}
+  button:disabled{opacity:.55;cursor:wait}
+  pre{white-space:pre-wrap;word-break:break-word;background:#132019;color:#dbf3df;padding:14px;border-radius:10px;font-size:.82rem;min-height:70px;overflow:auto}
+  #status{min-height:1.4em;font-weight:650}
+  .error{color:#a32323}.ok{color:#176b36}
+  @media(max-width:540px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <p class="muted">CANVAS 表單原型 · v0.1</p>
+  <h1>行山行程資料</h1>
+  <p class="muted">先填好日數、距離和每晚營地，讓 GEMINI 收到清楚、結構化的資料。</p>
+</header>
+
+<div class="notice"><strong>測試範圍：</strong>此版本只測試表單 → GEMINI function call 的資料傳遞；尚未連接 DrawTheRoute，絕不會計算或估算真實路線距離、高程或時間。</div>
+
+<form id="tripForm" class="card">
+  <h2>行程基本資料</h2>
+  <div class="grid">
+    <div>
+      <label for="days">步行日數</label>
+      <select id="days" name="days">
+        <option value="1">1 日</option><option value="2">2 日</option><option value="3" selected>3 日</option>
+        <option value="4">4 日</option><option value="5">5 日</option><option value="6">6 日</option>
+        <option value="7">7 日</option><option value="8">8 日</option><option value="9">9 日</option><option value="10">10 日</option>
+      </select>
+    </div>
+    <div>
+      <label for="targetKm">總距離目標（公里）</label>
+      <input id="targetKm" name="targetKm" type="number" min="0.1" max="500" step="0.1" value="40" required>
+    </div>
+    <div>
+      <label for="start">起點</label>
+      <input id="start" name="start" maxlength="100" value="北潭涌" required>
+    </div>
+    <div>
+      <label for="finish">終點</label>
+      <input id="finish" name="finish" maxlength="100" value="北潭涌" required>
+    </div>
+    <div>
+      <label for="nights">住宿晚數</label>
+      <select id="nights" name="nights"></select>
+    </div>
+  </div>
+
+  <section style="margin-top:16px">
+    <h2>每晚營地（只填你已選定的營地）</h2>
+    <p class="muted">欄位會按住宿晚數增減。未填的官方營地不會被當成必經點。</p>
+    <div id="camps"></div>
+  </section>
+  <button id="submitBtn" type="submit">交給 GEMINI 整理資料</button>
+</form>
+
+<section class="card" aria-live="polite">
+  <div>狀態：<span id="status" class="muted">尚未提交</span></div>
+  <pre id="output">填好表格後提交。</pre>
+</section>
+
+<script>
+'use strict';
+const APP_VERSION = 'v0.1';
+const daysEl = document.getElementById('days');
+const nightsEl = document.getElementById('nights');
+const campsEl = document.getElementById('camps');
+const form = document.getElementById('tripForm');
+const output = document.getElementById('output');
+const statusEl = document.getElementById('status');
+const submitBtn = document.getElementById('submitBtn');
+
+function rebuildNightOptions(selectedValue) {
+  const days = Number(daysEl.value);
+  const maxNights = Math.max(0, days - 1);
+  const nextValue = Math.min(Number.isInteger(selectedValue) ? selectedValue : maxNights, maxNights);
+  nightsEl.replaceChildren();
+  for (let n = 0; n <= maxNights; n += 1) {
+    const option = document.createElement('option');
+    option.value = String(n);
+    option.textContent = n + ' 晚';
+    nightsEl.append(option);
+  }
+  nightsEl.value = String(nextValue);
+  renderCampFields();
+}
+
+function renderCampFields() {
+  const nights = Number(nightsEl.value);
+  const previous = Array.from(campsEl.querySelectorAll('input')).map((input) => input.value);
+  campsEl.replaceChildren();
+  for (let i = 0; i < nights; i += 1) {
+    const row = document.createElement('div');
+    row.className = 'camp-row';
+    const title = document.createElement('div');
+    title.className = 'camp-title';
+    title.textContent = '第 ' + (i + 1) + ' 晚營地（完成第 ' + (i + 1) + ' 日後）';
+    const label = document.createElement('label');
+    label.htmlFor = 'camp-' + (i + 1);
+    label.textContent = '已選定營地名稱';
+    const input = document.createElement('input');
+    input.id = 'camp-' + (i + 1);
+    input.name = 'camp-' + (i + 1);
+    input.maxLength = 120;
+    input.placeholder = '例如：猴塘溪營地';
+    input.value = previous[i] || '';
+    input.required = true;
+    row.append(title, label, input);
+    campsEl.append(row);
+  }
+  if (nights === 0) {
+    const note = document.createElement('p');
+    note.className = 'muted';
+    note.textContent = '此行程未安排住宿營地。';
+    campsEl.append(note);
+  }
+}
+
+daysEl.addEventListener('change', () => rebuildNightOptions(Math.max(0, Number(daysEl.value) - 1)));
+nightsEl.addEventListener('change', renderCampFields);
+rebuildNightOptions(2);
+
+function makeTripRequest() {
+  const days = Number(daysEl.value);
+  const nights = Number(nightsEl.value);
+  const selectedOvernightStops = Array.from(campsEl.querySelectorAll('input')).map((input, index) => ({
+    day: index + 1,
+    name: input.value.trim()
+  }));
+  return {
+    days,
+    nights,
+    targetTotalKm: Number(document.getElementById('targetKm').value),
+    start: document.getElementById('start').value.trim(),
+    finish: document.getElementById('finish').value.trim(),
+    selectedOvernightStops
+  };
+}
+
+/* 明確的未連接佔位工具：只回報收到的行程輸入，不產生假路線數字。 */
+function getRouteTool(args) {
+  return {
+    ok: false,
+    routeCalculated: false,
+    errorCode: 'DRAWTHEROUTE_BRIDGE_NOT_CONNECTED',
+    message: 'DrawTheRoute 尚未連接；此版本只確認輸入資料，沒有計算路線。',
+    received: args
+  };
+}
+
+function delay(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
+async function callGemini(payload) {
+  const key = (window.GEMINI_API_KEY || window.__GEMINI_API_KEY__ || '').trim();
+  const models = ['gemini-2.0-flash', 'gemini-1.5-flash'];
+  let lastStatus = 0;
+  for (const model of models) {
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent';
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      let response;
+      try {
+        const headers = { 'Content-Type': 'application/json' };
+        if (key) headers['x-goog-api-key'] = key;
+        response = await fetch(url, { method: 'POST', headers, body: JSON.stringify(payload) });
+      } catch (error) {
+        response = null;
+      }
+      if (response && response.ok) return response.json();
+      lastStatus = response ? response.status : 0;
+      if (lastStatus === 400) {
+        const body = await response.json().catch(() => ({}));
+        if (/api key/i.test((body.error && body.error.message) || '')) lastStatus = 403;
+      }
+      if (lastStatus === 401 || lastStatus === 403 || lastStatus === 404) break;
+      if ((lastStatus === 429 || lastStatus >= 500 || lastStatus === 0) && attempt < 3) {
+        await delay(attempt * 1200);
+        continue;
+      }
+      break;
+    }
+  }
+  throw new Error('GEMINI 連線失敗（' + (lastStatus || '網絡') + '），請稍後再試。');
+}
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  if (!form.reportValidity()) return;
+  const trip = makeTripRequest();
+  if (trip.selectedOvernightStops.length !== trip.nights) {
+    statusEl.className = 'error';
+    statusEl.textContent = '營地欄數與住宿晚數不一致';
+    return;
+  }
+  submitBtn.disabled = true;
+  statusEl.className = 'muted';
+  statusEl.textContent = '正在呼叫 GEMINI…';
+  output.textContent = '正在提交表單資料…';
+  try {
+    const payload = {
+      contents: [{ role: 'user', parts: [{ text: '請檢查以下用戶填寫的行程資料，並呼叫 getRoute 工具確認收到的結構化輸入。不可自行估算或編造路線距離、高程或時間；工具會明確告知 DrawTheRoute 尚未連接。\n\n' + JSON.stringify(trip, null, 2) }] }],
+      tools: [{ functionDeclarations: [{
+        name: 'getRoute',
+        description: '將用戶填寫的步行日數、總公里、起終點及已選住宿營地資料交給路線工具。DrawTheRoute 未接通時只回報收到的資料，不可自行計算或估算路線。',
+        parameters: {
+          type: 'OBJECT',
+          properties: {
+            days: { type: 'INTEGER', description: '步行日數' },
+            nights: { type: 'INTEGER', description: '住宿晚數' },
+            targetTotalKm: { type: 'NUMBER', description: '用戶設定的總距離目標公里' },
+            start: { type: 'STRING', description: '起點名稱' },
+            finish: { type: 'STRING', description: '終點名稱' },
+            selectedOvernightStops: {
+              type: 'ARRAY',
+              items: { type: 'OBJECT', properties: {
+                day: { type: 'INTEGER', description: '完成該日後住宿' },
+                name: { type: 'STRING', description: '用戶已選營地名稱' }
+              }, required: ['day', 'name'] }
+            }
+          },
+          required: ['days', 'nights', 'targetTotalKm', 'start', 'finish', 'selectedOvernightStops']
+        }
+      }]}],
+      generationConfig: { temperature: 0.1, maxOutputTokens: 2048 }
+    };
+    const response = await callGemini(payload);
+    const parts = (response.candidates && response.candidates[0] && response.candidates[0].content && response.candidates[0].content.parts) || [];
+    const call = parts.find((part) => part.functionCall && part.functionCall.name === 'getRoute');
+    if (!call) {
+      statusEl.className = 'error';
+      statusEl.textContent = 'GEMINI 未呼叫 getRoute';
+      output.textContent = '未收到 functionCall。\n\n' + JSON.stringify(response, null, 2);
+      return;
+    }
+    const toolResult = getRouteTool(call.functionCall.args || {});
+    statusEl.className = 'ok';
+    statusEl.textContent = '已收到 functionCall；路線未計算';
+    output.textContent = 'GEMINI functionCall 參數：\n' + JSON.stringify(call.functionCall.args, null, 2) + '\n\n工具回覆：\n' + JSON.stringify(toolResult, null, 2);
+  } catch (error) {
+    statusEl.className = 'error';
+    statusEl.textContent = String(error && error.message || error);
+    output.textContent = '輸入資料如下：\n' + JSON.stringify(trip, null, 2);
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

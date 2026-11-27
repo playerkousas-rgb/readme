@@ -13,6 +13,7 @@
 | **🏪 APP STORE 第 0 步指令（✅ 已完成，留作歷史記錄）** | [`repo-starter/APP-STORE-INSTRUCTION.md`](repo-starter/APP-STORE-INSTRUCTION.md) | ❗**唔需要再貼**：`?app=<slug>` 同所有分享出口已於 `bd721421` 完成。仲要 APP STORE 做嘅用下面嗰份 SLUG 指令
 | **🏷️ APP STORE 補 slug 指令（第 0 步後續）** | [`repo-starter/APP-STORE-SLUG-INSTRUCTION.md`](repo-starter/APP-STORE-SLUG-INSTRUCTION.md) | 貼去 `website` 對話：補 5 隻缺 slug＋確認 `apps.url` 冇 branch 預覽網址 |
 | **📋 逐個 App 白名單交接清單** | [`repo-starter/WHITELIST-HANDOFF.md`](repo-starter/WHITELIST-HANDOFF.md) | 可直接貼去該 App 嘅對話：6 條問題（本機資料／PWA／Push／後端 API／今日入口／類型）→ 按類型落實 `mode`／`portalIds`／`allowStandalone`／`supportNudge` → 真機三項驗收（[docs/50 §3.8-D](../docs/50-app-store-whitelist-and-shutdown.md)）；SG18 讚好／收藏掣（所有新 App 必做，[docs/60](../docs/60-future-apps-support-button.md)） |
+| **🎛️ 中央閘門載入器（CP，docs/62）** | [`vercel/gate_remote_v1.0.js`](vercel/gate_remote_v1.0.js) | 掛喺 `store_gate_v1.0.js` 之後：由 APP STORE 讀 `?app=<slug>` 嘅政策（mode／portalIds），5 分鐘快取、timeout 1500ms；讀唔到預設 fail-soft（用 `data-default-mode`），**主站死唔會令 68 個 App 一齊死**。改一次控制台＝全部 App 跟。未實測 |
 | **🚪 白名單／關站前端閘門（SG3/SG5/SG6）** | [`vercel/store_gate_v1.0.js`](vercel/store_gate_v1.0.js) | 開 APP 時清晰告知用戶有白名單或暫時關站；內置 `PORTAL_REGISTRY` **五個入口**（1 APP STORE／2 圖書館／3 成員系統／4 區管理系統／5 **GEMINI＝用戶自己 private repo 部署嘅 Vercel app**，五個全部可放行），用 `portalIds` 引用；每個入口有 `admit` 分級（`always`／`conditional`／`optional`／`never`，**SG17**）→ 新 App 寫 `portalIds: DEFAULT_PORTAL_IDS` 即只認 APP STORE，唔使逐個入口問；，支援頂層跳板 `entry-gate`（專治唔適合 `<iframe>` 嘅 App，放行 `standalone` PWA）、`iframe-only`、`closed` |
 | Vercel 上傳黑名單 | `vercel/vercelignore` | repo 根 `.vercelignore` |
 | 極簡 package | `vercel/package.json` | repo 根 `package.json` |
@@ -33,6 +34,7 @@
 | GAS manifest | `gas/appsscript.json` | Apps Script `appsscript.json`（顯示隱藏檔案） |
 | RLS 範本 | `supabase/rls.sql` | `supabase/migrations/<ts>_rls.sql` |
 | 推送訂閱表 | `supabase/push_subscriptions.sql` | `supabase/migrations/<ts>_push.sql` |
+| **🔐 後台開戶／單一活躍 session／刪人（MG，docs/61）** | [`supabase/member_gate_v1.1.sql`](supabase/member_gate_v1.1.sql) | 貼落 Supabase SQL Editor：`members`（**用戶名＋bcrypt 密碼，冇 email、冇 OTP**）／`sessions`（partial unique index＝同帳號只 1 部）／`gate_settings`／`gate_audit` ＋ `login_member`（失敗 5 次鎖 15 分鐘）／`change_own_password`／`touch_session`／`session_is_active`／`owner_create_member`／`owner_bulk_create`（CSV 批量，臨時密碼只回一次）／`owner_reset_password`／`owner_kick`／`owner_block`／`owner_delete` ＋ 全表 RLS 無 policy（只 service_role 掂到）。**未實測**，首次喺測試專案跑（[docs/61](../docs/61-registration-gate-and-single-session.md)） |
 | **🆕 新 repo 起手包（12 樣 + 第 13 項 + 第 14 項）** | [`repo-starter/START.md`](repo-starter/START.md) | 成個 `repo-starter/` 抄去新 repo，改 `{{...}}`；見 [docs/27](../docs/27-repo-starter.md) |
 | **🎨 設計檢查（可選 13a）** | [`repo-starter/docs/design-review.md`](repo-starter/docs/design-review.md) | 有 UI 先加：反 slop、頁面 vs app 屏幕、390/768/1440 望圖自檢（借 taste-skill，零依賴） |
 | **📇 SKILL 唯一目錄（CATALOG）** | [`repo-starter/skills/CATALOG.md`](repo-starter/skills/CATALOG.md) | **以後加 SKILL 必入**：5 份 listed + 加新四步；`external/grilling`／`external/motion-prompt` 係 MIT 原文；漏入目錄 `check_skills` 會 FAIL |
