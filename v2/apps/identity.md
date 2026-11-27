@@ -11,6 +11,9 @@ repo: （新，寄生 website）
 url: （同 PLAT-01 同一主網域）
 gate: hard
 auth_required: true
+identity_mode: central
+backend_operator: platform
+session_policy: central_single_device
 scopes: [apps:read]
 storage: supabase
 offline: false
@@ -23,7 +26,7 @@ configs: []
 ---
 
 ## 1. 一句目的
-一個帳戶行通全部 App：`members`（人）＋`memberships`（人喺邊個單位有咩角色）＋60 秒簽名票；**1 部機**。
+中央身份用戶以一組帳戶登入所有已接入 `PLAT-02` 嘅 App：`members`＋`memberships`＋60 秒簽名票；**中央帳戶 1 部機**。`CEN-01`／`TRP-01` 由本地後端管理帳戶及 session，不屬本服務範圍。
 
 ## 2. 用戶同場景
 | 用戶 | 幾時用 | 用幾耐 | 成功係點 |
@@ -38,14 +41,14 @@ configs: []
 |:--:|---|:--:|---|
 | 1 | 登入（用戶名＋密碼） | M | `login_member()` 一次交易完成驗證＋撤舊 session＋開新 |
 | 2 | 首次登入強制改密碼 | M | `must_change_pw` = true 時，除 `/change-pw` 外全部拒絕 |
-| 3 | 1 部機 | M | DB 唯一索引 `sessions_one_active_per_member` 保證（唔係靠前端） |
+| 3 | 中央身份 1 部機 | M | DB 唯一索引保證；只適用 `PLAT-02` 帳戶，唔套用 `CEN-01`／`TRP-01` local identity |
 | 4 | 60 秒票 | M | `/api/ticket` 簽 `sub`／`units[]`／`scopes[]`／`exp`／`device_id` |
 | 5 | 換票 `/api/verify` | M | 一次性（`jti` 用過即廢）、驗簽名、驗 `device_id` |
 | 6 | 服務端判角色 | M | 子 App **只讀 claims**，唔自己查 DB |
 | 7 | 改密碼／登出全部裝置 | M | 改密碼 → 全部 session 撤銷（`revoked_reason='password'`） |
 | 8 | 鎖定政策 | M | 5 次失敗鎖 15 分鐘（`gate_settings` 可調） |
 | 9 | 自助註冊 / Email / OTP / Magic Link / Google | X | **已否決**（`01-DECISIONS` §B），程式**唔准**有註冊路由 |
-| 10 | owner 2 部機例外 | X | **已否決**：1 部機，一視同仁 |
+| 10 | 中央身份 owner 2 部機例外 | X | **已否決**：中央身份一視同仁 1 部機；`CEN-01`／`TRP-01` local identity 允許多裝置、不受此規則管 |
 
 ## 4. 權限（5 個角色，**按單位**）
 | Scope | 邊個有 | 影響 |
@@ -75,7 +78,7 @@ configs: []
 | 存放 | Supabase（現有 `templates/supabase/member_gate_v1.1.sql`，**未實測**） |
 | 表（v1.1 已有） | `members`、`sessions`、`gate_settings`、`gate_audit` |
 | 表（2.0 要加） | `memberships(member_id, unit_type, unit_id, role, valid_from, valid_to)`、`ticket_jti`（防重放） |
-| 容量 | 預估 < 500 人、< 5,000 memberships |
+| 容量 | 預估 < 500 個中央帳戶、< 5,000 memberships；不計入 CEN-01／TRP-01 local accounts |
 | 保留 | `sessions` 90 日後 `purge_sessions()`；`gate_audit` 永久（少量） |
 | 敏感度 | **high**（密碼雜湊、個人資料）→ 必須後端，唔准軟閘 |
 
@@ -88,11 +91,14 @@ configs: []
 | 4 | `login_member()` 要回 `units[]`／`scopes[]` | 子 App 只讀 claims |
 
 ## 7. 與其他系統接口
+
+> **接入範圍**：只供選用 `identity_mode: central` 嘅 Apps。`CEN-01`／`TRP-01` 用 local backend/auth，不接本票、不共用 `members`／session；唔可由中央登出／鎖裝置影響其本地帳戶。
+
 | 對象 | 方向 | 內容 |
 |---|---|---|
 | `PLAT-01` | 被呼叫 | `/login`、`/api/ticket` |
 | `PLAT-03` ADMIN | 被呼叫 | `owner_create_member()`、`owner_bulk_create()`、`owner_reset_password()`、`owner_kick()`、`owner_block()`、`owner_delete()` |
-| 所有 App | 發 | `?t=` 票 |
+| Central identity Apps | 發 | `?t=` 票 |
 | `PLAT-04` 通告 | 發 | Push 訂閱綁 `member_id` |
 
 ## 8. 離線與 PWA

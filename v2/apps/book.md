@@ -11,6 +11,9 @@ repo: book   # 新 repo；來源 4 個舊 repo
 url: （同 PLAT-01 同一主網域）/book
 gate: hard
 auth_required: true
+identity_mode: central
+backend_operator: platform
+session_policy: central_single_device
 scopes: [book:cubs:read, book:cubs:write, book:scout:read, book:scout:write, book:vs:read, book:vs:write, book:rover:read, book:rover:write]
 storage: supabase
 offline: true

@@ -85,7 +85,7 @@
 | 編號 | 名稱 | 現時 | 動作 | 備註 |
 |:--:|---|---|:--:|---|
 | `PLAT-01` | APP STORE 殼（唯一入口／目錄／搜尋／我的最愛／自訂版面） | `website` | 重建 | 一次上架＋用戶自訂 |
-| `PLAT-02` | 身份核心（開戶、登入、票、1 部機） | — | **新增** | 寄生 `PLAT-01` 的 `/login`、`/api/ticket` |
+| `PLAT-02` | 中央身份核心（開戶、登入、票、1 部機；只管 central apps） | — | **新增** | 寄生 `PLAT-01` 的 `/login`、`/api/ticket` |
 | `PLAT-03` | ADMIN（開戶、政策、回報、審計） | — | **新增** | 寄生 `PLAT-01` 的 `/admin` |
 | `PLAT-04` | 通告中心（要登入）＋ Push | `scout-circulars` | 重建 | 訂閱要綁 `member_id`；通知 link 指 APP STORE |
 
@@ -93,18 +93,18 @@
 
 | 編號 | 名稱 | 現時 | 動作 |
 |:--:|---|---|:--:|
-| `CEN-01` | 區系統（＋`CEN-01a` 區徽章） | `scout-district-portal`、`dbs3.0` | 重建（`dbs` 退役） |
-| `CEN-02` | 服務平台（成員系統；公開使用） | `member-portal` | 重建；按公開服務定位，不假設要區／旅 admin 分級 |
+| `CEN-01` | 區系統（＋`CEN-01a` 區徽章；區方自管後端／帳戶） | `scout-district-portal`、`dbs3.0` | 重建前端；保留區自管後端及帳戶模式（`dbs` 退役） |
+| `CEN-02` | 服務平台（成員系統；公開使用） | `member-portal` | 重建；公開使用範圍不強制中央登入，後續 spec 明列例外／受保護頁面 |
 | `CEN-03` | 管理系統（本身有登記後台） | `scout-admin` | 重建；保留其業務登記流程，與 L0 身份開戶分開 |
 | `CEN-04` | 訓練班系統（＋`CEN-04a` 證書） | `course`、`CERT` | 重建 |
 | `CEN-05` | 專章秘書系統 | `BadgeHouse` | 重建（**待你確認**） |
 | `CEN-06` | 徽章／專章內容平台？ | `scoutapp`（Flask） | **待確認**（可能併入 CEN-05 或 L4） |
 
-### L2 旅團生態（5 個 App）
+### L2 旅團生態（4 個 App）
 
 | 編號 | 名稱 | 現時 | 動作 |
 |:--:|---|---|:--:|
-| `TRP-01` | 旅系統（含點名） | `troop-portal`、`troop_portal`、`troop-attendance` | 合併重建 |
+| `TRP-01` | 旅系統（含點名；旅方自管後端／下層帳戶） | `troop-portal`、`troop_portal`、`troop-attendance` | 重建前端；保留旅方自管後端與帳戶登記方式 |
 | `TRP-02` | 支部 portal（5 config：gh／cubs／scout／vs／rs） | 5 個 `*_portal` | 合併重建 |
 | `TRP-04` | 紀錄冊 BOOK（4 config） | 4 本 BOOK | 合併重建 |
 | `TRP-05` | BADGE／進度追蹤（4 config：cubs／scout／vs／rover） | 4 個 `*badge` | 合併重建；BADGE 即進度，唔另設 TRP-03 |
@@ -184,10 +184,19 @@
 - 小童軍 `gh` 仍然冇 BADGE／進度系統；年資徽章記錄留喺 `TRP-02` 支部 portal 內。
 - 開工前仍要對照 4 個 BADGE 舊 repo 嘅資料表、項目清單、進度規則；「功能等同」唔代表 schema 已相同。
 
-### 6.1 跨支部資料授權（用戶已定原則）
+### 6.1 區／旅自管後端與帳戶（用戶已定原則）
+
+- `CEN-01` 區系統、`TRP-01` 旅系統沿用現行「我提供前端，區／旅自行管理後端」模式；用戶確認現行運作良好、方便管理。
+- 你提供上層管理大帳戶；下層小帳戶及日常帳戶生命週期由區／旅自理。中央 `PLAT-03 ADMIN` 不代管這些小帳戶。APP STORE 只提供入口，local 小帳戶毋須先有 `PLAT-02` 帳戶；由深層連結轉去本地登入。
+- 兩個系統用 `identity_mode: local`、`backend_operator: district|troop`、`session_policy: local_multi_device`；**不受 `PLAT-02` 中央一部機規則限制**；同一帳戶可多裝置登入，不設「新機踢舊機」限制。session 到期／登出／撤銷仍由其負責單位管理。
+- 此決策係沿用運作模式，唔代表我已檢視現有程式、資料表或 Vercel/Git 設定；開工前要由現行系統負責人提供 API／登入／功能設定契約。
+- APP STORE 只能控制自己目錄內的顯示／跳轉；不能把 local app 的本地登入當成中央票，也不能用中央「關入口」替代後端停站。
+- 前端唔存後端 secret；所有個人資料及授權檢查由區／旅自管後端執行。
+
+### 6.2 跨支部資料授權（用戶已定原則）
 
 - 預設：每個支部只睇自己支部嘅 BADGE／BOOK／portal 資料。
-- 旅系統（旅長／副旅長／管理員）可按旅內職務，分別進入各支部查看該支部資料；唔代表支部之間自動互通。
+- 旅系統（旅長／副旅長／管理員）可按旅內職務，分別進入所屬旅各支部查看該支部資料；唔代表支部之間自動互通。
 - 跨支部共享採**雙方同意**：資料提供支部先指定可共享嘅資料類別及接收支部；接收支部確認接受後，先開放指定範圍。任何一方撤回／拒絕，該授權不得生效或須停止。
 - 開工 spec 必須列明 grant 記錄（提供方、接收方、資料類別、狀態、有效期／撤回時間）及審計；後端每次讀取都要驗證，唔可以只靠前端隱藏。
 - **實作細節待各 App spec 定義**：由邊個代表支部批准／接受、授權到期政策、共享資料類別的最小粒度。
@@ -206,15 +215,18 @@
 | `layer`／`category` | L3／技能工具 | 分類、篩選 |
 | `icon` | `/icons/knot.svg` | 目錄卡 |
 | `desc_zh`／`desc_en` | 一句 | 目錄卡 |
-| `access_mode` | `entry-gate` | 政策（[docs/62](../docs/62-one-control-plane-for-all-apps.md)） |
+| `access_mode` | `entry-gate` | 中央 Apps 入口政策（[docs/62](../docs/62-one-control-plane-for-all-apps.md)）；local Apps 只控制入口可見性，不取代自管後端授權 |
 | `scopes` | `tool:knot:read` | 邊個見到 |
 | `default_groups` | `["常用","訓練"]` | 預設分類 |
 | `default_visible` | `true` | 預設要唔要（用戶可改） |
 | `pilot_units` | `["cubs-21"]` | 灰度：先只見某單位 |
 | `status` | `live`／`paused`／`retired` | 停用／退役 |
+| `identity_mode` | `central`／`local` | 中央 PLAT-02 或責任系統自管登入；local launcher 可匿名轉駁但不顯示敏感資料 |
+| `backend_operator` | `platform`／`district`／`troop` | 後端責任方；用於系統交接 |
+| `session_policy` | `central_single_device`／`local_multi_device`／`none` | 中央一機；local 可多裝置，session 時限／撤銷由責任單位管理 |
 
 **預設版面規則**（新用戶一登入見到乜）：
-- `owner`：全部；`admin`：只顯示該系統 scope 允許使用嘅 App，唔代表有中央開戶權
+- `owner`：按 identity mode 管理；`admin`：只顯示該系統 scope 允許使用嘅 App。中央 owner 權限不會自動延伸至 local backend
 - `leader`：自己支部全套（portal／BADGE 進度／BOOK／集會）＋常用工具；跨支部只按雙方批准嘅授權
 - `member`：自己支部（只讀）＋工具
 - 一律**唔會**見到 `pilot_units` 唔包自己嘅 App

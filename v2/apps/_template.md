@@ -19,7 +19,10 @@ version: v2.0.0               # App 自己版號（雙版號：檔名＋內文�
 repo: knotmaster              # 現有 repo 名／新 repo 名
 url: https://knotmaster.vercel.app
 gate: soft                    # hard（有後端）| soft（純靜態）| none（唔需要）
-auth_required: true           # 2.0 一律 true，除咗 L4 公開內容
+auth_required: true           # 需登入時 true；登入來源見 identity_mode
+identity_mode: central        # central | local | none
+backend_operator: platform   # platform | district | troop | third_party
+session_policy: central_single_device # central_single_device | local_multi_device | none
 scopes: [tool:knot:read]      # 見 02-APP-SPEC §4；唔准自創
 storage: local                # none | local | supabase | gas
 offline: true
@@ -45,16 +48,17 @@ configs: []                   # 合併族用：例 [cubs, scout, vs, rover]
 | 1 |  |  |  |
 
 ## 4. 權限（scope → 睇得到／做得到）
+身份來源：`central`（PLAT-02）／`local`（系統自管）。Local 系統自行管理帳戶及裝置/session；唔套中央一機限制。敏感資料由後端逐次驗權。
 | Scope | 邊個有 | 影響 |
 |---|---|---|
 |  |  |  |
 > scope 命名：`<領域>:<對象>:<動作>`；新 scope 要先入 `02-APP-SPEC` §4 同 `03-CATALOG` 登記。
 
 ## 5. 入口與路由
-- 唯一入口：APP STORE `?app=<slug>`
+- 入口：APP STORE `?app=<slug>`（catalog 有 local exception 時，登入交由責任系統）
 - App 內路由：
-- 分享／QR：**一律指 APP STORE 深層連結**（唔准用子站網址）
-- 票：`?t=<60 秒票>` → 驗票 → 種自己 cookie
+- `central`：60 秒票 → verify → App 自己 session；`local`：責任系統後端登入／驗權，同帳戶允許多裝置，不做新機踢舊機
+- 分享／QR：按 SG9 使用 APP STORE 深層連結；任何模式都唔准前端假裝有權限
 
 ## 6. 資料
 | 項 | 內容 |
@@ -68,7 +72,7 @@ configs: []                   # 合併族用：例 [cubs, scout, vs, rover]
 ## 7. 與其他系統接口
 | 對象 | 方向 | 內容 |
 |---|---|---|
-| L0 身份 | 收 | 票（`sub`／`units`／`scopes`） |
+| 身份來源 | 收 | central（PLAT-02 claims）或 local（責任系統 session/API）；local 不得單機踢舊 session |
 
 ## 8. 離線與 PWA
 - SW 策略：
@@ -89,10 +93,10 @@ configs: []                   # 合併族用：例 [cubs, scout, vs, rover]
 ## 11. 驗收（真機；每條都要做過才剔）
 - [ ] iPhone Safari 390px：開得到、唔爆版
 - [ ] Android Chrome：同上
-- [ ] 未登入直打網址 → 去 APP STORE 登入，**見唔到底層內容**
-- [ ] 第二部機登入同一帳戶 → 第一部 ≤60 秒被踢
+- [ ] 未登入直打網址 → `central` 轉中央登入；`local` 轉責任系統登入；`none` 只顯示公開內容；任何模式都**見唔到底層未授權內容**
+- [ ] `central_single_device`：第二部機登入同一帳戶 → 第一部 ≤60 秒被踢；`local_multi_device`：同一帳戶可多裝置登入；驗收 session 到期／登出
 - [ ] 離線（飛行模式）→ 開得到
-- [ ] 加入主畫面 → 開 icon 仍要驗票（MG7）
+- [ ] 加入主畫面 → 開 icon 仍按 `identity_mode` 驗證（central 驗票／local 本地驗證；MG7 唔准 standalone 放行）
 - [ ] 中英切換（L1–L6）
 - [ ] 圖標 9 檔（G11）、`© SCOUT SYSTEM`、雙版號（V1）
 - [ ] `noindex` 生效

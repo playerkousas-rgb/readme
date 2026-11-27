@@ -33,7 +33,10 @@ version: v2.0.0               # App 自己版號（雙版號：檔名＋內文�
 repo: knotmaster              # 現有 repo 名／新 repo 名
 url: https://knotmaster.vercel.app
 gate: soft                    # hard（有後端）| soft（純靜態）| none（唔需要）
-auth_required: true           # 2.0 一律 true，除咗 L4 公開內容
+auth_required: true           # 需登入時 true；登入來源見 identity_mode
+identity_mode: central        # central (PLAT-02) | local (系統自管後端/帳戶) | none
+backend_operator: platform   # platform | district | troop | third_party
+session_policy: central_single_device # central_single_device | local_multi_device | none
 scopes: [tool:knot:read]      # 需要的 scope；見 §4
 storage: local                # none | local | supabase | gas
 offline: true
@@ -61,6 +64,8 @@ merged_from: []               # 例 book: [CUBSBOOK, SCOUTBOOK, VSBOOK, ROVERBOO
 | 4 | 分享 | X | 2.0 唔做（避免漏資料） |
 
 ## 4. 權限（scope → 睇得到／做得到）
+
+**身份／後端邊界（frontmatter 必填）**：每份 spec 要填 `identity_mode`、`backend_operator`、`session_policy`。`central` 由 `PLAT-02` 發票並受中央 1 部機限制；`local` 由責任系統自管登入／帳戶/session，但採 `local_multi_device`（同帳戶可多裝置，不做新機踢舊機），唔可以假設接入中央身份。前端只持有短效 session/token，不得內藏後端密鑰；敏感資料每次由所屬後端驗權。
 | Scope | 邊個有 | 影響 |
 |---|---|---|
 | `tool:knot:read` | 所有已登入 | 睇全部繩結 |
@@ -71,7 +76,7 @@ merged_from: []               # 例 book: [CUBSBOOK, SCOUTBOOK, VSBOOK, ROVERBOO
 - 唯一入口：APP STORE `?app=knotmaster`
 - App 內路由：`/`（列表）`/knot/<id>`
 - 分享／QR：**一律指 APP STORE 深層連結**，唔准用子站網址
-- 票：`?t=<60 秒票>` → 驗票 → 種自己 cookie
+- `central` 票：`?t=<60 秒票>` → 驗票 → 種自己 cookie；`local` 由責任系統後端登入，唔接中央票
 
 ## 6. 資料
 | 項 | 內容 |
@@ -96,7 +101,7 @@ merged_from: []               # 例 book: [CUBSBOOK, SCOUTBOOK, VSBOOK, ROVERBOO
 ## 9. 失敗模式（fail-closed 定 fail-soft）
 | 情況 | 行為 |
 |---|---|
-| 驗票失敗 | 轉去 APP STORE 登入（fail-closed） |
+| 中央驗票失敗 | 轉去 APP STORE 登入（fail-closed）；local auth 失敗由責任系統處理（fail-closed） |
 | 讀政策失敗 | 用本機 default `entry-gate`（fail-soft） |
 | 離線 | 照用（本 App 唔需要網絡） |
 
@@ -107,10 +112,10 @@ merged_from: []               # 例 book: [CUBSBOOK, SCOUTBOOK, VSBOOK, ROVERBOO
 ## 11. 驗收（真機；每條都要做過才剔）
 - [ ] iPhone Safari 390px：開得到、唔爆版
 - [ ] Android Chrome：同上
-- [ ] 未登入直打網址 → 去 APP STORE 登入，**見唔到底層內容**
-- [ ] 第二部機登入同一帳戶 → 第一部 ≤60 秒被踢
+- [ ] 未登入直打網址 → 按 `identity_mode` 去中央或本地登入；**未授權見唔到底層內容**
+- [ ] `central_single_device`：第二部機登入同一帳戶 → 第一部 ≤60 秒被踢；`local_multi_device`：同一帳戶可同時多裝置登入，登出／session 到期仍正常
 - [ ] 離線（飛行模式）→ 開得到列表
-- [ ] 加入主畫面 → 開 icon 仍要驗票（MG7：唔准 standalone 放行）
+- [ ] 加入主畫面 → 開 icon 仍按 `identity_mode` 驗證（MG7：唔准 standalone 放行）
 - [ ] 中英切換（L1–L6）
 - [ ] 圖標 9 檔（G11）、`© SCOUT SYSTEM`、雙版號（V1）
 - [ ] `noindex` 生效
@@ -189,7 +194,7 @@ configs: [cubs, scout, vs, rover]     # 小童軍冇 BOOK（見 00-OVERVIEW §3�
 - [ ] §4 用嘅 scope **全部**喺 §4 對照表出現過
 - [ ] §5 入口係 APP STORE，分享連結**冇**用子站網址
 - [ ] §6 有寫容量／保留／敏感度；`high` 就唔准用 Canvas 或軟閘
-- [ ] §9 有寫「驗票失敗」同「讀政策失敗」兩種
+- [ ] §9 有寫中央驗票／本地 auth 失敗及讀政策失敗
 - [ ] §10 有體積預算（S1／S7）
 - [ ] §11 真機清單包含：未登入被擋、第二部機被踢、離線、PWA、雙語
 - [ ] §13 有誠實限制（唔准寫「理論上應該 work」）

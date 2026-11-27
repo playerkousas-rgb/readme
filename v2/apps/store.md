@@ -11,6 +11,9 @@ repo: website
 url: https://playerkousas-rgb.github.io/website/   # 現況；2.0 部署位置待定（見 §13）
 gate: hard
 auth_required: true
+identity_mode: central
+backend_operator: platform
+session_policy: central_single_device
 scopes: [apps:read, apps:prefs:write, apps:policy:write]
 storage: supabase
 offline: false
@@ -30,7 +33,7 @@ configs: []
 |---|---|---|---|
 | 所有已登入用戶 | 每次開工 | 10 秒 | 2 次點擊內開到目標 App |
 | 領袖 | 集會前 | 30 秒 | 見到「我支部」全套，唔見其他支部 |
-| owner/admin | 每週 | 2 分鐘 | 睇到未通知帳戶、暫停某 App |
+| owner | 每週 | 2 分鐘 | 睇中央帳戶通知狀態、暫停 central App 入口 |
 | 未登入訪客 | 偶然 | 5 秒 | 只見到登入頁＋一句說明，**唔見目錄** |
 
 ## 3. 功能（M／O／X）
@@ -49,17 +52,17 @@ configs: []
 ## 4. 權限
 | Scope | 邊個有 | 影響 |
 |---|---|---|
-| `apps:read` | 所有已登入 | 睇目錄（內容按 `scopes` 過濾） |
-| `apps:prefs:write` | 所有已登入 | 只改自己 `user_app_prefs` |
-| `apps:policy:write` | owner | 改 `access_mode`、`apps.status`、`pilot_units` |
+| `apps:read` | 中央身份已登入用戶 | 睇個人化目錄（內容按中央 `scopes` 過濾） |
+| `apps:prefs:write` | 中央身份已登入用戶 | 只改自己 `user_app_prefs`；local accounts 不使用此表
+| `apps:policy:write` | owner | 改 central Apps 入口 `access_mode`、`apps.status`、`pilot_units`；local backend policy 不在此 scope |
 
 > 目錄過濾 = 票上 `scopes` ∩ `apps.scopes`，**唔可以靠前端隱藏**（隱藏≠無權限）。
 
 ## 5. 入口與路由
-- 唯一入口：`/`（登入）→ `/home`（目錄）
-- 路由：`/login`、`/home`、`/app/<slug>`（中轉發票）、`/admin/*`（PLAT-03）、`/api/ticket`、`/api/verify`
-- 分享／QR：**一律本站深層連結** `/app/<slug>`；唔准子站網址（SG9）
-- 票：`/app/<slug>` → 產 `?t=<60 秒票>` → 302 去子 App → 子 App `/api/verify` 換票 → 種自己 cookie
+- 中央個人化目錄：`/` 登入 → `/home`。Local App handoff：`/app/<slug>` 只提供非敏感轉駁，可唔登入中央帳戶直接轉去責任系統登入頁。
+- 路由：`/login`、`/home`、`/app/<slug>`（按 `identity_mode` 中轉）、`/admin/*`（PLAT-03）、`/api/ticket`、`/api/verify`
+- 分享／QR：**一律本站深層連結** `/app/<slug>`；唔准子站網址（SG9）。local 用戶經本站轉駁後，由本地後端登入；唔需要先開 PLAT-02 帳戶。
+- `central`：`/app/<slug>` 簽 `?t=<60 秒票>` → 子 App verify；`local`：不簽中央票，直接轉駁至已登記嘅本地登入入口。
 
 ## 6. 資料
 | 項 | 內容 |
@@ -78,8 +81,9 @@ configs: []
 | `PLAT-02` 身份 | 互通 | 同一 Supabase schema；`/login` 由 `PLAT-02` 提供 |
 | `PLAT-03` ADMIN | 收 | `/admin/*` 掛喺同一 app（Path-based） |
 | `PLAT-04` 通告 | 收 | 通告深層連結指向 `/app/circulars?id=…` |
-| L1/L2/L3 App | 發 | 60 秒票（`?t=`） |
-| 所有 App | 收 | `/api/verify` 驗票、`/api/health` 監控 |
+| Central identity Apps | 發 | 60 秒票（`?t=`） |
+| Central identity Apps | 收 | `/api/verify` 驗票、`/api/health` 監控 |
+| `CEN-01`／`TRP-01` | 只做入口／目錄連結 | 深層連結轉去本地登入；用戶由各自後端驗證，STORE 不要求本地小帳戶先有 `PLAT-02` 帳戶，也不代管其帳戶 |
 
 ## 8. 離線與 PWA
 - SW 策略：network-first（目錄要最新）；只 cache 殼同圖標
@@ -99,10 +103,11 @@ configs: []
 
 ## 11. 驗收（真機）
 - [ ] iPhone Safari 390px／Android Chrome 開得到、唔爆版
-- [ ] 未登入打 `/home` 或 `/app/book` → 去登入，**見唔到目錄／標題**
+- [ ] 未登入打 `/home` → 去中央登入，見唔到個人化目錄
+- [ ] 未登入打 local app handoff → 只跳去本地登入頁；不顯示個人資料，亦不要求先登入 PLAT-02
 - [ ] 登入後回原目標（`next` 生效）
-- [ ] 第二部機登入 → 第一部 ≤60 秒被踢
-- [ ] `paused` App 開唔到，有一句原因
+- [ ] 中央帳戶第二部機登入 → 第一部 ≤60 秒被踢；此限制不檢查 local app 帳戶
+- [ ] Central `paused` App 開唔到，有一句原因；local app 被 STORE 隱藏時不代表本地後端已停用
 - [ ] `pilot_units` 唔包自己 → 目錄見唔到（即使有 scope）
 - [ ] 加入主畫面 → 開 icon 仍要驗票（MG7）
 - [ ] 中英切換、圖標 9 檔（G11）、`© SCOUT SYSTEM`、雙版號、`noindex`
