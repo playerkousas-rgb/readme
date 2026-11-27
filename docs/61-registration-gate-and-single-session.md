@@ -230,6 +230,7 @@ update public.sessions s set revoked_at = now(), revoked_reason = 'owner'
 
 | 你想 | 去 |
 |---|---|
+| **想一次統管 68 個 App（一個掣改政策／開關）** | **[docs/62](62-one-control-plane-for-all-apps.md)** — 政策搬去 APP STORE 一份設定，App 只掛兩行，改一次全部跟 |
 | 白名單入口（邊度嚟）／關站模式／`store_gate` | [docs/50](50-app-store-whitelist-and-shutdown.md) |
 | 邊個 app 而家有閘、邊個未有（實查清單） | [docs/51](51-whitelist-rollout-list.md) §0.1 |
 | 後端簽票／`/api/enter` 詳細原理 | [docs/50](50-app-store-whitelist-and-shutdown.md) §4.3 |
