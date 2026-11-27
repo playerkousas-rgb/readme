@@ -256,6 +256,7 @@ payload = { sub: <member id>, sid: <session id>, aud: <app slug>, iat, exp: iat 
 
 | 你想 | 去 |
 |---|---|
+| **整個系統嘅六個部分（APP STORE／ADMIN／圖書館／成員／區／身份）** | [docs/63](63-system-blueprint-six-parts.md) — 藍圖＋「PORTAL 帳戶可否用 APP STORE」＋「單體 vs 分散」 |
 | **一次統管 68 個 App（一個掣改政策／開關）** | [docs/62](62-one-control-plane-for-all-apps.md) — 政策搬去 APP STORE 一份設定，App 只掛兩行 |
 | 白名單入口（邊度嚟）／關站模式／`store_gate` | [docs/50](50-app-store-whitelist-and-shutdown.md) |
 | 邊個 App 而家有閘（實查清單） | [docs/51](51-whitelist-rollout-list.md) §0.1 |
