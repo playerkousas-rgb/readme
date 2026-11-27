@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="copyright" content="© SCOUT SYSTEM">
-<meta name="app-version" content="v0.1.0">
+<meta name="app-version" content="v0.1">
 <meta name="robots" content="noindex">
-<title>行山行程輸入測試 v0.1.0 — © SCOUT SYSTEM</title>
+<title>行山行程輸入測試 v0.1 — © SCOUT SYSTEM</title>
 <style>
   :root{font-family:system-ui,-apple-system,"PingFang HK","Microsoft JhengHei",sans-serif;color:#17231d;background:#f3f7f3}
   *{box-sizing:border-box}
@@ -35,7 +35,7 @@
 </head>
 <body>
 <header>
-  <p class="muted">CANVAS 表單原型 · v0.1.0</p>
+  <p class="muted">CANVAS 表單原型 · v0.1</p>
   <h1>行山行程資料</h1>
   <p class="muted">先填好日數、距離和每晚營地，讓 GEMINI 收到清楚、結構化的資料。</p>
 </header>
@@ -86,6 +86,7 @@
 
 <script>
 'use strict';
+const APP_VERSION = 'v0.1';
 const daysEl = document.getElementById('days');
 const nightsEl = document.getElementById('nights');
 const campsEl = document.getElementById('camps');
@@ -178,11 +179,13 @@ async function callGemini(payload) {
   const models = ['gemini-2.0-flash', 'gemini-1.5-flash'];
   let lastStatus = 0;
   for (const model of models) {
-    const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent' + (key ? '?key=' + encodeURIComponent(key) : '');
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent';
     for (let attempt = 1; attempt <= 3; attempt += 1) {
       let response;
       try {
-        response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const headers = { 'Content-Type': 'application/json' };
+        if (key) headers['x-goog-api-key'] = key;
+        response = await fetch(url, { method: 'POST', headers, body: JSON.stringify(payload) });
       } catch (error) {
         response = null;
       }
