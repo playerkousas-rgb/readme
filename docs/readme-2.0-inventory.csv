@@ -16,7 +16,7 @@ CERT,https://cert-tan.vercel.app,L1,CEN-04a,證書／證明產生（訓練班子
 code,https://code-zeta-beryl.vercel.app,L3,TOOL-040,密碼／編碼,待確認,,M,有網址
 course,https://course-six-coral.vercel.app,L1,CEN-04,訓練班系統,重建,,M,有網址
 cubs_portal,,L2,TRP-02,支部 portal：幼童軍,合併,TRP-02,H,未部署／非網站
-cubsbadge,https://cubsbadge.vercel.app,L2,TRP-05,徽章（幼童軍 config）,合併,TRP-05,H,有網址
+cubsbadge,https://cubsbadge.vercel.app,L2,TRP-05,進度與徽章（幼童軍 config）,合併,TRP-05,H,有網址
 CUBSBOOK,https://cubsbook.vercel.app,L2,TRP-04,紀錄冊 BOOK（幼童軍 config）,合併,TRP-04,H,有網址
 CUBSGAME,https://cubsgame.vercel.app,L3,TOOL-050,幼童軍遊戲,重建,,H,有網址
 cubsmeeting,https://cubsmeeting.vercel.app,L3,TOOL-060,集會,合併,TOOL-060,H,有網址
@@ -55,7 +55,7 @@ pioneer,https://pioneer-ecru.vercel.app,L3,TOOL-003,先鋒工程,重建,,H,有�
 PPTMAKER,,L4,CONTENT-02,PPT 產生,重建,,M,未部署／非網站
 readme,,L7,GOV-01,真理倉（規則／規格／審計）,重建,,H,未部署／非網站
 router,https://router-gold.vercel.app,L5,INFRA-02,轉駁器（短連結）,重建,,H,有網址
-roverbadge,https://roverbadge.vercel.app,L2,TRP-05,徽章（樂行 config）,合併,TRP-05,H,有網址
+roverbadge,https://roverbadge.vercel.app,L2,TRP-05,進度與徽章（樂行 config）,合併,TRP-05,H,有網址
 ROVERBOOK,https://roverbook.vercel.app,L2,TRP-04,紀錄冊 BOOK（樂行 config）,合併,TRP-04,H,有網址
 rs_portal,,L2,TRP-02,支部 portal：樂行童軍,合併,TRP-02,H,未部署／非網站
 rsmeeting,,L3,TOOL-060,集會,合併,TOOL-060,H,未部署／非網站
@@ -66,7 +66,7 @@ scout-district-portal,https://scout-district-portal.vercel.app,L1,CEN-01,區系�
 scout-survival-tin,,L3,TOOL-014,求生 tin,重建,,M,未部署／非網站
 SCOUT3D,https://scout3d-gamma.vercel.app,L3,TOOL-027,3D 童軍工具,重建,,M,有網址
 scoutapp,https://scoutapp-vico.vercel.app,L1,CEN-06,徽章／專章內容平台（Flask，有登入）,待確認,,L,有網址
-scoutbadge,https://scoutbadge.vercel.app,L2,TRP-05,徽章（童軍 config）,合併,TRP-05,H,有網址
+scoutbadge,https://scoutbadge.vercel.app,L2,TRP-05,進度與徽章（童軍 config）,合併,TRP-05,H,有網址
 SCOUTBOOK,https://scoutbook-five.vercel.app,L2,TRP-04,紀錄冊 BOOK（童軍 config）,合併,TRP-04,H,有網址
 scoutdesign,https://scoutdesign.vercel.app,L3,TOOL-073,設計工具,重建,,M,有網址
 scoutmeeting,https://scoutmeeting.vercel.app,L3,TOOL-060,集會,合併,TOOL-060,H,有網址
@@ -76,7 +76,7 @@ skw-score,https://skw-score.vercel.app,L3,TOOL-063,計分,重建,,H,有網址
 skw-tracking-signs,https://skw-tracking-signs-8r55.vercel.app,L3,TOOL-013,追蹤符號,重建,,H,有網址
 troop-attendance,https://troop-attendance.vercel.app,L2,TRP-01,點名（旅系統子模組）,合併,TRP-01,M,有網址
 troop-camera,https://troop-camera.vercel.app,L3,TOOL-064,活動相機,重建,,M,有網址
-troop-portal,https://troop-portal.vercel.app,L2,TRP-01,旅系統（現行）,合併,TRP-01,M,有網址
+troop-portal,https://troop-portal.vercel.app,L2,TRP-01,旅系統（旅長／副旅長／管理員＋跨支部授權中心）,合併,TRP-01,M,有網址
 troop-router,https://troop-router.vercel.app,L5,INFRA-02,轉駁器（旅團用）,合併,INFRA-02,M,有網址
 troop_portal,,L2,TRP-01,旅系統（未部署）,合併,TRP-01,M,未部署／非網站
 upgrade,https://upgrade-ashen.vercel.app,L3,TOOL-018,待確認（upgrade）,待確認,,L,有網址
@@ -85,7 +85,7 @@ Veritas-Project,,L3,TOOL-019,待確認（Veritas 相關）,待確認,,L,未部�
 veritas2,,L3,TOOL-019,待確認（Veritas 相關）,待確認,,L,未部署／非網站
 voice_slide_web,https://voice-slide-web.vercel.app,L3,TOOL-074,語音簡報,重建,,H,有網址
 vs_portal,https://vs-portal-pi.vercel.app,L2,TRP-02,支部 portal：深資童軍,合併,TRP-02,H,有網址
-vsbadge,https://vsbadge.vercel.app,L2,TRP-05,徽章（深資 config）,合併,TRP-05,H,有網址
+vsbadge,https://vsbadge.vercel.app,L2,TRP-05,進度與徽章（深資 config）,合併,TRP-05,H,有網址
 VSBOOK,https://vsbook-sand.vercel.app,L2,TRP-04,紀錄冊 BOOK（深資 config）,合併,TRP-04,H,有網址
 vsmeeting,https://vsmeeting.vercel.app,L3,TOOL-060,集會,合併,TOOL-060,H,有網址
 website,https://scoutappstore.vercel.app/,L0,PLAT-01,APP STORE 殼,重建,,H,有網址

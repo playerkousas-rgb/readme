@@ -14,7 +14,7 @@
 | 3 | [`02-APP-SPEC.md`](02-APP-SPEC.md)＋[`apps/<slug>.md`](apps/) | 開工前 | 14 節模板、scope 對照、驗收清單 |
 
 補充（有需要才讀）：
-- [`01-DECISIONS.md`](01-DECISIONS.md)：13 條定案＋已否決 8 條＋**待確認 3 條**。**唔准再建議已否決嘅方案。**
+- [`01-DECISIONS.md`](01-DECISIONS.md)：13 條定案＋已否決 8 條＋後續已答覆（admin／跨支部／集會／BADGE）。**唔准再建議已否決嘅方案。**
 - [`04-BUILD-ORDER.md`](04-BUILD-ORDER.md)：M0–M8 施工順序、每步驗收、上架 runbook。
 - [`../docs/readme-2.0-inventory.csv`](../docs/readme-2.0-inventory.csv)：91 個 repo 逐個對照（可篩）。
 
@@ -24,8 +24,8 @@
 
 | 里程碑 | 狀態 | 下一步 |
 |:--:|---|---|
-| **M0 規格凍結** | 🟡 五份寫好、示範 spec 4 份 | 你答 3 條待確認 → M1 開工 |
-| M1 身份 | ⬜ | 卡 M0 |
+| **M0 規格凍結** | ✅ 完成：五份核心文件＋4 份示範 spec | 本輪 4 項補充答案已記錄；可開始 M1 |
+| M1 身份 | ⬜ | 下一步：按 `04-BUILD-ORDER` 開工 |
 | M2 ADMIN | ⬜ | 卡 M1 |
 | M3 通告 | ⬜ | 卡 M1 |
 | M4–M6 生態＋工具 | ⬜ | 卡 M1／部分資料待確認 |

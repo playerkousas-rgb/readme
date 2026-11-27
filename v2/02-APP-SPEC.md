@@ -169,11 +169,9 @@ configs: [cubs, scout, vs, rover]     # 小童軍冇 BOOK（見 00-OVERVIEW §3�
 | 平台 | `apps:read` | 睇目錄（所有已登入都有） |
 | 平台 | `apps:prefs:write` | 改自己版面（擺位／分類／隱藏） |
 | 平台 | `apps:policy:write` | 改 App 政策（只 owner） |
-| 帳戶 | `members:unit:write` | 為自己單位開戶（admin） |
-| 帳戶 | `members:all:write` | 全站開戶／刪除（只 owner） |
+| 帳戶 | `members:all:write` | 中央 ADMIN 開戶／帳戶生命週期操作（只 owner；符合「你開戶、你通知」） |
 | BOOK | `book:<branch>:read` / `write` | 睇／寫自己支部紀錄冊 |
-| 進度 | `progress:<branch>:read` / `write` | 睇／寫進度 |
-| 徽章 | `badge:<branch>:read` / `write` | 睇／寫徽章 |
+| BADGE／進度 | `badge:<branch>:read` / `write` | 睇／寫 BADGE 及進度（同一功能，不另設 progress scope） |
 | 集會 | `meeting:<branch>:read` / `write` | 睇／寫集會 |
 | 點名 | `attendance:<branch>:write` | 點名 |
 | 通告 | `notice:read` / `notice:write` | 睇／發通告 |

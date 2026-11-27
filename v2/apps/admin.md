@@ -11,7 +11,7 @@ repo: （新，寄生 website 的 /admin）
 url: （同 PLAT-01 同一主網域）/admin
 gate: hard
 auth_required: true
-scopes: [members:unit:write, members:all:write, apps:policy:write]
+scopes: [members:all:write, apps:policy:write]
 storage: supabase
 offline: false
 pwa: false
@@ -30,7 +30,7 @@ configs: []
 |---|---|---|---|
 | owner（你） | 開學／加人 | 每次 2 分鐘 | 開戶 → 自動入「未通知」隊列 |
 | owner | 每週 | 5 分鐘 | 5 個數字睇完全站健康 |
-| admin（單位） | 加新成員 | 1 分鐘 | 只開自己單位，開唔到別個單位 |
+| 你（owner） | 開戶／批量開戶 | 3 分鐘 | 所有帳戶由你經 ADMIN 建立，再由你通知開通 |
 | 你 | 出事 | 30 秒 | 一 App 一開關，唔影響其他 |
 
 ## 3. 功能（M／O／X）
@@ -52,15 +52,14 @@ configs: []
 ## 4. 權限
 | Scope | 邊個有 | 影響 |
 |---|---|---|
-| `members:unit:write` | admin、owner | 只限自己單位（admin）；owner 全站 |
-| `members:all:write` | owner | 刪除、跨單位 |
+| `members:all:write` | owner（你） | 開戶及帳戶生命週期操作，限中央 ADMIN |
 | `apps:policy:write` | owner | 政策／開關 |
 | `apps:read` | 所有已登入 | 但 `/admin/*` 除上述 scope 外一律 403 |
 
-> **admin 只能見自己單位嘅名單**（`01-DECISIONS` 附錄 A-2 待你確認；本 spec 採「唔可以跨支部」）。
+> 用戶已確認唔設通用區／旅兩級 admin。L0 ADMIN 的開戶權限只屬 owner（你），由你開戶再通知；CEN-03 自己嘅業務登記後台另按該系統規格，不可假定由本 App 取代。跨支部資料按 `03-CATALOG` §6.1 雙方 grant 規則，唔由 admin 角色自動放行。
 
 ## 5. 入口與路由
-- 入口：`PLAT-01` 目錄裏「管理」一項（只對有 scope 嘅人顯示）
+- 入口：`PLAT-01` 目錄裏「管理」一項（只對 owner 顯示）
 - 路由：`/admin`（睇板）、`/admin/members`、`/admin/members/new`、`/admin/roles`、`/admin/apps`、`/admin/audit`、`/admin/inbox`
 - 全部經 `PLAT-02` 驗票；**每個 API 都再驗一次 scope**（前端隱藏唔算）
 
@@ -100,7 +99,7 @@ configs: []
 - [ ] 由零開一個 leader 帳戶 → 對方即刻入到（你唔使開 dashboard）
 - [ ] 開完 → 「未通知」+1；打勾後有時間戳＋操作人
 - [ ] 批量貼 10 行 CSV → 10 個帳戶，重複名逐行報錯
-- [ ] admin 帳戶開戶 → 只可以揀自己單位；用 URL 硬打別個單位 → 403 且入審計
+- [ ] 非 owner 帳戶打開戶 API → 403 且入審計；owner 才可建立帳戶
 - [ ] 暫停 `TOOL-060` → 其他 App 照行
 - [ ] 審計查到「邊個幾時踢咗邊個」
 - [ ] 冇任何「註冊」入口；`grep` 無 `signup`／`register` 路由

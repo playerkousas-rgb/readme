@@ -11,7 +11,7 @@ repo: （新，寄生 website）
 url: （同 PLAT-01 同一主網域）
 gate: hard
 auth_required: true
-scopes: [apps:read, members:unit:write]
+scopes: [apps:read]
 storage: supabase
 offline: false
 pwa: false
@@ -51,14 +51,13 @@ configs: []
 | Scope | 邊個有 | 影響 |
 |---|---|---|
 | `apps:read` | 所有已登入 | 睇目錄 |
-| `members:unit:write` | admin | 只可為**自己單位**開戶 |
-| `members:all:write` | owner | 全站開戶／刪除（已否決自助，所以只有 owner） |
+| `members:all:write` | owner（你） | 中央 ADMIN 開戶／帳戶生命週期操作；全部由你處理 |
 | `apps:policy:write` | owner | 政策 |
 
 | 角色 | 意思 | 例子 |
 |---|---|---|
 | `owner` | 你，全站 | 跨旅、開任何人 |
-| `admin` | 一個單位嘅管理 | 21 旅 admin（**待確認**可否跨支部，`01-DECISIONS` 附錄 A-1） |
+| `admin` | 具體系統授予嘅管理角色；不預設區／旅兩級 | 由該系統 scope 決定可管理嘅範圍；CEN-03 業務登記後台與 L0 身份開戶分開 |
 | `leader` | 支部領袖 | 只寫自己支部 |
 | `member` | 童軍成員／家長 | 只讀 |
 | `guest` | 臨時（如訓練班學員） | 只讀指定 App，限期 |

@@ -45,9 +45,9 @@ configs: [cubs, scout, vs, rover]
 | 5 | 匯出 CSV（領袖） | M | 匯出即係「當時」快照，有時間戳 |
 | 6 | 變更歷史（邊個幾時改邊條） | M | 每條紀錄有 `updated_by`／`updated_at` |
 | 7 | 離線暫存後同步 | O | 離線寫入排隊，上線自動送；衝突顯示「以邊個為準」 |
-| 8 | 跨支部睇 | X | 唔准（除非 owner） |
+| 8 | 跨支部睇 | M（受控） | 預設拒絕；提供支部授權＋接收支部接受指定資料後，後端按 grant 限定讀取 |
 | 9 | 相片／附件 | X | 2.0 唔做（storage 成本＋私隱） |
-| 10 | 自動計「進度百分比」 | X | 進度係 `TRP-03` 嘅責任，BOOK 只記事實 |
+| 10 | 自動計「進度百分比」 | X | 進度／BADGE 係 `TRP-05` 嘅責任，BOOK 只記事實 |
 
 ### 3.2 `config` 差異表（**未核實，開工前要對照 4 個舊 repo**）
 | config | 特別欄位／分類（推測） | 來源 repo |
@@ -65,8 +65,8 @@ configs: [cubs, scout, vs, rover]
 | `book:<branch>:read` | 該支部 leader／member；owner／admin | 睇該支部紀錄 |
 | `book:<branch>:write` | 該支部 leader；owner | 寫／改／簽核 |
 
-> `<branch>` ∈ `cubs|scout|vs|rover`。**唔准**用 `book:read` 呢種無支部嘅 scope（會變成跨支部）。
-> 成員只讀**自己**一列：呢個係**後端**判斷（`memberships` + 成員對應），唔係前端過濾。
+> `<branch>` ∈ `cubs|scout|vs|rover`。**唔准**用 `book:read` 呢種無支部嘅 scope。跨支部另由雙方同意嘅 grant 限定資料類別／接收支部；唔可以靠通用 `admin` scope 放行。
+> 成員只讀**自己**一列：呢個係**後端**判斷（`memberships` + 成員對應），唔係前端過濾。跨支部 grant 只開指定 data category，不會自動授予該支部整份 BOOK 或成員名單。
 
 ## 5. 入口與路由
 - 入口：APP STORE `?app=book`（預設去自己支部嘅 config）
@@ -78,7 +78,7 @@ configs: [cubs, scout, vs, rover]
 | 項 | 內容 |
 |---|---|
 | 存放 | Supabase（**一張表、`unit_type` 分支部**，唔准每支部一張） |
-| 表 | `book_records(id, unit_type, unit_id, member_ref, category, item, awarded_on, note, created_by, updated_by, updated_at)`；`book_members`（若唔用中央 `memberships`） |
+| 表 | `book_records(id, unit_type, unit_id, member_ref, category, item, awarded_on, note, created_by, updated_by, updated_at)`；`branch_data_grants`（共享授權記錄；實際共用表由 M5 identity/API spec 定義）；`book_members`（若唔用中央 `memberships`） |
 | 容量 | 4 支部 × 約 30 人 × 約 80 條 ≈ **1 萬行**（極細） |
 | 保留 | 永久（童軍紀錄有紀念價值）；刪除只軟刪 |
 | 敏感度 | **high**（未成年人資料＋考核紀錄）→ 必須後端 + RLS |
@@ -88,8 +88,7 @@ configs: [cubs, scout, vs, rover]
 |---|---|---|
 | `PLAT-02` 身份 | 收 | 票（`sub`／`units`／`scopes`） |
 | `TRP-02` 支部 portal | 互相 | portal 顯示「BOOK 摘要」；BOOK 唔自己維護成員名單 |
-| `TRP-03` 進度 | 發 | 紀錄事實（唔判進度） |
-| `TRP-05` 徽章 | 發 | 已達成項目 → 徽章審核參考 |
+| `TRP-05` BADGE／進度 | 發 | 紀錄 BOOK 事實供進度判定，並參照已達成項目做徽章審核 |
 | `PLAT-03` ADMIN | 收 | 匯出／停用開關 |
 
 ## 8. 離線與 PWA
@@ -114,7 +113,9 @@ configs: [cubs, scout, vs, rover]
 - [ ] iPhone Safari 390px／Android Chrome：名單開得到、唔爆版
 - [ ] 未登入直打 `/book` → 去登入，**見唔到任何名字**
 - [ ] member 帳戶 → 只見到自己一列；用 URL 改 `<member>` → 403
-- [ ] 跨支部：cubs leader 用 `book:scout` 路徑 → 403 且入審計
+- [ ] 跨支部無 grant：cubs leader 讀 scout → 403 且入審計
+- [ ] 雙方同意 grant：只可讀 grant 指定資料類別／接收支部；撤回任一方同意後即 403
+- [ ] TRP-01 旅長／副旅長／管理員切換所屬旅支部：只可查看該支部允許範圍，不能跨旅
 - [ ] 第二部機登入 → 第一部 ≤60 秒被踢
 - [ ] 離線簽核 → 上線自動同步；衝突有提示
 - [ ] 加入主畫面 → 仍要驗票（MG7）
@@ -143,7 +144,7 @@ configs: [cubs, scout, vs, rover]
 - 未做：相片／附件、家長簽核、列印 PDF。
 - 限制：離線衝突用「人手揀邊個為準」，冇自動 merge。
 - 限制：**4 個舊 repo 我未睇 code**，§3.2 表格係推測。
-- 唔做：自動計進度（屬 `TRP-03`）。
+- 唔做：自動計進度（屬 `TRP-05`）。
 
 ## 14. 變更紀錄
 | 日期 | 版號 | 改乜 |

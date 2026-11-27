@@ -12,7 +12,7 @@
 |:--:|:--:|:--:|---|
 | L0 平台 | **4** | 2 個現有 + 2 個全新 | PLAT-01/04 重建；PLAT-02/03 新增 |
 | L1 中央生態 | **5–6** | 9 個 repo（含 2 個子模組、1 個退役、1 個待確認） | 逐個重建 |
-| L2 旅團生態 | **5** | 16 個 repo | 全部合併／重建 |
+| L2 旅團生態 | **4** | 16 個 repo | 全部合併／重建 |
 | L3 工具 | **46** | 53 個 repo | 重建 / 合併 / 待確認 |
 | L4 內容素材 | **3** | 3 個 repo | 重建 |
 | L5 基礎設施 | **6** | 7 個 repo | 重建 / 待確認 |
@@ -63,7 +63,7 @@
 |---|---|:--:|:--:|---|
 | `TRP-02` 支部 portal | gh／cubs／sc／vs／rs_portal | 5 → 1 | −4 | 同一套版面，只差支部名同功能開關 |
 | `TRP-04` BOOK | CUBSBOOK／SCOUTBOOK／VSBOOK／ROVERBOOK | 4 → 1 | −3 | 同一套資料結構（要 schema 對照） |
-| `TRP-05` 徽章 | cubs／scout／vs／roverbadge | 4 → 1 | −3 | 同上 |
+| `TRP-05` 徽章＋進度 | cubs／scout／vs／roverbadge（BADGE 即進度追蹤） | 4 → 1 | −3 | 同一功能族，不另設進度 App |
 | `TRP-01` 旅系統 | troop-portal／troop_portal／troop-attendance | 3 → 1 | −2 | 點名係旅系統一頁 |
 | `TOOL-060` 集會 | gh／cubs／scout／vs／rsmeeting | 5 → 1 | −4 | 你話做得唔好要重做；分 5 份＝同一個 bug 修 5 次 |
 | `TOOL-020` 鳥類圖鑑 | AvianDex／birddex3（＋skw-birdex2 未部署） | 2–3 → 1 | −2 | 同一份資料 |
@@ -74,7 +74,7 @@
 
 **唔合併（保持獨立）**：`photo-edit`／`Photo-Prep`／`Icon-Maker`（用途唔同）、`GAME`／`minigame`／`CUBSGAME`（客群唔同）、所有 L1 系統（責任邊界唔同）。
 
-> ⚠️ **合併前必須做 schema 對照**（4 本 BOOK、4 個徽章、5 個 portal 嘅資料表／儲存鍵）。冇對照就合併＝搬錯資料。呢步我未做。
+> ⚠️ **合併前必須做 schema 對照**（4 本 BOOK、4 個 BADGE、5 個 portal 嘅資料表／儲存鍵）。冇對照就合併＝搬錯資料。呢步我未做。
 
 ---
 
@@ -94,8 +94,8 @@
 | 編號 | 名稱 | 現時 | 動作 |
 |:--:|---|---|:--:|
 | `CEN-01` | 區系統（＋`CEN-01a` 區徽章） | `scout-district-portal`、`dbs3.0` | 重建（`dbs` 退役） |
-| `CEN-02` | 服務平台（成員系統） | `member-portal` | 重建 |
-| `CEN-03` | 管理系統 | `scout-admin` | 重建（**範圍待你確認**） |
+| `CEN-02` | 服務平台（成員系統；公開使用） | `member-portal` | 重建；按公開服務定位，不假設要區／旅 admin 分級 |
+| `CEN-03` | 管理系統（本身有登記後台） | `scout-admin` | 重建；保留其業務登記流程，與 L0 身份開戶分開 |
 | `CEN-04` | 訓練班系統（＋`CEN-04a` 證書） | `course`、`CERT` | 重建 |
 | `CEN-05` | 專章秘書系統 | `BadgeHouse` | 重建（**待你確認**） |
 | `CEN-06` | 徽章／專章內容平台？ | `scoutapp`（Flask） | **待確認**（可能併入 CEN-05 或 L4） |
@@ -106,9 +106,8 @@
 |:--:|---|---|:--:|
 | `TRP-01` | 旅系統（含點名） | `troop-portal`、`troop_portal`、`troop-attendance` | 合併重建 |
 | `TRP-02` | 支部 portal（5 config：gh／cubs／scout／vs／rs） | 5 個 `*_portal` | 合併重建 |
-| `TRP-03` | 進度（4 config：cubs／scout／vs／rs） | **⚠️ 91 個 public repo 搵唔到**（見 §6） | 重建（來源待確認） |
 | `TRP-04` | 紀錄冊 BOOK（4 config） | 4 本 BOOK | 合併重建 |
-| `TRP-05` | 徽章（4 config） | 4 個 `*badge` | 合併重建 |
+| `TRP-05` | BADGE／進度追蹤（4 config：cubs／scout／vs／rover） | 4 個 `*badge` | 合併重建；BADGE 即進度，唔另設 TRP-03 |
 
 ### L3 工具（46 個編號；逐個見 CSV）
 
@@ -176,18 +175,24 @@
 
 ---
 
-## 6. ⚠️ 進度追蹤 ×4：我搵唔到對應 repo
+## 6. BADGE 就係進度追蹤（已確認）
 
-你講「進度追蹤系統（4 支部）」，但 91 個 public repo 裏面**冇**明顯嘅進度 repo。可能係：
+你已確認：「進度追蹤 = BADGE」。因此：
 
-1. **Google Apps Script（GAS）** 做後端（docs/07／58 講嘅「進度 leaf」）；
-2. **private repo**（同 GEMINI 一樣，API 讀唔到）；
-3. 藏喺 5 個支部 portal 裏面（唔係獨立 App）。
+- **唔設獨立 `TRP-03`**，避免把同一功能重複列成兩個 App。
+- 四個支部嘅 `*badge` 統一編為 `TRP-05`，名稱用「BADGE／進度追蹤」，每支部一個 config（`cubs`／`scout`／`vs`／`rover`）。
+- 小童軍 `gh` 仍然冇 BADGE／進度系統；年資徽章記錄留喺 `TRP-02` 支部 portal 內。
+- 開工前仍要對照 4 個 BADGE 舊 repo 嘅資料表、項目清單、進度規則；「功能等同」唔代表 schema 已相同。
 
-**要你答**：進度係 (a) GAS 做的？(b) private repo？(c) 支部 portal 內一頁？
-**影響**：如果係 GAS，`TRP-03` 嘅 2.0 重建要決定「繼續 GAS（Sheet 當 DB）」定「搬去 Supabase」。呢個決定會影響 4 個支部嘅資料遷移。
+### 6.1 跨支部資料授權（用戶已定原則）
 
----
+- 預設：每個支部只睇自己支部嘅 BADGE／BOOK／portal 資料。
+- 旅系統（旅長／副旅長／管理員）可按旅內職務，分別進入各支部查看該支部資料；唔代表支部之間自動互通。
+- 跨支部共享採**雙方同意**：資料提供支部先指定可共享嘅資料類別及接收支部；接收支部確認接受後，先開放指定範圍。任何一方撤回／拒絕，該授權不得生效或須停止。
+- 開工 spec 必須列明 grant 記錄（提供方、接收方、資料類別、狀態、有效期／撤回時間）及審計；後端每次讀取都要驗證，唔可以只靠前端隱藏。
+- **實作細節待各 App spec 定義**：由邊個代表支部批准／接受、授權到期政策、共享資料類別的最小粒度。
+
+> 以上係授權規則，唔係對現有系統已具備此功能嘅聲稱。舊資料結構仍未檢視，合併前要做 schema 對照。
 
 ## 7. APP STORE 目錄 metadata（驅動「用戶自訂版面」）
 
@@ -209,8 +214,8 @@
 | `status` | `live`／`paused`／`retired` | 停用／退役 |
 
 **預設版面規則**（新用戶一登入見到乜）：
-- `owner`／`admin`：全部
-- `leader`：自己支部全套（portal／進度／BOOK／徽章／集會）＋常用工具
+- `owner`：全部；`admin`：只顯示該系統 scope 允許使用嘅 App，唔代表有中央開戶權
+- `leader`：自己支部全套（portal／BADGE 進度／BOOK／集會）＋常用工具；跨支部只按雙方批准嘅授權
 - `member`：自己支部（只讀）＋工具
 - 一律**唔會**見到 `pilot_units` 唔包自己嘅 App
 
