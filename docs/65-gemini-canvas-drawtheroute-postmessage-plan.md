@@ -1,6 +1,6 @@
 # 65 — GEMINI Canvas × DrawTheRoute iframe／postMessage 整合計劃
 
-> **狀態：表單 UI 原型已建立；DrawTheRoute bridge 尚未施工，待 AGENT 覆核接口。** `templates/canvas/drawtheroute_trip_form_v0.1.html` 只測試 GEMINI function call 收到表單資料；工具明確回報未連接，沒有路由計算或 mock 距離。本輪沒有修改 `playerkousas-rgb/drawtheroute` 或 `playerkousas-rgb/GEMINI`，亦沒有部署。
+> **狀態：表單 UI 原型 v0.2；DrawTheRoute bridge 尚未施工，待 AGENT 覆核接口。** `templates/canvas/drawtheroute_trip_form_v0.2.html` 只測試 GEMINI function call 收到表單資料；工具明確回報未連接，沒有路由計算或 mock 距離。本輪沒有修改 `playerkousas-rgb/drawtheroute` 或 `playerkousas-rgb/GEMINI`，亦沒有部署。
 >
 > **目標個案**：3 日 2 夜、總距離約 40 km；營地涉及猴塘溪及大灘。使用者測試 JSON 曾提供「北潭涌 → 猴塘溪 → 大灘 → 北潭涌」作示範，但該次工具回傳距離為本地 hard-coded mock，**不是實際路線，起終點、露營順序及 CP 座標仍須確認**。
 
@@ -26,7 +26,9 @@
 ### 用戶補充觀察（未由 repo／路線計算獨立驗證）
 
 - 用戶觀察到第一次規劃誤差較大，因當時把所有官方營地座標一併交給 GEMINI，結果路線似乎把多個營地都當成要經過的點。
-- 本計劃將此視為輸入契約風險：營地資料庫（候選）與已選營地／必經 CP 必須分開；要由 DrawTheRoute AGENT 用測試 payload 確認未選營地不會進入 route stages。
+- 用戶指出另一個根本錯誤：結果把「11MA ON SHAN（三角網測站 661）」列為起點；用戶認為不應把山頂測站當成一般徒步起步點。這是用戶對該結果的具體反饋；路點實際接駁仍須路由資料驗證，不能只靠名稱判定。
+- 用戶提供的五段路線里程合計 39.17 km。若猴塘溪和大灘分別是第 1、2 晚，按其 CP 分組會成為約 18.61 km／7.21 km／13.35 km 三日；即使總公里接近目標，日程亦需檢查平衡及可行性，不能只因總數合格便打勾。
+- 本計劃將以上視為輸入與品質檢查要求：起點必須用戶指定且驗證可達；營地資料庫（候選）與已選營地／必經 CP 分開；每日總距離、爬升、時間要按住宿段加總檢查。
 
 ### 未知（必須先實測／由相應 AGENT 確認）
 
@@ -193,14 +195,14 @@ DrawTheRoute 可負責可重現的數字計算和使用者明確提供的門檻�
 
 ### Phase 2 — 使用者覆核 route criteria／waypoint
 
-- 確認北潭涌是否為起點和終點、猴塘溪與大灘的住宿先後、實際營地入口座標。
+- 由用戶確認真正起步入口／集合點及終點／離開點；不得把昂山山頂三角網測站等山頂地圖點自行當成起點。另確認猴塘溪與大灘住宿先後、實際營地入口座標及步道接駁。
 - 確認 40 km 是目標值還是上限／容差、每日最長行走時間及可接受爬升。
 - 確認哪些正式山徑必須／不可走、補水／撤退點及領隊核准流程。
 - 未有真實座標和上述門檻前，只能驗 bridge，不能驗正式路線安全性。
 
 ### Phase 3A — 表單 UI 原型（已建立，尚未驗證 Canvas 執行）
 
-`templates/canvas/drawtheroute_trip_form_v0.1.html` 提供日數、總公里、起終點、住宿晚數及按晚數增減的已選營地欄位，並以 GEMINI function call 傳結構化資料。工具 stub 只 echo 輸入並明確標記 `routeCalculated: false`／`DRAWTHEROUTE_BRIDGE_NOT_CONNECTED`，沒有 mock 路線數字。這是表單／資料契約原型，不代表 DrawTheRoute 整合完成或真實路線測試已通過。
+`templates/canvas/drawtheroute_trip_form_v0.2.html` 提供日數、總公里、用戶指定的起步入口／終點、住宿晚數及按晚數增減的已選營地欄位，並以 GEMINI function call 傳結構化資料。工具 stub 只 echo 輸入並明確標記 `routeCalculated: false`／`DRAWTHEROUTE_BRIDGE_NOT_CONNECTED`，沒有 mock 路線數字。此版加入「切實可行優先」的規劃提示：不准模型自行選山頂／三角網測站當起點、不准假設空中接駁、不准自動揀最遠線湊公里；起點可達性、路線連續性、每日距離／爬升／估時必須由真實路由資料驗證。這是表單／提示詞原型，不代表 DrawTheRoute 整合完成或真實路線測試已通過。
 
 ### Phase 3B — DrawTheRoute 配合後的端到端 Canvas 測試頁
 
@@ -224,6 +226,10 @@ Canvas test page 不得假裝 mock 結果是真路線；mock 模式必須清楚�
 - [ ] `ready → request → result` requestId 一對一；亂序、重複、逾時、取消不會回錯方案。
 - [ ] 迭代搜尋不設固定 3 次上限：用測試個案驗證超過 3 輪仍可繼續修正，直至達明確條件或觸發取消／服務限流／重複循環等停止條件。
 - [ ] 達標時回傳所有條件及計算值；未達標停止時回報最佳候選和差距，不得把「最接近」標成 `pass`。
+- [ ] 起點必須來自用戶指定並由真實道路／步道資料驗證可到達的入口；山頂／三角網測站不得自動成為起點。若 DrawTheRoute 無法驗證，須停下標為未知／阻塞，不得假設直升機、吊繩或其他未提供接駁。回歸個案「11MA ON SHAN（三角網測站 661）」不可被 AI 自行設成出發點。
+- [ ] 若用戶提供 5 段 12.35／6.26／2.89／4.32／13.35 km，並指定猴塘溪及大灘為兩晚營地，系統應正確算出總長 39.17 km、按營地分日約 18.61／7.21／13.35 km，並要求按時間／爬升門檻檢查每日負荷；不得只以總公里接近目標便判合格。
+- [ ] 路由引擎若提供多條真實 alternatives，GEMINI 不得自動選最遠一條；按連續性、入口可達、每日距離／爬升／時間合理性選方案。若只有一條結果，不可編造替代線；只能使用已核實的中間山徑點重算，否則回報目標差距。
+- [ ] 對每個住宿段輸出每日總距離、爬升、下降、估時及營地終點；能發現並回報明顯不平衡日程，禁止只列小段 CP 距離就宣稱整體合理。
 - [ ] 表單以住宿晚數動態顯示營地欄：3 日 2 夜顯示 2 格，4 日 3 夜顯示 3 格；欄位數與 `selectedOvernightStops` 驗證一致。
 - [ ] 測試提供多個官方營地候選、但用戶只選 2 個住宿點：送出的 route request／路線只經選中的兩個營地，未選營地座標不進 `waypoints`／`stages`，不能被當成必經 CP。
 - [ ] 已知起訖點測試回傳的距離／爬升與 DrawTheRoute 同一 UI 手動計算一致（容差由 AGENT 定義及記錄）。
@@ -245,4 +251,4 @@ Canvas test page 不得假裝 mock 結果是真路線；mock 模式必須清楚�
 
 ## 9. 可交畀 DrawTheRoute AGENT 的簡短說明
 
-> 請先閱讀真理倉 `docs/65-gemini-canvas-drawtheroute-postmessage-plan.md`，只做 Phase 0 技術盤點，暫勿改 Production。目標係先用 GEMINI Canvas HTML 表單收集步行日數、總公里、起終點及每晚由用戶選定的營地（晚數幾多就顯示幾格），再透過 iframe + `postMessage` 將有座標的每日 CP 傳入 DrawTheRoute，呼叫現有路線計算流程，再回傳實際距離、上升／下降、高程／時間估算及 fallback warnings，並把全程總覽圖和逐日詳細地圖圖片回到 Canvas 顯示／下載。官方營地清單只供欄位選擇，未選營地不可變成必經點。使用者不接受固定 3 次方案上限：GEMINI 應可持續修正 CP／重算，直至明確條件達標；只在使用者取消、服務限流／故障、重複循環或資源預算觸發時停止，未達標要回報最佳方案與差距。營地 catalog 必須和 route waypoints 分開；未選中的官方營地絕不可自動串入 route stages。本案如確認 3 日 2 夜入住猴塘溪及大灘，路線只經這兩個已選營地，其餘營地只能作候選資料。請先確認 Canvas 實際 Origin、iframe sandbox、DrawTheRoute frame headers、entry-gate 行為、route manager 可呼叫接口和 localStorage 影響；回覆可行／不可行、阻塞點、建議 message schema、改動範圍及測試方法。**不要以 mock 數字當實際路線，不要用 `targetOrigin: '*'`，不要把 `?embed=1` 當授權，不要修改 Push／白名單／其他 repo；未經使用者同意不部署 Production。**
+> 請先閱讀真理倉 `docs/65-gemini-canvas-drawtheroute-postmessage-plan.md`，只做 Phase 0 技術盤點，暫勿改 Production。目標係先用 GEMINI Canvas HTML 表單收集步行日數、總公里、起終點及每晚由用戶選定的營地（晚數幾多就顯示幾格），再透過 iframe + `postMessage` 將有座標的每日 CP 傳入 DrawTheRoute，呼叫現有路線計算流程，再回傳實際距離、上升／下降、高程／時間估算及 fallback warnings，並把全程總覽圖和逐日詳細地圖圖片回到 Canvas 顯示／下載。官方營地清單只供欄位選擇，未選營地不可變成必經點。行程規劃以切實可行為第一優先：起點由用戶指定且由真實路由資料驗證可達，禁止默認昂山三角網測站等山頂點、禁止假設直升機／吊繩；按每日總距離／爬升／估時檢查日程合理，不可只為湊公里自動選最遠替代線或插入無意義 CP。若引擎沒有替代線，不可虛構，須用核實山徑點重算或回報不可達標。使用者不接受固定 3 次方案上限：GEMINI 應可持續修正 CP／重算，直至明確條件達標；只在使用者取消、服務限流／故障、重複循環或資源預算觸發時停止，未達標要回報最佳方案與差距。營地 catalog 必須和 route waypoints 分開；未選中的官方營地絕不可自動串入 route stages。本案如確認 3 日 2 夜入住猴塘溪及大灘，路線只經這兩個已選營地，其餘營地只能作候選資料。請先確認 Canvas 實際 Origin、iframe sandbox、DrawTheRoute frame headers、entry-gate 行為、route manager 可呼叫接口和 localStorage 影響；回覆可行／不可行、阻塞點、建議 message schema、改動範圍及測試方法。**不要以 mock 數字當實際路線，不要用 `targetOrigin: '*'`，不要把 `?embed=1` 當授權，不要修改 Push／白名單／其他 repo；未經使用者同意不部署 Production。**
