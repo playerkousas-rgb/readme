@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="copyright" content="© SCOUT SYSTEM">
-<meta name="app-version" content="v0.1">
+<meta name="app-version" content="v0.2">
 <meta name="robots" content="noindex">
-<title>行山行程輸入測試 v0.1 — © SCOUT SYSTEM</title>
+<title>行山行程輸入測試 v0.2 — © SCOUT SYSTEM</title>
 <style>
   :root{font-family:system-ui,-apple-system,"PingFang HK","Microsoft JhengHei",sans-serif;color:#17231d;background:#f3f7f3}
   *{box-sizing:border-box}
@@ -35,12 +35,22 @@
 </head>
 <body>
 <header>
-  <p class="muted">CANVAS 表單原型 · v0.1</p>
+  <p class="muted">CANVAS 表單原型 · v0.2</p>
   <h1>行山行程資料</h1>
-  <p class="muted">先填好日數、距離和每晚營地，讓 GEMINI 收到清楚、結構化的資料。</p>
+  <p class="muted">先填好日數、距離、實際起步入口和每晚營地，讓 GEMINI 收到清楚、結構化的資料。</p>
 </header>
 
-<div class="notice"><strong>測試範圍：</strong>此版本只測試表單 → GEMINI function call 的資料傳遞；尚未連接 DrawTheRoute，絕不會計算或估算真實路線距離、高程或時間。</div>
+<div class="notice"><strong>測試範圍：</strong>此版本只測試表單 → GEMINI function call 的資料傳遞；尚未連接 DrawTheRoute，絕不會計算或估算真實路線距離、高程或時間。地名欄位未經地圖／路由驗證前，也不能視為已確認的可行起點。</div>
+
+<div class="card">
+  <h2>規劃底線</h2>
+  <ul>
+    <li>起點必須是用戶指定、可由正常公共交通／道路或步道到達的實際入口；不得自行把山頂、三角網測站或地圖標記當起點，更不可假設直升機／吊繩接駁。</li>
+    <li>先確認路線連續、入口可達、每日距離／爬升／時間合理，再考慮接近公里目標；不得只為湊數自動選最遠路徑、亂加 CP 或來回折返。</li>
+    <li>如現有引擎只回一條路線，不能虛構替代線；應索取可用路線選項，或以已核實的山徑交叉點分段重算。</li>
+    <li>若起點可達性或行程條件未能核實，明確指出未確認／不可行並要求人手覆核，不得宣稱合格或安全。</li>
+  </ul>
+</div>
 
 <form id="tripForm" class="card">
   <h2>行程基本資料</h2>
@@ -58,12 +68,12 @@
       <input id="targetKm" name="targetKm" type="number" min="0.1" max="500" step="0.1" value="40" required>
     </div>
     <div>
-      <label for="start">起點</label>
-      <input id="start" name="start" maxlength="100" value="北潭涌" required>
+      <label for="start">實際起步入口／集合點（由你指定）</label>
+      <input id="start" name="start" maxlength="100" placeholder="請填可實際到達的入口或集合點" required>
     </div>
     <div>
-      <label for="finish">終點</label>
-      <input id="finish" name="finish" maxlength="100" value="北潭涌" required>
+      <label for="finish">終點／離開點（由你指定）</label>
+      <input id="finish" name="finish" maxlength="100" placeholder="請填實際可到達的出口或接駁點" required>
     </div>
     <div>
       <label for="nights">住宿晚數</label>
@@ -86,7 +96,7 @@
 
 <script>
 'use strict';
-const APP_VERSION = 'v0.1';
+const APP_VERSION = 'v0.2';
 const daysEl = document.getElementById('days');
 const nightsEl = document.getElementById('nights');
 const campsEl = document.getElementById('camps');
@@ -173,6 +183,15 @@ function getRouteTool(args) {
   };
 }
 
+const PLANNING_PROMPT = [
+  '你是負責提出切實可行行程的香港遠足規劃助手。優先考慮起點可達、路線連續、實際山徑、每日距離／爬升／時間合理；公里目標不能凌駕可行性。',
+  '起點必須使用用戶明確填寫的實際步道入口／集合點。禁止把山頂、三角網測站或任意地圖標記自行當起點；不可假設直升機、吊繩或未核實接駁。路由引擎／地圖未能核實入口連接時，先回報未確認並要求人手確認，不可繼續宣稱可行。',
+  '不要自動選最遠路徑或加入未選營地來湊公里。只可在路由引擎提供的真實替代路線中，選擇合理而連續的路線；如引擎只提供一條，不可虛構另一條，可用已核實的山徑交叉點分段重算，否則回報目標差距。',
+  '逐日檢查距離、爬升、估時和住宿點分配；若一天明顯過長、另一天過短，或任何路段不可達，應指出並調整；調整後仍不合格就如實回報，不要把最接近方案當合格。',
+  '不得單憑 AI 推測宣稱安全；未有 DrawTheRoute 真實路線幾何、數值與人工覆核時，不可聲稱路線可行或安全。',
+  '本 HTML 目前未連接 DrawTheRoute；本次只呼叫工具確認輸入資料，不可輸出路線、公里、高程或時間。'
+].join('\n');
+
 function delay(ms) { return new Promise((resolve) => setTimeout(resolve, ms)); }
 async function callGemini(payload) {
   const key = (window.GEMINI_API_KEY || window.__GEMINI_API_KEY__ || '').trim();
@@ -221,18 +240,18 @@ form.addEventListener('submit', async (event) => {
   output.textContent = '正在提交表單資料…';
   try {
     const payload = {
-      contents: [{ role: 'user', parts: [{ text: '請檢查以下用戶填寫的行程資料，並呼叫 getRoute 工具確認收到的結構化輸入。不可自行估算或編造路線距離、高程或時間；工具會明確告知 DrawTheRoute 尚未連接。\n\n' + JSON.stringify(trip, null, 2) }] }],
+      contents: [{ role: 'user', parts: [{ text: PLANNING_PROMPT + '\n\n請呼叫 getRoute 工具確認收到的結構化輸入。不可自行估算或編造路線距離、高程或時間。\n\n用戶輸入：\n' + JSON.stringify(trip, null, 2) }] }],
       tools: [{ functionDeclarations: [{
         name: 'getRoute',
-        description: '將用戶填寫的步行日數、總公里、起終點及已選住宿營地資料交給路線工具。DrawTheRoute 未接通時只回報收到的資料，不可自行計算或估算路線。',
+        description: '將用戶明確指定的實際入口、行程限制及已選住宿營地交給路線工具。真正規劃時須先驗證起點可步行到達及每日負荷合理；DrawTheRoute 未接通時只回報收到的資料，不可自行計算或估算路線。',
         parameters: {
           type: 'OBJECT',
           properties: {
             days: { type: 'INTEGER', description: '步行日數' },
             nights: { type: 'INTEGER', description: '住宿晚數' },
             targetTotalKm: { type: 'NUMBER', description: '用戶設定的總距離目標公里' },
-            start: { type: 'STRING', description: '起點名稱' },
-            finish: { type: 'STRING', description: '終點名稱' },
+            start: { type: 'STRING', description: '用戶明確指定、經核實可由正常道路／公共交通／步道到達的起步入口；不可自行替換成山頂、三角網測站或任意地圖點' },
+            finish: { type: 'STRING', description: '用戶明確指定、可實際離開路線的出口／接駁點' },
             selectedOvernightStops: {
               type: 'ARRAY',
               items: { type: 'OBJECT', properties: {
